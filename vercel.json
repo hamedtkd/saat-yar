@@ -1,0 +1,8 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run build:vercel",
+  "outputDirectory": "out",
+  "framework": "nextjs",
+  "cleanUrls": true,
+  "trailingSlash": true
+}
