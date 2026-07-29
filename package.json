@@ -2,9 +2,9 @@
   "name": "saatyar-worklog",
   "version": "1.1.0",
   "private": true,
-  "engines": {
-    "node": ">=22.13.0"
-  },
+"engines": {
+  "node": "22.x"
+},
   "scripts": {
     "install:ci": "bash scripts/install-ci.sh",
     "dev": "vite",
