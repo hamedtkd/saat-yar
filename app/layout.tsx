@@ -1,32 +1,18 @@
 import type { Metadata } from "next";
-import "@fontsource-variable/vazirmatn";
+import "@fontsource-variable/vazirmatn/wght.css";
 import "./globals.css";
-import { PwaRegister } from "./pwa-register";
 
-const repositoryBase = process.env.PAGES_BASE_PATH ?? "";
-
-export const metadata: Metadata = {
-  title: "ساعت‌یار | محاسبه کارکرد شخصی",
-  description: "ثبت ورود، خروج، وقفه، مرخصی و محاسبه کارکرد و حقوق ماهانه",
-  other: {
-    "codex-preview": "development",
-    "saatyar-base": process.env.PAGES_BASE_PATH ?? "",
-  },
-  icons: {
-    icon: `${repositoryBase}/favicon.svg`,
-    shortcut: `${repositoryBase}/favicon.svg`,
-  },
-  manifest: `${repositoryBase}/manifest.webmanifest`,
+const metadata: Metadata = {
+  title: "ساعت‌یار",
+  description: "مدیریت شخصی ساعت کاری، پروژه و مرخصی",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fa" dir="rtl">
-      <body>{children}<PwaRegister /></body>
+    <html lang="fa" dir="rtl" className="scroll-smooth bg-[#f7faf9]">
+      <body className="m-0 min-h-screen bg-[radial-gradient(circle_at_10%_0%,rgba(5,155,96,.025),transparent_35%),linear-gradient(180deg,#fbfdfc_0%,#f6f9f8_100%)] font-[Vazirmatn_Variable,Tahoma,sans-serif] font-normal text-[#102a3a] antialiased [font-feature-settings:'ss01']">
+        {children}
+      </body>
     </html>
   );
 }

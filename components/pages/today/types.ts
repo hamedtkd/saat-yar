@@ -1,0 +1,30 @@
+import type React from "react";
+import type { ReturnTypeCalc } from "@/lib/type-helpers";
+import type { AppData, BreakItem, Tab, TimeEntry, TimerDraft, WorkRecord } from "@/lib/types";
+
+export type TodayPageProps = {
+  data: AppData;
+  record: WorkRecord;
+  selectedDate: string;
+  setSelectedDate: (date: string) => void;
+  todayCalc: ReturnTypeCalc;
+  dailyTarget: number;
+  suggestedExit: string;
+  activeEntry?: TimeEntry;
+  activeBreak?: BreakItem;
+  lunchRunning: boolean;
+  timerDraft: TimerDraft;
+  setTimerDraft: React.Dispatch<React.SetStateAction<TimerDraft>>;
+  startWork: () => void;
+  finishWork: () => void;
+  updateRecord: (patch: Partial<WorkRecord>) => void;
+  startLunch: () => void;
+  finishLunch: () => void;
+  startBreak: () => void;
+  finishBreak: (minutes?: number) => void;
+  toggleProjectTimer: (projectId?: string) => void;
+  editingEntry: string;
+  setEditingEntry: (id: string) => void;
+  setData: React.Dispatch<React.SetStateAction<AppData>>;
+  setTab: (tab: Tab) => void;
+};
