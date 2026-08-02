@@ -1,10 +1,10 @@
 {
   "name": "saatyar-worklog",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
-"engines": {
-  "node": "22.x"
-},
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "install:ci": "bash scripts/install-ci.sh",
     "dev": "vite",
@@ -14,10 +14,11 @@
     "build:vercel": "next build",
     "typecheck": "tsc --noEmit --allowImportingTsExtensions",
     "start": "vinext start",
-    "test": "node --test --experimental-strip-types tests/time-engine.test.ts tests/backup-schema.test.ts",
+    "test": "node --test --experimental-strip-types tests/time-engine.test.ts tests/payroll.test.ts tests/backup-schema.test.ts",
     "test:sites": "npm run build && node --test tests/rendered-html.test.mjs",
     "validate:artifact": "node scripts/validate-artifact.mjs",
-    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next --ignore-pattern out"
+    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next --ignore-pattern out",
+    "check": "npm run typecheck && npm run lint && npm test"
   },
   "dependencies": {
     "@fontsource-variable/vazirmatn": "^5.2.8",
@@ -53,5 +54,17 @@
     "wrangler": "4.92.0"
   },
   "type": "module",
-  "displayName": "ساعت‌یار"
+  "displayName": "ساعت‌یار",
+  "description": "Persian-first, RTL, local-first worklog and time-tracking web app.",
+  "license": "MIT",
+  "keywords": [
+    "time-tracker",
+    "worklog",
+    "persian",
+    "rtl",
+    "local-first",
+    "pwa",
+    "nextjs",
+    "tailwindcss"
+  ]
 }

@@ -33,21 +33,21 @@ export function useSaatyarController() {
 
   const dailyTarget = Math.max(1, timeToMinutes(data.settings.defaultEnd) - timeToMinutes(data.settings.defaultStart) - data.settings.lunchMinutes);
   const record = data.records[selectedDate] ?? emptyRecord(selectedDate, data.settings);
-  const todayCalc = calc({ ...record, start: record.start || data.settings.defaultStart }, dailyTarget);
-  const suggestedExit = minutesToTime(todayCalc.plannedExit);
+  const todayCalc = calc(record, dailyTarget);
+  const suggestedExit = minutesToTime(calc({ ...record, start: record.start || data.settings.defaultStart }, dailyTarget).plannedExit);
   const selectedMonth = selectedDate.slice(0, 7);
   const monthRecords = useMemo(
     () => Object.values(data.records).filter((item) => item.date.startsWith(selectedMonth)).sort((a, b) => b.date.localeCompare(a.date)),
     [data.records, selectedMonth],
   );
   const monthStats = useMemo(() => monthRecords.reduce((acc, item) => {
-    const result = calc({ ...item, start: item.start || data.settings.defaultStart }, dailyTarget);
+    const result = calc(item, dailyTarget);
     acc.worked += result.worked;
     acc.target += item.holiday ? 0 : dailyTarget;
     acc.balance += result.balance;
-    acc.breaks += result.breakMinutes + item.lunchMinutes;
+    acc.breaks += result.breakMinutes + result.unpaidLunchMinutes;
     return acc;
-  }, { worked: 0, target: 0, balance: 0, breaks: 0 }), [monthRecords, dailyTarget, data.settings.defaultStart]);
+  }, { worked: 0, target: 0, balance: 0, breaks: 0 }), [monthRecords, dailyTarget]);
   const activeEntry = data.timeEntries.find((entry) => !entry.endedAt);
   const activeBreak = record.breaks.find((item) => item.start && !item.end);
   const lunchRunning = Boolean(record.lunchStart && !record.lunchEnd);

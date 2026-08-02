@@ -1,0 +1,31 @@
+name: گزارش باگ
+about: گزارش یک مشکل قابل بازتولید
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: شرح مشکل
+      description: چه اتفاقی افتاد و انتظار داشتید چه اتفاقی بیفتد؟
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: مراحل بازتولید
+      placeholder: |
+        1. وارد صفحه ... شوید
+        2. روی ... بزنید
+        3. خطا دیده می‌شود
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: مرورگر و سیستم‌عامل
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: اطلاعات تکمیلی
+      description: بدون Backup، Secret یا داده شخصی واقعی.

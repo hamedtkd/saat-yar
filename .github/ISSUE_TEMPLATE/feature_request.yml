@@ -1,0 +1,20 @@
+name: پیشنهاد قابلیت
+about: پیشنهاد بهبود محصول یا تجربه کاربری
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: مسئله کاربر
+      description: این قابلیت چه مسئله‌ای را حل می‌کند؟
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: راه‌حل پیشنهادی
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: راه‌حل‌های جایگزین

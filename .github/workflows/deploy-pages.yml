@@ -26,7 +26,7 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm run lint
-      - run: node --test --experimental-strip-types tests/time-engine.test.ts
+      - run: npm test
       - name: Build static application
         env:
           PAGES_BASE_PATH: /${{ github.event.repository.name }}

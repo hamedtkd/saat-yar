@@ -7,7 +7,7 @@
 
 ## پیش‌نیاز مشترک
 
-- Node.js `22.13.0` یا جدیدتر
+- Node.js `22.x`
 - npm همراه Node.js
 - برای انتشار GitHub Pages: یک Repository در GitHub
 - برای انتشار Vercel: حساب Vercel
@@ -29,15 +29,12 @@ Set-Location "D:\my-workspace\saatyar-worklog"
 
 node --version
 npm.cmd --version
-npm.cmd install
+npm.cmd ci
 
-if ($LASTEXITCODE -ne 0) { throw "npm install ناموفق بود." }
+if ($LASTEXITCODE -ne 0) { throw "npm ci ناموفق بود." }
 
-npm.cmd run typecheck
-if ($LASTEXITCODE -ne 0) { throw "Typecheck ناموفق بود." }
-
-npm.cmd test
-if ($LASTEXITCODE -ne 0) { throw "Test ناموفق بود." }
+npm.cmd run check
+if ($LASTEXITCODE -ne 0) { throw "بررسی کیفیت ناموفق بود." }
 
 npm.cmd run dev
 ```
@@ -63,9 +60,8 @@ npm.cmd run build:pages
 ```bat
 cd /d D:\my-workspace\saatyar-worklog
 node --version
-npm.cmd install
-npm.cmd run typecheck
-npm.cmd test
+npm.cmd ci
+npm.cmd run check
 npm.cmd run dev
 ```
 
@@ -80,9 +76,8 @@ npm.cmd run build:pages
 ```bash
 cd /path/to/saatyar-worklog
 node --version
-npm install
-npm run typecheck
-npm test
+npm ci
+npm run check
 npm run dev
 ```
 
@@ -183,9 +178,8 @@ Worker اعمال می‌شود.
 ```powershell
 Set-Location "D:\my-workspace\saatyar-worklog"
 
-npm.cmd install
-npm.cmd run typecheck
-npm.cmd test
+npm.cmd ci
+npm.cmd run check
 npm.cmd run build:vercel
 
 npx.cmd vercel@latest login
@@ -244,8 +238,9 @@ http://localhost:8080
 
 | هدف | دستور |
 | --- | --- |
-| نصب | `npm install` |
+| نصب تکرارپذیر | `npm ci` |
 | توسعه | `npm run dev` |
+| بررسی کامل کیفیت | `npm run check` |
 | Typecheck | `npm run typecheck` |
 | تست واحد | `npm test` |
 | Lint | `npm run lint` |

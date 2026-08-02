@@ -1,4 +1,5 @@
-import { Save, Settings } from "lucide-react"; 
+import { Save, Settings } from "lucide-react";
+import { MinuteDurationField } from "@/components/common/minute-duration-field";
 import { NumberField } from "@/components/common/number-field";
 import { PanelHead } from "@/components/common/panel-head";
 import { TimePicker } from "@/components/pickers";
@@ -10,9 +11,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { tw } from "@/lib/tw";
+import { money } from "@/lib/format";
+import { dailyBaseSalary } from "@/lib/payroll";
 import type { AppData, Mode } from "@/lib/types";
-import { MinuteDurationField } from "@/components/common/minute-duration-field";
 
 export function WorkSettingsCard({
   data,
@@ -35,18 +36,13 @@ export function WorkSettingsCard({
     }));
 
   return (
-    <section className={tw("panel", "settings-card", "work-settings")}>
-      <PanelHead icon={<Settings />} title="تنظیمات کاری" />
-      <div className={tw("form-grid", "three")}>
+    <section className="col-span-full rounded-[15px] border border-[#dfe7e9] bg-white/95 p-5 shadow-[0_10px_35px_rgba(17,45,55,.055)] max-[620px]:col-auto">
+      <PanelHead icon={<Settings />} title="تنظیمات کاری و حقوق" />
+      <div className="mb-4 grid grid-cols-3 gap-[14px] max-[900px]:grid-cols-2 max-[620px]:grid-cols-1">
         <label>
           نوع استفاده
-          <Select
-            value={data.settings.mode}
-            onValueChange={(mode) => onModeChange(mode as Mode)}
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
+          <Select value={data.settings.mode} onValueChange={(mode) => onModeChange(mode as Mode)}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="employee">کارمند</SelectItem>
               <SelectItem value="freelancer">فریلنسر</SelectItem>
@@ -57,42 +53,43 @@ export function WorkSettingsCard({
 
         <label>
           شروع معمول
-          <TimePicker
-            value={data.settings.defaultStart}
-            onChange={(value) => setSetting("defaultStart", value)}
-          />
+          <TimePicker value={data.settings.defaultStart} onChange={(value) => setSetting("defaultStart", value)} />
         </label>
 
         <label>
           پایان معمول
-          <TimePicker
-            value={data.settings.defaultEnd}
-            onChange={(value) => setSetting("defaultEnd", value)}
-          />
+          <TimePicker value={data.settings.defaultEnd} onChange={(value) => setSetting("defaultEnd", value)} />
         </label>
 
         <label>
           ناهار پیش‌فرض
-          <MinuteDurationField
-            value={data.settings.lunchMinutes}
-            onValueChange={(value) => setSetting("lunchMinutes", value)}
-          />
+          <MinuteDurationField value={data.settings.lunchMinutes} onValueChange={(value) => setSetting("lunchMinutes", value)} />
         </label>
 
         <label>
-          هدف هفتگی
-          <NumberField
-            value={data.settings.weeklyMinutes / 60}
-            onValueChange={(value) => setSetting("weeklyMinutes", value * 60)}
-          />
+          تعداد روز کاری هفته
+          <NumberField value={data.settings.workDays} min={1} onValueChange={(value) => setSetting("workDays", Math.min(7, Math.round(value)))} />
         </label>
 
         <label>
-          حقوق پایه
-          <NumberField
-            value={data.settings.salary}
-            onValueChange={(value) => setSetting("salary", value)}
-          />
+          هدف هفتگی (ساعت)
+          <NumberField value={data.settings.weeklyMinutes / 60} onValueChange={(value) => setSetting("weeklyMinutes", Math.round(value * 60))} />
+        </label>
+
+        <label className="grid gap-[7px]">
+          حقوق ماهانه (تومان)
+          <NumberField value={data.settings.salary} onValueChange={(value) => setSetting("salary", value)} />
+          <small className="text-[10px] font-medium text-[#6c7d89]">حقوق پایه روزانه: {money(dailyBaseSalary(data.settings.salary))} تومان (تقسیم بر ۳۰ روز)</small>
+        </label>
+
+        <label>
+          ضریب اضافه‌کاری
+          <NumberField value={data.settings.overtimeMultiplier} min={0} onValueChange={(value) => setSetting("overtimeMultiplier", value)} />
+        </label>
+
+        <label>
+          ضریب روز تعطیل
+          <NumberField value={data.settings.holidayMultiplier} min={0} onValueChange={(value) => setSetting("holidayMultiplier", value)} />
         </label>
       </div>
 
