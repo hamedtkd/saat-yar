@@ -46,7 +46,9 @@ export function TodayPage(props: TodayPageProps) {
         result={props.todayCalc}
         dailyTarget={props.dailyTarget}
       />
-      <TodayTimeline {...props} />
+      {props.data.settings.mode !== "employee" && (
+        <TodayTimeline {...props} />
+      )}
       {props.record.start &&
         !props.record.end &&
         props.todayCalc.worked > 4 * 60 && (

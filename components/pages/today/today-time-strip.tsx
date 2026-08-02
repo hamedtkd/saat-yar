@@ -1,11 +1,22 @@
-import { Coffee, Pause, Play, Plus, Square, Trash2 } from "lucide-react";
+import {
+  ChevronDown,
+  Coffee,
+  Pause,
+  Play,
+  Plus,
+  Square,
+  Trash2,
+} from "lucide-react";
+
 import { MinuteDurationField } from "@/components/common/minute-duration-field";
 import { TimePicker } from "@/components/pickers";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/cn";
 import { duration, fa, nowTime } from "@/lib/format";
 import { spanMinutes } from "@/lib/time-engine";
 import type { BreakItem, WorkRecord } from "@/lib/types";
+
 import type { TodayPageProps } from "./types";
 
 export function TodayTimeStrip(
@@ -25,7 +36,11 @@ export function TodayTimeStrip(
   >,
 ) {
   function updateLunch(patch: Partial<WorkRecord>) {
-    const next = { ...props.record, ...patch };
+    const next = {
+      ...props.record,
+      ...patch,
+    };
+
     if (
       next.lunchStart &&
       next.lunchEnd &&
@@ -33,6 +48,7 @@ export function TodayTimeStrip(
     ) {
       next.lunchMinutes = spanMinutes(next.lunchStart, next.lunchEnd);
     }
+
     props.updateRecord({
       ...patch,
       lunchMinutes: next.lunchMinutes,
@@ -47,7 +63,10 @@ export function TodayTimeStrip(
               ...item,
               ...patch,
               ...("start" in patch || "end" in patch
-                ? { startedAt: undefined, endedAt: undefined }
+                ? {
+                    startedAt: undefined,
+                    endedAt: undefined,
+                  }
                 : {}),
             }
           : item,
@@ -57,6 +76,7 @@ export function TodayTimeStrip(
 
   function addBreak() {
     const start = nowTime();
+
     props.updateRecord({
       breaks: [
         ...props.record.breaks,
@@ -78,134 +98,285 @@ export function TodayTimeStrip(
   }
 
   return (
-    <section className="mb-[18px] grid grid-cols-[1fr_1fr_1.2fr_1.5fr] gap-3 rounded-[15px] border border-[#dfe7e9] bg-white/95 p-[13px] shadow-[0_10px_35px_rgba(17,45,55,.055)] max-[900px]:grid-cols-2 max-[620px]:grid-cols-1">
-      <label>
-        ورود
-        <TimePicker
-          value={props.record.start}
-          onChange={(start) =>
-            props.updateRecord({ start, startedAt: undefined })
-          }
-          suggestions={[
-            { label: "شروع معمول", value: props.data.settings.defaultStart },
-          ]}
-        />
-      </label>
-      <label>
-        خروج
-        <TimePicker
-          value={props.record.end}
-          onChange={(end) => props.updateRecord({ end, endedAt: undefined })}
-          suggestions={[
-            { label: "پیشنهادی", value: props.suggestedExit },
-            { label: "پایان معمول", value: props.data.settings.defaultEnd },
-          ]}
-        />
-      </label>
-
-      <div className="flex min-h-[58px] items-center justify-between gap-[10px] rounded-[11px] border border-[#edf1f2] bg-[#fbfdfc] px-[10px] [&>span]:flex [&>span]:items-center [&>span]:gap-[7px] [&>span]:text-xs [&>span]:font-bold [&_small]:font-medium [&_small]:text-[#6c7d89]">
-        <span>
-          <Coffee /> ناهار{" "}
-          <small>{fa.format(props.record.lunchMinutes)} دقیقه</small>
-        </span>
-        <Button
-          variant={props.lunchRunning ? "default" : "outline"}
-          size="sm"
-          onClick={props.lunchRunning ? props.finishLunch : props.startLunch}
-        >
-          {props.lunchRunning ? (
-            <>
-              <Square /> پایان
-            </>
-          ) : (
-            <>
-              <Play /> شروع
-            </>
-          )}
-        </Button>
-      </div>
-
-      <div className="flex min-h-[58px] items-center justify-between gap-[10px] rounded-[11px] border border-[#edf1f2] bg-[#fbfdfc] px-[10px] [&>span]:flex [&>span]:items-center [&>span]:gap-[7px] [&>span]:text-xs [&>span]:font-bold [&_small]:font-medium [&_small]:text-[#6c7d89]">
-        <span>
-          <Pause /> وقفه <small>{duration(props.todayCalc.breakMinutes)}</small>
-        </span>
-        {!props.activeBreak ? (
-          <Button variant="outline" size="sm" onClick={props.startBreak}>
-            <Play /> شروع
-          </Button>
-        ) : (
-          <div className="flex gap-1">
-            {[15, 30, 40, 60].map((value) => (
-              <Button
-                variant="outline"
-                size="sm"
-                key={value}
-                onClick={() => props.finishBreak(value)}
-              >
-                {fa.format(value)}
-              </Button>
-            ))}
-            <Button size="sm" onClick={() => props.finishBreak()}>
-              <Square />
-            </Button>
-          </div>
+    <section
+      className={cn(
+        "mb-5 overflow-hidden rounded-2xl border border-[#dfe7e9]",
+        "bg-white/95 shadow-[0_14px_44px_rgba(17,45,55,0.06)]",
+      )}
+    >
+      <div
+        className={cn(
+          "grid gap-3 p-4",
+          "lg:grid-cols-[1.1fr_1.1fr_1fr_1fr]",
+          "md:grid-cols-2",
+          "grid-cols-1",
         )}
+      >
+        <label className="grid min-w-0 gap-2">
+          <span className="text-xs font-extrabold text-[#173747]">
+            ورود
+          </span>
+
+          <TimePicker
+            value={props.record.start}
+            onChange={(start) =>
+              props.updateRecord({
+                start,
+                startedAt: undefined,
+              })
+            }
+            suggestions={[
+              {
+                label: "شروع معمول",
+                value: props.data.settings.defaultStart,
+              },
+            ]}
+          />
+        </label>
+
+        <label className="grid min-w-0 gap-2">
+          <span className="text-xs font-extrabold text-[#173747]">
+            خروج
+          </span>
+
+          <TimePicker
+            value={props.record.end}
+            onChange={(end) =>
+              props.updateRecord({
+                end,
+                endedAt: undefined,
+              })
+            }
+            suggestions={[
+              {
+                label: "پیشنهادی",
+                value: props.suggestedExit,
+              },
+              {
+                label: "پایان معمول",
+                value: props.data.settings.defaultEnd,
+              },
+            ]}
+          />
+        </label>
+
+        <div
+          className={cn(
+            "flex min-h-20 items-center justify-between gap-3",
+            "rounded-2xl border border-[#dfe9e6]",
+            "bg-[#f7fbf9] p-3",
+          )}
+        >
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#e7f7f1] text-[#079b60]">
+              <Coffee className="size-5" />
+            </span>
+
+            <div className="min-w-0">
+              <strong className="block text-sm font-extrabold text-[#173747]">
+                ناهار
+              </strong>
+
+              <span className="mt-1 block text-[11px] text-[#6c7d89]">
+                {fa.format(props.record.lunchMinutes)} دقیقه
+              </span>
+            </div>
+          </div>
+
+          <Button
+            type="button"
+            variant={props.lunchRunning ? "default" : "outline"}
+            size="sm"
+            onClick={
+              props.lunchRunning
+                ? props.finishLunch
+                : props.startLunch
+            }
+            className={cn(
+              "shrink-0 rounded-xl px-3",
+              props.lunchRunning &&
+                "bg-[#0b4556] text-white hover:bg-[#083b49]",
+            )}
+          >
+            {props.lunchRunning ? (
+              <>
+                <Square className="size-4" />
+                پایان
+              </>
+            ) : (
+              <>
+                <Play className="size-4" />
+                شروع
+              </>
+            )}
+          </Button>
+        </div>
+
+        <div
+          className={cn(
+            "flex min-h-20 items-center justify-between gap-3",
+            "rounded-2xl border border-[#e2e7ee]",
+            "bg-[#f8fafc] p-3",
+          )}
+        >
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#eef2ff] text-[#315ea8]">
+              <Pause className="size-5" />
+            </span>
+
+            <div className="min-w-0">
+              <strong className="block text-sm font-extrabold text-[#173747]">
+                وقفه
+              </strong>
+
+              <span className="mt-1 block text-[11px] text-[#6c7d89]">
+                {duration(props.todayCalc.breakMinutes)}
+              </span>
+            </div>
+          </div>
+
+          {!props.activeBreak ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={props.startBreak}
+              className="shrink-0 rounded-xl px-3"
+            >
+              <Play className="size-4" />
+              شروع
+            </Button>
+          ) : (
+            <div className="flex flex-wrap justify-end gap-1.5">
+              {[15, 30, 40, 60].map((value) => (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  key={value}
+                  onClick={() => props.finishBreak(value)}
+                  className="h-9 min-w-9 rounded-lg px-2"
+                >
+                  {fa.format(value)}
+                </Button>
+              ))}
+
+              <Button
+                type="button"
+                size="icon"
+                onClick={() => props.finishBreak()}
+                aria-label="پایان وقفه"
+                className="size-9 rounded-lg bg-[#0b4556] hover:bg-[#083b49]"
+              >
+                <Square className="size-4" />
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
 
-      <details className="col-span-full rounded-xl border border-[#e3ebed] bg-[#fbfdfc] p-3 open:bg-white max-[620px]:col-auto">
-        <summary className="cursor-pointer select-none text-xs font-extrabold text-[#15323a]">
-          ویرایش دقیق ناهار و وقفه‌ها
+      <details className="group border-t border-[#e5ecee] bg-[#fbfdfc]">
+        <summary
+          className={cn(
+            "flex cursor-pointer list-none items-center justify-between",
+            "px-4 py-3 text-xs font-extrabold text-[#173747]",
+            "transition-colors hover:bg-[#f4f9f7]",
+            "[&::-webkit-details-marker]:hidden",
+          )}
+        >
+          <span>ویرایش دقیق ناهار و وقفه‌ها</span>
+
+          <ChevronDown className="size-4 transition-transform duration-200 group-open:rotate-180" />
         </summary>
 
-        <div className="mt-4 grid gap-4">
-          <section className="rounded-xl border border-[#e2ebe8] bg-[#f8fbfa] p-3">
-            <div className="mb-3 flex items-center justify-between gap-3">
-              <strong className="text-sm">ناهار</strong>
-              <label className="min-w-fit flex! flex-row-reverse [&_*]:cursor-pointer items-center gap-2 text-[11px] font-semibold text-[#526b75]">
+        <div className="grid gap-4 border-t border-[#edf2f3] p-4">
+          <section
+            className={cn(
+              "rounded-2xl border border-[#dfe9e6]",
+              "bg-[#f8fbfa] p-4",
+            )}
+          >
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <strong className="text-sm font-extrabold text-[#173747]">
+                  ناهار
+                </strong>
+
+                <p className="mt-1 text-[10px] leading-5 text-[#6c7d89]">
+                  زمان شروع، پایان و وضعیت باحقوق بودن ناهار را تنظیم کنید.
+                </p>
+              </div>
+
+              <label className="flex! cursor-pointer items-center gap-2 rounded-xl border border-[#dce8e3] bg-white px-3 py-2 text-[11px] font-semibold text-[#526b75]">
                 <input
                   type="checkbox"
                   checked={Boolean(props.record.lunchPaid)}
                   onChange={(event) =>
-                    props.updateRecord({ lunchPaid: event.target.checked })
+                    props.updateRecord({
+                      lunchPaid: event.target.checked,
+                    })
                   }
                   className="size-4 accent-[#079b60]"
                 />
+
                 <span>با حقوق</span>
               </label>
             </div>
-            <div className="grid grid-cols-3 gap-3 max-[700px]:grid-cols-1">
-              <label>
-                شروع
+
+            <div className="grid gap-3 md:grid-cols-3">
+              <label className="grid min-w-0 gap-2">
+                <span className="text-[11px] font-bold text-[#526b75]">
+                  شروع
+                </span>
+
                 <TimePicker
                   value={props.record.lunchStart ?? ""}
                   onChange={(lunchStart) =>
-                    updateLunch({ lunchStart, lunchStartedAt: undefined })
+                    updateLunch({
+                      lunchStart,
+                      lunchStartedAt: undefined,
+                    })
                   }
                 />
               </label>
-              <label>
-                پایان
+
+              <label className="grid min-w-0 gap-2">
+                <span className="text-[11px] font-bold text-[#526b75]">
+                  پایان
+                </span>
+
                 <TimePicker
                   value={props.record.lunchEnd ?? ""}
                   onChange={(lunchEnd) =>
-                    updateLunch({ lunchEnd, lunchEndedAt: undefined })
+                    updateLunch({
+                      lunchEnd,
+                      lunchEndedAt: undefined,
+                    })
                   }
                 />
               </label>
-              <label>
-                مدت
+
+              <label className="grid min-w-0 gap-2">
+                <span className="text-[11px] font-bold text-[#526b75]">
+                  مدت
+                </span>
+
                 <MinuteDurationField
                   value={props.record.lunchMinutes}
                   onValueChange={(lunchMinutes) =>
-                    updateLunch({ lunchMinutes })
+                    updateLunch({
+                      lunchMinutes,
+                    })
                   }
                   max={360}
                 />
               </label>
             </div>
+
             {(props.record.lunchStart || props.record.lunchEnd) && (
               <Button
-                className="mt-3"
+                type="button"
+                className="mt-3 rounded-xl"
                 variant="ghost"
                 size="sm"
                 onClick={() =>
@@ -222,62 +393,115 @@ export function TodayTimeStrip(
             )}
           </section>
 
-          <section className="rounded-xl border border-[#e2ebe8] bg-[#f8fbfa] p-3">
-            <div className="mb-3 flex items-center justify-between gap-3">
+          <section
+            className={cn(
+              "rounded-2xl border border-[#e2e7ee]",
+              "bg-[#f8fafc] p-4",
+            )}
+          >
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
               <div>
-                <strong className="text-sm">وقفه‌ها</strong>
-                <p className="m-0 mt-1 text-[10px] text-[#6c7d89]">
+                <strong className="text-sm font-extrabold text-[#173747]">
+                  وقفه‌ها
+                </strong>
+
+                <p className="mt-1 text-[10px] leading-5 text-[#6c7d89]">
                   هر وقفه را جداگانه ویرایش، باحقوق یا حذف کنید.
                 </p>
               </div>
-              <Button variant="outline" size="sm" onClick={addBreak}>
-                <Plus /> افزودن وقفه
+
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addBreak}
+                className="rounded-xl"
+              >
+                <Plus className="size-4" />
+                افزودن وقفه
               </Button>
             </div>
 
             <div className="grid gap-3">
               {props.record.breaks.length === 0 && (
-                <div className="rounded-lg border border-dashed border-[#cfdcda] p-4 text-center text-[11px] text-[#6c7d89]">
+                <div
+                  className={cn(
+                    "rounded-xl border border-dashed border-[#cfdcda]",
+                    "bg-white p-5 text-center",
+                    "text-[11px] text-[#6c7d89]",
+                  )}
+                >
                   هنوز وقفه‌ای ثبت نشده است.
                 </div>
               )}
+
               {props.record.breaks.map((item, index) => (
                 <div
                   key={item.id}
-                  className="grid grid-cols-[1.2fr_1fr_1fr_auto_auto] items-end gap-2 rounded-lg border border-[#dce7e4] bg-white p-2 max-[850px]:grid-cols-2 max-[620px]:grid-cols-1"
+                  className={cn(
+                    "grid items-end gap-3 rounded-xl",
+                    "border border-[#dce7e4] bg-white p-3",
+                    "xl:grid-cols-[1.2fr_1fr_1fr_auto]",
+                    "md:grid-cols-2",
+                    "grid-cols-1",
+                  )}
                 >
-                  <label>
-                    عنوان
+                  <label className="grid min-w-0 gap-2">
+                    <span className="text-[11px] font-bold text-[#526b75]">
+                      عنوان
+                    </span>
+
                     <Input
                       value={item.title}
                       onChange={(event) =>
-                        updateBreak(item.id, { title: event.target.value })
+                        updateBreak(item.id, {
+                          title: event.target.value,
+                        })
                       }
                       placeholder={`وقفه ${fa.format(index + 1)}`}
+                      className="h-11 rounded-xl border-[#dce7e4] shadow-none"
                     />
                   </label>
-                  <label>
-                    شروع
+
+                  <label className="grid min-w-0 gap-2">
+                    <span className="text-[11px] font-bold text-[#526b75]">
+                      شروع
+                    </span>
+
                     <TimePicker
                       value={item.start}
-                      onChange={(start) => updateBreak(item.id, { start })}
+                      onChange={(start) =>
+                        updateBreak(item.id, {
+                          start,
+                        })
+                      }
                     />
                   </label>
-                  <label>
-                    پایان
+
+                  <label className="grid min-w-0 gap-2">
+                    <span className="text-[11px] font-bold text-[#526b75]">
+                      پایان
+                    </span>
+
                     <TimePicker
                       value={item.end}
-                      onChange={(end) => updateBreak(item.id, { end })}
+                      onChange={(end) =>
+                        updateBreak(item.id, {
+                          end,
+                        })
+                      }
                     />
                   </label>
 
                   <Button
+                    type="button"
                     variant="destructive"
                     size="icon"
                     onClick={() => removeBreak(item.id)}
                     aria-label={`حذف وقفه ${index + 1}`}
+                    className="size-11 rounded-xl md:justify-self-end"
                   >
-                    <Trash2 />
+                    <Trash2 className="size-4" />
                   </Button>
                 </div>
               ))}
