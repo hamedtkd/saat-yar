@@ -127,6 +127,7 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
           onExport={controller.exportBackup}
           financialsHidden={controller.financialsHidden}
           onToggleFinancials={() => controller.setFinancialsHidden((value) => !value)}
+          saveState={controller.saveState}
         />
 
         <div

@@ -21,6 +21,14 @@ export default function SettingsRoute() {
       onModeChange={controller.changeMode}
       setToast={controller.setToast}
       financialsHidden={controller.financialsHidden}
+      saveState={controller.saveState}
+      lastSavedAt={controller.lastSavedAt}
+      saveError={controller.saveError}
+      recoverySnapshot={controller.recoverySnapshot}
+      retrySave={controller.retrySave}
+      createRecovery={() => { controller.createManualRecovery(); }}
+      restoreRecovery={() => { controller.restoreRecovery(); }}
+      clearRecovery={() => { controller.clearRecovery(); }}
     />
   );
 }

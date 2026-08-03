@@ -10,8 +10,11 @@ import { HolidayOverridesCard } from "./holiday-overrides-card";
 import { PayrollSettingsCard } from "./payroll-settings-card";
 import { NotificationSettingsCard } from "./notification-settings-card";
 import { cn } from "@/lib/cn";
+import type { RecoverySnapshot } from "@/lib/recovery";
+import type { SaveState } from "@/hooks/use-persisted-app-data";
+import { RecoveryCard } from "./recovery-card";
 
-export function SettingsPage({ data, setData, storage, exportBackup, previewImport, importPreview, applyImport, requestPersistence, requestNotificationPermission, onModeChange, setToast, financialsHidden }: {
+export function SettingsPage({ data, setData, storage, exportBackup, previewImport, importPreview, applyImport, requestPersistence, requestNotificationPermission, onModeChange, setToast, financialsHidden, saveState, lastSavedAt, saveError, recoverySnapshot, retrySave, createRecovery, restoreRecovery, clearRecovery }: {
   data: AppData;
   setData: React.Dispatch<React.SetStateAction<AppData>>;
   storage: StorageInfo;
@@ -24,12 +27,20 @@ export function SettingsPage({ data, setData, storage, exportBackup, previewImpo
   onModeChange: (mode: Mode) => void;
   setToast: (message: string) => void;
   financialsHidden: boolean;
+  saveState: SaveState;
+  lastSavedAt: string | null;
+  saveError: string;
+  recoverySnapshot: RecoverySnapshot | null;
+  retrySave: () => Promise<void>;
+  createRecovery: () => void;
+  restoreRecovery: () => void;
+  clearRecovery: () => void;
 }) {
   return <>
     <PageHeading autosave={false} title="تنظیمات و داده‌ها" description="برنامه کاری، پشتیبان‌گیری و فضای ذخیره‌سازی را مدیریت کن." />
     <section className={cn("grid grid-cols-[250px_minmax(0,1fr)] gap-[26px] max-[900px]:grid-cols-1")}>
       <aside className={cn("rounded-[15px] border border-[#dfe7e9] bg-white/95 shadow-[0_10px_35px_rgba(17,45,55,.055)] p-4", "self-start p-[10px] max-[900px]:flex max-[900px]:overflow-x-auto [&_button]:flex [&_button]:min-h-[52px] [&_button]:w-full [&_button]:items-center [&_button]:gap-[11px] [&_button]:rounded-[10px] [&_button]:border-0 [&_button]:bg-transparent [&_button]:px-[13px] [&_button]:font-semibold [&_button]:text-[#102a3a] [&_button.active]:bg-[#edf9f4] [&_button.active]:text-[#079b60] max-[900px]:[&_button]:min-w-max")}><button className="active"><Database /> داده و پشتیبان</button><button><UserRound /> عمومی</button><button><CalendarDays /> برنامه کاری</button><button><Info /> درباره برنامه</button></aside>
-      <div className={cn("grid grid-cols-2 gap-3 max-[620px]:grid-cols-1")}><StorageCard storage={storage} requestPersistence={requestPersistence} /><BackupCard exportBackup={exportBackup} /><RestoreCard previewImport={previewImport} importPreview={importPreview} applyImport={applyImport} /><WorkSettingsCard data={data} setData={setData} onModeChange={onModeChange} setToast={setToast} financialsHidden={financialsHidden} /><HolidayOverridesCard data={data} setData={setData} setToast={setToast} /><PayrollSettingsCard data={data} setData={setData} setToast={setToast} financialsHidden={financialsHidden} /><NotificationSettingsCard data={data} setData={setData} requestPermission={requestNotificationPermission} setToast={setToast} /><DangerZone setData={setData} setToast={setToast} /></div>
+      <div className={cn("grid grid-cols-2 gap-3 max-[620px]:grid-cols-1")}><StorageCard storage={storage} requestPersistence={requestPersistence} /><RecoveryCard saveState={saveState} lastSavedAt={lastSavedAt} saveError={saveError} recoverySnapshot={recoverySnapshot} retrySave={retrySave} createRecovery={createRecovery} restoreRecovery={restoreRecovery} clearRecovery={clearRecovery} /><BackupCard exportBackup={exportBackup} /><RestoreCard previewImport={previewImport} importPreview={importPreview} applyImport={applyImport} /><WorkSettingsCard data={data} setData={setData} onModeChange={onModeChange} setToast={setToast} financialsHidden={financialsHidden} /><HolidayOverridesCard data={data} setData={setData} setToast={setToast} /><PayrollSettingsCard data={data} setData={setData} setToast={setToast} financialsHidden={financialsHidden} /><NotificationSettingsCard data={data} setData={setData} requestPermission={requestNotificationPermission} setToast={setToast} /><DangerZone setData={setData} setToast={setToast} /></div>
     </section>
   </>;
 }

@@ -83,6 +83,7 @@ type AppHeaderProps = {
   onExport: () => void;
   financialsHidden: boolean;
   onToggleFinancials: () => void;
+  saveState: "idle" | "saving" | "saved" | "error";
 };
 
 export function AppHeader({
@@ -93,6 +94,7 @@ export function AppHeader({
   onExport,
   financialsHidden,
   onToggleFinancials,
+  saveState,
 }: AppHeaderProps) {
   const router = useRouter();
   const currentPath = usePathname() || propPathname || "/today";
@@ -265,14 +267,17 @@ export function AppHeader({
         <span
           className={cn(
             "inline-flex items-center gap-1.5",
-            "text-xs font-semibold text-[#079b60]",
+            "text-xs font-semibold",
+            saveState === "error" ? "text-red-600" : "text-[#079b60]",
             "[&_svg]:h-[15px]",
             "[&_svg]:w-[15px]",
             "max-[1180px]:hidden"
           )}
+          role="status"
+          aria-live="polite"
         >
           <CheckCircle2 aria-hidden="true" />
-          ذخیره خودکار
+          {saveState === "saving" ? "در حال ذخیره" : saveState === "error" ? "خطای ذخیره" : "ذخیره خودکار"}
         </span>
 
         <div

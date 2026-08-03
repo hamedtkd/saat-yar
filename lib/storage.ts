@@ -1,6 +1,14 @@
 import { migrateAppData } from "./data/migrations.ts";
 import { createAppDataSnapshot } from "./data/snapshot.ts";
 import { APP_DATA_STORAGE_KEY } from "./data/version.ts";
+import {
+  createRecoverySnapshot,
+  parseRecoverySnapshot,
+  RECOVERY_STORAGE_KEY,
+  recoverySnapshotToData,
+  serialiseRecoverySnapshot,
+  type RecoverySnapshot,
+} from "./recovery.ts";
 import type { AppData, StorageInfo } from "./types.ts";
 
 const DB_NAME = "saatyar-db";
@@ -111,6 +119,37 @@ export class AppDataStorageAdapter {
 
   async clear() {
     await this.storage.clear();
+  }
+
+
+  saveRecovery(value: AppData, reason: RecoverySnapshot["reason"] = "manual"): RecoverySnapshot | null {
+    try {
+      const snapshot = createRecoverySnapshot(value, reason);
+      localStorage.setItem(RECOVERY_STORAGE_KEY, serialiseRecoverySnapshot(snapshot));
+      return snapshot;
+    } catch {
+      return null;
+    }
+  }
+
+  loadRecovery(): RecoverySnapshot | null {
+    const raw = localStorage.getItem(RECOVERY_STORAGE_KEY);
+    if (!raw) return null;
+    try {
+      return parseRecoverySnapshot(JSON.parse(raw) as unknown);
+    } catch {
+      localStorage.removeItem(RECOVERY_STORAGE_KEY);
+      return null;
+    }
+  }
+
+  restoreRecovery(): AppData | null {
+    const snapshot = this.loadRecovery();
+    return snapshot ? recoverySnapshotToData(snapshot) : null;
+  }
+
+  clearRecovery() {
+    localStorage.removeItem(RECOVERY_STORAGE_KEY);
   }
 
   async estimate(): Promise<StorageInfo> {
