@@ -6,7 +6,7 @@ export type MetricTone = "green" | "blue" | "amber" | "purple";
 export function MetricCard({ icon, label, value, suffix, tone = "green" }: {
   icon: ReactNode;
   label: string;
-  value: string;
+  value: ReactNode;
   suffix?: string;
   tone?: MetricTone;
 }) {

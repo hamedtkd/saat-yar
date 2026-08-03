@@ -1,6 +1,7 @@
 import { Clock3, Tag, WalletCards } from "lucide-react";
 import { MetricCard } from "@/components/common/metric-card";
-import { duration, entryMinutes, fa, localDateKey, money } from "@/lib/format";
+import { PrivateMoney } from "@/components/common/private-money";
+import { duration, entryMinutes, fa, localDateKey } from "@/lib/format";
 import { calculateEmployeeDayPay } from "@/lib/payroll";
 import type { ReturnTypeCalc } from "@/lib/type-helpers";
 import type { AppData, WorkRecord } from "@/lib/types";
@@ -57,7 +58,7 @@ export function TodayMetrics({
       <MetricCard
         icon={<WalletCards />}
         label={isEmployee ? "حقوق امروز" : isHybrid ? "درآمد ترکیبی امروز" : "درآمد پروژه امروز"}
-        value={financialsHidden ? "••••••" : money(income)}
+        value={<PrivateMoney value={income} hidden={financialsHidden} />}
         suffix="تومان"
         tone="blue"
       />
