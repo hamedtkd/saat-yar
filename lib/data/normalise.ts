@@ -33,6 +33,8 @@ export function normaliseData(value: AppData, defaults: Settings): AppData {
           leaveType: record.leaveType ?? "none",
           note: record.note ?? "",
           holiday: Boolean(record.holiday),
+          updatedAt: record.updatedAt,
+          manuallyEdited: Boolean(record.manuallyEdited),
         },
       ]),
     ),

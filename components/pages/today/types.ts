@@ -18,6 +18,7 @@ export type TodayPageProps = {
   startWork: () => void;
   finishWork: () => void;
   updateRecord: (patch: Partial<WorkRecord>) => void;
+  resetRecord: () => void;
   startLunch: () => void;
   finishLunch: () => void;
   startBreak: () => void;

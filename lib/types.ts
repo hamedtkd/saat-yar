@@ -46,6 +46,8 @@ export type WorkRecord = {
   leaveType: "none" | "hourly" | "full";
   note: string;
   holiday: boolean;
+  updatedAt?: string;
+  manuallyEdited?: boolean;
 };
 
 export type Settings = {

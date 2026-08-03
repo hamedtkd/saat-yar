@@ -8,7 +8,7 @@ import { normaliseData } from "@/lib/data/normalise";
 import { APP_DATA_SCHEMA_VERSION } from "@/lib/data/version";
 import { emptyRecord, entryMinutes, localDateKey, nowTime } from "@/lib/format";
 import { getHolidayInfo } from "@/lib/holidays";
-import { calc, minutesToTime, spanMinutes } from "@/lib/time-engine";
+import { calc, minutesToTime, spanMinutes, timeToMinutes } from "@/lib/time-engine";
 import { getDailyTargetMinutes, getWorkScheduleDay } from "@/lib/work-schedule";
 import type { AppData, ClientDraft, LeaveEntry, Mode, ProjectDraft, ReportFilter, TimerDraft, WorkRecord } from "@/lib/types";
 import { usePersistedAppData } from "./use-persisted-app-data.ts";
@@ -84,11 +84,26 @@ export function useSaatyarController() {
   const selectedProject = data.projects.find((project) => project.id === selectedProjectId);
 
   function saveRecord(next: WorkRecord) {
-    setData((previous) => ({ ...previous, records: { ...previous.records, [selectedDate]: next } }));
+    setData((previous) => ({
+      ...previous,
+      records: {
+        ...previous.records,
+        [selectedDate]: { ...next, updatedAt: new Date().toISOString() },
+      },
+    }));
   }
 
   function updateRecord(patch: Partial<WorkRecord>) {
-    saveRecord({ ...record, ...patch });
+    saveRecord({ ...record, ...patch, manuallyEdited: true });
+  }
+
+  function resetRecord() {
+    setData((previous) => {
+      const records = { ...previous.records };
+      delete records[selectedDate];
+      return { ...previous, records };
+    });
+    setToast("رکورد این روز پاک شد");
   }
 
   function startWork() {
@@ -224,6 +239,7 @@ export function useSaatyarController() {
       clients: [...data.clients, ...importPreview.clients.filter((item) => !data.clients.some((current) => current.id === item.id))],
       projects: [...data.projects, ...importPreview.projects.filter((item) => !data.projects.some((current) => current.id === item.id))],
       timeEntries: [...data.timeEntries, ...importPreview.timeEntries.filter((item) => !data.timeEntries.some((current) => current.id === item.id))],
+      holidayOverrides: [...data.holidayOverrides, ...importPreview.holidayOverrides.filter((item) => !data.holidayOverrides.some((current) => current.id === item.id))],
     };
     await storage.save(next);
     setData(next);
@@ -277,7 +293,7 @@ export function useSaatyarController() {
     editingEntry, setEditingEntry, reportFilter, setReportFilter, leaveDraft, setLeaveDraft, importPreview,
     dailyTarget, record, todayCalc, suggestedExit, monthRecords, monthStats, activeEntry, activeBreak,
     lunchRunning, usedLeave, leaveAvailable, selectedProject, selectedHoliday, filteredEntries, reportBillable, reportIncome,
-    updateRecord, startWork, finishWork, startLunch, finishLunch, startBreak, finishBreak, toggleProjectTimer,
+    updateRecord, resetRecord, startWork, finishWork, startLunch, finishLunch, startBreak, finishBreak, toggleProjectTimer,
     addClient, addProject, saveLeave, exportBackup, previewImport, applyImport, exportReport, changeMode, requestPersistence,
   };
 }

@@ -135,12 +135,24 @@ function migrateV5ToV6(value: unknown): unknown {
   };
 }
 
+function migrateV6ToV7(value: unknown): unknown {
+  if (!isObject(value)) return value;
+  const records = isObject(value.records)
+    ? Object.fromEntries(Object.entries(value.records).map(([date, rawRecord]) => {
+        const record = isObject(rawRecord) ? rawRecord : {};
+        return [date, { ...record, updatedAt: typeof record.updatedAt === "string" ? record.updatedAt : undefined, manuallyEdited: Boolean(record.manuallyEdited) }];
+      }))
+    : {};
+  return { ...value, records };
+}
+
 const migrations: Record<number, (value: unknown) => unknown> = {
   1: migrateV1ToV2,
   2: migrateV2ToV3,
   3: migrateV3ToV4,
   4: migrateV4ToV5,
   5: migrateV5ToV6,
+  6: migrateV6ToV7,
 };
 
 export function migrateAppData(value: unknown): MigrationResult {

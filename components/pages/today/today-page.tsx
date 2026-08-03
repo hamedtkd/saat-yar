@@ -11,6 +11,7 @@ import { TodayFocusCard } from "./today-focus-card";
 import { TodayMetrics } from "./today-metrics";
 import { TodayTimeStrip } from "./today-time-strip";
 import { TodayTimeline } from "./today-timeline";
+import { RecordHealthBanner } from "./record-health-banner";
 import type { TodayPageProps } from "./types.ts";
 import { cn } from "@/lib/cn";
 
@@ -55,6 +56,7 @@ export function TodayPage(props: TodayPageProps) {
           <span className="rounded-full bg-white px-2.5 py-1 text-[9px] font-bold">هدف روز: صفر</span>
         </div>
       )}
+      <RecordHealthBanner record={props.record} onReset={props.resetRecord} />
       <TodayFocusCard {...props} />
       <TodayTimeStrip {...props} />
       {props.editingEntry === "manual" &&
