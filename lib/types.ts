@@ -25,7 +25,7 @@ export type HolidayOverride = {
   multiplier?: number;
 };
 
-export type Tab = "today" | "month" | "clients" | "projects" | "reports" | "leave" | "settings";
+export type Tab = "today" | "month" | "clients" | "projects" | "invoices" | "reports" | "leave" | "settings";
 
 export type BreakItem = {
   id: string;
@@ -123,6 +123,32 @@ export type Expense = {
   createdAt: string;
 };
 
+
+export type InvoiceStatus = "draft" | "sent" | "paid" | "overdue" | "cancelled";
+
+export type InvoiceLine = {
+  id: string;
+  description: string;
+  quantity: number;
+  unitPrice: number;
+};
+
+export type Invoice = {
+  id: string;
+  number: string;
+  clientId: string;
+  projectId?: string;
+  issuedAt: string;
+  dueAt?: string;
+  status: InvoiceStatus;
+  lines: InvoiceLine[];
+  discount: number;
+  taxPercent: number;
+  note: string;
+  createdAt: string;
+  paidAt?: string;
+};
+
 export type TimeEntry = {
   id: string;
   clientId: string;
@@ -143,6 +169,7 @@ export type AppData = {
   projects: Project[];
   timeEntries: TimeEntry[];
   expenses: Expense[];
+  invoices: Invoice[];
   holidayOverrides: HolidayOverride[];
 };
 

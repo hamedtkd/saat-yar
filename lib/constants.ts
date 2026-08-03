@@ -32,6 +32,7 @@ export const initialData: AppData = {
   projects: [],
   timeEntries: [],
   expenses: [],
+  invoices: [],
   holidayOverrides: [],
 };
 

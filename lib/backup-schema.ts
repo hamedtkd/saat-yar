@@ -106,6 +106,30 @@ const expenseSchema = z.object({
   createdAt: z.string(),
 }).passthrough();
 
+
+const invoiceLineSchema = z.object({
+  id: z.string(),
+  description: z.string(),
+  quantity: z.number().nonnegative(),
+  unitPrice: z.number().nonnegative(),
+}).passthrough();
+
+const invoiceSchema = z.object({
+  id: z.string(),
+  number: z.string(),
+  clientId: z.string(),
+  projectId: z.string().optional(),
+  issuedAt: isoDateSchema,
+  dueAt: isoDateSchema.optional(),
+  status: z.enum(["draft", "sent", "paid", "overdue", "cancelled"]),
+  lines: z.array(invoiceLineSchema),
+  discount: z.number().nonnegative(),
+  taxPercent: z.number().nonnegative(),
+  note: z.string(),
+  createdAt: z.string(),
+  paidAt: z.string().optional(),
+}).passthrough();
+
 const holidayOverrideSchema = z.object({
   id: z.string(),
   date: isoDateSchema,
@@ -135,6 +159,7 @@ export const appDataSchema = z.object({
   projects: z.array(projectSchema),
   timeEntries: z.array(timeEntrySchema),
   expenses: z.array(expenseSchema),
+  invoices: z.array(invoiceSchema),
   holidayOverrides: z.array(holidayOverrideSchema),
 }).passthrough();
 

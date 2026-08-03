@@ -55,6 +55,19 @@ export function normaliseData(value: AppData, defaults: Settings): AppData {
       category: expense.category ?? "other",
       createdAt: expense.createdAt ?? new Date(`${expense.date}T12:00:00`).toISOString(),
     })),
+    invoices: (value.invoices ?? []).map((invoice) => ({
+      ...invoice,
+      status: invoice.status ?? "draft",
+      lines: (invoice.lines ?? []).map((line) => ({
+        ...line,
+        quantity: Math.max(0, line.quantity ?? 0),
+        unitPrice: Math.max(0, line.unitPrice ?? 0),
+      })),
+      discount: Math.max(0, invoice.discount ?? 0),
+      taxPercent: Math.max(0, invoice.taxPercent ?? 0),
+      note: invoice.note ?? "",
+      createdAt: invoice.createdAt ?? new Date(`${invoice.issuedAt}T12:00:00`).toISOString(),
+    })),
     holidayOverrides: (value.holidayOverrides ?? []).map((item) => ({
       ...item,
       isHoliday: item.isHoliday !== false,

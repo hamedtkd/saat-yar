@@ -9,6 +9,7 @@ import {
   EyeOff,
   Folder,
   LayoutDashboard,
+  ReceiptText,
   Settings,
   Umbrella,
   UserRound,
@@ -55,6 +56,12 @@ const nav = [
     href: "/projects",
   },
   {
+    id: "invoices" as Tab,
+    label: "فاکتورها",
+    icon: ReceiptText,
+    href: "/invoices",
+  },
+  {
     id: "leave" as Tab,
     label: "مرخصی‌ها",
     icon: Umbrella,
@@ -92,7 +99,7 @@ export function AppHeader({
 
   const visibleNavItems = nav.filter((item) => {
     if (mode === "employee") {
-      return item.id !== "clients" && item.id !== "projects";
+      return item.id !== "clients" && item.id !== "projects" && item.id !== "invoices";
     }
 
     if (mode === "freelancer") {

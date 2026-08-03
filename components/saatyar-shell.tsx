@@ -20,13 +20,14 @@ const tabRoutes: Record<Tab, string> = {
   reports: "/reports",
   clients: "/clients",
   projects: "/projects",
+  invoices: "/invoices",
   settings: "/settings",
 };
 
 const allowedTabs: Record<Mode, Tab[]> = {
   employee: ["today", "month", "leave", "reports", "settings"],
-  freelancer: ["today", "clients", "projects", "reports", "settings"],
-  hybrid: ["today", "month", "leave", "reports", "clients", "projects", "settings"],
+  freelancer: ["today", "clients", "projects", "invoices", "reports", "settings"],
+  hybrid: ["today", "month", "leave", "reports", "clients", "projects", "invoices", "settings"],
 };
 
 function getPathTab(pathname: string): Tab | null {
