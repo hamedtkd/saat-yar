@@ -2,6 +2,7 @@ import { defaultSettings } from "../constants.ts";
 import type { AppData } from "../types";
 import { normaliseData } from "./normalise.ts";
 import { APP_DATA_SCHEMA_VERSION } from "./version.ts";
+import { createDefaultWeeklySchedule } from "../work-schedule.ts";
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -103,10 +104,34 @@ function migrateV3ToV4(value: unknown): unknown {
   };
 }
 
+function migrateV4ToV5(value: unknown): unknown {
+  if (!isObject(value)) return value;
+
+  const settings = isObject(value.settings) ? value.settings : {};
+  const defaultStart = typeof settings.defaultStart === "string" ? settings.defaultStart : "07:30";
+  const defaultEnd = typeof settings.defaultEnd === "string" ? settings.defaultEnd : "16:15";
+  const lunchMinutes = typeof settings.lunchMinutes === "number" ? settings.lunchMinutes : 45;
+  const workDays = typeof settings.workDays === "number" ? Math.max(1, Math.min(7, Math.round(settings.workDays))) : 5;
+  const weeklySchedule = createDefaultWeeklySchedule(defaultStart, defaultEnd, lunchMinutes);
+
+  Object.keys(weeklySchedule).forEach((day, index) => {
+    weeklySchedule[day as keyof typeof weeklySchedule].enabled = index < workDays;
+  });
+
+  return {
+    ...value,
+    settings: {
+      ...settings,
+      weeklySchedule,
+    },
+  };
+}
+
 const migrations: Record<number, (value: unknown) => unknown> = {
   1: migrateV1ToV2,
   2: migrateV2ToV3,
   3: migrateV3ToV4,
+  4: migrateV4ToV5,
 };
 
 export function migrateAppData(value: unknown): MigrationResult {

@@ -14,17 +14,18 @@ import {
   jalali,
 } from "@/lib/format";
 import { calc } from "@/lib/time-engine";
-import type { WorkRecord } from "@/lib/types";
+import type { Settings, WorkRecord } from "@/lib/types";
+import { getDailyTargetMinutes } from "@/lib/work-schedule";
 
 type MonthTableProps = {
   records: WorkRecord[];
-  dailyTarget: number;
+  settings: Settings;
   onEdit: (date: string) => void;
 };
 
 export function MonthTable({
   records,
-  dailyTarget,
+  settings,
   onEdit,
 }: MonthTableProps) {
   return (
@@ -82,7 +83,7 @@ export function MonthTable({
 
               <tbody>
                 {records.map((item) => {
-                  const result = calc(item, dailyTarget);
+                  const result = calc(item, getDailyTargetMinutes(item.date, settings));
                   const totalRest =
                     result.breakMinutes + item.lunchMinutes;
 
@@ -183,7 +184,7 @@ export function MonthTable({
 
           <div className="grid gap-3 p-4 md:hidden">
             {records.map((item) => {
-              const result = calc(item, dailyTarget);
+              const result = calc(item, getDailyTargetMinutes(item.date, settings));
               const totalRest =
                 result.breakMinutes + item.lunchMinutes;
 

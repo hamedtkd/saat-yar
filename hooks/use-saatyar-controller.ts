@@ -8,7 +8,8 @@ import { normaliseData } from "@/lib/data/normalise";
 import { APP_DATA_SCHEMA_VERSION } from "@/lib/data/version";
 import { emptyRecord, entryMinutes, localDateKey, nowTime } from "@/lib/format";
 import { getHolidayInfo } from "@/lib/holidays";
-import { calc, minutesToTime, spanMinutes, timeToMinutes } from "@/lib/time-engine";
+import { calc, minutesToTime, spanMinutes } from "@/lib/time-engine";
+import { getDailyTargetMinutes, getWorkScheduleDay } from "@/lib/work-schedule";
 import type { AppData, ClientDraft, LeaveEntry, Mode, ProjectDraft, ReportFilter, TimerDraft, WorkRecord } from "@/lib/types";
 import { usePersistedAppData } from "./use-persisted-app-data";
 
@@ -33,8 +34,12 @@ export function useSaatyarController() {
   const [leaveDraft, setLeaveDraft] = useState<LeaveEntry>(createLeaveDraft());
   const [importPreview, setImportPreview] = useState<AppData | null>(null);
 
-  const dailyTarget = Math.max(1, timeToMinutes(data.settings.defaultEnd) - timeToMinutes(data.settings.defaultStart) - data.settings.lunchMinutes);
-  const storedRecord = data.records[selectedDate] ?? emptyRecord(selectedDate, data.settings);
+  const selectedSchedule = getWorkScheduleDay(selectedDate, data.settings);
+  const dailyTarget = getDailyTargetMinutes(selectedDate, data.settings);
+  const storedRecord = data.records[selectedDate] ?? {
+    ...emptyRecord(selectedDate, data.settings),
+    lunchMinutes: selectedSchedule.lunchMinutes,
+  };
   const selectedHoliday = getHolidayInfo(selectedDate, {
     mode: data.settings.mode,
     manualHoliday: storedRecord.holiday,
@@ -43,7 +48,7 @@ export function useSaatyarController() {
   });
   const record = { ...storedRecord, holiday: selectedHoliday.isHoliday };
   const todayCalc = calc(record, dailyTarget);
-  const suggestedExit = minutesToTime(calc({ ...record, start: record.start || data.settings.defaultStart }, dailyTarget).plannedExit);
+  const suggestedExit = minutesToTime(calc({ ...record, start: record.start || selectedSchedule.start }, dailyTarget).plannedExit);
   const selectedMonth = selectedDate.slice(0, 7);
   const monthRecords = useMemo(
     () => Object.values(data.records)
@@ -61,13 +66,14 @@ export function useSaatyarController() {
     [data.records, data.settings.autoOfficialHolidays, data.settings.autoWeeklyHoliday, data.settings.mode, selectedMonth],
   );
   const monthStats = useMemo(() => monthRecords.reduce((acc, item) => {
-    const result = calc(item, dailyTarget);
+    const itemTarget = getDailyTargetMinutes(item.date, data.settings);
+    const result = calc(item, itemTarget);
     acc.worked += result.worked;
-    acc.target += item.holiday ? 0 : dailyTarget;
+    acc.target += item.holiday ? 0 : itemTarget;
     acc.balance += result.balance;
     acc.breaks += result.breakMinutes + result.unpaidLunchMinutes;
     return acc;
-  }, { worked: 0, target: 0, balance: 0, breaks: 0 }), [monthRecords, dailyTarget]);
+  }, { worked: 0, target: 0, balance: 0, breaks: 0 }), [monthRecords, data.settings]);
   const activeEntry = data.timeEntries.find((entry) => !entry.endedAt);
   const activeBreak = record.breaks.find((item) => item.start && !item.end);
   const lunchRunning = Boolean(record.lunchStart && !record.lunchEnd);

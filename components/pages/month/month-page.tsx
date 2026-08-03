@@ -7,30 +7,30 @@ import { exportCsv } from "@/lib/exporters";
 import { calc } from "@/lib/time-engine";
 import { duration, jalali, shiftJalaliMonth } from "@/lib/format";
 import type { AppData, WorkRecord } from "@/lib/types";
+import { getDailyTargetMinutes } from "@/lib/work-schedule";
 import { MonthCalendar } from "./month-calendar";
 import { MonthTable } from "./month-table";
 import { WeeklyChart } from "./weekly-chart";
 import { cn } from "@/lib/cn";
 
-export function MonthPage({ data, selectedDate, setSelectedDate, monthRecords, monthStats, dailyTarget }: {
+export function MonthPage({ data, selectedDate, setSelectedDate, monthRecords, monthStats }: {
   data: AppData;
   selectedDate: string;
   setSelectedDate: (value: string) => void;
   monthRecords: WorkRecord[];
   monthStats: { worked: number; target: number; balance: number; breaks: number };
-  dailyTarget: number;
 }) {
-  const weekValues = Array.from({ length: 7 }, (_, weekday) => monthRecords.filter((item) => (new Date(`${item.date}T12:00:00`).getDay() + 1) % 7 === weekday).reduce((sum, item) => sum + calc(item, dailyTarget).worked, 0));
+  const weekValues = Array.from({ length: 7 }, (_, weekday) => monthRecords.filter((item) => (new Date(`${item.date}T12:00:00`).getDay() + 1) % 7 === weekday).reduce((sum, item) => sum + calc(item, getDailyTargetMinutes(item.date, data.settings)).worked, 0));
   function exportMonth() {
     exportCsv(`گزارش-ماه-${selectedDate.slice(0, 7)}.csv`, ["تاریخ شمسی", "ورود", "خروج", "کارکرد خالص", "وقفه", "تراز", "یادداشت"], monthRecords.map((item) => {
-      const result = calc(item, dailyTarget);
+      const result = calc(item, getDailyTargetMinutes(item.date, data.settings));
       return [jalali(item.date), item.start || "—", item.end || "—", result.worked, result.breakMinutes + item.lunchMinutes, result.balance, item.note];
     }));
   }
   return <>
     <PageHeading title="ماه من" description="نمای شمسی کارکرد، وقفه، مرخصی و تراز روزانه."><div className={cn("flex items-center gap-[9px] max-[620px]:flex-wrap")}><Button variant="outline" onClick={exportMonth}><Download /> خروجی CSV</Button><JalaliDatePicker value={selectedDate} onChange={setSelectedDate} recordedDates={Object.keys(data.records)} mode={data.settings.mode} includeOfficialHolidays={data.settings.autoOfficialHolidays} includeWeeklyHoliday={data.settings.autoWeeklyHoliday} /></div></PageHeading>
     <section className={cn("mb-[18px] grid gap-3", "grid-cols-4 max-[1180px]:grid-cols-2 max-[620px]:grid-cols-1")}><MetricCard icon={<Clock3 />} label="ساعت موظفی" value={duration(monthStats.target)} suffix="ساعت" tone="blue" /><MetricCard icon={<CheckCircle2 />} label="کارکرد واقعی" value={duration(monthStats.worked)} suffix="ساعت" /><MetricCard icon={<TrendingUp />} label={monthStats.balance >= 0 ? "اضافه‌کاری" : "کسری کار"} value={duration(monthStats.balance, true)} suffix="ساعت" tone={monthStats.balance >= 0 ? "green" : "amber"} /><MetricCard icon={<Coffee />} label="ناهار و وقفه" value={duration(monthStats.breaks)} suffix="ساعت" tone="purple" /></section>
-    <section className={cn("mb-[18px] grid grid-cols-[minmax(0,1.55fr)_minmax(280px,.45fr)] gap-[18px] max-[900px]:grid-cols-1")}><MonthCalendar data={data} selectedDate={selectedDate} setSelectedDate={setSelectedDate} monthRecordCount={monthRecords.length} dailyTarget={dailyTarget} moveMonth={(amount) => setSelectedDate(shiftJalaliMonth(selectedDate, amount))} /><WeeklyChart values={weekValues} /></section>
-    <MonthTable records={monthRecords} dailyTarget={dailyTarget} onEdit={setSelectedDate} />
+    <section className={cn("mb-[18px] grid grid-cols-[minmax(0,1.55fr)_minmax(280px,.45fr)] gap-[18px] max-[900px]:grid-cols-1")}><MonthCalendar data={data} selectedDate={selectedDate} setSelectedDate={setSelectedDate} monthRecordCount={monthRecords.length} moveMonth={(amount) => setSelectedDate(shiftJalaliMonth(selectedDate, amount))} /><WeeklyChart values={weekValues} /></section>
+    <MonthTable records={monthRecords} settings={data.settings} onEdit={setSelectedDate} />
   </>;
 }

@@ -1,4 +1,12 @@
 export type Mode = "employee" | "freelancer" | "hybrid";
+export type WeekdayKey = "saturday" | "sunday" | "monday" | "tuesday" | "wednesday" | "thursday" | "friday";
+
+export type WorkScheduleDay = {
+  enabled: boolean;
+  start: string;
+  end: string;
+  lunchMinutes: number;
+};
 export type Tab = "today" | "month" | "clients" | "projects" | "reports" | "leave" | "settings";
 
 export type BreakItem = {
@@ -35,6 +43,7 @@ export type Settings = {
   onboarded: boolean;
   weeklyMinutes: number;
   workDays: number;
+  weeklySchedule: Record<WeekdayKey, WorkScheduleDay>;
   defaultStart: string;
   defaultEnd: string;
   lunchMinutes: number;

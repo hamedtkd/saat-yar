@@ -1,10 +1,21 @@
-import type { AppData, Settings } from "../types";
+import type { AppData, Settings, WeekdayKey } from "../types";
+import { weekdayOrder } from "../work-schedule.ts";
 
 export function normaliseData(value: AppData, defaults: Settings): AppData {
+  const incomingSettings = value.settings ?? defaults;
+  const incomingSchedule = incomingSettings.weeklySchedule ?? {};
+  const weeklySchedule = Object.fromEntries(
+    weekdayOrder.map((day) => [day, {
+      ...defaults.weeklySchedule[day],
+      ...(incomingSchedule[day as WeekdayKey] ?? {}),
+    }]),
+  ) as Settings["weeklySchedule"];
+
   return {
     settings: {
       ...defaults,
-      ...(value.settings ?? {}),
+      ...incomingSettings,
+      weeklySchedule,
     },
     records: Object.fromEntries(
       Object.entries(value.records ?? {}).map(([date, record]) => [

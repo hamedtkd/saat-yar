@@ -4,14 +4,14 @@ import { calc } from "@/lib/time-engine";
 import { duration, fa, jalaliMonthCells, localDateKey } from "@/lib/format";
 import { getHolidayInfo } from "@/lib/holidays";
 import type { AppData } from "@/lib/types";
+import { getDailyTargetMinutes } from "@/lib/work-schedule";
 import { cn } from "@/lib/cn";
 
-export function MonthCalendar({ data, selectedDate, setSelectedDate, monthRecordCount, dailyTarget, moveMonth }: {
+export function MonthCalendar({ data, selectedDate, setSelectedDate, monthRecordCount, moveMonth }: {
   data: AppData;
   selectedDate: string;
   setSelectedDate: (value: string) => void;
   monthRecordCount: number;
-  dailyTarget: number;
   moveMonth: (amount: number) => void;
 }) {
   const cells = jalaliMonthCells(selectedDate);
@@ -30,7 +30,7 @@ export function MonthCalendar({ data, selectedDate, setSelectedDate, monthRecord
           includeWeeklyHoliday: data.settings.autoWeeklyHoliday,
         });
         const effectiveItem = item ? { ...item, holiday: holiday.isHoliday } : item;
-        const result = effectiveItem ? calc(effectiveItem, dailyTarget) : null;
+        const result = effectiveItem ? calc(effectiveItem, getDailyTargetMinutes(cell.key, data.settings)) : null;
         const statusClass = hasLeave
           ? "border-[#cbd8fa] bg-[#eef3ff] [&>i]:bg-[#617fd5]"
           : holiday.isHoliday

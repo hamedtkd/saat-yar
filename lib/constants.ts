@@ -1,11 +1,13 @@
 import type { AppData, LeaveEntry, Settings } from "./types";
 import { localDateKey } from "./format.ts";
+import { createDefaultWeeklySchedule } from "./work-schedule.ts";
 
 export const defaultSettings: Settings = {
   name: "",
   onboarded: false,
   weeklyMinutes: 42 * 60 + 30,
   workDays: 5,
+  weeklySchedule: createDefaultWeeklySchedule(),
   defaultStart: "07:30",
   defaultEnd: "16:15",
   lunchMinutes: 45,

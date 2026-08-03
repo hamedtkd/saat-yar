@@ -1,4 +1,4 @@
-import { Save, Settings } from "lucide-react";
+import { Clock3, Save, Settings } from "lucide-react";
 import { MinuteDurationField } from "@/components/common/minute-duration-field";
 import { NumberField } from "@/components/common/number-field";
 import { PanelHead } from "@/components/common/panel-head";
@@ -13,7 +13,8 @@ import {
 } from "@/components/ui/select";
 import { money } from "@/lib/format";
 import { dailyBaseSalary } from "@/lib/payroll";
-import type { AppData, Mode } from "@/lib/types";
+import type { AppData, Mode, WeekdayKey } from "@/lib/types";
+import { getScheduleTargetMinutes, getWeeklyTargetMinutes, weekdayLabels, weekdayOrder } from "@/lib/work-schedule";
 
 export function WorkSettingsCard({
   data,
@@ -35,6 +36,22 @@ export function WorkSettingsCard({
       settings: { ...previous.settings, [key]: value },
     }));
 
+  const setScheduleDay = <K extends keyof AppData["settings"]["weeklySchedule"][WeekdayKey]>(
+    day: WeekdayKey,
+    key: K,
+    value: AppData["settings"]["weeklySchedule"][WeekdayKey][K],
+  ) =>
+    setData((previous) => ({
+      ...previous,
+      settings: {
+        ...previous.settings,
+        weeklySchedule: {
+          ...previous.settings.weeklySchedule,
+          [day]: { ...previous.settings.weeklySchedule[day], [key]: value },
+        },
+      },
+    }));
+
   return (
     <section className="col-span-full rounded-[15px] border border-[#dfe7e9] bg-white/95 p-5 shadow-[0_10px_35px_rgba(17,45,55,.055)] max-[620px]:col-auto">
       <PanelHead icon={<Settings />} title="تنظیمات کاری و حقوق" />
@@ -49,31 +66,6 @@ export function WorkSettingsCard({
               <SelectItem value="hybrid">ترکیبی</SelectItem>
             </SelectContent>
           </Select>
-        </label>
-
-        <label>
-          شروع معمول
-          <TimePicker value={data.settings.defaultStart} onChange={(value) => setSetting("defaultStart", value)} />
-        </label>
-
-        <label>
-          پایان معمول
-          <TimePicker value={data.settings.defaultEnd} onChange={(value) => setSetting("defaultEnd", value)} />
-        </label>
-
-        <label>
-          ناهار پیش‌فرض
-          <MinuteDurationField value={data.settings.lunchMinutes} onValueChange={(value) => setSetting("lunchMinutes", value)} />
-        </label>
-
-        <label>
-          تعداد روز کاری هفته
-          <NumberField value={data.settings.workDays} min={1} onValueChange={(value) => setSetting("workDays", Math.min(7, Math.round(value)))} />
-        </label>
-
-        <label>
-          هدف هفتگی (ساعت)
-          <NumberField value={data.settings.weeklyMinutes / 60} onValueChange={(value) => setSetting("weeklyMinutes", Math.round(value * 60))} />
         </label>
 
         <label className="grid gap-[7px]">
@@ -118,6 +110,37 @@ export function WorkSettingsCard({
           </span>
         </label>
       </div>
+
+      <section className="mb-5 rounded-2xl border border-[#dfe7e9] bg-[#f8fbfa] p-4">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2 text-[#102a3a]">
+            <Clock3 className="size-5 text-[#079b60]" />
+            <div>
+              <strong className="block text-sm">برنامه کاری هفتگی</strong>
+              <small className="text-[10px] text-[#6c7d89]">هر روز می‌تواند ساعت شروع، پایان و ناهار مستقل داشته باشد. شیفتی که پایانش قبل از شروع باشد، شب‌کار در نظر گرفته می‌شود.</small>
+            </div>
+          </div>
+          <span className="rounded-full bg-white px-3 py-1.5 text-[10px] font-bold text-[#526b75]">هدف هفتگی: {Math.round(getWeeklyTargetMinutes(data.settings) / 60 * 10) / 10} ساعت</span>
+        </div>
+
+        <div className="grid gap-2">
+          {weekdayOrder.map((day) => {
+            const schedule = data.settings.weeklySchedule[day];
+            return (
+              <div key={day} className="grid grid-cols-[120px_repeat(3,minmax(120px,1fr))_110px] items-end gap-3 rounded-xl border border-[#e4ecea] bg-white p-3 max-[900px]:grid-cols-2 max-[620px]:grid-cols-1">
+                <label className="flex min-h-10 cursor-pointer items-center gap-2">
+                  <input type="checkbox" checked={schedule.enabled} onChange={(event) => setScheduleDay(day, "enabled", event.target.checked)} className="size-4 accent-[#079b60]" />
+                  <strong className={schedule.enabled ? "text-[#102a3a]" : "text-[#8a9aa2]"}>{weekdayLabels[day]}</strong>
+                </label>
+                <label>شروع<TimePicker value={schedule.start} onChange={(value) => setScheduleDay(day, "start", value)} /></label>
+                <label>پایان<TimePicker value={schedule.end} onChange={(value) => setScheduleDay(day, "end", value)} /></label>
+                <label>ناهار<MinuteDurationField value={schedule.lunchMinutes} onValueChange={(value) => setScheduleDay(day, "lunchMinutes", value)} /></label>
+                <div className="pb-2 text-[10px] font-bold text-[#526b75]">{schedule.enabled ? `${Math.round(getScheduleTargetMinutes(schedule) / 60 * 10) / 10} ساعت` : "تعطیل"}</div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
 
       <Button onClick={() => setToast("تنظیمات ذخیره شد")}>
         <Save /> ذخیره تنظیمات
