@@ -37,6 +37,7 @@ export default function TodayRoute() {
       editingEntry={controller.editingEntry}
       setEditingEntry={controller.setEditingEntry}
       setTab={(tab) => router.push(getTabHref(tab))}
+      financialsHidden={controller.financialsHidden}
     />
   );
 }

@@ -9,6 +9,7 @@ import { getHolidayInfo } from "@/lib/holidays";
 import { ManualEntryForm } from "./manual-entry-form";
 import { TodayFocusCard } from "./today-focus-card";
 import { TodayMetrics } from "./today-metrics";
+import { TodaySmartSummary } from "./today-smart-summary";
 import { TodayTimeStrip } from "./today-time-strip";
 import { TodayTimeline } from "./today-timeline";
 import { RecordHealthBanner } from "./record-health-banner";
@@ -57,6 +58,16 @@ export function TodayPage(props: TodayPageProps) {
         </div>
       )}
       <RecordHealthBanner record={props.record} onReset={props.resetRecord} />
+      <TodaySmartSummary
+        started={Boolean(props.record.start)}
+        finished={Boolean(props.record.end)}
+        workedMinutes={props.todayCalc.worked}
+        creditedMinutes={props.todayCalc.credited}
+        dailyTarget={props.dailyTarget}
+        suggestedExit={props.suggestedExit}
+        openBreak={Boolean(props.activeBreak)}
+        lunchRunning={props.lunchRunning}
+      />
       <TodayFocusCard {...props} />
       <TodayTimeStrip {...props} />
       {props.editingEntry === "manual" &&
@@ -69,6 +80,7 @@ export function TodayPage(props: TodayPageProps) {
         selectedDate={props.selectedDate}
         result={props.todayCalc}
         dailyTarget={props.dailyTarget}
+        financialsHidden={props.financialsHidden}
       />
       {props.data.settings.mode !== "employee" && (
         <TodayTimeline {...props} />

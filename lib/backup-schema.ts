@@ -31,6 +31,12 @@ const settingsSchema = z.object({
   payrollComponents: z.array(payrollComponentSchema),
   autoOfficialHolidays: z.boolean(),
   autoWeeklyHoliday: z.boolean(),
+  notificationSettings: z.object({
+    enabled: z.boolean(),
+    openTimerReminderMinutes: z.number().int().nonnegative(),
+    dailyTargetReminder: z.boolean(),
+    endOfDayReminder: z.boolean(),
+  }).passthrough(),
   mode: modeSchema,
 }).passthrough();
 

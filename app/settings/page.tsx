@@ -17,8 +17,10 @@ export default function SettingsRoute() {
       importPreview={controller.importPreview}
       applyImport={controller.applyImport}
       requestPersistence={controller.requestPersistence}
+      requestNotificationPermission={controller.requestNotificationPermission}
       onModeChange={controller.changeMode}
       setToast={controller.setToast}
+      financialsHidden={controller.financialsHidden}
     />
   );
 }

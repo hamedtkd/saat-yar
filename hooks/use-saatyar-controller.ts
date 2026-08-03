@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { isValidAppData, parseBackup } from "@/lib/backup-schema";
 import { colors, createLeaveDraft, defaultSettings } from "@/lib/constants";
 import { exportCsv, exportExcel } from "@/lib/exporters";
@@ -92,6 +92,46 @@ export function useSaatyarController() {
   const usedLeave = data.leaves.reduce((sum, entry) => sum + (entry.type === "full" ? dailyTarget : entry.type === "half" ? dailyTarget / 2 : entry.minutes), 0);
   const leaveAvailable = data.settings.leaveBalanceMinutes + data.settings.monthlyLeaveMinutes - usedLeave;
   const selectedProject = data.projects.find((project) => project.id === selectedProjectId);
+
+  async function requestNotificationPermission() {
+    if (typeof window === "undefined" || !("Notification" in window)) {
+      setToast("مرورگر از اعلان پشتیبانی نمی‌کند");
+      return false;
+    }
+    if (Notification.permission === "granted") return true;
+    const permission = await Notification.requestPermission();
+    return permission === "granted";
+  }
+
+  useEffect(() => {
+    const settings = data.settings.notificationSettings;
+    if (!settings.enabled || typeof window === "undefined" || !("Notification" in window) || Notification.permission !== "granted") return;
+    if (selectedDate !== localDateKey() || !record.start || record.end) return;
+
+    const notifyOnce = (key: string, title: string, body: string) => {
+      const storageKey = `saatyar-notification:${selectedDate}:${key}`;
+      if (sessionStorage.getItem(storageKey)) return;
+      new Notification(title, { body, icon: "/fav-256.png" });
+      sessionStorage.setItem(storageKey, "1");
+    };
+
+    const check = () => {
+      const elapsed = record.startedAt ? Math.max(0, Math.floor((Date.now() - new Date(record.startedAt).getTime()) / 60_000)) : todayCalc.worked;
+      if (elapsed >= settings.openTimerReminderMinutes) {
+        notifyOnce("open-timer", "تایمر ساعت‌یار هنوز باز است", `بیش از ${settings.openTimerReminderMinutes.toLocaleString("fa-IR")} دقیقه از شروع روز گذشته است.`);
+      }
+      if (settings.dailyTargetReminder && dailyTarget > 0 && todayCalc.credited >= dailyTarget) {
+        notifyOnce("target", "هدف روزانه تکمیل شد", "ساعت موظفی امروز کامل شده است.");
+      }
+      if (settings.endOfDayReminder && suggestedExit && nowTime() >= suggestedExit) {
+        notifyOnce("exit", "زمان ثبت خروج رسیده است", `خروج پیشنهادی امروز ${suggestedExit} است.`);
+      }
+    };
+
+    check();
+    const interval = window.setInterval(check, 60_000);
+    return () => window.clearInterval(interval);
+  }, [data.settings.notificationSettings, dailyTarget, record.end, record.start, record.startedAt, selectedDate, suggestedExit, todayCalc.credited, todayCalc.worked]);
 
   function saveRecord(next: WorkRecord) {
     setData((previous) => ({
@@ -323,6 +363,6 @@ export function useSaatyarController() {
     dailyTarget, record, todayCalc, suggestedExit, monthRecords, monthStats, activeEntry, activeBreak,
     lunchRunning, usedLeave, leaveAvailable, selectedProject, selectedHoliday, filteredEntries, filteredMonthRecords, reportBillable, reportIncome,
     updateRecord, resetRecord, startWork, finishWork, startLunch, finishLunch, startBreak, finishBreak, toggleProjectTimer,
-    addClient, addProject, saveLeave, exportBackup, previewImport, applyImport, exportReport, changeMode, requestPersistence,
+    addClient, addProject, saveLeave, exportBackup, previewImport, applyImport, exportReport, changeMode, requestPersistence, requestNotificationPermission,
   };
 }

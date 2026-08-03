@@ -19,6 +19,12 @@ export const defaultSettings: Settings = {
   payrollComponents: [],
   autoOfficialHolidays: true,
   autoWeeklyHoliday: true,
+  notificationSettings: {
+    enabled: false,
+    openTimerReminderMinutes: 240,
+    dailyTargetReminder: true,
+    endOfDayReminder: true,
+  },
   mode: "employee",
 };
 

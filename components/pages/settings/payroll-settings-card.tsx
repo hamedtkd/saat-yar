@@ -7,10 +7,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { money } from "@/lib/format";
 import type { AppData, PayrollComponent } from "@/lib/types";
 
-export function PayrollSettingsCard({ data, setData, setToast }: {
+export function PayrollSettingsCard({ data, setData, setToast, financialsHidden }: {
   data: AppData;
   setData: React.Dispatch<React.SetStateAction<AppData>>;
   setToast: (message: string) => void;
+  financialsHidden: boolean;
 }) {
   const items = data.settings.payrollComponents;
 
@@ -46,7 +47,7 @@ export function PayrollSettingsCard({ data, setData, setToast }: {
             </label>
             <label>عنوان<Input value={item.title} onChange={(event) => updateItem(item.id, { title: event.target.value })} /></label>
             <label>نوع<Select value={item.type} onValueChange={(value) => updateItem(item.id, { type: value as PayrollComponent["type"] })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="earning">مزایا</SelectItem><SelectItem value="deduction">کسورات</SelectItem></SelectContent></Select></label>
-            <label>مبلغ (تومان)<NumberField value={item.amount} min={0} onValueChange={(value) => updateItem(item.id, { amount: value })} /></label>
+            <label>مبلغ (تومان){financialsHidden ? <div className="flex h-11 items-center rounded-xl border border-[#dfe7e9] bg-white px-3 font-black tracking-[.2em]">••••••</div> : <NumberField value={item.amount} min={0} onValueChange={(value) => updateItem(item.id, { amount: value })} />}</label>
             <Button type="button" size="icon" variant="outline" onClick={() => removeItem(item.id)} aria-label={`حذف ${item.title}`}><Trash2 /></Button>
           </div>
         ))}
@@ -54,7 +55,7 @@ export function PayrollSettingsCard({ data, setData, setToast }: {
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Button type="button" variant="outline" onClick={addItem}><Plus /> افزودن آیتم</Button>
-        <div className="flex gap-3 text-[10px] font-bold text-[#526b75]"><span>مزایا: {money(earnings)} تومان</span><span>کسورات: {money(deductions)} تومان</span></div>
+        <div className="flex gap-3 text-[10px] font-bold text-[#526b75]"><span>مزایا: {financialsHidden ? "••••••" : money(earnings)} تومان</span><span>کسورات: {financialsHidden ? "••••••" : money(deductions)} تومان</span></div>
       </div>
     </section>
   );

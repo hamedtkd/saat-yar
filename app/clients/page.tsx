@@ -19,6 +19,7 @@ export default function ClientsRoute() {
       setDraft={controller.setClientDraft}
       addClient={controller.addClient}
       setTab={(tab) => router.push(getTabHref(tab))}
+      financialsHidden={controller.financialsHidden}
     />
   );
 }

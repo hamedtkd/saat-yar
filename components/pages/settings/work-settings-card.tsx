@@ -21,11 +21,13 @@ export function WorkSettingsCard({
   setData,
   onModeChange,
   setToast,
+  financialsHidden,
 }: {
   data: AppData;
   setData: React.Dispatch<React.SetStateAction<AppData>>;
   onModeChange: (mode: Mode) => void;
   setToast: (message: string) => void;
+  financialsHidden: boolean;
 }) {
   const setSetting = <K extends keyof AppData["settings"]>(
     key: K,
@@ -70,8 +72,8 @@ export function WorkSettingsCard({
 
         <label className="grid gap-[7px]">
           حقوق ماهانه (تومان)
-          <NumberField value={data.settings.salary} onValueChange={(value) => setSetting("salary", value)} />
-          <small className="text-[10px] font-medium text-[#6c7d89]">حقوق پایه روزانه: {money(dailyBaseSalary(data.settings.salary))} تومان (تقسیم بر ۳۰ روز)</small>
+          {financialsHidden ? <div className="flex h-11 items-center rounded-xl border border-[#dfe7e9] bg-[#f8fbfa] px-3 text-lg font-black tracking-[.2em] text-[#526b75]">••••••</div> : <NumberField value={data.settings.salary} onValueChange={(value) => setSetting("salary", value)} />}
+          <small className="text-[10px] font-medium text-[#6c7d89]">حقوق پایه روزانه: {financialsHidden ? "••••••" : money(dailyBaseSalary(data.settings.salary))} تومان (تقسیم بر ۳۰ روز)</small>
         </label>
 
         <label>

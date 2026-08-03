@@ -58,6 +58,13 @@ export type WorkRecord = {
   manuallyEdited?: boolean;
 };
 
+export type NotificationSettings = {
+  enabled: boolean;
+  openTimerReminderMinutes: number;
+  dailyTargetReminder: boolean;
+  endOfDayReminder: boolean;
+};
+
 export type Settings = {
   name: string;
   onboarded: boolean;
@@ -75,6 +82,7 @@ export type Settings = {
   payrollComponents: PayrollComponent[];
   autoOfficialHolidays: boolean;
   autoWeeklyHoliday: boolean;
+  notificationSettings: NotificationSettings;
   mode: Mode;
 };
 

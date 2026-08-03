@@ -11,12 +11,14 @@ export function TodayMetrics({
   selectedDate,
   result,
   dailyTarget,
+  financialsHidden,
 }: {
   data: AppData;
   record: WorkRecord;
   selectedDate: string;
   result: ReturnTypeCalc;
   dailyTarget: number;
+  financialsHidden: boolean;
 }) {
   const progress = Math.min(100, Math.round(result.credited / dailyTarget * 100));
   const todayEntries = data.timeEntries.filter(
@@ -55,7 +57,7 @@ export function TodayMetrics({
       <MetricCard
         icon={<WalletCards />}
         label={isEmployee ? "حقوق امروز" : isHybrid ? "درآمد ترکیبی امروز" : "درآمد پروژه امروز"}
-        value={money(income)}
+        value={financialsHidden ? "••••••" : money(income)}
         suffix="تومان"
         tone="blue"
       />

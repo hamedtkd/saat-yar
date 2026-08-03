@@ -28,4 +28,5 @@ export type TodayPageProps = {
   setEditingEntry: (id: string) => void;
   setData: React.Dispatch<React.SetStateAction<AppData>>;
   setTab: (tab: Tab) => void;
+  financialsHidden: boolean;
 };

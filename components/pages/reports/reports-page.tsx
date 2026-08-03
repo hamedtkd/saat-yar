@@ -260,14 +260,20 @@ export function ReportsPage({
         </section>
       )}
 
-      <ReportCharts
-        mode={mode}
-        entries={entries}
-        reportBillable={reportBillable}
-        monthRecords={monthRecords}
-        monthStats={effectiveMonthStats}
-        settings={data.settings}
-      />
+      {financialsHidden && mode !== "employee" ? (
+        <section className="mb-4 grid min-h-40 place-items-center rounded-2xl border border-dashed border-[#cfded9] bg-white/95 p-6 text-center">
+          <div><strong className="block text-sm text-[#102a3a]">نمودارهای مالی مخفی هستند</strong><span className="mt-1 block text-[10px] text-[#6c7d89]">برای نمایش درآمد و مبالغ، دکمه چشم در نوار بالا را بزن.</span></div>
+        </section>
+      ) : (
+        <ReportCharts
+          mode={mode}
+          entries={entries}
+          reportBillable={reportBillable}
+          monthRecords={monthRecords}
+          monthStats={effectiveMonthStats}
+          settings={data.settings}
+        />
+      )}
 
       <ReportTable
         mode={mode}
