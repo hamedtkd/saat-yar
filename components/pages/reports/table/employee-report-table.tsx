@@ -3,7 +3,6 @@ import type { Settings, WorkRecord } from "@/lib/types";
 import { EmployeeDesktopTable } from "./employee-desktop-table";
 import { EmployeeMobileCards } from "./employee-mobile-cards";
 import { getDailyTarget, getEmployeeTotals } from "./report-table-shared";
-import { cn } from "@/lib/cn"
 
 type Props = { monthRecords: WorkRecord[]; settings: Settings; financialsHidden: boolean };
 export function EmployeeReportTable({

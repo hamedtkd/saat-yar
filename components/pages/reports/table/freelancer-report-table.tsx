@@ -2,6 +2,10 @@ import { PanelHead } from "@/components/common/panel-head";
 import type { AppData, TimeEntry } from "@/lib/types";
 import { FreelancerDesktopTable } from "./freelancer-desktop-table";
 import { FreelancerMobileCards } from "./freelancer-mobile-cards";
+import { cn } from "@/lib/cn";
+import { FileSpreadsheet, Filter } from "lucide-react";
+import { faDigits } from "@/lib/format";
+import { EmptyState } from "@/components/common/empty-state";
 
 type Props = { data: AppData; entries: TimeEntry[]; financialsHidden: boolean };
 export function FreelancerReportTable({ data, entries, financialsHidden }: Props) {

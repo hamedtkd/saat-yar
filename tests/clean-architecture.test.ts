@@ -73,3 +73,31 @@ test("report table facade delegates employee and freelancer rendering", () => {
   assert.match(source, /<PrintPreviewAside/);
   assert.ok(source.split(/\r?\n/).length < 80);
 });
+
+
+test("report chart modules stay below 250 lines", () => {
+  for (const file of [
+    "components/pages/reports/report-charts.tsx",
+    "components/pages/reports/charts/types.ts",
+    "components/pages/reports/charts/chart-utils.ts",
+    "components/pages/reports/charts/chart-shell.tsx",
+    "components/pages/reports/charts/chart-tooltips.tsx",
+    "components/pages/reports/charts/use-employee-chart-data.ts",
+    "components/pages/reports/charts/use-freelancer-chart-data.ts",
+    "components/pages/reports/charts/employee-daily-chart.tsx",
+    "components/pages/reports/charts/freelancer-weekly-chart.tsx",
+    "components/pages/reports/charts/donut-summary.tsx",
+    "components/pages/reports/charts/employee-charts.tsx",
+    "components/pages/reports/charts/freelancer-charts.tsx",
+  ]) {
+    const source = readFileSync(new URL(file, root), "utf8");
+    assert.ok(source.split(/\r?\n/).length <= 250, `${file} exceeds 250 lines`);
+  }
+});
+
+test("report chart facade delegates employee and freelancer rendering", () => {
+  const source = readFileSync(new URL("components/pages/reports/report-charts.tsx", root), "utf8");
+  assert.match(source, /<EmployeeCharts/);
+  assert.match(source, /<FreelancerCharts/);
+  assert.ok(source.split(/\r?\n/).length < 80);
+});
