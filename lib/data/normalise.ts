@@ -49,6 +49,12 @@ export function normaliseData(value: AppData, defaults: Settings): AppData {
       billable: project.billable ?? true,
     })),
     timeEntries: value.timeEntries ?? [],
+    expenses: (value.expenses ?? []).map((expense) => ({
+      ...expense,
+      amount: Math.max(0, expense.amount ?? 0),
+      category: expense.category ?? "other",
+      createdAt: expense.createdAt ?? new Date(`${expense.date}T12:00:00`).toISOString(),
+    })),
     holidayOverrides: (value.holidayOverrides ?? []).map((item) => ({
       ...item,
       isHoliday: item.isHoliday !== false,

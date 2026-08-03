@@ -46,3 +46,10 @@
 - Upgraded app-data schema to v5 with migration from legacy `workDays` settings.
 - Added work-schedule unit tests.
 - Added financial privacy mode to the planned UX phase: a global eye button will hide salary, income, rates and payroll totals before sharing the screen.
+
+## فاز ۶ — امور مالی پروژه
+
+- ثبت و مدیریت هزینه‌های پروژه
+- محاسبه درآمد، هزینه، سود خالص و حاشیه سود
+- هشدار نزدیک‌شدن یا عبور از بودجه زمانی
+- Migration داده از Schema 8 به 9

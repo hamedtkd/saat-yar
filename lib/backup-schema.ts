@@ -94,6 +94,18 @@ const projectSchema = z.object({
   billable: z.boolean(),
 }).passthrough();
 
+const expenseSchema = z.object({
+  id: z.string(),
+  projectId: z.string(),
+  clientId: z.string(),
+  title: z.string(),
+  amount: z.number().nonnegative(),
+  date: isoDateSchema,
+  category: z.enum(["software", "contractor", "travel", "equipment", "other"]),
+  note: z.string().optional(),
+  createdAt: z.string(),
+}).passthrough();
+
 const holidayOverrideSchema = z.object({
   id: z.string(),
   date: isoDateSchema,
@@ -122,6 +134,7 @@ export const appDataSchema = z.object({
   clients: z.array(clientSchema),
   projects: z.array(projectSchema),
   timeEntries: z.array(timeEntrySchema),
+  expenses: z.array(expenseSchema),
   holidayOverrides: z.array(holidayOverrideSchema),
 }).passthrough();
 

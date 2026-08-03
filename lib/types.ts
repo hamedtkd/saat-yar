@@ -109,6 +109,20 @@ export type Project = {
   billable?: boolean;
 };
 
+export type ExpenseCategory = "software" | "contractor" | "travel" | "equipment" | "other";
+
+export type Expense = {
+  id: string;
+  projectId: string;
+  clientId: string;
+  title: string;
+  amount: number;
+  date: string;
+  category: ExpenseCategory;
+  note?: string;
+  createdAt: string;
+};
+
 export type TimeEntry = {
   id: string;
   clientId: string;
@@ -128,6 +142,7 @@ export type AppData = {
   clients: Client[];
   projects: Project[];
   timeEntries: TimeEntry[];
+  expenses: Expense[];
   holidayOverrides: HolidayOverride[];
 };
 

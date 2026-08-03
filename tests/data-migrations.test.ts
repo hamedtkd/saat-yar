@@ -51,6 +51,7 @@ test("migrates unversioned legacy data to the current schema", () => {
   assert.equal(result.data.records["2026-08-03"].manuallyEdited, false);
   assert.deepEqual(result.data.settings.payrollComponents, []);
   assert.deepEqual(result.data.clients, []);
+  assert.deepEqual(result.data.expenses, []);
 });
 
 test("loads a current storage snapshot without remigrating it", () => {

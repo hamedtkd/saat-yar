@@ -240,6 +240,7 @@ export function useSaatyarController() {
       clients: [...data.clients, ...importPreview.clients.filter((item) => !data.clients.some((current) => current.id === item.id))],
       projects: [...data.projects, ...importPreview.projects.filter((item) => !data.projects.some((current) => current.id === item.id))],
       timeEntries: [...data.timeEntries, ...importPreview.timeEntries.filter((item) => !data.timeEntries.some((current) => current.id === item.id))],
+      expenses: [...data.expenses, ...importPreview.expenses.filter((item) => !data.expenses.some((current) => current.id === item.id))],
       holidayOverrides: [...data.holidayOverrides, ...importPreview.holidayOverrides.filter((item) => !data.holidayOverrides.some((current) => current.id === item.id))],
     };
     await storage.save(next);

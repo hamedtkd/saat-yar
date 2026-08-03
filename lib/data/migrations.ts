@@ -152,6 +152,14 @@ function migrateV6ToV7(value: unknown): unknown {
   return { ...value, records };
 }
 
+function migrateV8ToV9(value: unknown): unknown {
+  if (!isObject(value)) return value;
+  return {
+    ...value,
+    expenses: Array.isArray(value.expenses) ? value.expenses : [],
+  };
+}
+
 const migrations: Record<number, (value: unknown) => unknown> = {
   1: migrateV1ToV2,
   2: migrateV2ToV3,
@@ -160,6 +168,7 @@ const migrations: Record<number, (value: unknown) => unknown> = {
   5: migrateV5ToV6,
   6: migrateV6ToV7,
   7: migrateV7ToV8,
+  8: migrateV8ToV9,
 };
 
 export function migrateAppData(value: unknown): MigrationResult {
