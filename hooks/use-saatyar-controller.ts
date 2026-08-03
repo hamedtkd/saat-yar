@@ -1,31 +1,17 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { isValidAppData, parseBackup } from "@/lib/backup-schema";
-import { colors, createLeaveDraft, defaultSettings } from "@/lib/constants";
-import { exportCsv, exportExcel } from "@/lib/exporters";
-import { normaliseData } from "@/lib/data/normalise";
-import { APP_DATA_SCHEMA_VERSION } from "@/lib/data/version";
-import { emptyRecord, entryMinutes, localDateKey, nowTime } from "@/lib/format";
-import { getHolidayInfo } from "@/lib/holidays";
-import { recordMatchesReportFilter } from "@/lib/report-filters";
-import { calc, minutesToTime, spanMinutes, timeToMinutes } from "@/lib/time-engine";
-import { getDailyTargetMinutes, getWorkScheduleDay } from "@/lib/work-schedule";
-import type { AppData, ClientDraft, LeaveEntry, Mode, ProjectDraft, ReportFilter, TimerDraft, WorkRecord } from "@/lib/types";
+import { useState } from "react";
+import { createLeaveDraft } from "@/lib/constants";
+import { localDateKey } from "@/lib/format";
+import type { AppData, ClientDraft, LeaveEntry, ProjectDraft, ReportFilter, TimerDraft } from "@/lib/types";
 import { usePersistedAppData } from "./use-persisted-app-data.ts";
-
-const initialTimerDraft: TimerDraft = { projectId: "", task: "", note: "", billable: true };
-const initialClientDraft: ClientDraft = { name: "", email: "", note: "" };
-const initialProjectDraft: ProjectDraft = { name: "", clientId: "", rate: 850_000, budgetHours: 60, note: "" };
-const initialFilters: ReportFilter = {
-  clientId: "all",
-  projectId: "all",
-  billable: "all",
-  query: "",
-  dateFrom: "",
-  dateTo: "",
-  status: "all",
-};
+import { initialClientDraft, initialFilters, initialProjectDraft, initialTimerDraft } from "./controller/defaults";
+import { useAttendanceActions } from "./controller/use-attendance-actions";
+import { useBackupActions } from "./controller/use-backup-actions";
+import { useBusinessActions } from "./controller/use-business-actions";
+import { useControllerDerived } from "./controller/use-controller-derived";
+import { useNotificationReminders } from "./controller/use-notification-reminders";
+import { useReportActions } from "./controller/use-report-actions";
 
 export function useSaatyarController() {
   const persisted = usePersistedAppData();
@@ -44,309 +30,26 @@ export function useSaatyarController() {
   const [importPreview, setImportPreview] = useState<AppData | null>(null);
   const [financialsHidden, setFinancialsHidden] = useState(false);
 
-  const selectedSchedule = getWorkScheduleDay(selectedDate, data.settings);
-  const dailyTarget = getDailyTargetMinutes(selectedDate, data.settings);
-  const storedRecord = data.records[selectedDate] ?? {
-    ...emptyRecord(selectedDate, data.settings),
-    lunchMinutes: selectedSchedule.lunchMinutes,
-  };
-  const selectedHoliday = getHolidayInfo(selectedDate, {
-    mode: data.settings.mode,
-    manualHoliday: storedRecord.holiday,
-    includeOfficialHolidays: data.settings.autoOfficialHolidays,
-    includeWeeklyHoliday: data.settings.autoWeeklyHoliday,
-    overrides: data.holidayOverrides,
+  const derived = useControllerDerived(data, selectedDate, selectedProjectId, reportFilter);
+  const attendance = useAttendanceActions({
+    record: derived.record, selectedDate, activeBreak: derived.activeBreak,
+    lunchRunning: derived.lunchRunning, setData, setToast,
   });
-  const record = { ...storedRecord, holiday: selectedHoliday.isHoliday };
-  const todayCalc = calc(record, dailyTarget);
-  const suggestedExit = minutesToTime(calc({ ...record, start: record.start || selectedSchedule.start }, dailyTarget).plannedExit);
-  const selectedMonth = selectedDate.slice(0, 7);
-  const monthRecords = useMemo(
-    () => Object.values(data.records)
-      .filter((item) => item.date.startsWith(selectedMonth))
-      .map((item) => ({
-        ...item,
-        holiday: getHolidayInfo(item.date, {
-          mode: data.settings.mode,
-          manualHoliday: item.holiday,
-          includeOfficialHolidays: data.settings.autoOfficialHolidays,
-          includeWeeklyHoliday: data.settings.autoWeeklyHoliday,
-          overrides: data.holidayOverrides,
-        }).isHoliday,
-      }))
-      .sort((a, b) => b.date.localeCompare(a.date)),
-    [data.records, data.holidayOverrides, data.settings.autoOfficialHolidays, data.settings.autoWeeklyHoliday, data.settings.mode, selectedMonth],
-  );
-  const monthStats = useMemo(() => monthRecords.reduce((acc, item) => {
-    const itemTarget = getDailyTargetMinutes(item.date, data.settings);
-    const result = calc(item, itemTarget);
-    acc.worked += result.worked;
-    acc.target += item.holiday ? 0 : itemTarget;
-    acc.balance += result.balance;
-    acc.breaks += result.breakMinutes + result.unpaidLunchMinutes;
-    return acc;
-  }, { worked: 0, target: 0, balance: 0, breaks: 0 }), [monthRecords, data.settings]);
-  const activeEntry = data.timeEntries.find((entry) => !entry.endedAt);
-  const activeBreak = record.breaks.find((item) => item.start && !item.end);
-  const lunchRunning = Boolean(record.lunchStart && !record.lunchEnd);
-  const usedLeave = data.leaves.reduce((sum, entry) => sum + (entry.type === "full" ? dailyTarget : entry.type === "half" ? dailyTarget / 2 : entry.minutes), 0);
-  const leaveAvailable = data.settings.leaveBalanceMinutes + data.settings.monthlyLeaveMinutes - usedLeave;
-  const selectedProject = data.projects.find((project) => project.id === selectedProjectId);
-
-  async function requestNotificationPermission() {
-    if (typeof window === "undefined" || !("Notification" in window)) {
-      setToast("مرورگر از اعلان پشتیبانی نمی‌کند");
-      return false;
-    }
-    if (Notification.permission === "granted") return true;
-    const permission = await Notification.requestPermission();
-    return permission === "granted";
-  }
-
-  useEffect(() => {
-    const settings = data.settings.notificationSettings;
-    if (!settings.enabled || typeof window === "undefined" || !("Notification" in window) || Notification.permission !== "granted") return;
-    if (selectedDate !== localDateKey() || !record.start || record.end) return;
-
-    const notifyOnce = (key: string, title: string, body: string) => {
-      const storageKey = `saatyar-notification:${selectedDate}:${key}`;
-      if (sessionStorage.getItem(storageKey)) return;
-      new Notification(title, { body, icon: "/fav-256.png" });
-      sessionStorage.setItem(storageKey, "1");
-    };
-
-    const check = () => {
-      const elapsed = record.startedAt ? Math.max(0, Math.floor((Date.now() - new Date(record.startedAt).getTime()) / 60_000)) : todayCalc.worked;
-      if (elapsed >= settings.openTimerReminderMinutes) {
-        notifyOnce("open-timer", "تایمر ساعت‌یار هنوز باز است", `بیش از ${settings.openTimerReminderMinutes.toLocaleString("fa-IR")} دقیقه از شروع روز گذشته است.`);
-      }
-      if (settings.dailyTargetReminder && dailyTarget > 0 && todayCalc.credited >= dailyTarget) {
-        notifyOnce("target", "هدف روزانه تکمیل شد", "ساعت موظفی امروز کامل شده است.");
-      }
-      if (settings.endOfDayReminder && suggestedExit && nowTime() >= suggestedExit) {
-        notifyOnce("exit", "زمان ثبت خروج رسیده است", `خروج پیشنهادی امروز ${suggestedExit} است.`);
-      }
-    };
-
-    check();
-    const interval = window.setInterval(check, 60_000);
-    return () => window.clearInterval(interval);
-  }, [data.settings.notificationSettings, dailyTarget, record.end, record.start, record.startedAt, selectedDate, suggestedExit, todayCalc.credited, todayCalc.worked]);
-
-  function saveRecord(next: WorkRecord) {
-    setData((previous) => ({
-      ...previous,
-      records: {
-        ...previous.records,
-        [selectedDate]: { ...next, updatedAt: new Date().toISOString() },
-      },
-    }));
-  }
-
-  function updateRecord(patch: Partial<WorkRecord>) {
-    saveRecord({ ...record, ...patch, manuallyEdited: true });
-  }
-
-  function resetRecord() {
-    setData((previous) => {
-      const records = { ...previous.records };
-      delete records[selectedDate];
-      return { ...previous, records };
-    });
-    setToast("رکورد این روز پاک شد");
-  }
-
-  function startWork() {
-    updateRecord({ start: nowTime(), end: "", startedAt: new Date().toISOString(), endedAt: undefined });
-    setToast("شروع روز ثبت شد");
-  }
-
-  function finishWork() {
-    if (activeBreak || lunchRunning) return setToast("ابتدا تایمر ناهار یا وقفه را پایان دهید");
-    updateRecord({ end: nowTime(), endedAt: new Date().toISOString() });
-    setToast("ساعت خروج ثبت شد");
-  }
-
-  function startLunch() {
-    if (activeBreak) return setToast("ابتدا وقفه در حال اجرا را پایان دهید");
-    updateRecord({ lunchStart: nowTime(), lunchEnd: "", lunchStartedAt: new Date().toISOString(), lunchEndedAt: undefined });
-    setToast("تایمر ناهار شروع شد");
-  }
-
-  function finishLunch() {
-    const end = nowTime();
-    updateRecord({ lunchEnd: end, lunchEndedAt: new Date().toISOString(), lunchMinutes: spanMinutes(record.lunchStart ?? end, end) });
-    setToast("ناهار ثبت شد");
-  }
-
-  function startBreak() {
-    if (activeBreak || lunchRunning) return setToast("یک تایمر دیگر در حال اجراست");
-    updateRecord({ breaks: [...record.breaks, { id: crypto.randomUUID(), start: nowTime(), end: "", startedAt: new Date().toISOString(), title: "وقفه شخصی", paid: false }] });
-    setToast("تایمر وقفه شروع شد");
-  }
-
-  function finishBreak(minutes?: number) {
-    if (!activeBreak) return;
-    const end = minutes ? minutesToTime(timeToMinutes(activeBreak.start) + minutes) : nowTime();
-    updateRecord({
-      breaks: record.breaks.map((item) => item.id === activeBreak.id ? {
-        ...item,
-        end,
-        endedAt: minutes && item.startedAt ? new Date(new Date(item.startedAt).getTime() + minutes * 60_000).toISOString() : new Date().toISOString(),
-      } : item),
-    });
-    setToast(minutes ? `وقفه ${minutes.toLocaleString("fa-IR")} دقیقه‌ای ثبت شد` : "وقفه پایان یافت");
-  }
-
-  function toggleProjectTimer(projectId?: string) {
-    if (activeEntry) {
-      setData((previous) => ({ ...previous, timeEntries: previous.timeEntries.map((entry) => entry.id === activeEntry.id ? { ...entry, endedAt: new Date().toISOString() } : entry) }));
-      setToast("تایمر پروژه متوقف و ذخیره شد");
-      return;
-    }
-    const project = data.projects.find((item) => item.id === (projectId || timerDraft.projectId));
-    if (!project) return setToast("ابتدا یک پروژه انتخاب کنید");
-    setData((previous) => ({
-      ...previous,
-      timeEntries: [{ id: crypto.randomUUID(), clientId: project.clientId, projectId: project.id, task: timerDraft.task, startedAt: new Date().toISOString(), endedAt: null, note: timerDraft.note, billable: timerDraft.billable, effectiveRate: project.rate }, ...previous.timeEntries],
-    }));
-    setToast("تایمر پروژه شروع شد");
-  }
-
-  function addClient() {
-    if (!clientDraft.name.trim()) return setToast("نام مشتری را وارد کنید");
-    const id = crypto.randomUUID();
-    setData((previous) => ({ ...previous, clients: [...previous.clients, { id, name: clientDraft.name.trim(), email: clientDraft.email.trim(), note: clientDraft.note.trim(), color: colors[previous.clients.length % colors.length], archived: false }] }));
-    setClientDraft(initialClientDraft);
-    setProjectDraft((previous) => ({ ...previous, clientId: previous.clientId || id }));
-    setShowClientForm(false);
-    setToast("مشتری جدید ذخیره شد");
-  }
-
-  function addProject() {
-    if (!projectDraft.name.trim() || !projectDraft.clientId) return setToast("نام پروژه و مشتری الزامی است");
-    const id = crypto.randomUUID();
-    setData((previous) => ({ ...previous, projects: [...previous.projects, { id, clientId: projectDraft.clientId, name: projectDraft.name.trim(), rate: projectDraft.rate, budgetHours: projectDraft.budgetHours, note: projectDraft.note, color: colors[previous.projects.length % colors.length], status: "active", billable: true }] }));
-    setSelectedProjectId(id);
-    setTimerDraft((previous) => ({ ...previous, projectId: id }));
-    setProjectDraft({ ...initialProjectDraft, clientId: projectDraft.clientId });
-    setShowProjectForm(false);
-    setToast("پروژه ساخته شد");
-  }
-
-  function saveLeave() {
-    if (leaveDraft.endDate < leaveDraft.startDate) return setToast("بازه تاریخ معتبر نیست");
-    const overlap = data.leaves.some((item) => item.id !== leaveDraft.id && item.startDate <= leaveDraft.endDate && item.endDate >= leaveDraft.startDate);
-    if (overlap) return setToast("این بازه با مرخصی دیگری هم‌پوشانی دارد");
-    const entry = { ...leaveDraft, id: leaveDraft.id || crypto.randomUUID(), createdAt: leaveDraft.createdAt || new Date().toISOString() };
-    setData((previous) => ({ ...previous, leaves: leaveDraft.id ? previous.leaves.map((item) => item.id === leaveDraft.id ? entry : item) : [entry, ...previous.leaves] }));
-    setLeaveDraft(createLeaveDraft());
-    setToast(leaveDraft.id ? "مرخصی ویرایش شد" : "مرخصی ثبت شد");
-  }
-
-  function downloadBlob(blob: Blob, name: string) {
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = name;
-    anchor.click();
-    URL.revokeObjectURL(url);
-  }
-
-  function backupBlob(source = data) {
-    return new Blob([JSON.stringify({ appName: "ساعت‌یار", schemaVersion: APP_DATA_SCHEMA_VERSION, exportedAt: new Date().toISOString(), data: source }, null, 2)], { type: "application/json" });
-  }
-
-  function exportBackup() {
-    downloadBlob(backupBlob(), `saatyar-backup-${localDateKey()}.json`);
-    setToast("فایل پشتیبان دانلود شد");
-  }
-
-  function previewImport(file?: File) {
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      try {
-        const parsed = parseBackup(JSON.parse(String(reader.result)));
-        if (!isValidAppData(parsed)) throw new Error("invalid");
-        setImportPreview(normaliseData(parsed, defaultSettings));
-        setToast("فایل معتبر است؛ روش بازیابی را انتخاب کنید");
-      } catch {
-        setImportPreview(null);
-        setToast("ساختار فایل پشتیبان معتبر نیست");
-      }
-    };
-    reader.readAsText(file);
-  }
-
-  async function applyImport(mode: "merge" | "replace") {
-    if (!importPreview) return;
-    if (mode === "replace") downloadBlob(backupBlob(), `saatyar-before-replace-${localDateKey()}.json`);
-    const next = mode === "replace" ? importPreview : {
-      settings: { ...data.settings, ...importPreview.settings },
-      records: { ...data.records, ...importPreview.records },
-      leaves: [...data.leaves, ...importPreview.leaves.filter((item) => !data.leaves.some((current) => current.id === item.id))],
-      clients: [...data.clients, ...importPreview.clients.filter((item) => !data.clients.some((current) => current.id === item.id))],
-      projects: [...data.projects, ...importPreview.projects.filter((item) => !data.projects.some((current) => current.id === item.id))],
-      timeEntries: [...data.timeEntries, ...importPreview.timeEntries.filter((item) => !data.timeEntries.some((current) => current.id === item.id))],
-      expenses: [...data.expenses, ...importPreview.expenses.filter((item) => !data.expenses.some((current) => current.id === item.id))],
-      invoices: [...data.invoices, ...importPreview.invoices.filter((item) => !data.invoices.some((current) => current.id === item.id))],
-      holidayOverrides: [...data.holidayOverrides, ...importPreview.holidayOverrides.filter((item) => !data.holidayOverrides.some((current) => current.id === item.id))],
-    };
-    await storage.save(next);
-    setData(next);
-    setImportPreview(null);
-    setToast(mode === "replace" ? "داده‌ها با موفقیت جایگزین شدند" : "داده‌ها با موفقیت ادغام شدند");
-  }
-
-  const filteredMonthRecords = monthRecords.filter((item) => recordMatchesReportFilter(item, reportFilter, data.settings));
-
-  const filteredEntries = data.timeEntries.filter((entry) => {
-    const project = data.projects.find((item) => item.id === entry.projectId);
-    const client = data.clients.find((item) => item.id === entry.clientId);
-    const query = reportFilter.query.trim().toLocaleLowerCase("fa");
-    const entryDate = localDateKey(new Date(entry.startedAt));
-    return (reportFilter.clientId === "all" || entry.clientId === reportFilter.clientId) &&
-      (reportFilter.projectId === "all" || entry.projectId === reportFilter.projectId) &&
-      (reportFilter.billable === "all" || String(entry.billable) === reportFilter.billable) &&
-      (!reportFilter.dateFrom || entryDate >= reportFilter.dateFrom) &&
-      (!reportFilter.dateTo || entryDate <= reportFilter.dateTo) &&
-      (!query || entry.note.toLocaleLowerCase("fa").includes(query) || project?.name.toLocaleLowerCase("fa").includes(query) || client?.name.toLocaleLowerCase("fa").includes(query));
+  const business = useBusinessActions({
+    data, setData, setToast, clientDraft, setClientDraft, projectDraft, setProjectDraft,
+    timerDraft, setTimerDraft, leaveDraft, setLeaveDraft, setSelectedProjectId,
+    setShowClientForm, setShowProjectForm, activeEntry: derived.activeEntry,
   });
-  const reportBillable = filteredEntries.filter((entry) => entry.billable).reduce((sum, entry) => sum + entryMinutes(entry), 0);
-  const reportIncome = filteredEntries.reduce((sum, entry) => sum + (entry.billable ? entryMinutes(entry) / 60 * entry.effectiveRate : 0), 0);
-  const reportHeaders = ["تاریخ", "مشتری", "پروژه", "شرح", "مدت (دقیقه)", "نرخ مؤثر", "مبلغ", "قابل صورتحساب"];
-
-  function reportRows() {
-    return filteredEntries.map((entry) => {
-      const project = data.projects.find((item) => item.id === entry.projectId);
-      const client = data.clients.find((item) => item.id === entry.clientId);
-      const minutes = entryMinutes(entry);
-      return [new Intl.DateTimeFormat("fa-IR-u-ca-persian").format(new Date(entry.startedAt)), client?.name ?? "", project?.name ?? "", entry.note, minutes, entry.effectiveRate, entry.billable ? Math.round(minutes / 60 * entry.effectiveRate) : 0, entry.billable ? "بله" : "خیر"];
-    });
-  }
-
-  function exportReport(kind: "excel" | "csv") {
-    const employeeMode = data.settings.mode === "employee";
-    const headers = employeeMode
-      ? ["تاریخ", "ورود", "خروج", "کارکرد", "مرخصی", "تراز", "تعطیل", "یادداشت"]
-      : reportHeaders;
-    const rows = employeeMode
-      ? filteredMonthRecords.map((item) => {
-          const result = calc(item, getDailyTargetMinutes(item.date, data.settings));
-          return [item.date, item.start, item.end, result.worked, result.leave, result.balance, item.holiday ? "بله" : "خیر", item.note];
-        })
-      : reportRows();
-    const fileBase = employeeMode ? "گزارش-کارکرد" : "گزارش-صورتحساب";
-    if (kind === "excel") exportExcel(`${fileBase}-${localDateKey()}.xls`, employeeMode ? "گزارش کارکرد" : "گزارش صورتحساب", headers, rows);
-    else exportCsv(`${fileBase}-${localDateKey()}.csv`, headers, rows);
-    setToast(`گزارش ${kind === "excel" ? "Excel" : "CSV"} دانلود شد`);
-  }
-
-  function changeMode(mode: Mode) {
-    setData((previous) => ({ ...previous, settings: { ...previous.settings, mode } }));
-    setToast(`فضای کاری روی «${{ employee: "کارمند", freelancer: "فریلنسر", hybrid: "ترکیبی" }[mode]}» قرار گرفت`);
-  }
+  const backup = useBackupActions({ data, setData, setToast, importPreview, setImportPreview, storage });
+  const reports = useReportActions({
+    data, filteredEntries: derived.filteredEntries,
+    filteredMonthRecords: derived.filteredMonthRecords, setToast,
+  });
+  const notifications = useNotificationReminders({
+    settings: data.settings.notificationSettings, selectedDate, record: derived.record,
+    dailyTarget: derived.dailyTarget, worked: derived.todayCalc.worked,
+    credited: derived.todayCalc.credited, suggestedExit: derived.suggestedExit, setToast,
+  });
 
   async function requestPersistence() {
     const persistedValue = await storage.requestPersistence();
@@ -357,12 +60,12 @@ export function useSaatyarController() {
   return {
     ...persisted,
     selectedDate, setSelectedDate, selectedProjectId, setSelectedProjectId,
-    onboardingStep, setOnboardingStep, showClientForm, setShowClientForm, showProjectForm, setShowProjectForm,
-    clientDraft, setClientDraft, projectDraft, setProjectDraft, timerDraft, setTimerDraft,
-    editingEntry, setEditingEntry, reportFilter, setReportFilter, leaveDraft, setLeaveDraft, importPreview, financialsHidden, setFinancialsHidden,
-    dailyTarget, record, todayCalc, suggestedExit, monthRecords, monthStats, activeEntry, activeBreak,
-    lunchRunning, usedLeave, leaveAvailable, selectedProject, selectedHoliday, filteredEntries, filteredMonthRecords, reportBillable, reportIncome,
-    updateRecord, resetRecord, startWork, finishWork, startLunch, finishLunch, startBreak, finishBreak, toggleProjectTimer,
-    addClient, addProject, saveLeave, exportBackup, previewImport, applyImport, exportReport, changeMode, requestPersistence, requestNotificationPermission,
+    onboardingStep, setOnboardingStep, showClientForm, setShowClientForm,
+    showProjectForm, setShowProjectForm, clientDraft, setClientDraft,
+    projectDraft, setProjectDraft, timerDraft, setTimerDraft,
+    editingEntry, setEditingEntry, reportFilter, setReportFilter,
+    leaveDraft, setLeaveDraft, importPreview, financialsHidden, setFinancialsHidden,
+    ...derived, ...attendance, ...business, ...backup, ...reports, ...notifications,
+    requestPersistence,
   };
 }

@@ -1,0 +1,51 @@
+import { minutesToTime, spanMinutes, timeToMinutes } from "@/lib/time-engine";
+import { nowTime } from "@/lib/format";
+import type { Dispatch, SetStateAction } from "react";
+import type { AppData, WorkRecord } from "@/lib/types";
+
+type Args = {
+  record: WorkRecord;
+  selectedDate: string;
+  activeBreak?: WorkRecord["breaks"][number];
+  lunchRunning: boolean;
+  setData: Dispatch<SetStateAction<AppData>>;
+  setToast: (message: string) => void;
+};
+
+export function useAttendanceActions({ record, selectedDate, activeBreak, lunchRunning, setData, setToast }: Args) {
+  function saveRecord(next: WorkRecord) {
+    setData((previous) => ({ ...previous, records: { ...previous.records, [selectedDate]: { ...next, updatedAt: new Date().toISOString() } } }));
+  }
+  function updateRecord(patch: Partial<WorkRecord>) { saveRecord({ ...record, ...patch, manuallyEdited: true }); }
+  function resetRecord() {
+    setData((previous) => { const records = { ...previous.records }; delete records[selectedDate]; return { ...previous, records }; });
+    setToast("رکورد این روز پاک شد");
+  }
+  function startWork() { updateRecord({ start: nowTime(), end: "", startedAt: new Date().toISOString(), endedAt: undefined }); setToast("شروع روز ثبت شد"); }
+  function finishWork() {
+    if (activeBreak || lunchRunning) return setToast("ابتدا تایمر ناهار یا وقفه را پایان دهید");
+    updateRecord({ end: nowTime(), endedAt: new Date().toISOString() }); setToast("ساعت خروج ثبت شد");
+  }
+  function startLunch() {
+    if (activeBreak) return setToast("ابتدا وقفه در حال اجرا را پایان دهید");
+    updateRecord({ lunchStart: nowTime(), lunchEnd: "", lunchStartedAt: new Date().toISOString(), lunchEndedAt: undefined }); setToast("تایمر ناهار شروع شد");
+  }
+  function finishLunch() {
+    const end = nowTime();
+    updateRecord({ lunchEnd: end, lunchEndedAt: new Date().toISOString(), lunchMinutes: spanMinutes(record.lunchStart ?? end, end) });
+    setToast("ناهار ثبت شد");
+  }
+  function startBreak() {
+    if (activeBreak || lunchRunning) return setToast("یک تایمر دیگر در حال اجراست");
+    updateRecord({ breaks: [...record.breaks, { id: crypto.randomUUID(), start: nowTime(), end: "", startedAt: new Date().toISOString(), title: "وقفه شخصی", paid: false }] });
+    setToast("تایمر وقفه شروع شد");
+  }
+  function finishBreak(minutes?: number) {
+    if (!activeBreak) return;
+    const end = minutes ? minutesToTime(timeToMinutes(activeBreak.start) + minutes) : nowTime();
+    updateRecord({ breaks: record.breaks.map((item) => item.id === activeBreak.id ? { ...item, end,
+      endedAt: minutes && item.startedAt ? new Date(new Date(item.startedAt).getTime() + minutes * 60_000).toISOString() : new Date().toISOString() } : item) });
+    setToast(minutes ? `وقفه ${minutes.toLocaleString("fa-IR")} دقیقه‌ای ثبت شد` : "وقفه پایان یافت");
+  }
+  return { updateRecord, resetRecord, startWork, finishWork, startLunch, finishLunch, startBreak, finishBreak };
+}
