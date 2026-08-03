@@ -29,6 +29,7 @@ type JalaliDatePickerProps = {
   includeOfficialHolidays?: boolean;
   includeWeeklyHoliday?: boolean;
   holidayOverrides?: HolidayOverride[];
+  placeholder?: string;
 };
 
 const WEEK_DAYS = ["ش", "ی", "د", "س", "چ", "پ", "ج"];
@@ -41,6 +42,7 @@ export function JalaliDatePicker({
   includeOfficialHolidays = true,
   includeWeeklyHoliday = true,
   holidayOverrides = [],
+  placeholder = "انتخاب تاریخ",
 }: JalaliDatePickerProps) {
   const today = localDateKey();
 
@@ -69,7 +71,7 @@ export function JalaliDatePicker({
         month: "long",
         year: "numeric",
       })
-    : "انتخاب تاریخ";
+    : placeholder;
 
   const handleOpen = () => {
     setViewDate(value || today);
@@ -126,7 +128,7 @@ export function JalaliDatePicker({
 
         <span className="grid min-w-0 gap-0.5">
           <small className="text-[9px] font-medium text-[#6c7d89]">
-            تاریخ انتخاب‌شده
+            {placeholder}
           </small>
 
           <strong className="truncate text-[11px] font-extrabold text-[#102a3a]">

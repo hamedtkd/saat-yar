@@ -8,6 +8,7 @@ import { normaliseData } from "@/lib/data/normalise";
 import { APP_DATA_SCHEMA_VERSION } from "@/lib/data/version";
 import { emptyRecord, entryMinutes, localDateKey, nowTime } from "@/lib/format";
 import { getHolidayInfo } from "@/lib/holidays";
+import { recordMatchesReportFilter } from "@/lib/report-filters";
 import { calc, minutesToTime, spanMinutes, timeToMinutes } from "@/lib/time-engine";
 import { getDailyTargetMinutes, getWorkScheduleDay } from "@/lib/work-schedule";
 import type { AppData, ClientDraft, LeaveEntry, Mode, ProjectDraft, ReportFilter, TimerDraft, WorkRecord } from "@/lib/types";
@@ -16,7 +17,15 @@ import { usePersistedAppData } from "./use-persisted-app-data.ts";
 const initialTimerDraft: TimerDraft = { projectId: "", task: "", note: "", billable: true };
 const initialClientDraft: ClientDraft = { name: "", email: "", note: "" };
 const initialProjectDraft: ProjectDraft = { name: "", clientId: "", rate: 850_000, budgetHours: 60, note: "" };
-const initialFilters: ReportFilter = { clientId: "all", projectId: "all", billable: "all", query: "" };
+const initialFilters: ReportFilter = {
+  clientId: "all",
+  projectId: "all",
+  billable: "all",
+  query: "",
+  dateFrom: "",
+  dateTo: "",
+  status: "all",
+};
 
 export function useSaatyarController() {
   const persisted = usePersistedAppData();
@@ -250,13 +259,19 @@ export function useSaatyarController() {
     setToast(mode === "replace" ? "داده‌ها با موفقیت جایگزین شدند" : "داده‌ها با موفقیت ادغام شدند");
   }
 
+  const filteredMonthRecords = monthRecords.filter((item) => recordMatchesReportFilter(item, reportFilter, data.settings));
+
   const filteredEntries = data.timeEntries.filter((entry) => {
     const project = data.projects.find((item) => item.id === entry.projectId);
+    const client = data.clients.find((item) => item.id === entry.clientId);
     const query = reportFilter.query.trim().toLocaleLowerCase("fa");
+    const entryDate = localDateKey(new Date(entry.startedAt));
     return (reportFilter.clientId === "all" || entry.clientId === reportFilter.clientId) &&
       (reportFilter.projectId === "all" || entry.projectId === reportFilter.projectId) &&
       (reportFilter.billable === "all" || String(entry.billable) === reportFilter.billable) &&
-      (!query || entry.note.toLocaleLowerCase("fa").includes(query) || project?.name.toLocaleLowerCase("fa").includes(query));
+      (!reportFilter.dateFrom || entryDate >= reportFilter.dateFrom) &&
+      (!reportFilter.dateTo || entryDate <= reportFilter.dateTo) &&
+      (!query || entry.note.toLocaleLowerCase("fa").includes(query) || project?.name.toLocaleLowerCase("fa").includes(query) || client?.name.toLocaleLowerCase("fa").includes(query));
   });
   const reportBillable = filteredEntries.filter((entry) => entry.billable).reduce((sum, entry) => sum + entryMinutes(entry), 0);
   const reportIncome = filteredEntries.reduce((sum, entry) => sum + (entry.billable ? entryMinutes(entry) / 60 * entry.effectiveRate : 0), 0);
@@ -272,8 +287,19 @@ export function useSaatyarController() {
   }
 
   function exportReport(kind: "excel" | "csv") {
-    if (kind === "excel") exportExcel(`گزارش-صورتحساب-${localDateKey()}.xls`, "گزارش صورتحساب", reportHeaders, reportRows());
-    else exportCsv(`گزارش-صورتحساب-${localDateKey()}.csv`, reportHeaders, reportRows());
+    const employeeMode = data.settings.mode === "employee";
+    const headers = employeeMode
+      ? ["تاریخ", "ورود", "خروج", "کارکرد", "مرخصی", "تراز", "تعطیل", "یادداشت"]
+      : reportHeaders;
+    const rows = employeeMode
+      ? filteredMonthRecords.map((item) => {
+          const result = calc(item, getDailyTargetMinutes(item.date, data.settings));
+          return [item.date, item.start, item.end, result.worked, result.leave, result.balance, item.holiday ? "بله" : "خیر", item.note];
+        })
+      : reportRows();
+    const fileBase = employeeMode ? "گزارش-کارکرد" : "گزارش-صورتحساب";
+    if (kind === "excel") exportExcel(`${fileBase}-${localDateKey()}.xls`, employeeMode ? "گزارش کارکرد" : "گزارش صورتحساب", headers, rows);
+    else exportCsv(`${fileBase}-${localDateKey()}.csv`, headers, rows);
     setToast(`گزارش ${kind === "excel" ? "Excel" : "CSV"} دانلود شد`);
   }
 
@@ -295,7 +321,7 @@ export function useSaatyarController() {
     clientDraft, setClientDraft, projectDraft, setProjectDraft, timerDraft, setTimerDraft,
     editingEntry, setEditingEntry, reportFilter, setReportFilter, leaveDraft, setLeaveDraft, importPreview, financialsHidden, setFinancialsHidden,
     dailyTarget, record, todayCalc, suggestedExit, monthRecords, monthStats, activeEntry, activeBreak,
-    lunchRunning, usedLeave, leaveAvailable, selectedProject, selectedHoliday, filteredEntries, reportBillable, reportIncome,
+    lunchRunning, usedLeave, leaveAvailable, selectedProject, selectedHoliday, filteredEntries, filteredMonthRecords, reportBillable, reportIncome,
     updateRecord, resetRecord, startWork, finishWork, startLunch, finishLunch, startBreak, finishBreak, toggleProjectTimer,
     addClient, addProject, saveLeave, exportBackup, previewImport, applyImport, exportReport, changeMode, requestPersistence,
   };

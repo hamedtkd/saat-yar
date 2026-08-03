@@ -182,5 +182,14 @@ export type TimerDraft = {
 
 export type ClientDraft = { name: string; email: string; note: string };
 export type ProjectDraft = { name: string; clientId: string; rate: number; budgetHours: number; note: string };
-export type ReportFilter = { clientId: string; projectId: string; billable: string; query: string };
+export type ReportStatusFilter = "all" | "complete" | "incomplete" | "overtime" | "deficit" | "holiday" | "leave";
+export type ReportFilter = {
+  clientId: string;
+  projectId: string;
+  billable: string;
+  query: string;
+  dateFrom: string;
+  dateTo: string;
+  status: ReportStatusFilter;
+};
 export type StorageInfo = { usage: number; quota: number; persisted: boolean };

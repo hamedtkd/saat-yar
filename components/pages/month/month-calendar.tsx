@@ -43,7 +43,7 @@ export function MonthCalendar({ data, selectedDate, setSelectedDate, monthRecord
               : effectiveItem?.start
                 ? "border-[#f0dab5] bg-[#fff8ed] [&>i]:bg-[#e59d2d]"
                 : "";
-        return <button key={cell.key} type="button" title={holiday.title} aria-label={holiday.title ? `${fa.format(cell.day)}، ${holiday.title}` : fa.format(cell.day)} className={cn(!cell.inMonth && "opacity-30", cell.key === localDateKey() && "shadow-[inset_0_0_0_2px_#079b60]", statusClass)} onClick={() => setSelectedDate(cell.key)}><span>{fa.format(cell.day)}</span>{item && <small>{duration(result?.worked ?? 0)}</small>}{statusClass && <i aria-hidden="true" />}</button>;
+        return <button key={cell.key} type="button" title={holiday.title} aria-label={holiday.title ? `${fa.format(cell.day)}، ${holiday.title}` : fa.format(cell.day)} className={cn(!cell.inMonth && "opacity-30", cell.key === localDateKey() && "shadow-[inset_0_0_0_2px_#079b60]", cell.key === selectedDate && "ring-2 ring-[#0b4556] ring-offset-2", statusClass)} aria-pressed={cell.key === selectedDate} onClick={() => setSelectedDate(cell.key)}><span>{fa.format(cell.day)}</span>{item && <small>{duration(result?.worked ?? 0)}</small>}{statusClass && <i aria-hidden="true" />}</button>;
       })}</div>
       <div className={cn("mt-[15px] flex flex-wrap gap-[15px] text-[10px] text-[#6c7d89] [&_span]:flex [&_span]:items-center [&_span]:gap-1.5 [&_i]:h-2 [&_i]:w-2 [&_i]:rounded-full max-[620px]:gap-[9px]")}><span><i className="bg-[#19a36c]" /> کامل</span><span><i className="bg-[#e59d2d]" /> کسری</span><span><i className="bg-[#617fd5]" /> مرخصی</span><span><i className="bg-red-500" /> تعطیل</span></div>
     </article>

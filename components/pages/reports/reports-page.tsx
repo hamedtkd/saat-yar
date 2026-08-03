@@ -58,6 +58,16 @@ export function ReportsPage({
 }: ReportsPageProps) {
   const mode = data.settings.mode;
   const isEmployee = mode === "employee";
+  const visibleMonthStats = monthRecords.reduce((totals, record) => {
+    const target = getDailyTargetMinutes(record.date, data.settings);
+    const result = calc(record, target);
+    totals.worked += result.worked;
+    totals.target += record.holiday ? 0 : target;
+    totals.balance += result.balance;
+    totals.breaks += result.breakMinutes + result.unpaidLunchMinutes;
+    return totals;
+  }, { worked: 0, target: 0, balance: 0, breaks: 0 });
+  const effectiveMonthStats = isEmployee ? visibleMonthStats : monthStats;
 
   const totalProjectTime = entries.reduce(
     (sum, entry) => sum + entryMinutes(entry),
@@ -66,9 +76,9 @@ export function ReportsPage({
 
   const nonBillableMinutes = Math.max(0, totalProjectTime - reportBillable);
 
-  const rawPositiveBalance = Math.max(0, monthStats.balance);
+  const rawPositiveBalance = Math.max(0, effectiveMonthStats.balance);
 
-  const deficitMinutes = Math.max(0, -monthStats.balance);
+  const deficitMinutes = Math.max(0, -effectiveMonthStats.balance);
   const holidayMinutes = monthRecords.reduce((sum, item) => {
     if (!item.holiday) return sum;
     return sum + calc(item, getDailyTargetMinutes(item.date, data.settings)).worked;
@@ -76,8 +86,8 @@ export function ReportsPage({
   const overtimeMinutes = Math.max(0, rawPositiveBalance - holidayMinutes);
   const payroll = calculateMonthlyPayroll({
     monthlySalary: data.settings.salary,
-    workedMinutes: monthStats.worked,
-    targetMinutes: monthStats.target,
+    workedMinutes: effectiveMonthStats.worked,
+    targetMinutes: effectiveMonthStats.target,
     overtimeMinutes,
     deficitMinutes,
     holidayMinutes,
@@ -133,7 +143,7 @@ export function ReportsPage({
             <MetricCard
               icon={<Clock3 />}
               label="کارکرد این ماه"
-              value={duration(monthStats.worked)}
+              value={duration(effectiveMonthStats.worked)}
               suffix="ساعت"
               tone="blue"
             />
@@ -141,7 +151,7 @@ export function ReportsPage({
             <MetricCard
               icon={<BriefcaseBusiness />}
               label="ساعت موظفی"
-              value={duration(monthStats.target)}
+              value={duration(effectiveMonthStats.target)}
               suffix="ساعت"
             />
 
@@ -170,7 +180,7 @@ export function ReportsPage({
             <MetricCard
               icon={<Pause />}
               label="وقفه و استراحت"
-              value={duration(monthStats.breaks)}
+              value={duration(effectiveMonthStats.breaks)}
               suffix="ساعت"
               tone="amber"
             />
@@ -178,7 +188,7 @@ export function ReportsPage({
             <MetricCard
               icon={<TrendingUp />}
               label="تراز کارکرد"
-              value={duration(monthStats.balance, true)}
+              value={duration(effectiveMonthStats.balance, true)}
               suffix="ساعت"
             />
 
@@ -221,7 +231,7 @@ export function ReportsPage({
           <MetricCard
             icon={<Clock3 />}
             label="کل زمان"
-            value={duration(monthStats.worked + totalProjectTime)}
+            value={duration(effectiveMonthStats.worked + totalProjectTime)}
             suffix="ساعت"
             tone="blue"
           />
@@ -255,7 +265,7 @@ export function ReportsPage({
         entries={entries}
         reportBillable={reportBillable}
         monthRecords={monthRecords}
-        monthStats={monthStats}
+        monthStats={effectiveMonthStats}
         settings={data.settings}
       />
 
@@ -286,11 +296,11 @@ export function ReportsPage({
           <span className="text-[10px] leading-6 text-[#6c7d89]">
             {fa.format(monthRecords.length)} روز ثبت‌شده
             {" · "}
-            هدف {duration(monthStats.target)}
+            هدف {duration(effectiveMonthStats.target)}
             {" · "}
-            کارکرد {duration(monthStats.worked)}
+            کارکرد {duration(effectiveMonthStats.worked)}
             {" · "}
-            تراز {duration(monthStats.balance, true)}
+            تراز {duration(effectiveMonthStats.balance, true)}
           </span>
         </div>
 
@@ -298,10 +308,10 @@ export function ReportsPage({
           dir="ltr"
           className={cn(
             "shrink-0 text-lg font-black",
-            monthStats.balance >= 0 ? "text-[#079b60]" : "text-[#e54845]",
+            effectiveMonthStats.balance >= 0 ? "text-[#079b60]" : "text-[#e54845]",
           )}
         >
-          {duration(monthStats.balance, true)}
+          {duration(effectiveMonthStats.balance, true)}
         </span>
       </section>
     </>
