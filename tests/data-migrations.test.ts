@@ -42,6 +42,9 @@ test("migrates unversioned legacy data to the current schema", () => {
   assert.equal(result.data.settings.mode, "employee");
   assert.equal(result.data.settings.autoOfficialHolidays, true);
   assert.equal(result.data.settings.autoWeeklyHoliday, true);
+  assert.equal(result.data.settings.weeklySchedule.saturday.enabled, true);
+  assert.equal(result.data.settings.weeklySchedule.thursday.enabled, false);
+  assert.equal(result.data.settings.weeklySchedule.friday.enabled, false);
   assert.equal(result.data.records["2026-08-03"].lunchPaid, false);
   assert.equal(result.data.records["2026-08-03"].breaks[0].paid, false);
   assert.equal(result.data.records["2026-08-03"].holiday, false);

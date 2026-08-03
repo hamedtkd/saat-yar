@@ -37,3 +37,12 @@
 - حقوق روزانه اکنون از تقسیم حقوق ماهانه بر ۳۰ محاسبه می‌شود
 - روز شروع‌نشده دیگر به اشتباه دارای کارکرد و درآمد نمایش داده نمی‌شود
 - منطق تکراری موتور زمان و فایل‌های بلااستفاده حذف شد
+
+## Unreleased — Phase 2
+
+- Added a per-weekday work schedule with independent start, end, lunch and enabled state.
+- Added overnight-shift support when the end time is earlier than the start time.
+- Daily and monthly attendance targets now follow the selected date's schedule.
+- Upgraded app-data schema to v5 with migration from legacy `workDays` settings.
+- Added work-schedule unit tests.
+- Added financial privacy mode to the planned UX phase: a global eye button will hide salary, income, rates and payroll totals before sharing the screen.

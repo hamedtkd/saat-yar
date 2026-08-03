@@ -14,7 +14,6 @@ export default function MonthRoute() {
       setSelectedDate={controller.setSelectedDate}
       monthRecords={controller.monthRecords}
       monthStats={controller.monthStats}
-      dailyTarget={controller.dailyTarget}
     />
   );
 }
