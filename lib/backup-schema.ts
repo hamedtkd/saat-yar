@@ -18,6 +18,8 @@ const settingsSchema = z.object({
   salary: z.number().nonnegative(),
   overtimeMultiplier: z.number().nonnegative(),
   holidayMultiplier: z.number().nonnegative(),
+  autoOfficialHolidays: z.boolean().default(true),
+  autoWeeklyHoliday: z.boolean().default(true),
   mode: modeSchema.default("employee"),
 }).passthrough();
 

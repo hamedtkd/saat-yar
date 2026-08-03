@@ -18,11 +18,16 @@ import {
   shiftJalaliMonth,
 } from "@/lib/format";
 import { cn } from "@/lib/cn";
+import { getHolidayInfo } from "@/lib/holidays";
+import type { Mode } from "@/lib/types";
 
 type JalaliDatePickerProps = {
   value: string;
   onChange: (value: string) => void;
   recordedDates?: string[];
+  mode?: Mode;
+  includeOfficialHolidays?: boolean;
+  includeWeeklyHoliday?: boolean;
 };
 
 const WEEK_DAYS = ["ش", "ی", "د", "س", "چ", "پ", "ج"];
@@ -31,6 +36,9 @@ export function JalaliDatePicker({
   value,
   onChange,
   recordedDates = [],
+  mode = "employee",
+  includeOfficialHolidays = true,
+  includeWeeklyHoliday = true,
 }: JalaliDatePickerProps) {
   const today = localDateKey();
 
@@ -205,6 +213,11 @@ export function JalaliDatePicker({
                 const isSelected = cell.key === value;
                 const isToday = cell.key === today;
                 const isRecorded = recorded.has(cell.key);
+                const holiday = getHolidayInfo(cell.key, {
+                  mode,
+                  includeOfficialHolidays,
+                  includeWeeklyHoliday,
+                });
 
                 return (
                   <button
@@ -217,6 +230,7 @@ export function JalaliDatePicker({
                       year: "numeric",
                     })}
                     aria-pressed={isSelected}
+                    title={holiday.title}
                     className={cn(
                       "relative aspect-square min-w-0",
                       "rounded-xl border border-transparent",
@@ -231,6 +245,10 @@ export function JalaliDatePicker({
                       !cell.inMonth &&
                         "text-[#b7c2c6]",
 
+                      holiday.isHoliday &&
+                        !isSelected &&
+                        "border-red-200 bg-red-50 text-red-600 hover:bg-red-100",
+
                       isToday &&
                         !isSelected &&
                         "border-[#70c4a8]",
@@ -244,6 +262,13 @@ export function JalaliDatePicker({
                     onClick={() => handleSelectDate(cell.key)}
                   >
                     {fa.format(cell.day)}
+
+                    {holiday.isHoliday && !isSelected && (
+                      <span
+                        aria-hidden="true"
+                        className="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-red-500"
+                      />
+                    )}
 
                     {isRecorded && (
                       <span

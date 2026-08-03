@@ -5,6 +5,7 @@ import { PageHeading } from "@/components/common/page-heading";
 import { JalaliDatePicker } from "@/components/pickers";
 import { Button } from "@/components/ui/button";
 import { jalali } from "@/lib/format";
+import { getHolidayInfo } from "@/lib/holidays";
 import { ManualEntryForm } from "./manual-entry-form";
 import { TodayFocusCard } from "./today-focus-card";
 import { TodayMetrics } from "./today-metrics";
@@ -14,6 +15,13 @@ import type { TodayPageProps } from "./types";
 import { cn } from "@/lib/cn";
 
 export function TodayPage(props: TodayPageProps) {
+  const holiday = getHolidayInfo(props.selectedDate, {
+    mode: props.data.settings.mode,
+    manualHoliday: props.record.holiday,
+    includeOfficialHolidays: props.data.settings.autoOfficialHolidays,
+    includeWeeklyHoliday: props.data.settings.autoWeeklyHoliday,
+  });
+
   return (
     <>
       <PageHeading
@@ -30,9 +38,21 @@ export function TodayPage(props: TodayPageProps) {
             value={props.selectedDate}
             onChange={props.setSelectedDate}
             recordedDates={Object.keys(props.data.records)}
+            mode={props.data.settings.mode}
+            includeOfficialHolidays={props.data.settings.autoOfficialHolidays}
+            includeWeeklyHoliday={props.data.settings.autoWeeklyHoliday}
           />
         </div>
       </PageHeading>
+      {holiday.isHoliday && (
+        <div className="mb-4 flex items-center justify-between gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+          <div className="grid gap-0.5">
+            <strong className="text-xs font-extrabold">روز تعطیل</strong>
+            <span className="text-[10px]">{holiday.title}</span>
+          </div>
+          <span className="rounded-full bg-white px-2.5 py-1 text-[9px] font-bold">هدف روز: صفر</span>
+        </div>
+      )}
       <TodayFocusCard {...props} />
       <TodayTimeStrip {...props} />
       {props.editingEntry === "manual" &&

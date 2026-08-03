@@ -91,6 +91,32 @@ export function WorkSettingsCard({
           ضریب روز تعطیل
           <NumberField value={data.settings.holidayMultiplier} min={0} onValueChange={(value) => setSetting("holidayMultiplier", value)} />
         </label>
+
+        <label className="flex min-h-13 cursor-pointer items-center gap-3 rounded-xl border border-[#dfe7e9] bg-[#f8fbfa] px-3 py-2 text-[#102a3a]">
+          <input
+            type="checkbox"
+            checked={data.settings.autoOfficialHolidays}
+            onChange={(event) => setSetting("autoOfficialHolidays", event.target.checked)}
+            className="size-4 accent-[#079b60]"
+          />
+          <span className="grid gap-0.5">
+            <strong className="text-[11px]">تشخیص تعطیلات رسمی</strong>
+            <small className="text-[9px] text-[#6c7d89]">تعطیلات رسمی در تقویم قرمز و هدف روز صفر می‌شود.</small>
+          </span>
+        </label>
+
+        <label className="flex min-h-13 cursor-pointer items-center gap-3 rounded-xl border border-[#dfe7e9] bg-[#f8fbfa] px-3 py-2 text-[#102a3a]">
+          <input
+            type="checkbox"
+            checked={data.settings.autoWeeklyHoliday}
+            onChange={(event) => setSetting("autoWeeklyHoliday", event.target.checked)}
+            className="size-4 accent-[#079b60]"
+          />
+          <span className="grid gap-0.5">
+            <strong className="text-[11px]">جمعه به‌عنوان تعطیل هفتگی</strong>
+            <small className="text-[9px] text-[#6c7d89]">کارکرد جمعه با ضریب روز تعطیل محاسبه می‌شود.</small>
+          </span>
+        </label>
       </div>
 
       <Button onClick={() => setToast("تنظیمات ذخیره شد")}>

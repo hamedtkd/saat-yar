@@ -14,6 +14,8 @@ export const defaultSettings: Settings = {
   salary: 30_000_000,
   overtimeMultiplier: 1.4,
   holidayMultiplier: 1.4,
+  autoOfficialHolidays: true,
+  autoWeeklyHoliday: true,
   mode: "employee",
 };
 

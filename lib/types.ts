@@ -43,6 +43,8 @@ export type Settings = {
   salary: number;
   overtimeMultiplier: number;
   holidayMultiplier: number;
+  autoOfficialHolidays: boolean;
+  autoWeeklyHoliday: boolean;
   mode: Mode;
 };
 

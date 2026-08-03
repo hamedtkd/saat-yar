@@ -5,6 +5,7 @@ import { isValidAppData, parseBackup } from "@/lib/backup-schema";
 import { colors, createLeaveDraft, defaultSettings } from "@/lib/constants";
 import { exportCsv, exportExcel } from "@/lib/exporters";
 import { emptyRecord, entryMinutes, localDateKey, normaliseData, nowTime } from "@/lib/format";
+import { getHolidayInfo } from "@/lib/holidays";
 import { calc, minutesToTime, spanMinutes, timeToMinutes } from "@/lib/time-engine";
 import type { AppData, ClientDraft, LeaveEntry, Mode, ProjectDraft, ReportFilter, TimerDraft, WorkRecord } from "@/lib/types";
 import { usePersistedAppData } from "./use-persisted-app-data";
@@ -31,13 +32,31 @@ export function useSaatyarController() {
   const [importPreview, setImportPreview] = useState<AppData | null>(null);
 
   const dailyTarget = Math.max(1, timeToMinutes(data.settings.defaultEnd) - timeToMinutes(data.settings.defaultStart) - data.settings.lunchMinutes);
-  const record = data.records[selectedDate] ?? emptyRecord(selectedDate, data.settings);
+  const storedRecord = data.records[selectedDate] ?? emptyRecord(selectedDate, data.settings);
+  const selectedHoliday = getHolidayInfo(selectedDate, {
+    mode: data.settings.mode,
+    manualHoliday: storedRecord.holiday,
+    includeOfficialHolidays: data.settings.autoOfficialHolidays,
+    includeWeeklyHoliday: data.settings.autoWeeklyHoliday,
+  });
+  const record = { ...storedRecord, holiday: selectedHoliday.isHoliday };
   const todayCalc = calc(record, dailyTarget);
   const suggestedExit = minutesToTime(calc({ ...record, start: record.start || data.settings.defaultStart }, dailyTarget).plannedExit);
   const selectedMonth = selectedDate.slice(0, 7);
   const monthRecords = useMemo(
-    () => Object.values(data.records).filter((item) => item.date.startsWith(selectedMonth)).sort((a, b) => b.date.localeCompare(a.date)),
-    [data.records, selectedMonth],
+    () => Object.values(data.records)
+      .filter((item) => item.date.startsWith(selectedMonth))
+      .map((item) => ({
+        ...item,
+        holiday: getHolidayInfo(item.date, {
+          mode: data.settings.mode,
+          manualHoliday: item.holiday,
+          includeOfficialHolidays: data.settings.autoOfficialHolidays,
+          includeWeeklyHoliday: data.settings.autoWeeklyHoliday,
+        }).isHoliday,
+      }))
+      .sort((a, b) => b.date.localeCompare(a.date)),
+    [data.records, data.settings.autoOfficialHolidays, data.settings.autoWeeklyHoliday, data.settings.mode, selectedMonth],
   );
   const monthStats = useMemo(() => monthRecords.reduce((acc, item) => {
     const result = calc(item, dailyTarget);
@@ -247,7 +266,7 @@ export function useSaatyarController() {
     clientDraft, setClientDraft, projectDraft, setProjectDraft, timerDraft, setTimerDraft,
     editingEntry, setEditingEntry, reportFilter, setReportFilter, leaveDraft, setLeaveDraft, importPreview,
     dailyTarget, record, todayCalc, suggestedExit, monthRecords, monthStats, activeEntry, activeBreak,
-    lunchRunning, usedLeave, leaveAvailable, selectedProject, filteredEntries, reportBillable, reportIncome,
+    lunchRunning, usedLeave, leaveAvailable, selectedProject, selectedHoliday, filteredEntries, reportBillable, reportIncome,
     updateRecord, startWork, finishWork, startLunch, finishLunch, startBreak, finishBreak, toggleProjectTimer,
     addClient, addProject, saveLeave, exportBackup, previewImport, applyImport, exportReport, changeMode, requestPersistence,
   };
