@@ -1,8 +1,11 @@
-import type { StorageInfo } from "./types";
+import { migrateAppData } from "./data/migrations";
+import { createAppDataSnapshot } from "./data/snapshot";
+import { APP_DATA_STORAGE_KEY } from "./data/version";
+import type { AppData, StorageInfo } from "./types";
 
 const DB_NAME = "saatyar-db";
 const STORE_NAME = "app-data";
-const KEY = "current";
+const LEGACY_STORAGE_KEYS = ["saatyar-data", "saatyar", "worklog-data"] as const;
 
 function openDb() {
   return new Promise<IDBDatabase>((resolve, reject) => {
@@ -17,25 +20,26 @@ function openDb() {
   });
 }
 
-export class IndexedDbStorageAdapter<T> {
-  async load(): Promise<T | null> {
+class IndexedDbKeyValueStorage {
+  async load(): Promise<unknown | null> {
     const db = await openDb();
     return new Promise((resolve, reject) => {
       const transaction = db.transaction(STORE_NAME, "readonly");
-      const request = transaction.objectStore(STORE_NAME).get(KEY);
-      request.onsuccess = () => resolve((request.result as T | undefined) ?? null);
+      const request = transaction.objectStore(STORE_NAME).get(APP_DATA_STORAGE_KEY);
+      request.onsuccess = () => resolve(request.result ?? null);
       request.onerror = () => reject(request.error);
       transaction.oncomplete = () => db.close();
     });
   }
 
-  async save(value: T) {
+  async save(value: unknown) {
     const db = await openDb();
     await new Promise<void>((resolve, reject) => {
       const transaction = db.transaction(STORE_NAME, "readwrite");
-      transaction.objectStore(STORE_NAME).put(value, KEY);
+      transaction.objectStore(STORE_NAME).put(value, APP_DATA_STORAGE_KEY);
       transaction.oncomplete = () => resolve();
       transaction.onerror = () => reject(transaction.error);
+      transaction.onabort = () => reject(transaction.error);
     });
     db.close();
   }
@@ -44,11 +48,69 @@ export class IndexedDbStorageAdapter<T> {
     const db = await openDb();
     await new Promise<void>((resolve, reject) => {
       const transaction = db.transaction(STORE_NAME, "readwrite");
-      transaction.objectStore(STORE_NAME).delete(KEY);
+      transaction.objectStore(STORE_NAME).delete(APP_DATA_STORAGE_KEY);
       transaction.oncomplete = () => resolve();
       transaction.onerror = () => reject(transaction.error);
+      transaction.onabort = () => reject(transaction.error);
     });
     db.close();
+  }
+}
+
+export type AppDataLoadResult = {
+  value: AppData | null;
+  migrated: boolean;
+  migratedFrom?: number;
+  source: "indexeddb" | "localstorage" | "empty";
+};
+
+export class AppDataStorageAdapter {
+  private readonly storage = new IndexedDbKeyValueStorage();
+
+  async load(): Promise<AppDataLoadResult> {
+    const current = await this.storage.load();
+
+    if (current) {
+      const result = migrateAppData(current);
+      if (result.migrated) {
+        await this.save(result.data);
+      }
+      return {
+        value: result.data,
+        migrated: result.migrated,
+        migratedFrom: result.migrated ? result.fromVersion : undefined,
+        source: "indexeddb",
+      };
+    }
+
+    for (const key of LEGACY_STORAGE_KEYS) {
+      const raw = localStorage.getItem(key);
+      if (!raw) continue;
+
+      try {
+        const result = migrateAppData(JSON.parse(raw) as unknown);
+        await this.save(result.data);
+        localStorage.removeItem(key);
+        return {
+          value: result.data,
+          migrated: true,
+          migratedFrom: result.fromVersion,
+          source: "localstorage",
+        };
+      } catch {
+        // Ignore malformed legacy entries and continue searching.
+      }
+    }
+
+    return { value: null, migrated: false, source: "empty" };
+  }
+
+  async save(value: AppData) {
+    await this.storage.save(createAppDataSnapshot(value));
+  }
+
+  async clear() {
+    await this.storage.clear();
   }
 
   async estimate(): Promise<StorageInfo> {
@@ -64,28 +126,4 @@ export class IndexedDbStorageAdapter<T> {
   async requestPersistence() {
     return Boolean(await navigator.storage?.persist?.());
   }
-}
-
-export async function loadWithLegacyMigration<T>(
-  storage: IndexedDbStorageAdapter<T>,
-  validator: (value: unknown) => value is T,
-) {
-  const current = await storage.load();
-  if (current) return { value: current, migrated: false };
-
-  const legacyKeys = ["saatyar-data", "saatyar", "worklog-data"];
-  for (const key of legacyKeys) {
-    const raw = localStorage.getItem(key);
-    if (!raw) continue;
-    try {
-      const parsed: unknown = JSON.parse(raw);
-      if (!validator(parsed)) continue;
-      await storage.save(parsed);
-      localStorage.removeItem(key);
-      return { value: parsed, migrated: true };
-    } catch {
-      // Ignore malformed legacy data and continue searching.
-    }
-  }
-  return { value: null, migrated: false };
 }

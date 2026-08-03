@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { migrateAppData } from "./data/migrations.ts";
+import { APP_DATA_SCHEMA_VERSION } from "./data/version.ts";
 import type { AppData } from "./types";
 
 const modeSchema = z.enum(["employee", "freelancer", "hybrid"]);
@@ -18,9 +20,9 @@ const settingsSchema = z.object({
   salary: z.number().nonnegative(),
   overtimeMultiplier: z.number().nonnegative(),
   holidayMultiplier: z.number().nonnegative(),
-  autoOfficialHolidays: z.boolean().default(true),
-  autoWeeklyHoliday: z.boolean().default(true),
-  mode: modeSchema.default("employee"),
+  autoOfficialHolidays: z.boolean(),
+  autoWeeklyHoliday: z.boolean(),
+  mode: modeSchema,
 }).passthrough();
 
 const breakSchema = z.object({
@@ -28,7 +30,7 @@ const breakSchema = z.object({
   start: timeSchema,
   end: timeSchema,
   title: z.string(),
-  paid: z.boolean().optional(),
+  paid: z.boolean(),
   startedAt: z.string().optional(),
   endedAt: z.string().optional(),
 }).passthrough();
@@ -44,7 +46,7 @@ const workRecordSchema = z.object({
   lunchEnd: timeSchema.optional(),
   lunchStartedAt: z.string().optional(),
   lunchEndedAt: z.string().optional(),
-  lunchPaid: z.boolean().optional(),
+  lunchPaid: z.boolean(),
   breaks: z.array(breakSchema),
   leaveMinutes: z.number().nonnegative(),
   leaveType: z.enum(["none", "hourly", "full"]),
@@ -80,7 +82,7 @@ const projectSchema = z.object({
   status: z.enum(["active", "paused", "completed", "archived"]),
   budgetHours: z.number().nonnegative().optional(),
   note: z.string().optional(),
-  billable: z.boolean().optional(),
+  billable: z.boolean(),
 }).passthrough();
 
 const timeEntrySchema = z.object({
@@ -96,27 +98,13 @@ const timeEntrySchema = z.object({
 }).passthrough();
 
 export const appDataSchema = z.object({
-  appName: z.string().optional(),
-  schemaVersion: z.number().int().positive().optional(),
-  exportedAt: z.string().optional(),
   settings: settingsSchema,
   records: z.record(z.string(), workRecordSchema),
-  leaves: z.array(leaveSchema).default([]),
-  clients: z.array(clientSchema).default([]),
-  projects: z.array(projectSchema).default([]),
-  timeEntries: z.array(timeEntrySchema).default([]),
+  leaves: z.array(leaveSchema),
+  clients: z.array(clientSchema),
+  projects: z.array(projectSchema),
+  timeEntries: z.array(timeEntrySchema),
 }).passthrough();
-
-function unwrapBackup(value: unknown) {
-  if (value && typeof value === "object" && "data" in value) {
-    return (value as { data?: unknown }).data;
-  }
-  return value;
-}
-
-export function isValidAppData(value: unknown): value is AppData {
-  return appDataSchema.safeParse(value).success;
-}
 
 export type BackupData = AppData & {
   appName?: string;
@@ -125,5 +113,21 @@ export type BackupData = AppData & {
 };
 
 export function parseBackup(value: unknown): BackupData {
-  return appDataSchema.parse(unwrapBackup(value)) as BackupData;
+  const migration = migrateAppData(value);
+  const data = appDataSchema.parse(migration.data);
+
+  return {
+    ...data,
+    appName: "ساعت‌یار",
+    schemaVersion: APP_DATA_SCHEMA_VERSION,
+  } as BackupData;
+}
+
+export function isValidAppData(value: unknown): value is AppData {
+  try {
+    parseBackup(value);
+    return true;
+  } catch {
+    return false;
+  }
 }

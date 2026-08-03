@@ -4,7 +4,9 @@ import { useMemo, useState } from "react";
 import { isValidAppData, parseBackup } from "@/lib/backup-schema";
 import { colors, createLeaveDraft, defaultSettings } from "@/lib/constants";
 import { exportCsv, exportExcel } from "@/lib/exporters";
-import { emptyRecord, entryMinutes, localDateKey, normaliseData, nowTime } from "@/lib/format";
+import { normaliseData } from "@/lib/data/normalise";
+import { APP_DATA_SCHEMA_VERSION } from "@/lib/data/version";
+import { emptyRecord, entryMinutes, localDateKey, nowTime } from "@/lib/format";
 import { getHolidayInfo } from "@/lib/holidays";
 import { calc, minutesToTime, spanMinutes, timeToMinutes } from "@/lib/time-engine";
 import type { AppData, ClientDraft, LeaveEntry, Mode, ProjectDraft, ReportFilter, TimerDraft, WorkRecord } from "@/lib/types";
@@ -179,7 +181,7 @@ export function useSaatyarController() {
   }
 
   function backupBlob(source = data) {
-    return new Blob([JSON.stringify({ appName: "ساعت‌یار", schemaVersion: 3, exportedAt: new Date().toISOString(), data: source }, null, 2)], { type: "application/json" });
+    return new Blob([JSON.stringify({ appName: "ساعت‌یار", schemaVersion: APP_DATA_SCHEMA_VERSION, exportedAt: new Date().toISOString(), data: source }, null, 2)], { type: "application/json" });
   }
 
   function exportBackup() {

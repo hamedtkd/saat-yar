@@ -1,4 +1,4 @@
-import type { AppData, Settings, TimeEntry, WorkRecord } from "./types";
+import type { Settings, TimeEntry, WorkRecord } from "./types";
 
 export const fa = new Intl.NumberFormat("fa-IR");
 
@@ -87,19 +87,4 @@ export function shiftJalaliMonth(value: string, delta: number) {
 export function entryMinutes(entry: TimeEntry, now = Date.now()) {
   const end = entry.endedAt ? new Date(entry.endedAt).getTime() : now;
   return Math.max(0, Math.round((end - new Date(entry.startedAt).getTime()) / 60_000));
-}
-
-export function normaliseData(value: AppData, defaults: Settings): AppData {
-  return {
-    settings: { ...defaults, ...(value.settings ?? {}) },
-    records: value.records ?? {},
-    leaves: value.leaves ?? [],
-    clients: (value.clients ?? []).map((client) => ({ ...client, archived: Boolean(client.archived) })),
-    projects: (value.projects ?? []).map((project) => ({
-      ...project,
-      status: project.status ?? "active",
-      billable: project.billable ?? true,
-    })),
-    timeEntries: value.timeEntries ?? [],
-  };
 }

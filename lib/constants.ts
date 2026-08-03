@@ -1,5 +1,5 @@
 import type { AppData, LeaveEntry, Settings } from "./types";
-import { localDateKey } from "./format";
+import { localDateKey } from "./format.ts";
 
 export const defaultSettings: Settings = {
   name: "",

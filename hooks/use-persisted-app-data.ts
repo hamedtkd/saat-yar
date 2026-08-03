@@ -1,14 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { defaultSettings, initialData } from "@/lib/constants";
-import { isValidAppData } from "@/lib/backup-schema";
-import { normaliseData } from "@/lib/format";
-import { IndexedDbStorageAdapter, loadWithLegacyMigration } from "@/lib/storage";
+import { initialData } from "@/lib/constants";
+import { AppDataStorageAdapter } from "@/lib/storage";
 import type { AppData, StorageInfo } from "@/lib/types";
 
 export function usePersistedAppData() {
-  const storage = useMemo(() => new IndexedDbStorageAdapter<AppData>(), []);
+  const storage = useMemo(() => new AppDataStorageAdapter(), []);
   const [data, setData] = useState<AppData>(initialData);
   const [ready, setReady] = useState(false);
   const [toast, setToast] = useState("");
@@ -18,9 +16,15 @@ export function usePersistedAppData() {
   useEffect(() => {
     void (async () => {
       try {
-        const { value, migrated } = await loadWithLegacyMigration(storage, isValidAppData);
-        if (value) setData(normaliseData(value, defaultSettings));
-        if (migrated) setToast("اطلاعات نسخه قبلی با موفقیت منتقل شد");
+        const { value, migrated, migratedFrom } = await storage.load();
+        if (value) setData(value);
+        if (migrated) {
+          setToast(
+            migratedFrom
+              ? `اطلاعات نسخه ${migratedFrom.toLocaleString("fa-IR")} با موفقیت منتقل شد`
+              : "اطلاعات نسخه قبلی با موفقیت منتقل شد",
+          );
+        }
         setStorageInfo(await storage.estimate());
       } catch {
         setToast("خواندن اطلاعات قبلی ممکن نشد؛ از بخش تنظیمات فایل پشتیبان را بازیابی کنید");
