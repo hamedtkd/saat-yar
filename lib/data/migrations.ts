@@ -135,6 +135,12 @@ function migrateV5ToV6(value: unknown): unknown {
   };
 }
 
+function migrateV7ToV8(value: unknown): unknown {
+  if (!isObject(value)) return value;
+  const settings = isObject(value.settings) ? value.settings : {};
+  return { ...value, settings: { ...settings, payrollComponents: Array.isArray(settings.payrollComponents) ? settings.payrollComponents : [] } };
+}
+
 function migrateV6ToV7(value: unknown): unknown {
   if (!isObject(value)) return value;
   const records = isObject(value.records)
@@ -153,6 +159,7 @@ const migrations: Record<number, (value: unknown) => unknown> = {
   4: migrateV4ToV5,
   5: migrateV5ToV6,
   6: migrateV6ToV7,
+  7: migrateV7ToV8,
 };
 
 export function migrateAppData(value: unknown): MigrationResult {

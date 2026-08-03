@@ -8,6 +8,14 @@ export type WorkScheduleDay = {
   lunchMinutes: number;
 };
 
+export type PayrollComponent = {
+  id: string;
+  title: string;
+  amount: number;
+  type: "earning" | "deduction";
+  enabled?: boolean;
+};
+
 export type HolidayOverride = {
   id: string;
   date: string;
@@ -64,6 +72,7 @@ export type Settings = {
   salary: number;
   overtimeMultiplier: number;
   holidayMultiplier: number;
+  payrollComponents: PayrollComponent[];
   autoOfficialHolidays: boolean;
   autoWeeklyHoliday: boolean;
   mode: Mode;

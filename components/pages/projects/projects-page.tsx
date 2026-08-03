@@ -6,7 +6,7 @@ import { ProjectDetail } from "./project-detail";
 import { ProjectForm } from "./project-form";
 import { ProjectList } from "./project-list";
 
-export function ProjectsPage({ data, setData, selectedProject, setSelectedProjectId, showForm, setShowForm, draft, setDraft, addProject, activeEntry, toggleProjectTimer }: {
+export function ProjectsPage({ data, setData, selectedProject, setSelectedProjectId, showForm, setShowForm, draft, setDraft, addProject, activeEntry, toggleProjectTimer, financialsHidden }: {
   data: AppData;
   setData: React.Dispatch<React.SetStateAction<AppData>>;
   selectedProject?: Project;
@@ -18,7 +18,8 @@ export function ProjectsPage({ data, setData, selectedProject, setSelectedProjec
   addProject: () => void;
   activeEntry?: TimeEntry;
   toggleProjectTimer: (id?: string) => void;
+  financialsHidden: boolean;
 }) {
-  if (selectedProject) return <ProjectDetail data={data} setData={setData} project={selectedProject} activeEntry={activeEntry} onBack={() => setSelectedProjectId("")} onToggleTimer={toggleProjectTimer} />;
-  return <><PageHeading title="پروژه‌ها" description="بودجه، نرخ و زمان هر پروژه را یک‌جا ببین."><Button onClick={() => setShowForm(!showForm)}><Plus /> پروژه جدید</Button></PageHeading>{showForm && <ProjectForm data={data} draft={draft} setDraft={setDraft} onSave={addProject} onCancel={() => setShowForm(false)} />}<ProjectList data={data} onSelect={setSelectedProjectId} onCreate={() => setShowForm(true)} /></>;
+  if (selectedProject) return <ProjectDetail data={data} setData={setData} project={selectedProject} activeEntry={activeEntry} onBack={() => setSelectedProjectId("")} onToggleTimer={toggleProjectTimer} financialsHidden={financialsHidden} />;
+  return <><PageHeading title="پروژه‌ها" description="بودجه، نرخ و زمان هر پروژه را یک‌جا ببین."><Button onClick={() => setShowForm(!showForm)}><Plus /> پروژه جدید</Button></PageHeading>{showForm && <ProjectForm data={data} draft={draft} setDraft={setDraft} onSave={addProject} onCancel={() => setShowForm(false)} />}<ProjectList data={data} financialsHidden={financialsHidden} onSelect={setSelectedProjectId} onCreate={() => setShowForm(true)} /></>;
 }

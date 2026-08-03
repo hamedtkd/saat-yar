@@ -15,6 +15,9 @@ import { PageHeading } from "@/components/common/page-heading";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 import { duration, entryMinutes, fa, money } from "@/lib/format";
+import { calculateMonthlyPayroll } from "@/lib/payroll";
+import { calc } from "@/lib/time-engine";
+import { getDailyTargetMinutes } from "@/lib/work-schedule";
 import type { AppData, ReportFilter, TimeEntry, WorkRecord } from "@/lib/types";
 
 import { ReportCharts } from "./report-charts";
@@ -38,6 +41,7 @@ type ReportsPageProps = {
   reportBillable: number;
   reportIncome: number;
   exportReport: (kind: "excel" | "csv") => void;
+  financialsHidden: boolean;
 };
 
 export function ReportsPage({
@@ -50,6 +54,7 @@ export function ReportsPage({
   reportBillable,
   reportIncome,
   exportReport,
+  financialsHidden,
 }: ReportsPageProps) {
   const mode = data.settings.mode;
   const isEmployee = mode === "employee";
@@ -61,9 +66,26 @@ export function ReportsPage({
 
   const nonBillableMinutes = Math.max(0, totalProjectTime - reportBillable);
 
-  const overtimeMinutes = Math.max(0, monthStats.balance);
+  const rawPositiveBalance = Math.max(0, monthStats.balance);
 
   const deficitMinutes = Math.max(0, -monthStats.balance);
+  const holidayMinutes = monthRecords.reduce((sum, item) => {
+    if (!item.holiday) return sum;
+    return sum + calc(item, getDailyTargetMinutes(item.date, data.settings)).worked;
+  }, 0);
+  const overtimeMinutes = Math.max(0, rawPositiveBalance - holidayMinutes);
+  const payroll = calculateMonthlyPayroll({
+    monthlySalary: data.settings.salary,
+    workedMinutes: monthStats.worked,
+    targetMinutes: monthStats.target,
+    overtimeMinutes,
+    deficitMinutes,
+    holidayMinutes,
+    overtimeMultiplier: data.settings.overtimeMultiplier,
+    holidayMultiplier: data.settings.holidayMultiplier,
+    components: data.settings.payrollComponents,
+  });
+  const financialValue = (value: number) => financialsHidden ? "••••••" : money(value);
 
   return (
     <>
@@ -167,6 +189,26 @@ export function ReportsPage({
               suffix="روز"
             />
           </section>
+
+          <section className="mb-4 rounded-2xl border border-[#dfe7e9] bg-white/95 p-5 shadow-[0_10px_35px_rgba(17,45,55,0.055)]">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <strong className="block text-sm font-extrabold text-[#173747]">فیش حقوقی تخمینی ماه</strong>
+                <small className="text-[10px] leading-6 text-[#6c7d89]">مبالغ بر اساس کارکرد ثبت‌شده، ضرایب و آیتم‌های تنظیمات محاسبه می‌شوند.</small>
+              </div>
+              <span className="rounded-full bg-[#edf9f4] px-3 py-1.5 text-xs font-black text-[#079b60]">خالص: {financialValue(payroll.net)} تومان</span>
+            </div>
+            <div className="grid grid-cols-4 gap-3 max-[900px]:grid-cols-2 max-[620px]:grid-cols-1">
+              <div className="rounded-xl bg-[#f8fbfa] p-3"><span className="block text-[10px] text-[#6c7d89]">حقوق کارکرد</span><strong>{financialValue(payroll.regularPay)} تومان</strong></div>
+              <div className="rounded-xl bg-[#f8fbfa] p-3"><span className="block text-[10px] text-[#6c7d89]">اضافه‌کاری</span><strong>{financialValue(payroll.overtimePay)} تومان</strong></div>
+              <div className="rounded-xl bg-[#f8fbfa] p-3"><span className="block text-[10px] text-[#6c7d89]">تعطیل‌کاری</span><strong>{financialValue(payroll.holidayPay)} تومان</strong></div>
+              <div className="rounded-xl bg-[#fff8ed] p-3"><span className="block text-[10px] text-[#8b6b31]">کسری کار</span><strong>{financialValue(payroll.deficitDeduction)} تومان</strong></div>
+              <div className="rounded-xl bg-[#edf9f4] p-3"><span className="block text-[10px] text-[#527268]">مزایا</span><strong>{financialValue(payroll.earnings)} تومان</strong></div>
+              <div className="rounded-xl bg-[#fff2f1] p-3"><span className="block text-[10px] text-[#8b5d59]">کسورات ثابت</span><strong>{financialValue(payroll.deductions)} تومان</strong></div>
+              <div className="rounded-xl bg-[#f8fbfa] p-3"><span className="block text-[10px] text-[#6c7d89]">ناخالص</span><strong>{financialValue(payroll.gross)} تومان</strong></div>
+              <div className="rounded-xl bg-[#102a3a] p-3 text-white"><span className="block text-[10px] text-white/70">خالص پرداختی</span><strong>{financialValue(payroll.net)} تومان</strong></div>
+            </div>
+          </section>
         </>
       ) : (
         <section
@@ -202,7 +244,7 @@ export function ReportsPage({
           <MetricCard
             icon={<TrendingUp />}
             label="درآمد تخمینی"
-            value={money(reportIncome)}
+            value={financialValue(reportIncome)}
             suffix="تومان"
           />
         </section>
@@ -222,6 +264,7 @@ export function ReportsPage({
         data={data}
         entries={entries}
         monthRecords={monthRecords}
+        financialsHidden={financialsHidden}
       />
 
       <section

@@ -29,16 +29,19 @@ type ReportTableProps = {
   entries: TimeEntry[];
   monthRecords: WorkRecord[];
   settings?: Settings;
+  financialsHidden?: boolean;
 };
 
 type EmployeeReportTableProps = {
   monthRecords: WorkRecord[];
   settings: Settings;
+  financialsHidden: boolean;
 };
 
 type FreelancerReportTableProps = {
   data: AppData;
   entries: TimeEntry[];
+  financialsHidden: boolean;
 };
 
 type PrintPreviewAsideProps = {
@@ -191,6 +194,7 @@ function EmployeeDesktopTable({
   settings,
   dailyTarget,
   totals,
+  financialsHidden,
 }: EmployeeReportTableProps & {
   dailyTarget: number;
   totals: EmployeeTotals;
@@ -309,7 +313,7 @@ function EmployeeDesktopTable({
                 </td>
 
                 <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3 font-extrabold text-[#102a3a]">
-                  {money(earnedAmount)} تومان
+                  {financialsHidden ? "••••••" : money(earnedAmount)} تومان
                 </td>
 
                 <td className="max-w-60 border-b border-[#edf1f2] px-3 py-3 text-[#2e4856]">
@@ -359,7 +363,7 @@ function EmployeeDesktopTable({
             </td>
 
             <td className="border-t border-[#dfe7e9] px-3 py-3 font-black text-[#079b60]">
-              {money(totals.income)} تومان
+              {financialsHidden ? "••••••" : money(totals.income)} تومان
             </td>
 
             <td className="border-t border-[#dfe7e9] px-3 py-3" />
@@ -375,6 +379,7 @@ function EmployeeMobileCards({
   settings,
   dailyTarget,
   totals,
+  financialsHidden,
 }: EmployeeReportTableProps & {
   dailyTarget: number;
   totals: EmployeeTotals;
@@ -479,7 +484,7 @@ function EmployeeMobileCards({
 
               <InfoRow
                 label="حقوق روز"
-                value={`${money(earnedAmount)} تومان`}
+                value={`${financialsHidden ? "••••••" : money(earnedAmount)} تومان`}
                 valueClassName="text-[#079b60]"
               />
             </div>
@@ -519,7 +524,7 @@ function EmployeeMobileCards({
 
           <InfoRow
             label="حقوق تخمینی"
-            value={`${money(totals.income)} تومان`}
+            value={`${financialsHidden ? "••••••" : money(totals.income)} تومان`}
             valueClassName="text-[#079b60]"
           />
         </div>
@@ -531,6 +536,7 @@ function EmployeeMobileCards({
 function EmployeeReportTable({
   monthRecords,
   settings,
+  financialsHidden,
 }: EmployeeReportTableProps) {
   const dailyTarget = getDailyTarget(settings);
 
@@ -562,6 +568,7 @@ function EmployeeReportTable({
             settings={settings}
             dailyTarget={dailyTarget}
             totals={totals}
+            financialsHidden={financialsHidden}
           />
 
           <EmployeeMobileCards
@@ -569,6 +576,7 @@ function EmployeeReportTable({
             settings={settings}
             dailyTarget={dailyTarget}
             totals={totals}
+            financialsHidden={financialsHidden}
           />
         </>
       ) : (
@@ -584,7 +592,7 @@ function EmployeeReportTable({
   );
 }
 
-function FreelancerDesktopTable({ data, entries }: FreelancerReportTableProps) {
+function FreelancerDesktopTable({ data, entries, financialsHidden }: FreelancerReportTableProps) {
   const totalMinutes = entries.reduce(
     (sum, entry) => sum + entryMinutes(entry),
     0,
@@ -661,11 +669,11 @@ function FreelancerDesktopTable({ data, entries }: FreelancerReportTableProps) {
                 </td>
 
                 <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3 text-[#2e4856]">
-                  {money(entry.effectiveRate)} تومان
+                  {financialsHidden ? "••••••" : money(entry.effectiveRate)} تومان
                 </td>
 
                 <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3 font-extrabold text-[#102a3a]">
-                  {money(amount)} تومان
+                  {financialsHidden ? "••••••" : money(amount)} تومان
                 </td>
 
                 <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3">
@@ -695,7 +703,7 @@ function FreelancerDesktopTable({ data, entries }: FreelancerReportTableProps) {
               <td className="border-t border-[#dfe7e9] px-3 py-3" />
 
               <td className="border-t border-[#dfe7e9] px-3 py-3 font-black text-[#079b60]">
-                {money(totalIncome)} تومان
+                {financialsHidden ? "••••••" : money(totalIncome)} تومان
               </td>
 
               <td className="border-t border-[#dfe7e9] px-3 py-3" />
@@ -707,7 +715,7 @@ function FreelancerDesktopTable({ data, entries }: FreelancerReportTableProps) {
   );
 }
 
-function FreelancerMobileCards({ data, entries }: FreelancerReportTableProps) {
+function FreelancerMobileCards({ data, entries, financialsHidden }: FreelancerReportTableProps) {
   const totalMinutes = entries.reduce(
     (sum, entry) => sum + entryMinutes(entry),
     0,
@@ -774,12 +782,12 @@ function FreelancerMobileCards({ data, entries }: FreelancerReportTableProps) {
 
               <InfoRow
                 label="نرخ مؤثر"
-                value={`${money(entry.effectiveRate)} تومان`}
+                value={`${financialsHidden ? "••••••" : money(entry.effectiveRate)} تومان`}
               />
 
               <InfoRow
                 label="مبلغ"
-                value={`${money(amount)} تومان`}
+                value={`${financialsHidden ? "••••••" : money(amount)} تومان`}
                 valueClassName={
                   entry.billable ? "text-[#079b60]" : "text-[#6c7d89]"
                 }
@@ -812,7 +820,7 @@ function FreelancerMobileCards({ data, entries }: FreelancerReportTableProps) {
 
             <InfoRow
               label="درآمد"
-              value={`${money(totalIncome)} تومان`}
+              value={`${financialsHidden ? "••••••" : money(totalIncome)} تومان`}
               valueClassName="text-[#079b60]"
             />
           </div>
@@ -822,7 +830,7 @@ function FreelancerMobileCards({ data, entries }: FreelancerReportTableProps) {
   );
 }
 
-function FreelancerReportTable({ data, entries }: FreelancerReportTableProps) {
+function FreelancerReportTable({ data, entries, financialsHidden }: FreelancerReportTableProps) {
   return (
     <article
       className={cn(
@@ -844,9 +852,9 @@ function FreelancerReportTable({ data, entries }: FreelancerReportTableProps) {
 
       {entries.length > 0 ? (
         <>
-          <FreelancerDesktopTable data={data} entries={entries} />
+          <FreelancerDesktopTable data={data} entries={entries} financialsHidden={financialsHidden} />
 
-          <FreelancerMobileCards data={data} entries={entries} />
+          <FreelancerMobileCards data={data} entries={entries} financialsHidden={financialsHidden} />
         </>
       ) : (
         <div className="p-4 sm:p-5">
@@ -954,6 +962,7 @@ export function ReportTable({
   entries,
   monthRecords,
   settings = data.settings,
+  financialsHidden = false,
 }: ReportTableProps) {
   const isEmployee = mode === "employee";
 
@@ -967,9 +976,9 @@ export function ReportTable({
       )}
     >
       {isEmployee ? (
-        <EmployeeReportTable monthRecords={monthRecords} settings={settings} />
+        <EmployeeReportTable monthRecords={monthRecords} settings={settings} financialsHidden={financialsHidden} />
       ) : (
-        <FreelancerReportTable data={data} entries={entries} />
+        <FreelancerReportTable data={data} entries={entries} financialsHidden={financialsHidden} />
       )}
 
       <PrintPreviewAside mode={mode} />

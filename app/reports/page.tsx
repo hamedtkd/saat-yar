@@ -18,6 +18,7 @@ export default function ReportsRoute() {
       reportBillable={controller.reportBillable}
       reportIncome={controller.reportIncome}
       exportReport={controller.exportReport}
+      financialsHidden={controller.financialsHidden}
     />
   );
 }

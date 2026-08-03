@@ -33,6 +33,7 @@ export function useSaatyarController() {
   const [reportFilter, setReportFilter] = useState<ReportFilter>(initialFilters);
   const [leaveDraft, setLeaveDraft] = useState<LeaveEntry>(createLeaveDraft());
   const [importPreview, setImportPreview] = useState<AppData | null>(null);
+  const [financialsHidden, setFinancialsHidden] = useState(false);
 
   const selectedSchedule = getWorkScheduleDay(selectedDate, data.settings);
   const dailyTarget = getDailyTargetMinutes(selectedDate, data.settings);
@@ -290,7 +291,7 @@ export function useSaatyarController() {
     selectedDate, setSelectedDate, selectedProjectId, setSelectedProjectId,
     onboardingStep, setOnboardingStep, showClientForm, setShowClientForm, showProjectForm, setShowProjectForm,
     clientDraft, setClientDraft, projectDraft, setProjectDraft, timerDraft, setTimerDraft,
-    editingEntry, setEditingEntry, reportFilter, setReportFilter, leaveDraft, setLeaveDraft, importPreview,
+    editingEntry, setEditingEntry, reportFilter, setReportFilter, leaveDraft, setLeaveDraft, importPreview, financialsHidden, setFinancialsHidden,
     dailyTarget, record, todayCalc, suggestedExit, monthRecords, monthStats, activeEntry, activeBreak,
     lunchRunning, usedLeave, leaveAvailable, selectedProject, selectedHoliday, filteredEntries, reportBillable, reportIncome,
     updateRecord, resetRecord, startWork, finishWork, startLunch, finishLunch, startBreak, finishBreak, toggleProjectTimer,

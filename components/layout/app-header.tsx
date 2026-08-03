@@ -5,6 +5,8 @@ import {
   CalendarDays,
   CheckCircle2,
   Download,
+  Eye,
+  EyeOff,
   Folder,
   LayoutDashboard,
   Settings,
@@ -72,6 +74,8 @@ type AppHeaderProps = {
   pathname?: string;
   onModeChange: (mode: Mode) => void;
   onExport: () => void;
+  financialsHidden: boolean;
+  onToggleFinancials: () => void;
 };
 
 export function AppHeader({
@@ -80,6 +84,8 @@ export function AppHeader({
   pathname: propPathname,
   onModeChange,
   onExport,
+  financialsHidden,
+  onToggleFinancials,
 }: AppHeaderProps) {
   const router = useRouter();
   const currentPath = usePathname() || propPathname || "/today";
@@ -321,6 +327,17 @@ export function AppHeader({
             </SelectContent>
           </Select>
         </div>
+
+        <Button
+          className="min-w-11"
+          variant="outline"
+          size="icon"
+          onClick={onToggleFinancials}
+          aria-label={financialsHidden ? "نمایش اطلاعات مالی" : "مخفی کردن اطلاعات مالی"}
+          title={financialsHidden ? "نمایش اطلاعات مالی" : "مخفی کردن اطلاعات مالی"}
+        >
+          {financialsHidden ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
+        </Button>
 
         <Button
           className="min-w-11"

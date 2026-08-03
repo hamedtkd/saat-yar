@@ -20,6 +20,7 @@ export default function ProjectsRoute() {
       addProject={controller.addProject}
       activeEntry={controller.activeEntry}
       toggleProjectTimer={controller.toggleProjectTimer}
+      financialsHidden={controller.financialsHidden}
     />
   );
 }

@@ -7,6 +7,14 @@ const modeSchema = z.enum(["employee", "freelancer", "hybrid"]);
 const isoDateSchema = z.string().min(1);
 const timeSchema = z.string().regex(/^$|^\d{2}:\d{2}$/);
 
+const payrollComponentSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  amount: z.number().nonnegative(),
+  type: z.enum(["earning", "deduction"]),
+  enabled: z.boolean().optional(),
+}).passthrough();
+
 const settingsSchema = z.object({
   name: z.string(),
   onboarded: z.boolean(),
@@ -20,6 +28,7 @@ const settingsSchema = z.object({
   salary: z.number().nonnegative(),
   overtimeMultiplier: z.number().nonnegative(),
   holidayMultiplier: z.number().nonnegative(),
+  payrollComponents: z.array(payrollComponentSchema),
   autoOfficialHolidays: z.boolean(),
   autoWeeklyHoliday: z.boolean(),
   mode: modeSchema,
