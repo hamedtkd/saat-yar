@@ -48,3 +48,28 @@ test("danger zone resets through the complete AppData factory", () => {
   assert.match(source, /createInitialData\(\{ onboarded: true \}\)/);
   assert.doesNotMatch(source, /records:\s*\{\}/);
 });
+
+test("report table modules stay below 250 lines", () => {
+  for (const file of [
+    "components/pages/reports/report-table.tsx",
+    "components/pages/reports/table/employee-desktop-table.tsx",
+    "components/pages/reports/table/employee-mobile-cards.tsx",
+    "components/pages/reports/table/employee-report-table.tsx",
+    "components/pages/reports/table/freelancer-desktop-table.tsx",
+    "components/pages/reports/table/freelancer-mobile-cards.tsx",
+    "components/pages/reports/table/freelancer-report-table.tsx",
+    "components/pages/reports/table/print-preview-aside.tsx",
+    "components/pages/reports/table/report-table-shared.tsx",
+  ]) {
+    const source = readFileSync(new URL(file, root), "utf8");
+    assert.ok(source.split(/\r?\n/).length <= 250, `${file} exceeds 250 lines`);
+  }
+});
+
+test("report table facade delegates employee and freelancer rendering", () => {
+  const source = readFileSync(new URL("components/pages/reports/report-table.tsx", root), "utf8");
+  assert.match(source, /<EmployeeReportTable/);
+  assert.match(source, /<FreelancerReportTable/);
+  assert.match(source, /<PrintPreviewAside/);
+  assert.ok(source.split(/\r?\n/).length < 80);
+});

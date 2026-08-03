@@ -1,0 +1,130 @@
+import { StatusBadge } from "@/components/common/status-badge";
+import { cn } from "@/lib/cn";
+import { duration, entryMinutes, faDigits, jalali, money } from "@/lib/format";
+import type { AppData, TimeEntry } from "@/lib/types";
+import { FREELANCER_HEADINGS, TableHeading } from "./report-table-shared";
+
+type Props = { data: AppData; entries: TimeEntry[]; financialsHidden: boolean };
+export function FreelancerDesktopTable({ data, entries, financialsHidden }: Props) {
+  const totalMinutes = entries.reduce(
+    (sum, entry) => sum + entryMinutes(entry),
+    0,
+  );
+
+  const totalIncome = entries.reduce((sum, entry) => {
+    if (!entry.billable) {
+      return sum;
+    }
+
+    return sum + (entryMinutes(entry) / 60) * Math.max(0, entry.effectiveRate);
+  }, 0);
+
+  return (
+    <div className="hidden w-full overflow-x-auto px-4 pb-5 pt-3 md:block sm:px-5">
+      <table className="w-full min-w-245 border-collapse text-[11px]">
+        <thead>
+          <tr>
+            {FREELANCER_HEADINGS.map((heading) => (
+              <TableHeading key={heading}>{heading}</TableHeading>
+            ))}
+          </tr>
+        </thead>
+
+        <tbody>
+          {entries.map((entry) => {
+            const project = data.projects.find(
+              (item) => item.id === entry.projectId,
+            );
+
+            const client = data.clients.find(
+              (item) => item.id === entry.clientId,
+            );
+
+            const minutes = entryMinutes(entry);
+
+            const amount = entry.billable
+              ? (minutes / 60) * Math.max(0, entry.effectiveRate)
+              : 0;
+
+            return (
+              <tr
+                key={entry.id}
+                className="transition-colors hover:bg-[#fbfdfc]"
+              >
+                <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3 text-[#2e4856]">
+                  {jalali(entry.startedAt, {
+                    day: "numeric",
+                    month: "long",
+                  })}
+                </td>
+
+                <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3 text-[#2e4856]">
+                  {client?.name || "—"}
+                </td>
+
+                <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3">
+                  <strong className="text-[#102a3a]">
+                    {project?.name || "—"}
+                  </strong>
+                </td>
+
+                <td className="max-w-65 border-b border-[#edf1f2] px-3 py-3 text-[#2e4856]">
+                  <span
+                    className="block truncate"
+                    title={entry.note || entry.task || undefined}
+                  >
+                    {entry.note || entry.task || "—"}
+                  </span>
+                </td>
+
+                <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3 font-extrabold text-[#102a3a]">
+                  {duration(minutes)}
+                </td>
+
+                <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3 text-[#2e4856]">
+                  {financialsHidden ? "••••••" : money(entry.effectiveRate)} تومان
+                </td>
+
+                <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3 font-extrabold text-[#102a3a]">
+                  {financialsHidden ? "••••••" : money(amount)} تومان
+                </td>
+
+                <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3">
+                  <StatusBadge success={entry.billable}>
+                    {entry.billable ? "قابل صورتحساب" : "غیرقابل صورتحساب"}
+                  </StatusBadge>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+
+        {entries.length > 0 && (
+          <tfoot>
+            <tr className="bg-[#f8fbfa]">
+              <td
+                colSpan={4}
+                className="border-t border-[#dfe7e9] px-3 py-3 font-extrabold text-[#102a3a]"
+              >
+                جمع رکوردهای نمایش‌داده‌شده
+              </td>
+
+              <td className="border-t border-[#dfe7e9] px-3 py-3 font-extrabold text-[#102a3a]">
+                {duration(totalMinutes)}
+              </td>
+
+              <td className="border-t border-[#dfe7e9] px-3 py-3" />
+
+              <td className="border-t border-[#dfe7e9] px-3 py-3 font-black text-[#079b60]">
+                {financialsHidden ? "••••••" : money(totalIncome)} تومان
+              </td>
+
+              <td className="border-t border-[#dfe7e9] px-3 py-3" />
+            </tr>
+          </tfoot>
+        )}
+      </table>
+    </div>
+  );
+}
+
