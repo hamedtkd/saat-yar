@@ -30,17 +30,29 @@ export const defaultSettings: Settings = {
 
 export const colors = ["#0969a9", "#f4a500", "#0a9d63", "#7d55b6", "#e76f1e", "#238d9a"];
 
-export const initialData: AppData = {
-  settings: defaultSettings,
-  records: {},
-  leaves: [],
-  clients: [],
-  projects: [],
-  timeEntries: [],
-  expenses: [],
-  invoices: [],
-  holidayOverrides: [],
-};
+export function createInitialData(options: { onboarded?: boolean } = {}): AppData {
+  return {
+    settings: {
+      ...defaultSettings,
+      onboarded: options.onboarded ?? defaultSettings.onboarded,
+      weeklySchedule: Object.fromEntries(
+        Object.entries(defaultSettings.weeklySchedule).map(([day, schedule]) => [day, { ...schedule }]),
+      ) as Settings["weeklySchedule"],
+      payrollComponents: defaultSettings.payrollComponents.map((component) => ({ ...component })),
+      notificationSettings: { ...defaultSettings.notificationSettings },
+    },
+    records: {},
+    leaves: [],
+    clients: [],
+    projects: [],
+    timeEntries: [],
+    expenses: [],
+    invoices: [],
+    holidayOverrides: [],
+  };
+}
+
+export const initialData: AppData = createInitialData();
 
 export function createLeaveDraft(): LeaveEntry {
   const today = localDateKey();

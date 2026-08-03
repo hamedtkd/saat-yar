@@ -29,3 +29,22 @@ test("controller facade delegates domain logic to focused hooks", () => {
   ]) assert.match(source, new RegExp(`${hook}\\(`));
   assert.ok(source.split(/\r?\n/).length < 150);
 });
+
+
+test("layout components stay below 250 lines", () => {
+  for (const file of [
+    "components/layout/app-header.tsx",
+    "components/layout/app-header/header-nav.tsx",
+    "components/layout/app-header/header-actions.tsx",
+    "components/layout/app-header/workspace-switcher.tsx",
+  ]) {
+    const source = readFileSync(new URL(file, root), "utf8");
+    assert.ok(source.split(/\r?\n/).length <= 250, `${file} exceeds 250 lines`);
+  }
+});
+
+test("danger zone resets through the complete AppData factory", () => {
+  const source = readFileSync(new URL("components/pages/settings/danger-zone.tsx", root), "utf8");
+  assert.match(source, /createInitialData\(\{ onboarded: true \}\)/);
+  assert.doesNotMatch(source, /records:\s*\{\}/);
+});

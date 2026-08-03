@@ -76,3 +76,11 @@
 - محاسبه درآمد، هزینه، سود خالص و حاشیه سود
 - هشدار نزدیک‌شدن یا عبور از بودجه زمانی
 - Migration داده از Schema 8 به 9
+
+## Phase 12 - Build safety and reusable UI audit
+
+- Fixed the Vercel type-check failure in the danger-zone reset by using a complete AppData factory.
+- Added `createInitialData` as the single source of truth for blank application state.
+- Split the 376-line app header into focused navigation, actions and workspace-switcher components.
+- Added architecture checks for the 250-line layout limit and safe data reset.
+- Added a reusable-component audit and extraction roadmap.
