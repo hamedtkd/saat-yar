@@ -7,7 +7,7 @@ import { TimePicker } from "@/components/pickers";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { TodayPageProps } from "./types";
+import type { TodayPageProps } from "./types.ts";
 import { cn } from "@/lib/cn";
 
 export function ManualEntryForm(props: Pick<TodayPageProps, "data" | "selectedDate" | "setData" | "setEditingEntry">) {

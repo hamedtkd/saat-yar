@@ -28,6 +28,7 @@ export function MonthCalendar({ data, selectedDate, setSelectedDate, monthRecord
           manualHoliday: item?.holiday,
           includeOfficialHolidays: data.settings.autoOfficialHolidays,
           includeWeeklyHoliday: data.settings.autoWeeklyHoliday,
+          overrides: data.holidayOverrides,
         });
         const effectiveItem = item ? { ...item, holiday: holiday.isHoliday } : item;
         const result = effectiveItem ? calc(effectiveItem, getDailyTargetMinutes(cell.key, data.settings)) : null;

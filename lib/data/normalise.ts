@@ -1,4 +1,4 @@
-import type { AppData, Settings, WeekdayKey } from "../types";
+import type { AppData, Settings, WeekdayKey } from "../types.ts";
 import { weekdayOrder } from "../work-schedule.ts";
 
 export function normaliseData(value: AppData, defaults: Settings): AppData {
@@ -47,5 +47,9 @@ export function normaliseData(value: AppData, defaults: Settings): AppData {
       billable: project.billable ?? true,
     })),
     timeEntries: value.timeEntries ?? [],
+    holidayOverrides: (value.holidayOverrides ?? []).map((item) => ({
+      ...item,
+      isHoliday: item.isHoliday !== false,
+    })),
   };
 }

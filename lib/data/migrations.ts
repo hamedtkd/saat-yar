@@ -1,5 +1,5 @@
 import { defaultSettings } from "../constants.ts";
-import type { AppData } from "../types";
+import type { AppData } from "../types.ts";
 import { normaliseData } from "./normalise.ts";
 import { APP_DATA_SCHEMA_VERSION } from "./version.ts";
 import { createDefaultWeeklySchedule } from "../work-schedule.ts";
@@ -127,11 +127,20 @@ function migrateV4ToV5(value: unknown): unknown {
   };
 }
 
+function migrateV5ToV6(value: unknown): unknown {
+  if (!isObject(value)) return value;
+  return {
+    ...value,
+    holidayOverrides: Array.isArray(value.holidayOverrides) ? value.holidayOverrides : [],
+  };
+}
+
 const migrations: Record<number, (value: unknown) => unknown> = {
   1: migrateV1ToV2,
   2: migrateV2ToV3,
   3: migrateV3ToV4,
   4: migrateV4ToV5,
+  5: migrateV5ToV6,
 };
 
 export function migrateAppData(value: unknown): MigrationResult {

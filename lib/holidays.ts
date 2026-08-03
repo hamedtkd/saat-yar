@@ -1,5 +1,5 @@
-import { jalaliParts } from "./format";
-import type { Mode } from "./types";
+import { jalaliParts } from "./format.ts";
+import type { HolidayOverride, Mode } from "./types.ts";
 
 export type HolidayKind = "official" | "weekly" | "worker" | "manual";
 
@@ -63,6 +63,7 @@ export function getHolidayInfo(
     manualHoliday?: boolean;
     includeWeeklyHoliday?: boolean;
     includeOfficialHolidays?: boolean;
+    overrides?: HolidayOverride[];
   } = {},
 ): HolidayInfo {
   const {
@@ -70,7 +71,15 @@ export function getHolidayInfo(
     manualHoliday = false,
     includeWeeklyHoliday = true,
     includeOfficialHolidays = true,
+    overrides = [],
   } = options;
+
+  const override = overrides.find((item) => item.date === dateKey);
+  if (override) {
+    return override.isHoliday
+      ? { isHoliday: true, title: override.title, kind: "manual", source: "user" }
+      : { isHoliday: false, title: override.title, kind: "manual", source: "user" };
+  }
 
   if (manualHoliday) {
     return { isHoliday: true, title: "تعطیلی ثبت‌شده توسط کاربر", kind: "manual", source: "user" };

@@ -17,7 +17,7 @@ import { duration, fa, nowTime } from "@/lib/format";
 import { spanMinutes } from "@/lib/time-engine";
 import type { BreakItem, WorkRecord } from "@/lib/types";
 
-import type { TodayPageProps } from "./types";
+import type { TodayPageProps } from "./types.ts";
 
 export function TodayTimeStrip(
   props: Pick<

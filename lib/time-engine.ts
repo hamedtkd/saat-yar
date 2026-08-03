@@ -1,4 +1,4 @@
-import type { BreakItem, WorkRecord } from "./types";
+import type { BreakItem, WorkRecord } from "./types.ts";
 
 export function timeToMinutes(value: string) {
   if (!value || !/^\d{2}:\d{2}$/.test(value)) return 0;

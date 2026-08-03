@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { duration, faDigits } from "@/lib/format";
-import type { TodayPageProps } from "./types";
+import type { TodayPageProps } from "./types.ts";
 import { cn } from "@/lib/cn";
 
 export function TodayFocusCard(props: Pick<TodayPageProps, "data" | "record" | "timerDraft" | "setTimerDraft" | "activeEntry" | "todayCalc" | "suggestedExit" | "toggleProjectTimer" | "startWork" | "finishWork">) {

@@ -1,4 +1,4 @@
-import type { Settings, TimeEntry, WorkRecord } from "./types";
+import type { Settings, TimeEntry, WorkRecord } from "./types.ts";
 
 export const fa = new Intl.NumberFormat("fa-IR");
 

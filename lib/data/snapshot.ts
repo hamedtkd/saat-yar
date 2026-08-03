@@ -1,4 +1,4 @@
-import type { AppData } from "../types";
+import type { AppData } from "../types.ts";
 import { APP_DATA_SCHEMA_VERSION, APP_DATA_STORAGE_FORMAT } from "./version.ts";
 
 export type AppDataSnapshot = {

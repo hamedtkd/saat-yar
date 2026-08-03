@@ -1,4 +1,4 @@
-import type { AppData, LeaveEntry, Settings } from "./types";
+import type { AppData, LeaveEntry, Settings } from "./types.ts";
 import { localDateKey } from "./format.ts";
 import { createDefaultWeeklySchedule } from "./work-schedule.ts";
 
@@ -30,6 +30,7 @@ export const initialData: AppData = {
   clients: [],
   projects: [],
   timeEntries: [],
+  holidayOverrides: [],
 };
 
 export function createLeaveDraft(): LeaveEntry {

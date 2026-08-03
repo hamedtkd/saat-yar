@@ -11,7 +11,7 @@ import { getHolidayInfo } from "@/lib/holidays";
 import { calc, minutesToTime, spanMinutes } from "@/lib/time-engine";
 import { getDailyTargetMinutes, getWorkScheduleDay } from "@/lib/work-schedule";
 import type { AppData, ClientDraft, LeaveEntry, Mode, ProjectDraft, ReportFilter, TimerDraft, WorkRecord } from "@/lib/types";
-import { usePersistedAppData } from "./use-persisted-app-data";
+import { usePersistedAppData } from "./use-persisted-app-data.ts";
 
 const initialTimerDraft: TimerDraft = { projectId: "", task: "", note: "", billable: true };
 const initialClientDraft: ClientDraft = { name: "", email: "", note: "" };
@@ -45,6 +45,7 @@ export function useSaatyarController() {
     manualHoliday: storedRecord.holiday,
     includeOfficialHolidays: data.settings.autoOfficialHolidays,
     includeWeeklyHoliday: data.settings.autoWeeklyHoliday,
+    overrides: data.holidayOverrides,
   });
   const record = { ...storedRecord, holiday: selectedHoliday.isHoliday };
   const todayCalc = calc(record, dailyTarget);
@@ -60,10 +61,11 @@ export function useSaatyarController() {
           manualHoliday: item.holiday,
           includeOfficialHolidays: data.settings.autoOfficialHolidays,
           includeWeeklyHoliday: data.settings.autoWeeklyHoliday,
+          overrides: data.holidayOverrides,
         }).isHoliday,
       }))
       .sort((a, b) => b.date.localeCompare(a.date)),
-    [data.records, data.settings.autoOfficialHolidays, data.settings.autoWeeklyHoliday, data.settings.mode, selectedMonth],
+    [data.records, data.holidayOverrides, data.settings.autoOfficialHolidays, data.settings.autoWeeklyHoliday, data.settings.mode, selectedMonth],
   );
   const monthStats = useMemo(() => monthRecords.reduce((acc, item) => {
     const itemTarget = getDailyTargetMinutes(item.date, data.settings);

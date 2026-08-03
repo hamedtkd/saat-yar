@@ -11,7 +11,7 @@ import { TodayFocusCard } from "./today-focus-card";
 import { TodayMetrics } from "./today-metrics";
 import { TodayTimeStrip } from "./today-time-strip";
 import { TodayTimeline } from "./today-timeline";
-import type { TodayPageProps } from "./types";
+import type { TodayPageProps } from "./types.ts";
 import { cn } from "@/lib/cn";
 
 export function TodayPage(props: TodayPageProps) {
@@ -20,6 +20,7 @@ export function TodayPage(props: TodayPageProps) {
     manualHoliday: props.record.holiday,
     includeOfficialHolidays: props.data.settings.autoOfficialHolidays,
     includeWeeklyHoliday: props.data.settings.autoWeeklyHoliday,
+    overrides: props.data.holidayOverrides,
   });
 
   return (
@@ -41,6 +42,7 @@ export function TodayPage(props: TodayPageProps) {
             mode={props.data.settings.mode}
             includeOfficialHolidays={props.data.settings.autoOfficialHolidays}
             includeWeeklyHoliday={props.data.settings.autoWeeklyHoliday}
+            holidayOverrides={props.data.holidayOverrides}
           />
         </div>
       </PageHeading>

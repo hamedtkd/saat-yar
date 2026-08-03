@@ -7,6 +7,16 @@ export type WorkScheduleDay = {
   end: string;
   lunchMinutes: number;
 };
+
+export type HolidayOverride = {
+  id: string;
+  date: string;
+  title: string;
+  kind: "company" | "emergency" | "manual";
+  isHoliday: boolean;
+  multiplier?: number;
+};
+
 export type Tab = "today" | "month" | "clients" | "projects" | "reports" | "leave" | "settings";
 
 export type BreakItem = {
@@ -107,6 +117,7 @@ export type AppData = {
   clients: Client[];
   projects: Project[];
   timeEntries: TimeEntry[];
+  holidayOverrides: HolidayOverride[];
 };
 
 export type TimerDraft = {

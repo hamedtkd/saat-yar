@@ -19,7 +19,7 @@ import {
 } from "@/lib/format";
 import { cn } from "@/lib/cn";
 import { getHolidayInfo } from "@/lib/holidays";
-import type { Mode } from "@/lib/types";
+import type { HolidayOverride, Mode } from "@/lib/types";
 
 type JalaliDatePickerProps = {
   value: string;
@@ -28,6 +28,7 @@ type JalaliDatePickerProps = {
   mode?: Mode;
   includeOfficialHolidays?: boolean;
   includeWeeklyHoliday?: boolean;
+  holidayOverrides?: HolidayOverride[];
 };
 
 const WEEK_DAYS = ["ش", "ی", "د", "س", "چ", "پ", "ج"];
@@ -39,6 +40,7 @@ export function JalaliDatePicker({
   mode = "employee",
   includeOfficialHolidays = true,
   includeWeeklyHoliday = true,
+  holidayOverrides = [],
 }: JalaliDatePickerProps) {
   const today = localDateKey();
 
@@ -217,6 +219,7 @@ export function JalaliDatePicker({
                   mode,
                   includeOfficialHolidays,
                   includeWeeklyHoliday,
+                  overrides: holidayOverrides,
                 });
 
                 return (

@@ -1,4 +1,4 @@
-import { cn } from "./cn";
+import { cn } from "./cn.ts";
 
 type Token = string | false | null | undefined;
 

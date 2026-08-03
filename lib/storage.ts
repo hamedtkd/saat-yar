@@ -1,7 +1,7 @@
-import { migrateAppData } from "./data/migrations";
-import { createAppDataSnapshot } from "./data/snapshot";
-import { APP_DATA_STORAGE_KEY } from "./data/version";
-import type { AppData, StorageInfo } from "./types";
+import { migrateAppData } from "./data/migrations.ts";
+import { createAppDataSnapshot } from "./data/snapshot.ts";
+import { APP_DATA_STORAGE_KEY } from "./data/version.ts";
+import type { AppData, StorageInfo } from "./types.ts";
 
 const DB_NAME = "saatyar-db";
 const STORE_NAME = "app-data";

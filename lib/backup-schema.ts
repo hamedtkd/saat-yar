@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { migrateAppData } from "./data/migrations.ts";
 import { APP_DATA_SCHEMA_VERSION } from "./data/version.ts";
-import type { AppData } from "./types";
+import type { AppData } from "./types.ts";
 
 const modeSchema = z.enum(["employee", "freelancer", "hybrid"]);
 const isoDateSchema = z.string().min(1);
@@ -85,6 +85,15 @@ const projectSchema = z.object({
   billable: z.boolean(),
 }).passthrough();
 
+const holidayOverrideSchema = z.object({
+  id: z.string(),
+  date: isoDateSchema,
+  title: z.string(),
+  kind: z.enum(["company", "emergency", "manual"]),
+  isHoliday: z.boolean(),
+  multiplier: z.number().nonnegative().optional(),
+}).passthrough();
+
 const timeEntrySchema = z.object({
   id: z.string(),
   clientId: z.string(),
@@ -104,6 +113,7 @@ export const appDataSchema = z.object({
   clients: z.array(clientSchema),
   projects: z.array(projectSchema),
   timeEntries: z.array(timeEntrySchema),
+  holidayOverrides: z.array(holidayOverrideSchema),
 }).passthrough();
 
 export type BackupData = AppData & {

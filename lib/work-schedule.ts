@@ -1,4 +1,4 @@
-import type { Settings, WeekdayKey, WorkScheduleDay } from "./types";
+import type { Settings, WeekdayKey, WorkScheduleDay } from "./types.ts";
 import { timeToMinutes } from "./time-engine.ts";
 
 export const weekdayOrder: WeekdayKey[] = [

@@ -5,7 +5,7 @@ import { StatusBadge } from "@/components/common/status-badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { duration, entryMinutes, faDigits, localDateKey } from "@/lib/format";
-import type { TodayPageProps } from "./types";
+import type { TodayPageProps } from "./types.ts";
 import { cn } from "@/lib/cn";
 
 export function TodayTimeline(
