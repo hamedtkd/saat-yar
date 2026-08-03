@@ -1,0 +1,41 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { TodayPage } from "@/components/pages/today/today-page";
+import { useSaatyarContext, getTabHref } from "@/components/saatyar-shell";
+
+export default function TodayRoute() {
+  const controller = useSaatyarContext();
+  const router = useRouter();
+
+  if (!controller.ready) return null;
+
+  return (
+    <TodayPage
+      data={controller.data}
+      setData={controller.setData}
+      record={controller.record}
+      selectedDate={controller.selectedDate}
+      setSelectedDate={controller.setSelectedDate}
+      todayCalc={controller.todayCalc}
+      dailyTarget={controller.dailyTarget}
+      suggestedExit={controller.suggestedExit}
+      activeEntry={controller.activeEntry}
+      activeBreak={controller.activeBreak}
+      lunchRunning={controller.lunchRunning}
+      timerDraft={controller.timerDraft}
+      setTimerDraft={controller.setTimerDraft}
+      startWork={controller.startWork}
+      finishWork={controller.finishWork}
+      updateRecord={controller.updateRecord}
+      startLunch={controller.startLunch}
+      finishLunch={controller.finishLunch}
+      startBreak={controller.startBreak}
+      finishBreak={controller.finishBreak}
+      toggleProjectTimer={controller.toggleProjectTimer}
+      editingEntry={controller.editingEntry}
+      setEditingEntry={controller.setEditingEntry}
+      setTab={(tab) => router.push(getTabHref(tab))}
+    />
+  );
+}

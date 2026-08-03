@@ -6,7 +6,7 @@ import { colors, createLeaveDraft, defaultSettings } from "@/lib/constants";
 import { exportCsv, exportExcel } from "@/lib/exporters";
 import { emptyRecord, entryMinutes, localDateKey, normaliseData, nowTime } from "@/lib/format";
 import { calc, minutesToTime, spanMinutes, timeToMinutes } from "@/lib/time-engine";
-import type { AppData, ClientDraft, LeaveEntry, Mode, ProjectDraft, ReportFilter, Tab, TimerDraft, WorkRecord } from "@/lib/types";
+import type { AppData, ClientDraft, LeaveEntry, Mode, ProjectDraft, ReportFilter, TimerDraft, WorkRecord } from "@/lib/types";
 import { usePersistedAppData } from "./use-persisted-app-data";
 
 const initialTimerDraft: TimerDraft = { projectId: "", task: "", note: "", billable: true };
@@ -17,7 +17,6 @@ const initialFilters: ReportFilter = { clientId: "all", projectId: "all", billab
 export function useSaatyarController() {
   const persisted = usePersistedAppData();
   const { data, setData, setToast, storage } = persisted;
-  const [tab, setTab] = useState<Tab>("today");
   const [selectedDate, setSelectedDate] = useState(localDateKey());
   const [selectedProjectId, setSelectedProjectId] = useState("");
   const [onboardingStep, setOnboardingStep] = useState(2);
@@ -232,7 +231,6 @@ export function useSaatyarController() {
 
   function changeMode(mode: Mode) {
     setData((previous) => ({ ...previous, settings: { ...previous.settings, mode } }));
-    if ((mode === "employee" && (tab === "clients" || tab === "projects")) || (mode === "freelancer" && (tab === "month" || tab === "leave"))) setTab("today");
     setToast(`فضای کاری روی «${{ employee: "کارمند", freelancer: "فریلنسر", hybrid: "ترکیبی" }[mode]}» قرار گرفت`);
   }
 
@@ -244,7 +242,7 @@ export function useSaatyarController() {
 
   return {
     ...persisted,
-    tab, setTab, selectedDate, setSelectedDate, selectedProjectId, setSelectedProjectId,
+    selectedDate, setSelectedDate, selectedProjectId, setSelectedProjectId,
     onboardingStep, setOnboardingStep, showClientForm, setShowClientForm, showProjectForm, setShowProjectForm,
     clientDraft, setClientDraft, projectDraft, setProjectDraft, timerDraft, setTimerDraft,
     editingEntry, setEditingEntry, reportFilter, setReportFilter, leaveDraft, setLeaveDraft, importPreview,

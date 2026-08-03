@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Check, ChevronDown, Clock3 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -54,10 +54,6 @@ export function TimePicker({
 }: TimePickerProps) {
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState(() => normalizeTime(value));
-
-  useEffect(() => {
-    setDraft(normalizeTime(value));
-  }, [value]);
 
   const [hour = "00", minute = "00"] = draft.split(":");
 

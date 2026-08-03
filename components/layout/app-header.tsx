@@ -12,6 +12,8 @@ import {
   UserRound,
   Users,
 } from "lucide-react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 
 import { Brand } from "@/components/common/brand";
 import { Button } from "@/components/ui/button";
@@ -30,39 +32,44 @@ const nav = [
     id: "today" as Tab,
     label: "امروز",
     icon: CalendarDays,
+    href: "/today",
   },
   {
     id: "month" as Tab,
     label: "ماه من",
     icon: LayoutDashboard,
+    href: "/month",
   },
   {
     id: "clients" as Tab,
     label: "مشتری‌ها",
     icon: Users,
+    href: "/clients",
   },
   {
     id: "projects" as Tab,
     label: "پروژه‌ها",
     icon: Folder,
+    href: "/projects",
   },
   {
     id: "leave" as Tab,
     label: "مرخصی‌ها",
     icon: Umbrella,
+    href: "/leave",
   },
   {
     id: "reports" as Tab,
     label: "گزارش‌ها",
     icon: BarChart3,
+    href: "/reports",
   },
 ];
 
 type AppHeaderProps = {
   name: string;
   mode: Mode;
-  tab: Tab;
-  onTabChange: (tab: Tab) => void;
+  pathname?: string;
   onModeChange: (mode: Mode) => void;
   onExport: () => void;
 };
@@ -70,11 +77,13 @@ type AppHeaderProps = {
 export function AppHeader({
   name,
   mode,
-  tab,
-  onTabChange,
+  pathname: propPathname,
   onModeChange,
   onExport,
 }: AppHeaderProps) {
+  const router = useRouter();
+  const currentPath = usePathname() || propPathname || "/today";
+
   const visibleNavItems = nav.filter((item) => {
     if (mode === "employee") {
       return item.id !== "clients" && item.id !== "projects";
@@ -143,87 +152,86 @@ export function AppHeader({
           "max-[900px]:backdrop-blur-xl",
 
           /*
-           * Buttons
+           * Links/Buttons
            */
-          "[&_button]:relative",
-          "[&_button]:inline-flex",
-          "[&_button]:min-w-[86px]",
-          "[&_button]:items-center",
-          "[&_button]:justify-center",
-          "[&_button]:gap-2",
-          "[&_button]:border-0",
-          "[&_button]:bg-transparent",
-          "[&_button]:font-bold",
-          "[&_button]:text-[#102a3a]",
-          "[&_button]:transition-colors",
-          "[&_button]:duration-200",
+          "[&_a]:relative",
+          "[&_a]:inline-flex",
+          "[&_a]:min-w-[86px]",
+          "[&_a]:items-center",
+          "[&_a]:justify-center",
+          "[&_a]:gap-2",
+          "[&_a]:border-0",
+          "[&_a]:bg-transparent",
+          "[&_a]:font-bold",
+          "[&_a]:text-[#102a3a]",
+          "[&_a]:transition-colors",
+          "[&_a]:duration-200",
 
           /*
            * Icons
            */
-          "[&_button_svg]:h-5",
-          "[&_button_svg]:w-5",
-          "[&_button_svg]:shrink-0",
-          "[&_button_svg]:stroke-[1.8]",
+          "[&_a_svg]:h-5",
+          "[&_a_svg]:w-5",
+          "[&_a_svg]:shrink-0",
+          "[&_a_svg]:stroke-[1.8]",
 
           /*
            * Active state
            */
-          "[&_button.active]:text-[#079b60]",
+          "[&_a.active]:text-[#079b60]",
 
           /*
            * Active indicator
            */
-          "[&_button]:after:absolute",
-          "[&_button]:after:inset-x-3",
-          "[&_button]:after:bottom-0",
-          "[&_button]:after:h-[3px]",
-          "[&_button]:after:rounded-t-lg",
-          "[&_button]:after:bg-transparent",
-          "[&_button]:after:content-['']",
-          "[&_button]:after:transition-colors",
-          "[&_button.active]:after:bg-[#079b60]",
+          "[&_a]:after:absolute",
+          "[&_a]:after:inset-x-3",
+          "[&_a]:after:bottom-0",
+          "[&_a]:after:h-[3px]",
+          "[&_a]:after:rounded-t-lg",
+          "[&_a]:after:bg-transparent",
+          "[&_a]:after:content-['']",
+          "[&_a]:after:transition-colors",
+          "[&_a.active]:after:bg-[#079b60]",
 
           /*
            * Tablet
            */
-          "max-[1180px]:[&_button]:min-w-[72px]",
+          "max-[1180px]:[&_a]:min-w-[72px]",
 
           /*
            * Mobile buttons
            */
-          "max-[900px]:[&_button]:min-w-[55px]",
-          "max-[900px]:[&_button]:flex-1",
-          "max-[900px]:[&_button]:flex-col",
-          "max-[900px]:[&_button]:gap-[3px]",
-          "max-[900px]:[&_button]:rounded-xl",
-          "max-[900px]:[&_button]:px-1",
-          "max-[900px]:[&_button]:py-1",
-          "max-[900px]:[&_button]:text-[9px]",
-          "max-[900px]:[&_button]:leading-none",
+          "max-[900px]:[&_a]:min-w-[55px]",
+          "max-[900px]:[&_a]:flex-1",
+          "max-[900px]:[&_a]:flex-col",
+          "max-[900px]:[&_a]:gap-[3px]",
+          "max-[900px]:[&_a]:rounded-xl",
+          "max-[900px]:[&_a]:px-1",
+          "max-[900px]:[&_a]:py-1",
+          "max-[900px]:[&_a]:text-[9px]",
+          "max-[900px]:[&_a]:leading-none",
 
-          "max-[900px]:[&_button_svg]:h-[21px]",
-          "max-[900px]:[&_button_svg]:w-[21px]",
+          "max-[900px]:[&_a_svg]:h-[21px]",
+          "max-[900px]:[&_a_svg]:w-[21px]",
 
-          "max-[900px]:[&_button]:after:inset-x-3",
-          "max-[900px]:[&_button]:after:bottom-[-4px]"
+          "max-[900px]:[&_a]:after:inset-x-3",
+          "max-[900px]:[&_a]:after:bottom-[-4px]"
         )}
         aria-label="ناوبری اصلی"
       >
-        {visibleNavItems.map(({ id, label, icon: Icon }) => {
-          const isActive = tab === id;
+        {visibleNavItems.map(({ label, icon: Icon, href }) => {
+          const isActive = currentPath === href;
 
           return (
-            <button
-              type="button"
-              key={id}
+            <Link
+              key={href}
+              href={href}
               className={isActive ? "active" : undefined}
               aria-current={isActive ? "page" : undefined}
-              onClick={() => onTabChange(id)}
             >
               <Icon aria-hidden="true" />
               <span>{label}</span>
-            </button>
+            </Link>
           );
         })}
       </nav>
@@ -289,7 +297,15 @@ export function AppHeader({
 
           <Select
             value={mode}
-            onValueChange={(value) => onModeChange(value as Mode)}
+            onValueChange={(value) => {
+              onModeChange(value as Mode);
+              // Handle redirection if current page is disallowed for the new mode
+              if (value === "employee" && (currentPath === "/clients" || currentPath === "/projects")) {
+                router.push("/today");
+              } else if (value === "freelancer" && (currentPath === "/month" || currentPath === "/leave")) {
+                router.push("/today");
+              }
+            }}
           >
             <SelectTrigger
               aria-label="تغییر سریع فضای کاری"
@@ -307,7 +323,7 @@ export function AppHeader({
         </div>
 
         <Button
-        className='min-w-11'
+          className="min-w-11"
           variant="outline"
           size="icon"
           onClick={onExport}
@@ -318,15 +334,12 @@ export function AppHeader({
 
         <Button
           variant="outline"
-          onClick={() => onTabChange("settings")}
-          className='justify-center'
+          onClick={() => router.push("/settings")}
+          className="justify-center"
           aria-label="باز کردن تنظیمات"
         >
           <Settings aria-hidden="true" />
-          <span className='hidden lg:block'>
-
-          تنظیمات
-          </span>
+          <span className="hidden lg:block">تنظیمات</span>
         </Button>
       </div>
     </header>

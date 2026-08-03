@@ -1,5 +1,5 @@
-import { SaatyarApp } from "@/components/saatyar-app";
+import { redirect } from "next/navigation";
 
 export default function HomePage() {
-  return <SaatyarApp />;
+  redirect("/today");
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   CalendarDays,
   Check,
@@ -36,10 +36,6 @@ export function JalaliDatePicker({
 
   const [open, setOpen] = useState(false);
   const [viewDate, setViewDate] = useState(value || today);
-
-  useEffect(() => {
-    setViewDate(value || today);
-  }, [value, today]);
 
   const cells = useMemo(
     () => jalaliMonthCells(viewDate),

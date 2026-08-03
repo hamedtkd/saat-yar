@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -40,12 +40,8 @@ export function MinuteDurationField({
     [max, min, presets],
   );
   const [customMode, setCustomMode] = useState(!options.includes(value));
-
-  useEffect(() => {
-    if (!options.includes(value)) setCustomMode(true);
-  }, [options, value]);
-
-  const selectValue = customMode ? CUSTOM_VALUE : String(value);
+  const customModeActive = customMode || !options.includes(value);
+  const selectValue = customModeActive ? CUSTOM_VALUE : String(value);
 
   function updateCustomValue(rawValue: string) {
     const parsed = Number(rawValue);
