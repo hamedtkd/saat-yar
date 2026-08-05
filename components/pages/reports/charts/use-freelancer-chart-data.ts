@@ -26,7 +26,7 @@ export function useFreelancerChartData(entries: TimeEntry[], reportBillable: num
       day.minutes += minutes;
       if (entry.billable) day.income += (minutes / 60) * Math.max(0, entry.effectiveRate);
     }
-    return days.map(({ date: _date, ...item }) => item);
+    return days.map(({ key, day, fullDate, minutes, income }) => ({ key, day, fullDate, minutes, income }));
   }, [entries]);
 
   const allMinutes = useMemo(

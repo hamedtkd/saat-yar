@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronRight, Clock3, Info, Pause, Play, Plus, ReceiptText, Square, Tag, Trash2, TrendingDown, TrendingUp, TriangleAlert, WalletCards } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ChevronRight, Clock3, Info, Pause, Play, Plus, ReceiptText, Square, Trash2, TrendingDown, TrendingUp, TriangleAlert, WalletCards } from "lucide-react";
 import { EmptyState } from "@/components/common/empty-state";
 import { MetricCard } from "@/components/common/metric-card";
 import { NumberField } from "@/components/common/number-field";
@@ -33,6 +33,12 @@ export function ProjectDetail({ data, setData, project, activeEntry, onBack, onT
   financialsHidden: boolean;
 }) {
   const [showExpenseForm, setShowExpenseForm] = useState(false);
+  const [now, setNow] = useState<number>();
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(Date.now()), 30_000);
+    return () => window.clearInterval(timer);
+  }, []);
   const [expenseDraft, setExpenseDraft] = useState({ title: "", amount: 0, date: localDateKey(), category: "other" as ExpenseCategory, note: "" });
   const entries = data.timeEntries.filter((entry) => entry.projectId === project.id);
   const expenses = data.expenses.filter((expense) => expense.projectId === project.id).sort((a, b) => b.date.localeCompare(a.date));
@@ -96,7 +102,7 @@ export function ProjectDetail({ data, setData, project, activeEntry, onBack, onT
     </section>
 
     <section className="grid grid-cols-[minmax(0,1fr)_250px] gap-[14px] max-[900px]:grid-cols-1">
-      <article className="min-w-0 rounded-[15px] border border-[#dfe7e9] bg-white/95 p-[13px] shadow-[0_10px_35px_rgba(17,45,55,.055)]"><PanelHead icon={<Clock3 />} title="تازه‌ترین رکوردهای زمان" /><div className="w-full overflow-x-auto"><table className="w-full border-collapse text-[11px]"><thead><tr className="border-y border-[#edf1f2] bg-[#fbfcfc] text-right text-[#536975]"><th className="p-3">تاریخ</th><th className="p-3">شروع</th><th className="p-3">پایان</th><th className="p-3">مدت</th><th className="p-3">وظیفه</th><th className="p-3">قابل صورتحساب</th></tr></thead><tbody>{entries.slice(0, 8).map((entry) => <tr key={entry.id} className="border-b border-[#edf1f2]"><td className="p-3">{new Intl.DateTimeFormat("fa-IR-u-ca-persian", { weekday: "long", day: "numeric", month: "long" }).format(new Date(entry.startedAt))}</td><td className="p-3">{new Date(entry.startedAt).toLocaleTimeString("fa-IR", { hour: "2-digit", minute: "2-digit" })}</td><td className="p-3">{entry.endedAt ? new Date(entry.endedAt).toLocaleTimeString("fa-IR", { hour: "2-digit", minute: "2-digit" }) : "در حال اجرا"}</td><td className="p-3">{duration(Math.max(0, Math.round(((entry.endedAt ? new Date(entry.endedAt).getTime() : Date.now()) - new Date(entry.startedAt).getTime()) / 60_000)))}</td><td className="p-3">{entry.task || entry.note || "—"}</td><td className="p-3"><StatusBadge success={entry.billable}>{entry.billable ? "بله" : "خیر"}</StatusBadge></td></tr>)}{entries.length === 0 && <tr><td colSpan={6}><EmptyState compact icon={<Clock3 />} description="هنوز زمانی برای این پروژه ثبت نشده." /></td></tr>}</tbody></table></div></article>
+      <article className="min-w-0 rounded-[15px] border border-[#dfe7e9] bg-white/95 p-[13px] shadow-[0_10px_35px_rgba(17,45,55,.055)]"><PanelHead icon={<Clock3 />} title="تازه‌ترین رکوردهای زمان" /><div className="w-full overflow-x-auto"><table className="w-full border-collapse text-[11px]"><thead><tr className="border-y border-[#edf1f2] bg-[#fbfcfc] text-right text-[#536975]"><th className="p-3">تاریخ</th><th className="p-3">شروع</th><th className="p-3">پایان</th><th className="p-3">مدت</th><th className="p-3">وظیفه</th><th className="p-3">قابل صورتحساب</th></tr></thead><tbody>{entries.slice(0, 8).map((entry) => <tr key={entry.id} className="border-b border-[#edf1f2]"><td className="p-3">{new Intl.DateTimeFormat("fa-IR-u-ca-persian", { weekday: "long", day: "numeric", month: "long" }).format(new Date(entry.startedAt))}</td><td className="p-3">{new Date(entry.startedAt).toLocaleTimeString("fa-IR", { hour: "2-digit", minute: "2-digit" })}</td><td className="p-3">{entry.endedAt ? new Date(entry.endedAt).toLocaleTimeString("fa-IR", { hour: "2-digit", minute: "2-digit" }) : "در حال اجرا"}</td><td className="p-3">{duration(Math.max(0, Math.round(((entry.endedAt ? new Date(entry.endedAt).getTime() : now ?? new Date(entry.startedAt).getTime()) - new Date(entry.startedAt).getTime()) / 60_000)))}</td><td className="p-3">{entry.task || entry.note || "—"}</td><td className="p-3"><StatusBadge success={entry.billable}>{entry.billable ? "بله" : "خیر"}</StatusBadge></td></tr>)}{entries.length === 0 && <tr><td colSpan={6}><EmptyState compact icon={<Clock3 />} description="هنوز زمانی برای این پروژه ثبت نشده." /></td></tr>}</tbody></table></div></article>
       <aside className="rounded-[15px] border border-[#dfe7e9] bg-white/95 p-4 shadow-[0_10px_35px_rgba(17,45,55,.055)] max-[900px]:order-first"><PanelHead icon={<Info />} title="اطلاعات پروژه" /><dl className="m-0 [&_dt]:border-t [&_dt]:border-[#edf1f2] [&_dt]:pt-[13px] [&_dt]:text-[10px] [&_dt]:text-[#6c7d89] [&_dd]:mb-[13px] [&_dd]:mt-1.5 [&_dd]:text-xs"><dt>وضعیت</dt><dd><StatusBadge success>{project.status === "active" ? "فعال" : "متوقف"}</StatusBadge></dd><dt>نرخ ساعتی</dt><dd>{mask(project.rate)} تومان</dd><dt>قابل صورتحساب</dt><dd>{project.billable === false ? "خیر" : "بله"}</dd><dt>یادداشت‌ها</dt><dd>{project.note || "—"}</dd></dl></aside>
     </section>
   </>;

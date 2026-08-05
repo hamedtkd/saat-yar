@@ -1,4 +1,4 @@
-import { BarChart3, Check, FileSpreadsheet, Printer } from "lucide-react";
+import { BarChart3, Check, Printer } from "lucide-react";
 import { PanelHead } from "@/components/common/panel-head";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";

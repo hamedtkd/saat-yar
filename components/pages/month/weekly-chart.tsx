@@ -15,7 +15,7 @@ import { BarChart3, Info } from "lucide-react";
 
 import { PanelHead } from "@/components/common/panel-head";
 import { cn } from "@/lib/cn";
-import { duration, fa } from "@/lib/format";
+import { duration } from "@/lib/format";
 import { SummaryRow } from "@/components/common/summary-row";
 
 type WeeklyChartProps = {

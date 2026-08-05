@@ -28,17 +28,13 @@ export function FreelancerWeeklyTooltip({
   if (!active || !payload?.length) {
     return null;
   }
-
   const chartItem = payload[0]?.payload;
-
   const minutes =
     payload.find((item) => item.dataKey === "minutes")
       ?.value ?? 0;
-
   const income =
     payload.find((item) => item.dataKey === "income")
       ?.value ?? 0;
-
   return (
     <div
       dir="rtl"
@@ -53,14 +49,12 @@ export function FreelancerWeeklyTooltip({
         <strong className="block text-xs font-extrabold text-[#102a3a]">
           {label}
         </strong>
-
         {chartItem?.fullDate && (
           <span className="mt-1 block text-[10px] text-[#6c7d89]">
             {chartItem.fullDate}
           </span>
         )}
       </div>
-
       <div className="grid gap-2">
         <div className="flex items-center justify-between gap-5">
           <span className="flex items-center gap-2 text-[11px] text-[#526b75]">
@@ -72,7 +66,6 @@ export function FreelancerWeeklyTooltip({
             />
             زمان ثبت‌شده
           </span>
-
           <strong
             dir="ltr"
             className="text-xs font-extrabold text-[#102a3a]"
@@ -80,7 +73,6 @@ export function FreelancerWeeklyTooltip({
             {duration(minutes)}
           </strong>
         </div>
-
         <div className="flex items-center justify-between gap-5">
           <span className="flex items-center gap-2 text-[11px] text-[#526b75]">
             <i
@@ -91,7 +83,6 @@ export function FreelancerWeeklyTooltip({
             />
             درآمد
           </span>
-
           <strong className="text-xs font-extrabold text-[#102a3a]">
             {money(income)} تومان
           </strong>
@@ -108,19 +99,14 @@ export function EmployeeDailyTooltip({
   if (!active || !payload?.length) {
     return null;
   }
-
   const chartItem = payload[0]?.payload;
-
   const worked =
     payload.find((item) => item.dataKey === "worked")
       ?.value ?? 0;
-
   const target =
     payload.find((item) => item.dataKey === "target")
       ?.value ?? 0;
-
   const balance = worked - target;
-
   return (
     <div
       dir="rtl"
@@ -135,14 +121,12 @@ export function EmployeeDailyTooltip({
         <strong className="block text-xs font-extrabold text-[#102a3a]">
           {label}
         </strong>
-
         {chartItem?.fullDate && (
           <span className="mt-1 block text-[10px] text-[#6c7d89]">
             {chartItem.fullDate}
           </span>
         )}
       </div>
-
       <div className="grid gap-2">
         <div className="flex items-center justify-between gap-5">
           <span className="flex items-center gap-2 text-[11px] text-[#526b75]">
@@ -154,7 +138,6 @@ export function EmployeeDailyTooltip({
             />
             کارکرد خالص
           </span>
-
           <strong
             dir="ltr"
             className="text-xs font-extrabold text-[#102a3a]"
@@ -162,7 +145,6 @@ export function EmployeeDailyTooltip({
             {duration(worked)}
           </strong>
         </div>
-
         <div className="flex items-center justify-between gap-5">
           <span className="flex items-center gap-2 text-[11px] text-[#526b75]">
             <i
@@ -173,7 +155,6 @@ export function EmployeeDailyTooltip({
             />
             ساعت موظفی
           </span>
-
           <strong
             dir="ltr"
             className="text-xs font-extrabold text-[#102a3a]"
@@ -181,12 +162,10 @@ export function EmployeeDailyTooltip({
             {duration(target)}
           </strong>
         </div>
-
         <div className="flex items-center justify-between gap-5 border-t border-[#edf2f3] pt-2">
           <span className="text-[11px] text-[#526b75]">
             تراز روز
           </span>
-
           <strong
             dir="ltr"
             className={cn(
@@ -203,7 +182,6 @@ export function EmployeeDailyTooltip({
     </div>
   );
 }
-
 export function DonutTooltip({
   active,
   payload,
@@ -211,9 +189,7 @@ export function DonutTooltip({
   if (!active || !payload?.length) {
     return null;
   }
-
   const item = payload[0];
-
   return (
     <div
       dir="rtl"
@@ -232,11 +208,9 @@ export function DonutTooltip({
               CHART_COLORS.billable,
           }}
         />
-
         <span className="text-[11px] text-[#526b75]">
           {item.name}
         </span>
-
         <strong
           dir="ltr"
           className="mr-3 text-xs font-extrabold text-[#102a3a]"
@@ -247,4 +221,3 @@ export function DonutTooltip({
     </div>
   );
 }
-

@@ -1,6 +1,5 @@
 import { StatusBadge } from "@/components/common/status-badge";
-import { cn } from "@/lib/cn";
-import { duration, entryMinutes, faDigits, jalali, money } from "@/lib/format";
+import { duration, entryMinutes, jalali, money } from "@/lib/format";
 import type { AppData, TimeEntry } from "@/lib/types";
 import { FREELANCER_HEADINGS, TableHeading } from "./report-table-shared";
 

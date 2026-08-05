@@ -1,4 +1,3 @@
-import { Clock3 } from "lucide-react";
 import { cn } from "@/lib/cn";
 import Image from "next/image";
 export function Brand({
