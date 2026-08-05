@@ -28,4 +28,5 @@ test("quality checks remove obsolete copied entrypoints before validation", asyn
   assert.match(pkg.scripts.check, /^npm run clean:obsolete/);
   assert.match(cleanup, /app\/date-time-pickers\.tsx/);
   assert.match(cleanup, /app\/storage\.ts/);
+  assert.match(cleanup, /lib\/tw\.ts/);
 });
