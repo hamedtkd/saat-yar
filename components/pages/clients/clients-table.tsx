@@ -1,28 +1,25 @@
 import { MoreVertical, Search, Users } from "lucide-react";
 import { EmptyState } from "@/components/common/empty-state";
 import { PrivateMoney } from "@/components/common/private-money";
-import { PanelHead } from "@/components/common/panel-head";
 import { StatusBadge } from "@/components/common/status-badge";
+import { TableBody, TableHead, TableShell } from "@/components/common/table-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { duration, entryMinutes, fa, jalali, localDateKey } from "@/lib/format";
 import type { AppData } from "@/lib/types";
-import { cn } from "@/lib/cn";
 
 export function ClientsTable({ data, setData, financialsHidden }: { data: AppData; setData: React.Dispatch<React.SetStateAction<AppData>>; financialsHidden: boolean }) {
   return (
-    <article className={cn("rounded-[15px] border border-[#dfe7e9] bg-white/95 shadow-[0_10px_35px_rgba(17,45,55,.055)] p-4", "min-w-0 p-[13px]")}>
-      <PanelHead icon={<Users />} title="فهرست مشتری‌ها"><div className={cn("flex min-w-[230px] items-center gap-[7px] rounded-[11px] border border-[#dfe7e9] bg-white px-[10px] [&_svg]:flex-none [&_svg]:text-[#6c7d89] [&_input]:border-0 [&_input]:px-0 [&_input]:shadow-none")}><Search /><Input placeholder="جست‌وجوی مشتری" /></div></PanelHead>
-      <div className={cn("w-full overflow-x-auto [&_table]:w-full [&_table]:border-collapse [&_table]:text-[11px] [&_th]:h-[39px] [&_th]:whitespace-nowrap [&_th]:border-y [&_th]:border-[#edf1f2] [&_th]:bg-[#fbfcfc] [&_th]:px-3 [&_th]:py-2 [&_th]:text-right [&_th]:font-semibold [&_th]:text-[#536975] [&_td]:min-h-[46px] [&_td]:whitespace-nowrap [&_td]:border-b [&_td]:border-[#edf1f2] [&_td]:px-3 [&_td]:py-[9px] [&_td]:text-[#2e4856] [&_td_strong]:flex [&_td_strong]:items-center [&_td_strong]:gap-[7px] [&_td_strong]:text-[11px] [&_td_strong]:text-[#102a3a] [&_td_strong>i]:h-[7px] [&_td_strong>i]:w-[7px] [&_td_strong>i]:rounded-full [&_td_small]:mt-[3px] [&_td_small]:block [&_td_small]:text-[9px] [&_td_small]:text-[#6c7d89] [&_td_input]:min-w-[175px]")}><table><thead><tr><th>مشتری</th><th>پروژه‌ها</th><th>زمان کل</th><th>مبلغ</th><th>آخرین فعالیت</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>
-        {data.clients.map((client) => {
-          const projects = data.projects.filter((project) => project.clientId === client.id);
-          const entries = data.timeEntries.filter((entry) => entry.clientId === client.id);
-          const minutes = entries.reduce((sum, entry) => sum + entryMinutes(entry), 0);
-          const income = entries.reduce((sum, entry) => sum + (entry.billable ? entryMinutes(entry) / 60 * entry.effectiveRate : 0), 0);
-          return <tr key={client.id}><td><strong className={cn("[&>span]:grid [&>span]:h-[39px] [&>span]:w-[39px] [&>span]:place-items-center [&>span]:rounded-full [&>span]:text-[17px] [&>span]:text-white")}><span style={{ background: client.color }}>{client.name.slice(0, 1)}</span>{client.name}</strong><small>{client.note}</small></td><td>{fa.format(projects.length)}<small>پروژه</small></td><td>{duration(minutes)}<small>ساعت</small></td><td><PrivateMoney value={income} hidden={financialsHidden} /><small>تومان</small></td><td>{entries[0] ? jalali(localDateKey(new Date(entries[0].startedAt))) : "—"}</td><td><StatusBadge success={!client.archived}>{client.archived ? "غیرفعال" : "فعال"}</StatusBadge></td><td><Button variant="outline" size="icon" onClick={() => setData((previous) => ({ ...previous, clients: previous.clients.map((item) => item.id === client.id ? { ...item, archived: !item.archived } : item) }))}><MoreVertical /></Button></td></tr>;
-        })}
-        {data.clients.length === 0 && <tr><td colSpan={7}><EmptyState icon={<Users />} title="هنوز مشتری‌ای ثبت نشده" description="با دکمه «مشتری جدید» شروع کن." /></td></tr>}
-      </tbody></table></div>
-    </article>
+    <TableShell className="p-4">
+      <caption className="mb-4 caption-top text-right"><div className="flex items-center justify-between gap-3 max-[620px]:items-stretch max-[620px]:flex-col"><div><strong className="text-base text-[var(--text)]">فهرست مشتری‌ها</strong><p className="mt-1 text-[11px] text-[var(--text-muted)]">درآمد، زمان و وضعیت مشتری‌ها در یک نگاه</p></div><div className="flex min-w-[230px] items-center gap-2 rounded-[var(--control-radius)] border border-[var(--border)] bg-[var(--surface-2)] px-3 text-[var(--text-muted)] focus-within:border-[var(--accent)] focus-within:ring-4 focus-within:ring-[var(--accent-soft)]"><Search className="size-4 shrink-0" /><Input className="border-0 bg-transparent px-0 focus-visible:ring-0" placeholder="جست‌وجوی مشتری" /></div></div></caption>
+      <TableHead><tr><th>مشتری</th><th>پروژه‌ها</th><th>زمان کل</th><th>مبلغ</th><th>آخرین فعالیت</th><th>وضعیت</th><th>عملیات</th></tr></TableHead>
+      <TableBody>{data.clients.map((client) => {
+        const projects = data.projects.filter((project) => project.clientId === client.id);
+        const entries = data.timeEntries.filter((entry) => entry.clientId === client.id);
+        const minutes = entries.reduce((sum, entry) => sum + entryMinutes(entry), 0);
+        const income = entries.reduce((sum, entry) => sum + (entry.billable ? entryMinutes(entry) / 60 * entry.effectiveRate : 0), 0);
+        return <tr key={client.id}><td><div className="flex items-center gap-3"><span className="grid size-10 place-items-center rounded-full text-base font-black text-[var(--accent-foreground)]" style={{ background: client.color }}>{client.name.slice(0, 1)}</span><div><strong className="block text-[var(--text)]">{client.name}</strong><small className="text-[var(--text-muted)]">{client.note || "بدون توضیح"}</small></div></div></td><td>{fa.format(projects.length)}<small className="block text-[var(--text-muted)]">پروژه</small></td><td>{duration(minutes)}<small className="block text-[var(--text-muted)]">ساعت</small></td><td><PrivateMoney value={income} hidden={financialsHidden} /><small className="block text-[var(--text-muted)]">تومان</small></td><td>{entries[0] ? jalali(localDateKey(new Date(entries[0].startedAt))) : "—"}</td><td><StatusBadge success={!client.archived}>{client.archived ? "غیرفعال" : "فعال"}</StatusBadge></td><td><Button variant="ghost" size="icon" onClick={() => setData((previous) => ({ ...previous, clients: previous.clients.map((item) => item.id === client.id ? { ...item, archived: !item.archived } : item) }))}><MoreVertical /></Button></td></tr>;
+      })}{data.clients.length === 0 && <tr><td colSpan={7}><EmptyState icon={<Users />} title="هنوز مشتری‌ای ثبت نشده" description="با دکمه «مشتری جدید» شروع کن." /></td></tr>}</TableBody>
+    </TableShell>
   );
 }

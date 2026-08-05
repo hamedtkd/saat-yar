@@ -13,7 +13,7 @@ export function ExpenseForm({ draft, setDraft, onSave, onCancel }: {
   onCancel: () => void;
 }) {
   return (
-    <div className="mb-4 grid grid-cols-4 gap-3 rounded-xl bg-[#f8fbfa] p-3 max-[900px]:grid-cols-2 max-[620px]:grid-cols-1">
+    <div className="mb-4 grid grid-cols-4 gap-3 rounded-[var(--control-radius)] bg-[var(--surface-2)] p-3 max-[900px]:grid-cols-2 max-[620px]:grid-cols-1">
       <label className="grid gap-1 text-xs">عنوان<Input value={draft.title} onChange={(event) => setDraft((value) => ({ ...value, title: event.target.value }))} /></label>
       <label className="grid gap-1 text-xs">مبلغ (تومان)<NumberField value={draft.amount} onValueChange={(amount) => setDraft((value) => ({ ...value, amount }))} /></label>
       <label className="grid gap-1 text-xs">تاریخ<Input type="date" value={draft.date} onChange={(event) => setDraft((value) => ({ ...value, date: event.target.value }))} /></label>
