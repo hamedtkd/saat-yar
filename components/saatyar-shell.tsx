@@ -4,6 +4,7 @@ import { CheckCircle2 } from "lucide-react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, useContext, useEffect } from "react";
+import { SkipLink } from "@/components/common/skip-link";
 import { AppFooter } from "@/components/layout/app-footer";
 import { AppHeader } from "@/components/layout/app-header";
 import { Onboarding } from "@/components/layout/onboarding";
@@ -92,6 +93,7 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
 
   return (
     <SaatyarContext.Provider value={controller}>
+      <SkipLink />
       <main
         className={cn(
           "min-h-screen w-full p-3 max-[900px]:p-[7px] max-[900px]:pb-24 [&_label]:grid [&_label]:gap-[7px] [&_label]:text-[11px] [&_label]:font-semibold [&_label]:text-[#314b58] [&_button]:cursor-pointer [&_svg]:h-[18px] [&_svg]:w-[18px] [&_svg]:stroke-[1.85]",
@@ -131,6 +133,9 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
         />
 
         <div
+          id="main-content"
+          role="main"
+          tabIndex={-1}
           className={cn(
             "mx-auto max-w-[1510px] px-[26px] pb-[18px] pt-[30px] max-[900px]:px-[10px] max-[900px]:py-[22px]",
           )}

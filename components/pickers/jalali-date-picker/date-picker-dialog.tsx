@@ -1,6 +1,8 @@
-import { Check } from "lucide-react";
+import { Check, X } from "lucide-react";
+import { useId } from "react";
 
 import { Button } from "@/components/ui/button";
+import { useDialogAccessibility } from "@/hooks/accessibility/use-dialog-accessibility";
 import { cn } from "@/lib/cn";
 
 import { CalendarGrid } from "./calendar-grid";
@@ -22,6 +24,9 @@ type DatePickerDialogProps = {
 };
 
 export function DatePickerDialog(props: DatePickerDialogProps) {
+  const titleId = useId();
+  const dialogRef = useDialogAccessibility(props.onClose);
+
   return (
     <>
       <button
@@ -31,9 +36,11 @@ export function DatePickerDialog(props: DatePickerDialogProps) {
         onClick={props.onClose}
       />
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
-        aria-label="انتخاب تاریخ"
+        aria-labelledby={titleId}
+        tabIndex={-1}
         dir="rtl"
         className={cn(
           "fixed top-1/2 left-1/2 z-[750] w-[min(430px,calc(100vw-24px))]",
@@ -42,6 +49,14 @@ export function DatePickerDialog(props: DatePickerDialogProps) {
           "shadow-[0_28px_90px_rgba(17,45,55,0.25)]",
         )}
       >
+        <div className="mb-2 flex items-center justify-between gap-3">
+          <h2 id={titleId} className="text-sm font-extrabold text-[#102a3a]">
+            انتخاب تاریخ
+          </h2>
+          <Button type="button" variant="ghost" size="icon" aria-label="بستن تقویم" onClick={props.onClose}>
+            <X aria-hidden="true" />
+          </Button>
+        </div>
         <CalendarHeader
           title={props.title}
           onPreviousMonth={props.onPreviousMonth}
@@ -58,10 +73,7 @@ export function DatePickerDialog(props: DatePickerDialogProps) {
         <Button
           type="button"
           onClick={props.onSelectToday}
-          className={cn(
-            "mt-4 h-14 w-full rounded-xl bg-[#0b4556]",
-            "text-sm font-extrabold text-white shadow-none hover:bg-[#083b49]",
-          )}
+          className="mt-4 h-12 w-full rounded-xl bg-[#0b4556] text-sm font-extrabold text-white shadow-none hover:bg-[#083b49]"
         >
           <Check aria-hidden="true" className="size-4.5" />
           امروز
