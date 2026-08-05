@@ -2,7 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { ClientsPage } from "@/components/pages/clients/clients-page";
-import { useSaatyarContext, getTabHref } from "@/components/saatyar-shell";
+import { useSaatyarContext } from "@/components/saatyar-shell";
+import { getTabHref } from "@/lib/navigation";
 
 export default function ClientsRoute() {
   const controller = useSaatyarContext();

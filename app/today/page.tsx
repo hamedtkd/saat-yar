@@ -2,7 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { TodayPage } from "@/components/pages/today/today-page";
-import { useSaatyarContext, getTabHref } from "@/components/saatyar-shell";
+import { useSaatyarContext } from "@/components/saatyar-shell";
+import { getTabHref } from "@/lib/navigation";
 
 export default function TodayRoute() {
   const controller = useSaatyarContext();
