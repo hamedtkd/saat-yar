@@ -92,3 +92,10 @@
 - Added a local import resolution check and included it in the main validation command.
 - Added architecture coverage to keep report overview modules below 250 lines.
 - Removed invalid nested JSX from the payroll summary section.
+## فاز ۲۰ — بازآرایی نمای ماه
+
+- جدول ماه به نسخه‌های دسکتاپ، موبایل و ابزارهای مشترک تقسیم شد.
+- نمودار هفتگی به Hook داده، نمودار، Tooltip، خلاصه و Empty State تقسیم شد.
+- استفاده از SurfaceCard و EmptyState در نمای ماه استاندارد شد.
+- تست معماری سقف ۲۵۰ خط برای ماژول‌های ماه اضافه شد.
+
