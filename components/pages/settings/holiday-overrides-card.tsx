@@ -5,6 +5,7 @@ import { CalendarPlus, Save, Trash2 } from "lucide-react";
 import { PanelHead } from "@/components/common/panel-head";
 import { JalaliDatePicker } from "@/components/pickers";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { jalali, localDateKey } from "@/lib/format";
@@ -51,7 +52,7 @@ export function HolidayOverridesCard({ data, setData, setToast }: {
         <label>تاریخ<JalaliDatePicker value={draft.date} onChange={(date) => setDraft((current) => ({ ...current, date }))} mode={data.settings.mode} includeOfficialHolidays={data.settings.autoOfficialHolidays} includeWeeklyHoliday={data.settings.autoWeeklyHoliday} holidayOverrides={data.holidayOverrides} /></label>
         <label>نوع<Select value={draft.kind} onValueChange={(kind) => setDraft((current) => ({ ...current, kind: kind as HolidayOverride["kind"] }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="company">تعطیلی شرکت</SelectItem><SelectItem value="emergency">تعطیلی اضطراری</SelectItem><SelectItem value="manual">استثنای دستی</SelectItem></SelectContent></Select></label>
         <label>عنوان<Input value={draft.title} onChange={(event) => setDraft((current) => ({ ...current, title: event.target.value }))} placeholder="مثلاً تعطیلی شرکت" /></label>
-        <label className="flex min-h-13 items-center gap-2 rounded-xl border border-[var(--border)] px-3"><input type="checkbox" checked={draft.isHoliday} onChange={(event) => setDraft((current) => ({ ...current, isHoliday: event.target.checked }))} className="size-4 accent-[var(--accent)]" /><span className="text-[10px] font-bold">این روز تعطیل است</span></label>
+        <label className="flex min-h-13 cursor-pointer items-center gap-2 rounded-xl border border-[var(--border)] px-3"><Checkbox checked={draft.isHoliday} onCheckedChange={(isHoliday) => setDraft((current) => ({ ...current, isHoliday }))} /><span className="text-[10px] font-bold">این روز تعطیل است</span></label>
       </div>
       <Button onClick={save}><Save /> ذخیره استثنا</Button>
 

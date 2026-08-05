@@ -4,6 +4,7 @@ import { NumberField } from "@/components/common/number-field";
 import { PanelHead } from "@/components/common/panel-head";
 import { TimePicker } from "@/components/pickers";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -87,11 +88,9 @@ export function WorkSettingsCard({
         </label>
 
         <label className="flex min-h-13 cursor-pointer items-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2 text-[var(--text)]">
-          <input
-            type="checkbox"
+          <Checkbox
             checked={data.settings.autoOfficialHolidays}
-            onChange={(event) => setSetting("autoOfficialHolidays", event.target.checked)}
-            className="size-4 accent-[var(--accent)]"
+            onCheckedChange={(checked) => setSetting("autoOfficialHolidays", checked)}
           />
           <span className="grid gap-0.5">
             <strong className="text-[11px]">تشخیص تعطیلات رسمی</strong>
@@ -100,11 +99,9 @@ export function WorkSettingsCard({
         </label>
 
         <label className="flex min-h-13 cursor-pointer items-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2 text-[var(--text)]">
-          <input
-            type="checkbox"
+          <Checkbox
             checked={data.settings.autoWeeklyHoliday}
-            onChange={(event) => setSetting("autoWeeklyHoliday", event.target.checked)}
-            className="size-4 accent-[var(--accent)]"
+            onCheckedChange={(checked) => setSetting("autoWeeklyHoliday", checked)}
           />
           <span className="grid gap-0.5">
             <strong className="text-[11px]">جمعه به‌عنوان تعطیل هفتگی</strong>
@@ -131,7 +128,7 @@ export function WorkSettingsCard({
             return (
               <div key={day} className="grid grid-cols-[120px_repeat(3,minmax(120px,1fr))_110px] items-end gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-3 max-[900px]:grid-cols-2 max-[620px]:grid-cols-1">
                 <label className="flex min-h-10 cursor-pointer items-center gap-2">
-                  <input type="checkbox" checked={schedule.enabled} onChange={(event) => setScheduleDay(day, "enabled", event.target.checked)} className="size-4 accent-[var(--accent)]" />
+                  <Checkbox checked={schedule.enabled} onCheckedChange={(enabled) => setScheduleDay(day, "enabled", enabled)} />
                   <strong className={schedule.enabled ? "text-[var(--text)]" : "text-[var(--text-muted)]"}>{weekdayLabels[day]}</strong>
                 </label>
                 <label>شروع<TimePicker value={schedule.start} onChange={(value) => setScheduleDay(day, "start", value)} /></label>

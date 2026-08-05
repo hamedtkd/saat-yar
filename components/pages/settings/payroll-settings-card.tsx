@@ -2,6 +2,7 @@ import { Plus, ReceiptText, Trash2 } from "lucide-react";
 import { NumberField } from "@/components/common/number-field";
 import { PanelHead } from "@/components/common/panel-head";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { money } from "@/lib/format";
@@ -43,7 +44,7 @@ export function PayrollSettingsCard({ data, setData, setToast, financialsHidden 
         {items.map((item) => (
           <div key={item.id} className="grid grid-cols-[40px_1fr_150px_180px_40px] items-end gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-3 max-[760px]:grid-cols-1">
             <label className="flex items-center justify-center pb-3 max-[760px]:justify-start">
-              <input type="checkbox" checked={item.enabled !== false} onChange={(event) => updateItem(item.id, { enabled: event.target.checked })} className="size-4 accent-[var(--accent)]" aria-label={`فعال بودن ${item.title}`} />
+              <Checkbox checked={item.enabled !== false} onCheckedChange={(enabled) => updateItem(item.id, { enabled })} aria-label={`فعال بودن ${item.title}`} />
             </label>
             <label>عنوان<Input value={item.title} onChange={(event) => updateItem(item.id, { title: event.target.value })} /></label>
             <label>نوع<Select value={item.type} onValueChange={(value) => updateItem(item.id, { type: value as PayrollComponent["type"] })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="earning">مزایا</SelectItem><SelectItem value="deduction">کسورات</SelectItem></SelectContent></Select></label>

@@ -6,6 +6,7 @@ import { PanelHead } from "@/components/common/panel-head";
 import { SurfaceCard } from "@/components/common/surface-card";
 import { TimePicker } from "@/components/pickers";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { TodayPageProps } from "./types.ts";
@@ -31,7 +32,7 @@ export function ManualEntryForm(props: Pick<TodayPageProps, "data" | "selectedDa
         <label>شروع<TimePicker value={draft.start} onChange={(start) => setDraft({ ...draft, start })} /></label>
         <label>پایان<TimePicker value={draft.end} onChange={(end) => setDraft({ ...draft, end })} /></label>
         <label className="col-span-2 max-[620px]:col-auto">شرح<Input value={draft.note} onChange={(event) => setDraft({ ...draft, note: event.target.value })} placeholder="مثلاً جلسه طراحی" /></label>
-        <label className="flex min-h-11 items-center gap-2.5 self-end rounded-[var(--control-radius)] border border-[var(--border)] bg-[var(--surface-2)] px-3 text-[var(--text)]"><input className="size-[18px] accent-[var(--accent)]" type="checkbox" checked={draft.billable} onChange={(event) => setDraft({ ...draft, billable: event.target.checked })} /> قابل صورتحساب</label>
+        <label className="flex min-h-11 items-center gap-2.5 self-end rounded-[var(--control-radius)] border border-[var(--border)] bg-[var(--surface-2)] px-3 text-[var(--text)]"><Checkbox checked={draft.billable} onCheckedChange={(billable) => setDraft({ ...draft, billable })} /> قابل صورتحساب</label>
       </div>
       <Button onClick={save}><Save /> ذخیره ورودی</Button>
     </SurfaceCard>
