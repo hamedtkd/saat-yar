@@ -1,8 +1,8 @@
 import type { Dispatch, SetStateAction } from "react";
-import { isValidAppData, parseBackup } from "@/lib/backup-schema";
+import { isValidAppData } from "@/lib/backup-schema";
+import { createBackupEnvelope, mergeAppData, parseBackupEnvelope } from "@/lib/backup-workflow";
 import { defaultSettings } from "@/lib/constants";
 import { normaliseData } from "@/lib/data/normalise";
-import { APP_DATA_SCHEMA_VERSION } from "@/lib/data/version";
 import { localDateKey } from "@/lib/format";
 import type { AppData } from "@/lib/types";
 
@@ -17,10 +17,7 @@ function downloadBlob(blob: Blob, name: string) {
   anchor.href = url; anchor.download = name; anchor.click(); URL.revokeObjectURL(url);
 }
 function backupBlob(source: AppData) {
-  return new Blob([JSON.stringify({ appName: "ساعت‌یار", schemaVersion: APP_DATA_SCHEMA_VERSION, exportedAt: new Date().toISOString(), data: source }, null, 2)], { type: "application/json" });
-}
-function mergeById<T extends { id: string }>(current: T[], incoming: T[]) {
-  return [...current, ...incoming.filter((item) => !current.some((existing) => existing.id === item.id))];
+  return new Blob([JSON.stringify(createBackupEnvelope(source), null, 2)], { type: "application/json" });
 }
 
 export function useBackupActions({ data, setData, setToast, importPreview, setImportPreview, storage }: Args) {
@@ -30,7 +27,7 @@ export function useBackupActions({ data, setData, setToast, importPreview, setIm
     const reader = new FileReader();
     reader.onload = () => {
       try {
-        const parsed = parseBackup(JSON.parse(String(reader.result)));
+        const parsed = parseBackupEnvelope(JSON.parse(String(reader.result)));
         if (!isValidAppData(parsed)) throw new Error("invalid");
         setImportPreview(normaliseData(parsed, defaultSettings)); setToast("فایل معتبر است؛ روش بازیابی را انتخاب کنید");
       } catch { setImportPreview(null); setToast("ساختار فایل پشتیبان معتبر نیست"); }
@@ -40,13 +37,7 @@ export function useBackupActions({ data, setData, setToast, importPreview, setIm
   async function applyImport(mode: "merge" | "replace") {
     if (!importPreview) return;
     if (mode === "replace") downloadBlob(backupBlob(data), `saatyar-before-replace-${localDateKey()}.json`);
-    const next = mode === "replace" ? importPreview : {
-      settings: { ...data.settings, ...importPreview.settings }, records: { ...data.records, ...importPreview.records },
-      leaves: mergeById(data.leaves, importPreview.leaves), clients: mergeById(data.clients, importPreview.clients),
-      projects: mergeById(data.projects, importPreview.projects), timeEntries: mergeById(data.timeEntries, importPreview.timeEntries),
-      expenses: mergeById(data.expenses, importPreview.expenses), invoices: mergeById(data.invoices, importPreview.invoices),
-      holidayOverrides: mergeById(data.holidayOverrides, importPreview.holidayOverrides),
-    };
+    const next = mode === "replace" ? importPreview : mergeAppData(data, importPreview);
     await storage.save(next); setData(next); setImportPreview(null);
     setToast(mode === "replace" ? "داده‌ها با موفقیت جایگزین شدند" : "داده‌ها با موفقیت ادغام شدند");
   }
