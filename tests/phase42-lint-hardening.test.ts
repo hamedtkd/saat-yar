@@ -17,5 +17,6 @@ test("shell effect depends on stable controller fields instead of the controller
   const source = await readFile(shellPath, "utf8");
   assert.match(source, /const \{ ready, selectedDate, setSelectedDate, data \} = controller;/);
   assert.doesNotMatch(source, /\[controller\./);
-  assert.match(source, /\[mode, pathTab, ready, requestedDate, router, selectedDate, setSelectedDate\]/);
+  assert.match(source, /\[mode, pathTab, ready, router\]/);
+  assert.doesNotMatch(source, /useSearchParams/);
 });

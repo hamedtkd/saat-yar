@@ -2,14 +2,15 @@
 
 import { CheckCircle2 } from "lucide-react";
 import Image from "next/image";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { createContext, useContext, useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { createContext, Suspense, useContext, useEffect } from "react";
 import { SkipLink } from "@/components/common/skip-link";
 import { ThemeRuntime } from "@/components/theme/theme-runtime";
 import { AppFooter } from "@/components/layout/app-footer";
 import { AppHeader } from "@/components/layout/app-header";
 import { SidebarNav } from "@/components/layout/navigation/sidebar-nav";
 import { MobileBottomNav } from "@/components/layout/navigation/mobile-bottom-nav";
+import { RouteSync } from "@/components/layout/route-sync";
 import { Onboarding } from "@/components/layout/onboarding";
 import { useSaatyarController } from "@/hooks/use-saatyar-controller";
 import { cn } from "@/lib/cn";
@@ -57,18 +58,12 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
   const controller = useSaatyarController();
   const pathname = usePathname() || "/today";
   const router = useRouter();
-  const searchParams = useSearchParams();
   const pathTab = getPathTab(pathname);
   const { ready, selectedDate, setSelectedDate, data } = controller;
   const mode = data.settings.mode;
-  const requestedDate = searchParams.get("date");
 
   useEffect(() => {
     if (!ready) return;
-    if (requestedDate && /^\d{4}-\d{2}-\d{2}$/.test(requestedDate) && requestedDate !== selectedDate) {
-      setSelectedDate(requestedDate);
-    }
-
     if (!pathTab) {
       router.replace("/today");
       return;
@@ -77,7 +72,7 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
     if (!allowedTabs[mode].includes(pathTab)) {
       router.replace(getTabHref(getFirstAllowedTab(mode)));
     }
-  }, [mode, pathTab, ready, requestedDate, router, selectedDate, setSelectedDate]);
+  }, [mode, pathTab, ready, router]);
 
   useEffect(() => {
     if (!pathTab) return;
@@ -108,6 +103,9 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
   return (
     <SaatyarContext.Provider value={controller}>
       <ThemeRuntime appearance={data.settings.appearance} />
+      <Suspense fallback={null}>
+        <RouteSync selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+      </Suspense>
       <SkipLink />
       <main
         className={cn(
