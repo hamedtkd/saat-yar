@@ -29,7 +29,7 @@ export function TodayFocusCard(props: Props) {
         </div>
         <div className="relative grid min-h-52 place-items-center content-center overflow-hidden border-r border-[var(--border)] bg-[linear-gradient(145deg,var(--surface-2),var(--accent-soft))] p-5 text-center max-[980px]:border-r-0 max-[980px]:border-t">
           <div className="absolute -left-10 -top-12 size-40 rounded-full bg-[var(--accent-soft)] blur-3xl" aria-hidden="true" />
-          <span className="relative flex items-center gap-2 text-xs font-bold text-[var(--accent-strong)]"><i className="size-2.5 rounded-full bg-[var(--accent)] ring-4 ring-[var(--accent-soft)]" />{timerLabel}</span>
+          <span className="relative flex items-center gap-2 text-xs font-bold text-[var(--accent-strong)]"><i className="size-2.5 rounded-full bg-[var(--accent)] ring-2 ring-[var(--accent-soft)]" />{timerLabel}</span>
           <strong className="relative my-3 text-[clamp(2.4rem,5vw,4.2rem)] font-black tracking-[-.04em]">{props.activeEntry ? <LiveDuration startedAt={props.activeEntry.startedAt} /> : props.record.start && !props.record.end ? duration(props.todayCalc.worked) : "۰:۰۰"}</strong>
           <small className="relative text-xs text-[var(--text-muted)]">خروج پیشنهادی: {faDigits(props.suggestedExit)}</small>
           <div className="relative mt-4 flex flex-wrap justify-center gap-2 max-[620px]:w-full max-[620px]:flex-col">

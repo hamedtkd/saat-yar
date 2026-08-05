@@ -15,7 +15,7 @@ export function WelcomeStep({
 }) {
   return (
     <StepShell>
-      <span className={cn("mx-auto mb-5 mt-[70px] grid h-[82px] w-[82px] place-items-center rounded-3xl bg-[#edf9f4] text-[#079b60] [&_svg]:h-[46px] [&_svg]:w-[46px]")}>
+      <span className={cn("mx-auto mb-5 mt-[70px] grid h-[82px] w-[82px] place-items-center rounded-3xl bg-[var(--accent-soft)] text-[var(--accent-strong)] [&_svg]:h-[46px] [&_svg]:w-[46px]")}>
         <Clock3 />
       </span>
       <h1>به ساعت‌یار خوش آمدی</h1>

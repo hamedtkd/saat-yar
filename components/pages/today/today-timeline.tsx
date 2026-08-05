@@ -1,6 +1,7 @@
 import { Clock3, Edit3, Folder, Info, Play, Plus } from "lucide-react";
 import { EmptyState } from "@/components/common/empty-state";
 import { PanelHead } from "@/components/common/panel-head";
+import { SurfaceCard } from "@/components/common/surface-card";
 import { StatusBadge } from "@/components/common/status-badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,12 +33,7 @@ export function TodayTimeline(
         "grid grid-cols-[minmax(0,1fr)_320px] gap-[14px] max-[900px]:grid-cols-1",
       )}
     >
-      <article
-        className={cn(
-          "rounded-[15px] border border-[#dfe7e9] bg-white/95 shadow-[0_10px_35px_rgba(17,45,55,.055)] p-4",
-          "min-w-0 p-[13px]",
-        )}
-      >
+      <SurfaceCard className="min-w-0 p-[13px]">
         <PanelHead icon={<Clock3 />} title="خط زمانی امروز">
           {props.data.settings.mode !== "employee" && (
             <Button
@@ -53,7 +49,7 @@ export function TodayTimeline(
         </PanelHead>
         <div
           className={cn(
-            "w-full overflow-x-auto [&_table]:w-full [&_table]:border-collapse [&_table]:text-[11px] [&_th]:h-[39px] [&_th]:whitespace-nowrap [&_th]:border-y [&_th]:border-[#edf1f2] [&_th]:bg-[#fbfcfc] [&_th]:px-3 [&_th]:py-2 [&_th]:text-right [&_th]:font-semibold [&_th]:text-[#536975] [&_td]:min-h-[46px] [&_td]:whitespace-nowrap [&_td]:border-b [&_td]:border-[#edf1f2] [&_td]:px-3 [&_td]:py-[9px] [&_td]:text-[#2e4856] [&_td_strong]:flex [&_td_strong]:items-center [&_td_strong]:gap-[7px] [&_td_strong]:text-[11px] [&_td_strong]:text-[#102a3a] [&_td_strong>i]:h-[7px] [&_td_strong>i]:w-[7px] [&_td_strong>i]:rounded-full [&_td_small]:mt-[3px] [&_td_small]:block [&_td_small]:text-[9px] [&_td_small]:text-[#6c7d89] [&_td_input]:min-w-[175px]",
+            "w-full overflow-x-auto [&_table]:w-full [&_table]:border-collapse [&_table]:text-[11px] [&_th]:h-[39px] [&_th]:whitespace-nowrap [&_th]:border-y [&_th]:border-[var(--border)] [&_th]:bg-[var(--surface-2)] [&_th]:px-3 [&_th]:py-2 [&_th]:text-right [&_th]:font-semibold [&_th]:text-[var(--text-muted)] [&_td]:min-h-[46px] [&_td]:whitespace-nowrap [&_td]:border-b [&_td]:border-[var(--border)] [&_td]:px-3 [&_td]:py-[9px] [&_td]:text-[var(--text)] [&_td_strong]:flex [&_td_strong]:items-center [&_td_strong]:gap-[7px] [&_td_strong]:text-[11px] [&_td_strong]:text-[var(--text)] [&_td_strong>i]:size-[7px] [&_td_strong>i]:rounded-full [&_td_small]:mt-[3px] [&_td_small]:block [&_td_small]:text-[9px] [&_td_small]:text-[var(--text-muted)] [&_td_input]:min-w-[175px]",
           )}
         >
           <table>
@@ -160,7 +156,7 @@ export function TodayTimeline(
         </div>
         <div
           className={cn(
-            "flex justify-center px-0 pb-0 pt-3 text-[11px] text-[#6c7d89] [&_strong]:text-base [&_strong]:text-[#102a3a]",
+            "flex justify-center px-0 pb-0 pt-3 text-[11px] text-[var(--text-muted)] [&_strong]:text-base [&_strong]:text-[var(--text)]",
           )}
         >
           <span>
@@ -172,19 +168,14 @@ export function TodayTimeline(
             </strong>
           </span>
         </div>
-      </article>
+      </SurfaceCard>
       {props.data.settings.mode !== "employee" && (
-        <aside
-          className={cn(
-            "rounded-[15px] border border-[#dfe7e9] bg-white/95 shadow-[0_10px_35px_rgba(17,45,55,.055)] p-4",
-            "p-[17px] max-[900px]:order-first [&>button]:mt-3",
-          )}
-        >
+        <SurfaceCard as="aside" className="p-[17px] max-[900px]:order-first [&>button]:mt-3">
           <PanelHead icon={<Info />} title="پروژه‌های اخیر" />
           {recentProjects.map((project) => (
             <div
               className={cn(
-                "grid grid-cols-[9px_1fr_auto] items-center gap-[10px] border-b border-[#edf1f2] py-3 [&>span]:h-[9px] [&>span]:w-[9px] [&>span]:rounded-full [&>div]:grid [&_strong]:text-xs [&_small]:text-[9px] [&_small]:text-[#6c7d89]",
+                "grid grid-cols-[9px_1fr_auto] items-center gap-[10px] border-b border-[var(--border)] py-3 [&>span]:size-[9px] [&>span]:rounded-full [&>div]:grid [&_strong]:text-xs [&_small]:text-[9px] [&_small]:text-[var(--text-muted)]",
               )}
               key={project.id}
             >
@@ -222,7 +213,7 @@ export function TodayTimeline(
           >
             مشاهده همه پروژه‌ها
           </Button>
-        </aside>
+        </SurfaceCard>
       )}
     </section>
   );
