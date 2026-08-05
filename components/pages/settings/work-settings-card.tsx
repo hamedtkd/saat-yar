@@ -55,8 +55,28 @@ export function WorkSettingsCard({
       },
     }));
 
+
+  const setWeeklyTargetHours = (hours: number) => {
+    const enabledDays = weekdayOrder.filter((day) => data.settings.weeklySchedule[day].enabled);
+    if (!enabledDays.length) return;
+    const totalMinutes = Math.max(0, Math.round(hours * 60));
+    const perDay = Math.floor(totalMinutes / enabledDays.length);
+    const remainder = totalMinutes % enabledDays.length;
+    const toTime = (minutes: number) => `${String(Math.floor((minutes % 1440) / 60)).padStart(2, "0")}:${String(minutes % 60).padStart(2, "0")}`;
+    setData((previous) => {
+      const weeklySchedule = { ...previous.settings.weeklySchedule };
+      enabledDays.forEach((day, index) => {
+        const schedule = weeklySchedule[day];
+        const [hour, minute] = schedule.start.split(":").map(Number);
+        const target = perDay + (index < remainder ? 1 : 0);
+        weeklySchedule[day] = { ...schedule, end: toTime(hour * 60 + minute + schedule.lunchMinutes + target) };
+      });
+      return { ...previous, settings: { ...previous.settings, weeklyMinutes: totalMinutes, weeklySchedule } };
+    });
+  };
+
   return (
-    <section className="col-span-full rounded-[15px] border border-[var(--border)] bg-[var(--surface-1)] p-5 shadow-[0_10px_35px_rgba(17,45,55,.055)] max-[620px]:col-auto">
+    <section className="col-span-full scroll-mt-24 rounded-[15px] border border-[var(--border)] bg-[var(--surface-1)] p-5 shadow-[0_6px_20px_rgba(17,45,55,.04)] max-[620px]:col-auto">
       <PanelHead icon={<Settings />} title="تنظیمات کاری و حقوق" />
       <div className="mb-4 grid grid-cols-3 gap-[14px] max-[900px]:grid-cols-2 max-[620px]:grid-cols-1">
         <label>
@@ -119,7 +139,11 @@ export function WorkSettingsCard({
               <small className="text-[10px] text-[var(--text-muted)]">هر روز می‌تواند ساعت شروع، پایان و ناهار مستقل داشته باشد. شیفتی که پایانش قبل از شروع باشد، شب‌کار در نظر گرفته می‌شود.</small>
             </div>
           </div>
-          <span className="rounded-full bg-[var(--surface-1)] px-3 py-1.5 text-[10px] font-bold text-[var(--text-muted)]">هدف هفتگی: {Math.round(getWeeklyTargetMinutes(data.settings) / 60 * 10) / 10} ساعت</span>
+          <label className="flex min-h-10 items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] px-3 text-[10px] font-bold text-[var(--text-muted)]">
+            هدف هفتگی
+            <NumberField className="h-8 w-24" value={Math.round(getWeeklyTargetMinutes(data.settings) / 6) / 10} min={0} step={0.5} onValueChange={setWeeklyTargetHours} />
+            ساعت
+          </label>
         </div>
 
         <div className="grid gap-2">

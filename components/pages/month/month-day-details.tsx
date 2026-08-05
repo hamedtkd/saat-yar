@@ -43,7 +43,7 @@ export function MonthDayDetails({ data, selectedDate }: { data: AppData; selecte
           </div>
         </div>
         <Button asChild>
-          <Link href="/today"><Edit3 className="size-4" /> ویرایش این روز</Link>
+          <Link href={`/today?date=${selectedDate}`}><Edit3 className="size-4" /> ویرایش این روز</Link>
         </Button>
       </div>
 

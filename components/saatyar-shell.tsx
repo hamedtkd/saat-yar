@@ -2,7 +2,7 @@
 
 import { CheckCircle2 } from "lucide-react";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { createContext, useContext, useEffect } from "react";
 import { SkipLink } from "@/components/common/skip-link";
 import { ThemeRuntime } from "@/components/theme/theme-runtime";
@@ -35,7 +35,7 @@ const allowedTabs: Record<Mode, Tab[]> = {
 };
 
 function getPathTab(pathname: string): Tab | null {
-  const cleaned = pathname.split("?")[0].split("#")[0];
+  const cleaned = pathname.split("?")[0].split("#")[0].replace(/\/+$/, "") || "/";
   return (Object.keys(tabRoutes) as Tab[]).find((tab) => tabRoutes[tab] === cleaned) ?? null;
 }
 
@@ -57,10 +57,15 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
   const controller = useSaatyarController();
   const pathname = usePathname() || "/today";
   const router = useRouter();
+  const searchParams = useSearchParams();
   const pathTab = getPathTab(pathname);
 
   useEffect(() => {
     if (!controller.ready) return;
+    const requestedDate = searchParams.get("date");
+    if (requestedDate && /^\d{4}-\d{2}-\d{2}$/.test(requestedDate) && requestedDate !== controller.selectedDate) {
+      controller.setSelectedDate(requestedDate);
+    }
 
     if (!pathTab) {
       router.replace("/today");
@@ -71,7 +76,12 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
     if (!currentAllowed.includes(pathTab)) {
       router.replace(getTabHref(getFirstAllowedTab(controller.data.settings.mode)));
     }
-  }, [controller.ready, pathTab, controller.data.settings.mode, router]);
+  }, [controller.ready, controller.selectedDate, controller.setSelectedDate, pathTab, controller.data.settings.mode, router, searchParams]);
+
+  useEffect(() => {
+    if (!pathTab) return;
+    window.localStorage.setItem("saatyar:last-route", getTabHref(pathTab));
+  }, [pathTab]);
 
   if (!controller.ready)
     return (
