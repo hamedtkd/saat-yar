@@ -25,6 +25,7 @@ export const defaultSettings: Settings = {
     dailyTargetReminder: true,
     endOfDayReminder: true,
   },
+  appearance: { mode: "system", preset: "spotify", accent: "#1ed760", radius: "rounded" },
   mode: "employee",
 };
 
@@ -40,6 +41,7 @@ export function createInitialData(options: { onboarded?: boolean } = {}): AppDat
       ) as Settings["weeklySchedule"],
       payrollComponents: defaultSettings.payrollComponents.map((component) => ({ ...component })),
       notificationSettings: { ...defaultSettings.notificationSettings },
+      appearance: { ...defaultSettings.appearance },
     },
     records: {},
     leaves: [],

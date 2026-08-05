@@ -16,6 +16,8 @@ export function normaliseData(value: AppData, defaults: Settings): AppData {
       ...defaults,
       ...incomingSettings,
       weeklySchedule,
+      notificationSettings: { ...defaults.notificationSettings, ...(incomingSettings.notificationSettings ?? {}) },
+      appearance: { ...defaults.appearance, ...(incomingSettings.appearance ?? {}) },
     },
     records: Object.fromEntries(
       Object.entries(value.records ?? {}).map(([date, record]) => [

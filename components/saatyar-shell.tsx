@@ -5,6 +5,7 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, useContext, useEffect } from "react";
 import { SkipLink } from "@/components/common/skip-link";
+import { ThemeRuntime } from "@/components/theme/theme-runtime";
 import { AppFooter } from "@/components/layout/app-footer";
 import { AppHeader } from "@/components/layout/app-header";
 import { Onboarding } from "@/components/layout/onboarding";
@@ -93,10 +94,11 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
 
   return (
     <SaatyarContext.Provider value={controller}>
+      <ThemeRuntime appearance={data.settings.appearance} />
       <SkipLink />
       <main
         className={cn(
-          "min-h-screen w-full p-3 max-[900px]:p-[7px] max-[900px]:pb-24 [&_label]:grid [&_label]:gap-[7px] [&_label]:text-[11px] [&_label]:font-semibold [&_label]:text-[#314b58] [&_button]:cursor-pointer [&_svg]:h-[18px] [&_svg]:w-[18px] [&_svg]:stroke-[1.85]",
+          "min-h-screen w-full bg-[var(--page)] p-3 max-[900px]:p-[7px] max-[900px]:pb-24 [&_label]:grid [&_label]:gap-[7px] [&_label]:text-[11px] [&_label]:font-semibold [&_label]:text-[#314b58] [&_button]:cursor-pointer [&_svg]:h-[18px] [&_svg]:w-[18px] [&_svg]:stroke-[1.85]",
         )}
         dir="rtl"
       >
@@ -130,6 +132,8 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
           financialsHidden={controller.financialsHidden}
           onToggleFinancials={() => controller.setFinancialsHidden((value) => !value)}
           saveState={controller.saveState}
+          appearance={data.settings.appearance}
+          onThemeModeChange={(mode) => setData((previous) => ({ ...previous, settings: { ...previous.settings, appearance: { ...previous.settings.appearance, mode } } }))}
         />
 
         <div

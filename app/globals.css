@@ -1,5 +1,49 @@
 @import "tailwindcss";
 
+@theme inline {
+  --color-background: var(--page);
+  --color-foreground: var(--text);
+  --color-primary: var(--accent);
+  --color-border: var(--border);
+}
+
+:root {
+  --accent: #1ed760;
+  --accent-foreground: #07130c;
+  --accent-strong: #087f45;
+  --accent-soft: color-mix(in srgb, var(--accent) 14%, transparent);
+  --page: #f5f8f6;
+  --surface-1: #ffffff;
+  --surface-2: #f9fbfa;
+  --surface-glass: rgb(255 255 255 / 92%);
+  --text: #10221a;
+  --text-muted: #65746c;
+  --border: #dce5df;
+  --danger: #dc5149;
+  --warning: #d79013;
+  --card-radius: 22px;
+  --control-radius: 14px;
+}
+
+:root[data-theme="dark"] {
+  --accent-foreground: #06140b;
+  --accent-strong: #51e884;
+  --page: #0a0f0d;
+  --surface-1: #101713;
+  --surface-2: #151d19;
+  --surface-glass: rgb(16 23 19 / 92%);
+  --text: #f7faf8;
+  --text-muted: #9aa9a0;
+  --border: rgb(255 255 255 / 10%);
+  --danger: #ff746c;
+  --warning: #f0b84d;
+}
+
+:root[data-radius="compact"] { --card-radius: 14px; --control-radius: 10px; }
+:root[data-radius="balanced"] { --card-radius: 18px; --control-radius: 12px; }
+:root[data-radius="rounded"] { --card-radius: 24px; --control-radius: 15px; }
+
+
 @media print {
   header, footer, nav, button { display: none !important; }
   body, main { background: #fff !important; }
@@ -8,7 +52,7 @@
 }
 
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
-  outline: 3px solid #16a36f;
+  outline: 3px solid var(--accent);
   outline-offset: 3px;
 }
 

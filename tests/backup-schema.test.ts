@@ -30,7 +30,7 @@ const validBackup = {
 
 test("accepts a versioned Saatyar backup", () => {
   assert.equal(isValidAppData(validBackup), true);
-  assert.equal(parseBackup(validBackup).schemaVersion, 11);
+  assert.equal(parseBackup(validBackup).schemaVersion, 12);
 });
 
 

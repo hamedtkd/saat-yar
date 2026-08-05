@@ -183,6 +183,25 @@ function migrateV10ToV11(value: unknown): unknown {
   };
 }
 
+
+function migrateV11ToV12(value: unknown): unknown {
+  if (!isObject(value)) return value;
+  const settings = isObject(value.settings) ? value.settings : {};
+  return {
+    ...value,
+    settings: {
+      ...settings,
+      appearance: {
+        mode: "system",
+        preset: "spotify",
+        accent: "#1ed760",
+        radius: "rounded",
+        ...(isObject(settings.appearance) ? settings.appearance : {}),
+      },
+    },
+  };
+}
+
 const migrations: Record<number, (value: unknown) => unknown> = {
   1: migrateV1ToV2,
   2: migrateV2ToV3,
@@ -194,6 +213,7 @@ const migrations: Record<number, (value: unknown) => unknown> = {
   8: migrateV8ToV9,
   9: migrateV9ToV10,
   10: migrateV10ToV11,
+  11: migrateV11ToV12,
 };
 
 export function migrateAppData(value: unknown): MigrationResult {

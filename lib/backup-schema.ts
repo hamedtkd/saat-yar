@@ -31,6 +31,12 @@ const settingsSchema = z.object({
   payrollComponents: z.array(payrollComponentSchema),
   autoOfficialHolidays: z.boolean(),
   autoWeeklyHoliday: z.boolean(),
+  appearance: z.object({
+    mode: z.enum(["light", "dark", "system"]),
+    preset: z.enum(["spotify", "emerald", "ocean", "violet", "sunset", "custom"]),
+    accent: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+    radius: z.enum(["compact", "balanced", "rounded"]),
+  }).passthrough(),
   notificationSettings: z.object({
     enabled: z.boolean(),
     openTimerReminderMinutes: z.number().int().nonnegative(),
