@@ -175,7 +175,21 @@ export type BackupData = AppData & {
   exportedAt?: string;
 };
 
+function unwrapBackupCandidate(value: unknown): unknown {
+  if (!value || typeof value !== "object") return value;
+  const candidate = value as Record<string, unknown>;
+  return candidate.data && typeof candidate.data === "object" ? candidate.data : value;
+}
+
+function assertHasSettings(value: unknown): void {
+  const candidate = unwrapBackupCandidate(value);
+  if (!candidate || typeof candidate !== "object" || !("settings" in candidate)) {
+    throw new Error("Backup settings are required.");
+  }
+}
+
 export function parseBackup(value: unknown): BackupData {
+  assertHasSettings(value);
   const migration = migrateAppData(value);
   const data = appDataSchema.parse(migration.data);
 
