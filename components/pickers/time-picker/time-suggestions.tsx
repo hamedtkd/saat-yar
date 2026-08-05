@@ -20,7 +20,7 @@ export function TimeSuggestions({ suggestions, draft, onSelect }: { suggestions:
           <Button type="button" key={`${item.label}-${item.value}`} variant="outline" className="justify-between gap-2" onClick={() => onSelect(normalizedValue)}>
             <span>{item.label}</span>
             <b dir="ltr" className="tabular-nums">{faDigits(normalizedValue)}</b>
-            {isSelected && <Check aria-hidden="true" className="size-4 text-[#079b60]" />}
+            {isSelected && <Check aria-hidden="true" className="size-4 text-[var(--accent-strong)]" />}
           </Button>
         );
       })}

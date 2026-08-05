@@ -40,10 +40,10 @@ export function RecoveryCard({
   }[saveState];
 
   return (
-    <section className={cn("rounded-[15px] border border-[#dfe7e9] bg-white/95 p-5 shadow-[0_10px_35px_rgba(17,45,55,.055)]")}>
+    <section className={cn("rounded-[15px] border border-[var(--border)] bg-[var(--surface-1)] p-5 shadow-[0_10px_35px_rgba(17,45,55,.055)]")}>
       <PanelHead icon={<History />} title="بازیابی و سلامت ذخیره" />
-      <dl className="m-0 mb-4 grid gap-2 text-[11px] [&>div]:flex [&>div]:justify-between [&>div]:gap-3 [&_dt]:text-[#6c7d89] [&_dd]:m-0 [&_dd]:font-bold">
-        <div><dt>وضعیت ذخیره</dt><dd className={saveState === "error" ? "text-red-600" : "text-[#079b60]"}>{stateLabel}</dd></div>
+      <dl className="m-0 mb-4 grid gap-2 text-[11px] [&>div]:flex [&>div]:justify-between [&>div]:gap-3 [&_dt]:text-[var(--text-muted)] [&_dd]:m-0 [&_dd]:font-bold">
+        <div><dt>وضعیت ذخیره</dt><dd className={saveState === "error" ? "text-[var(--danger)]" : "text-[var(--accent-strong)]"}>{stateLabel}</dd></div>
         <div><dt>آخرین ذخیره اصلی</dt><dd>{formatSavedAt(lastSavedAt)}</dd></div>
         <div><dt>آخرین نسخه بازیابی</dt><dd>{recoverySnapshot ? formatSavedAt(recoverySnapshot.savedAt) : "وجود ندارد"}</dd></div>
       </dl>
@@ -61,7 +61,7 @@ export function RecoveryCard({
         <Button variant="outline" disabled={!recoverySnapshot} onClick={restoreRecovery}><RotateCcw /> بازگردانی نسخه محلی</Button>
         <Button variant="outline" disabled={!recoverySnapshot} onClick={clearRecovery}><Trash2 /> حذف نسخه بازیابی</Button>
       </div>
-      <p className="mt-3 text-[10px] leading-7 text-[#6c7d89]">نسخه بازیابی داخل همین مرورگر نگه‌داری می‌شود و جای فایل پشتیبان دانلودی را نمی‌گیرد.</p>
+      <p className="mt-3 text-[10px] leading-7 text-[var(--text-muted)]">نسخه بازیابی داخل همین مرورگر نگه‌داری می‌شود و جای فایل پشتیبان دانلودی را نمی‌گیرد.</p>
     </section>
   );
 }

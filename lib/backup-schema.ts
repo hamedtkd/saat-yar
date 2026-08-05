@@ -36,6 +36,7 @@ const settingsSchema = z.object({
     preset: z.enum(["spotify", "emerald", "ocean", "violet", "sunset", "custom"]),
     accent: z.string().regex(/^#[0-9a-fA-F]{6}$/),
     radius: z.enum(["compact", "balanced", "rounded"]),
+    surface: z.enum(["neutral", "tinted", "contrast"]),
   }).passthrough(),
   notificationSettings: z.object({
     enabled: z.boolean(),

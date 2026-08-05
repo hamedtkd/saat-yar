@@ -55,6 +55,11 @@
 :root[data-radius="balanced"] { --card-radius: 18px; --control-radius: 12px; }
 :root[data-radius="rounded"] { --card-radius: 24px; --control-radius: 15px; }
 
+:root[data-surface="neutral"] { --page: #f6f7f6; --surface-2: #f3f5f4; }
+:root[data-theme="dark"][data-surface="neutral"] { --page: #0b0d0c; --surface-1: #121514; --surface-2: #171a18; }
+:root[data-surface="contrast"] { --page: #eef4f0; --surface-1: #ffffff; --surface-2: #e9f1ec; --border: #cbd9d0; }
+:root[data-theme="dark"][data-surface="contrast"] { --page: #050806; --surface-1: #0d130f; --surface-2: #17211b; --border: rgb(255 255 255 / 15%); }
+
 
 @media print {
   header, footer, nav, button { display: none !important; }

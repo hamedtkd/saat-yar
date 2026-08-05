@@ -202,6 +202,22 @@ function migrateV11ToV12(value: unknown): unknown {
   };
 }
 
+function migrateV12ToV13(value: unknown): unknown {
+  if (!isObject(value)) return value;
+  const settings = isObject(value.settings) ? value.settings : {};
+  const appearance = isObject(settings.appearance) ? settings.appearance : {};
+  return {
+    ...value,
+    settings: {
+      ...settings,
+      appearance: {
+        ...appearance,
+        surface: "tinted",
+      },
+    },
+  };
+}
+
 const migrations: Record<number, (value: unknown) => unknown> = {
   1: migrateV1ToV2,
   2: migrateV2ToV3,
@@ -214,6 +230,7 @@ const migrations: Record<number, (value: unknown) => unknown> = {
   9: migrateV9ToV10,
   10: migrateV10ToV11,
   11: migrateV11ToV12,
+  12: migrateV12ToV13,
 };
 
 export function migrateAppData(value: unknown): MigrationResult {

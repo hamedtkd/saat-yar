@@ -36,26 +36,26 @@ export function PayrollSettingsCard({ data, setData, setToast, financialsHidden 
   const deductions = items.filter((item) => item.enabled !== false && item.type === "deduction").reduce((sum, item) => sum + item.amount, 0);
 
   return (
-    <section className="col-span-full rounded-[15px] border border-[#dfe7e9] bg-white/95 p-5 shadow-[0_10px_35px_rgba(17,45,55,.055)]">
+    <section className="col-span-full rounded-[15px] border border-[var(--border)] bg-[var(--surface-1)] p-5 shadow-[0_10px_35px_rgba(17,45,55,.055)]">
       <PanelHead icon={<ReceiptText />} title="مزایا و کسورات حقوق" />
-      <p className="mb-4 text-[10px] leading-6 text-[#6c7d89]">حق مسکن، بن، پاداش، بیمه، مالیات یا هر آیتم ثابت ماهانه را تعریف کن. این مقادیر در فیش حقوقی ماهانه اعمال می‌شوند.</p>
+      <p className="mb-4 text-[10px] leading-6 text-[var(--text-muted)]">حق مسکن، بن، پاداش، بیمه، مالیات یا هر آیتم ثابت ماهانه را تعریف کن. این مقادیر در فیش حقوقی ماهانه اعمال می‌شوند.</p>
       <div className="mb-4 grid gap-2">
         {items.map((item) => (
-          <div key={item.id} className="grid grid-cols-[40px_1fr_150px_180px_40px] items-end gap-2 rounded-xl border border-[#e3ece9] bg-[#f8fbfa] p-3 max-[760px]:grid-cols-1">
+          <div key={item.id} className="grid grid-cols-[40px_1fr_150px_180px_40px] items-end gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-3 max-[760px]:grid-cols-1">
             <label className="flex items-center justify-center pb-3 max-[760px]:justify-start">
-              <input type="checkbox" checked={item.enabled !== false} onChange={(event) => updateItem(item.id, { enabled: event.target.checked })} className="size-4 accent-[#079b60]" aria-label={`فعال بودن ${item.title}`} />
+              <input type="checkbox" checked={item.enabled !== false} onChange={(event) => updateItem(item.id, { enabled: event.target.checked })} className="size-4 accent-[var(--accent)]" aria-label={`فعال بودن ${item.title}`} />
             </label>
             <label>عنوان<Input value={item.title} onChange={(event) => updateItem(item.id, { title: event.target.value })} /></label>
             <label>نوع<Select value={item.type} onValueChange={(value) => updateItem(item.id, { type: value as PayrollComponent["type"] })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="earning">مزایا</SelectItem><SelectItem value="deduction">کسورات</SelectItem></SelectContent></Select></label>
-            <label>مبلغ (تومان){financialsHidden ? <div className="flex h-11 items-center rounded-xl border border-[#dfe7e9] bg-white px-3 font-black tracking-[.2em]">••••••</div> : <NumberField value={item.amount} min={0} onValueChange={(value) => updateItem(item.id, { amount: value })} />}</label>
+            <label>مبلغ (تومان){financialsHidden ? <div className="flex h-11 items-center rounded-xl border border-[var(--border)] bg-[var(--surface-1)] px-3 font-black tracking-[.2em]">••••••</div> : <NumberField value={item.amount} min={0} onValueChange={(value) => updateItem(item.id, { amount: value })} />}</label>
             <Button type="button" size="icon" variant="outline" onClick={() => removeItem(item.id)} aria-label={`حذف ${item.title}`}><Trash2 /></Button>
           </div>
         ))}
-        {!items.length && <div className="rounded-xl border border-dashed border-[#cfded9] p-5 text-center text-xs text-[#6c7d89]">هنوز مزایا یا کسوراتی ثبت نشده است.</div>}
+        {!items.length && <div className="rounded-xl border border-dashed border-[var(--border)] p-5 text-center text-xs text-[var(--text-muted)]">هنوز مزایا یا کسوراتی ثبت نشده است.</div>}
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Button type="button" variant="outline" onClick={addItem}><Plus /> افزودن آیتم</Button>
-        <div className="flex gap-3 text-[10px] font-bold text-[#526b75]"><span>مزایا: {financialsHidden ? "••••••" : money(earnings)} تومان</span><span>کسورات: {financialsHidden ? "••••••" : money(deductions)} تومان</span></div>
+        <div className="flex gap-3 text-[10px] font-bold text-[var(--text-muted)]"><span>مزایا: {financialsHidden ? "••••••" : money(earnings)} تومان</span><span>کسورات: {financialsHidden ? "••••••" : money(deductions)} تومان</span></div>
       </div>
     </section>
   );

@@ -2,12 +2,14 @@ export type Mode = "employee" | "freelancer" | "hybrid";
 export type ThemeMode = "light" | "dark" | "system";
 export type ThemePreset = "spotify" | "emerald" | "ocean" | "violet" | "sunset" | "custom";
 export type RadiusScale = "compact" | "balanced" | "rounded";
+export type SurfaceStyle = "neutral" | "tinted" | "contrast";
 
 export type AppearanceSettings = {
   mode: ThemeMode;
   preset: ThemePreset;
   accent: string;
   radius: RadiusScale;
+  surface: SurfaceStyle;
 };
 
 export type WeekdayKey = "saturday" | "sunday" | "monday" | "tuesday" | "wednesday" | "thursday" | "friday";

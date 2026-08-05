@@ -25,19 +25,19 @@ export function DatePickerTrigger({
       aria-expanded={open}
       className={cn(
         "grid h-13 w-full min-w-0 grid-cols-[auto_minmax(0,1fr)_auto]",
-        "items-center gap-2.5 rounded-xl border-[#d5e2e4] bg-white px-3 text-right",
-        "shadow-none hover:bg-white focus-visible:border-[#079b60]",
-        "focus-visible:ring-[#079b60]/15",
+        "items-center gap-2.5 rounded-xl border-[var(--border)] bg-[var(--surface-2)] px-3 text-right",
+        "shadow-none hover:bg-[var(--surface-1)] focus-visible:border-[var(--accent)]",
+        "focus-visible:ring-[var(--accent-soft)]",
       )}
     >
-      <CalendarDays aria-hidden="true" className="size-5 shrink-0 text-[#079b60]" />
+      <CalendarDays aria-hidden="true" className="size-5 shrink-0 text-[var(--accent-strong)]" />
       <span className="grid min-w-0 gap-0.5">
-        <small className="text-[9px] font-medium text-[#6c7d89]">{placeholder}</small>
-        <strong className="truncate text-[11px] font-extrabold text-[#102a3a]">
+        <small className="text-[9px] font-medium text-[var(--text-muted)]">{placeholder}</small>
+        <strong className="truncate text-[11px] font-extrabold text-[var(--text)]">
           {selectedLabel}
         </strong>
       </span>
-      <ChevronDown aria-hidden="true" className="size-4 shrink-0 text-[#6c7d89]" />
+      <ChevronDown aria-hidden="true" className="size-4 shrink-0 text-[var(--text-muted)]" />
     </Button>
   );
 }

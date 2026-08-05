@@ -32,7 +32,7 @@ export function DatePickerDialog(props: DatePickerDialogProps) {
       <button
         type="button"
         aria-label="بستن تقویم"
-        className="fixed inset-0 z-[700] border-0 bg-[#0a1f27]/20 backdrop-blur-[2px]"
+        className="fixed inset-0 z-[700] border-0 bg-black/45 backdrop-blur-[2px]"
         onClick={props.onClose}
       />
       <div
@@ -45,12 +45,12 @@ export function DatePickerDialog(props: DatePickerDialogProps) {
         className={cn(
           "fixed top-1/2 left-1/2 z-[750] w-[min(430px,calc(100vw-24px))]",
           "max-h-[calc(100dvh-24px)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto",
-          "rounded-2xl border border-[#dfe7e9] bg-white p-4",
+          "rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-4",
           "shadow-[0_28px_90px_rgba(17,45,55,0.25)]",
         )}
       >
         <div className="mb-2 flex items-center justify-between gap-3">
-          <h2 id={titleId} className="text-sm font-extrabold text-[#102a3a]">
+          <h2 id={titleId} className="text-sm font-extrabold text-[var(--text)]">
             انتخاب تاریخ
           </h2>
           <Button type="button" variant="ghost" size="icon" aria-label="بستن تقویم" onClick={props.onClose}>
@@ -73,7 +73,7 @@ export function DatePickerDialog(props: DatePickerDialogProps) {
         <Button
           type="button"
           onClick={props.onSelectToday}
-          className="mt-4 h-12 w-full rounded-xl bg-[#0b4556] text-sm font-extrabold text-white shadow-none hover:bg-[#083b49]"
+          className="mt-4 h-12 w-full rounded-xl bg-[var(--accent)] text-sm font-extrabold text-[var(--accent-foreground)] shadow-none hover:brightness-110"
         >
           <Check aria-hidden="true" className="size-4.5" />
           امروز

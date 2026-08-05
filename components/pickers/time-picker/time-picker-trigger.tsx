@@ -14,11 +14,11 @@ export function TimePickerTrigger({ value, open, onOpen }: { value: string; open
       aria-haspopup="dialog"
       aria-expanded={open}
     >
-      <Clock3 aria-hidden="true" className="size-5 text-[#079b60]" />
+      <Clock3 aria-hidden="true" className="size-5 text-[var(--accent-strong)]" />
       <strong dir="ltr" className="justify-self-start font-extrabold tabular-nums">
         {value ? faDigits(normalizeTime(value)) : "--:--"}
       </strong>
-      <ChevronDown aria-hidden="true" className="size-4 text-[#6c7d89]" />
+      <ChevronDown aria-hidden="true" className="size-4 text-[var(--text-muted)]" />
     </Button>
   );
 }

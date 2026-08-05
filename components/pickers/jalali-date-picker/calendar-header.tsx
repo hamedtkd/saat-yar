@@ -21,11 +21,11 @@ export function CalendarHeader({
         size="icon"
         aria-label="ماه قبل"
         onClick={onPreviousMonth}
-        className="size-13 rounded-xl border-[#d5e2e4] shadow-none"
+        className="size-13 rounded-xl border-[var(--border)] shadow-none"
       >
         <ChevronRight aria-hidden="true" className="size-5" />
       </Button>
-      <strong className="text-center text-sm font-extrabold text-[#102a3a]">
+      <strong className="text-center text-sm font-extrabold text-[var(--text)]">
         {title}
       </strong>
       <Button
@@ -34,7 +34,7 @@ export function CalendarHeader({
         size="icon"
         aria-label="ماه بعد"
         onClick={onNextMonth}
-        className="size-13 rounded-xl border-[#d5e2e4] shadow-none"
+        className="size-13 rounded-xl border-[var(--border)] shadow-none"
       >
         <ChevronLeft aria-hidden="true" className="size-5" />
       </Button>

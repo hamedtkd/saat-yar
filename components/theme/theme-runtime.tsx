@@ -11,6 +11,7 @@ function applyAppearance(appearance: AppearanceSettings) {
   root.dataset.theme = resolved;
   root.dataset.themeMode = appearance.mode;
   root.dataset.radius = appearance.radius;
+  root.dataset.surface = appearance.surface;
   root.style.setProperty("--accent", resolveAccent(appearance));
   root.style.colorScheme = resolved;
 }

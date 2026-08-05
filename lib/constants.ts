@@ -25,7 +25,7 @@ export const defaultSettings: Settings = {
     dailyTargetReminder: true,
     endOfDayReminder: true,
   },
-  appearance: { mode: "system", preset: "spotify", accent: "#1ed760", radius: "rounded" },
+  appearance: { mode: "system", preset: "spotify", accent: "#1ed760", radius: "rounded", surface: "tinted" },
   mode: "employee",
 };
 

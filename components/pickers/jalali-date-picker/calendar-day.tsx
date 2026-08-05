@@ -43,15 +43,15 @@ export function CalendarDay({
       title={holiday.title}
       className={cn(
         "relative aspect-square min-w-0 rounded-xl border border-transparent",
-        "bg-transparent text-sm font-bold text-[#102a3a] transition-colors duration-150",
-        "hover:bg-[#edf9f4] focus-visible:outline-none focus-visible:ring-2",
-        "focus-visible:ring-[#079b60]/30",
-        !cell.inMonth && "text-[#b7c2c6]",
+        "bg-transparent text-sm font-bold text-[var(--text)] transition-colors duration-150",
+        "hover:bg-[var(--accent-soft)] focus-visible:outline-none focus-visible:ring-2",
+        "focus-visible:ring-[var(--accent-soft)]",
+        !cell.inMonth && "text-[var(--text-muted)] opacity-45",
         holiday.isHoliday &&
           !isSelected &&
-          "border-red-200 bg-red-50 text-red-600 hover:bg-red-100",
-        isToday && !isSelected && "border-[#70c4a8]",
-        isSelected && "border-[#079b60] bg-[#079b60] text-white hover:bg-[#079b60]",
+          "border-[var(--danger)] bg-[var(--danger-soft)] text-[var(--danger)] hover:brightness-95",
+        isToday && !isSelected && "border-[var(--accent)]",
+        isSelected && "border-[var(--accent)] bg-[var(--accent)] text-[var(--accent-foreground)] hover:brightness-105",
       )}
       onClick={() => onSelect(cell.key)}
     >
@@ -59,7 +59,7 @@ export function CalendarDay({
       {holiday.isHoliday && !isSelected && (
         <span
           aria-hidden="true"
-          className="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-red-500"
+          className="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-[var(--danger)]"
         />
       )}
       {isRecorded && (
@@ -67,7 +67,7 @@ export function CalendarDay({
           aria-hidden="true"
           className={cn(
             "absolute bottom-1 left-1/2 size-1.5 -translate-x-1/2 rounded-full",
-            isSelected ? "bg-white" : "bg-[#079b60]",
+            isSelected ? "bg-[var(--accent-foreground)]" : "bg-[var(--accent)]",
           )}
         />
       )}
