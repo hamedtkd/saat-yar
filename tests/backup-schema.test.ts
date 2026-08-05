@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { isValidAppData, parseBackup } from "../lib/backup-schema.ts";
+import { APP_DATA_SCHEMA_VERSION } from "../lib/data/version.ts";
 
 const validBackup = {
   appName: "ساعت‌یار",
@@ -30,7 +31,7 @@ const validBackup = {
 
 test("accepts a versioned Saatyar backup", () => {
   assert.equal(isValidAppData(validBackup), true);
-  assert.equal(parseBackup(validBackup).schemaVersion, 12);
+  assert.equal(parseBackup(validBackup).schemaVersion, APP_DATA_SCHEMA_VERSION);
 });
 
 
