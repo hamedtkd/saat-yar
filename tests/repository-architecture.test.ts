@@ -48,7 +48,6 @@ test("obsolete duplicate storage and picker entrypoints stay removed", async () 
   for (const file of obsoleteFiles) {
     await assert.rejects(
       stat(path.join(ROOT, file)),
-      undefined,
       `${file} duplicates the maintained implementation and must not return`,
     );
   }

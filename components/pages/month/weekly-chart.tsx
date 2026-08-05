@@ -16,12 +16,12 @@ export function WeeklyChart({ values }: WeeklyChartProps) {
     <SurfaceCard as="aside" className="flex min-w-0 flex-col p-4 sm:p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <PanelHead icon={<BarChart3 />} title="کارکرد هفتگی" />
-        <span className="rounded-full bg-[#f1f7f5] px-3 py-1.5 text-[10px] font-bold text-[#526b75]">
+        <span className="rounded-full bg-[#f1f7f5] px-3 py-1.5 text-[10px] font-bold text-[var(--text-muted)]">
           ۷ روز هفته
         </span>
       </div>
 
-      <p className="mt-1 text-[10px] leading-6 text-[#6c7d89]">
+      <p className="mt-1 text-[10px] leading-6 text-[var(--text-muted)]">
         مقایسه کارکرد ثبت‌شده در روزهای مختلف هفته
       </p>
 
@@ -38,7 +38,7 @@ export function WeeklyChart({ values }: WeeklyChartProps) {
         <WeeklyEmptyState />
       )}
 
-      <p className="mt-4 flex items-start gap-2 text-[10px] leading-7 text-[#6c7d89]">
+      <p className="mt-4 flex items-start gap-2 text-[10px] leading-7 text-[var(--text-muted)]">
         <Info className="mt-1 size-3.5 shrink-0" />
         <span>
           نمودار از رکوردهای همین ماه محاسبه می‌شود و داده مشتق‌شده جداگانه

@@ -49,12 +49,12 @@ export function TodayPage(props: TodayPageProps) {
         </div>
       </PageHeading>
       {holiday.isHoliday && (
-        <div className="mb-4 flex items-center justify-between gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+        <div className="mb-5 flex items-center justify-between gap-3 rounded-[var(--card-radius)] border border-red-500/20 bg-red-500/10 px-4 py-3 text-red-500">
           <div className="grid gap-0.5">
             <strong className="text-xs font-extrabold">روز تعطیل</strong>
             <span className="text-[10px]">{holiday.title}</span>
           </div>
-          <span className="rounded-full bg-white px-2.5 py-1 text-[9px] font-bold">هدف روز: صفر</span>
+          <span className="rounded-full border border-red-500/20 bg-[var(--surface-1)] px-2.5 py-1 text-[9px] font-bold">هدف روز: صفر</span>
         </div>
       )}
       <RecordHealthBanner record={props.record} onReset={props.resetRecord} />
@@ -90,7 +90,7 @@ export function TodayPage(props: TodayPageProps) {
         props.todayCalc.worked > 4 * 60 && (
           <div
             className={cn(
-              "mt-[14px] flex items-center gap-[13px] rounded-[14px] border border-[#f1c36c] bg-[#fff9eb] px-[19px] py-[14px] text-[#8b5a05] [&>svg]:h-[27px] [&>svg]:w-[27px] [&>div]:grid [&>div]:flex-1 [&_span]:text-[10px] [&_span]:text-[#78694c] print:hidden",
+              "mt-5 flex items-center gap-3 rounded-[var(--card-radius)] border border-amber-500/25 bg-amber-500/10 px-5 py-4 text-amber-500 [&>svg]:size-7 [&>div]:grid [&>div]:flex-1 [&_span]:text-[10px] [&_span]:text-[var(--text-muted)] print:hidden",
             )}
           >
             <AlertTriangle />

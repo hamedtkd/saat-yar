@@ -1,7 +1,15 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/cn";
+import { SurfaceCard } from "./surface-card";
 
 export type MetricTone = "green" | "blue" | "amber" | "purple";
+
+const tones: Record<MetricTone, string> = {
+  green: "bg-[var(--accent-soft)] text-[var(--accent-strong)]",
+  blue: "bg-blue-500/10 text-blue-500",
+  amber: "bg-amber-500/10 text-amber-500",
+  purple: "bg-violet-500/10 text-violet-500",
+};
 
 export function MetricCard({ icon, label, value, suffix, tone = "green" }: {
   icon: ReactNode;
@@ -11,14 +19,13 @@ export function MetricCard({ icon, label, value, suffix, tone = "green" }: {
   tone?: MetricTone;
 }) {
   return (
-    <article className={cn(
-      "flex min-h-28 items-center gap-4 rounded-[15px] border border-[#dfe7e9] bg-white/95 px-[23px] py-[18px] shadow-[0_10px_35px_rgba(17,45,55,.055)] max-[620px]:min-h-24 [&>div]:grid [&>div]:min-w-0 [&>div]:gap-0.5 [&_small]:text-[11px] [&_small]:text-[#6c7d89] [&_strong]:whitespace-nowrap [&_strong]:text-[clamp(21px,2vw,30px)] [&_strong]:text-[#102a3a] [&>div>span]:text-[10px] [&>div>span]:text-[#6c7d89]",
-      tone === "blue" && "[&>span:first-child]:bg-[#edf3ff] [&>span:first-child]:text-[#276bd5]",
-      tone === "amber" && "[&>span:first-child]:bg-[#fff6e5] [&>span:first-child]:text-[#eaa21b]",
-      tone === "purple" && "[&>span:first-child]:bg-[#f4efff] [&>span:first-child]:text-[#7a58b8]",
-    )}>
-      <span className="grid h-[52px] w-[52px] flex-none place-items-center rounded-full bg-[#edf9f4] text-[#079b60] [&_svg]:h-[26px] [&_svg]:w-[26px]">{icon}</span>
-      <div><small>{label}</small><strong>{value}</strong>{suffix && <span>{suffix}</span>}</div>
-    </article>
+    <SurfaceCard as="article" className="group flex min-h-32 items-center gap-4 p-5 hover:-translate-y-0.5 hover:border-[color-mix(in_srgb,var(--accent)_28%,var(--border))]">
+      <span className={cn("grid size-12 shrink-0 place-items-center rounded-2xl [&_svg]:size-6", tones[tone])}>{icon}</span>
+      <div className="min-w-0">
+        <small className="block text-xs font-semibold text-[var(--text-muted)]">{label}</small>
+        <strong className="mt-1 block truncate text-[clamp(1.35rem,2vw,1.9rem)] font-black text-[var(--text)]">{value}</strong>
+        {suffix && <span className="text-[11px] text-[var(--text-muted)]">{suffix}</span>}
+      </div>
+    </SurfaceCard>
   );
 }

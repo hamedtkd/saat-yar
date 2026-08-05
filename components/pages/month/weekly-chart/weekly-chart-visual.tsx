@@ -55,7 +55,7 @@ export function WeeklyChartVisual({ data }: WeeklyChartVisualProps) {
               color: "#526b75",
             }}
             formatter={() => (
-              <span className="mr-1 text-[11px] font-semibold text-[#526b75]">
+              <span className="mr-1 text-[11px] font-semibold text-[var(--text-muted)]">
                 کارکرد روزانه
               </span>
             )}
