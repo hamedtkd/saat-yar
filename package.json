@@ -18,8 +18,9 @@
     "test:sites": "npm run build && node --test tests/rendered-html.test.mjs",
     "validate:artifact": "node scripts/validate-artifact.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next --ignore-pattern out",
-    "check": "npm run typecheck && npm run lint && npm test",
-    "test:architecture": "node --test --experimental-strip-types tests/clean-architecture.test.ts"
+    "check": "npm run check:imports && npm run typecheck && npm run lint && npm test",
+    "test:architecture": "node --test --experimental-strip-types tests/clean-architecture.test.ts",
+    "check:imports": "node scripts/check-local-imports.mjs"
   },
   "dependencies": {
     "@fontsource-variable/vazirmatn": "^5.2.8",

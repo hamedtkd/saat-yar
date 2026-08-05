@@ -84,3 +84,11 @@
 - Split the 376-line app header into focused navigation, actions and workspace-switcher components.
 - Added architecture checks for the 250-line layout limit and safe data reset.
 - Added a reusable-component audit and extraction roadmap.
+
+## Phase 16 - Report overview decomposition and import safety
+
+- Split the oversized reports page into focused summaries, actions and a report-summary hook.
+- Centralized payroll masking through `PrivateMoney` and reused `SurfaceCard`.
+- Added a local import resolution check and included it in the main validation command.
+- Added architecture coverage to keep report overview modules below 250 lines.
+- Removed invalid nested JSX from the payroll summary section.

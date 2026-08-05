@@ -1,5 +1,6 @@
 import { cn } from "@/lib/cn"; import { duration, money } from "@/lib/format";
 import type { EmployeeChartItem, FreelancerChartItem } from "./types";
+import { CHART_COLORS } from "./chart-utils";
 type FreelancerTooltipPayloadItem = {
   dataKey?: string;
   name?: string;

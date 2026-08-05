@@ -1,4 +1,5 @@
 import { StatusBadge } from "@/components/common/status-badge";
+import { cn } from "@/lib/cn";
 import { duration, entryMinutes, jalali, money } from "@/lib/format";
 import type { AppData, TimeEntry } from "@/lib/types";
 import { InfoRow } from "./report-table-shared";

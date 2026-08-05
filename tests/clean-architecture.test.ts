@@ -101,3 +101,28 @@ test("report chart facade delegates employee and freelancer rendering", () => {
   assert.match(source, /<FreelancerCharts/);
   assert.ok(source.split(/\r?\n/).length < 80);
 });
+
+test("report overview modules stay below 250 lines", () => {
+  for (const file of [
+    "components/pages/reports/reports-page.tsx",
+    "components/pages/reports/overview/types.ts",
+    "components/pages/reports/overview/use-report-summary.ts",
+    "components/pages/reports/overview/report-actions.tsx",
+    "components/pages/reports/overview/employee-summary.tsx",
+    "components/pages/reports/overview/freelancer-summary.tsx",
+    "components/pages/reports/overview/financial-charts-guard.tsx",
+    "components/pages/reports/overview/month-summary.tsx",
+  ]) {
+    const source = readFileSync(new URL(file, root), "utf8");
+    assert.ok(source.split(/\r?\n/).length <= 250, `${file} exceeds 250 lines`);
+  }
+});
+
+test("reports page delegates calculations and summary rendering", () => {
+  const source = readFileSync(new URL("components/pages/reports/reports-page.tsx", root), "utf8");
+  assert.match(source, /useReportSummary\(/);
+  assert.match(source, /<EmployeeSummary/);
+  assert.match(source, /<FreelancerSummary/);
+  assert.match(source, /<MonthSummary/);
+  assert.ok(source.split(/\r?\n/).length < 150);
+});
