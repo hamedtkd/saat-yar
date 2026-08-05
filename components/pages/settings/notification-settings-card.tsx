@@ -4,7 +4,7 @@ import { BellRing, Coffee, Send } from "lucide-react";
 import { useState } from "react";
 import { NumberField } from "@/components/common/number-field";
 import { PanelHead } from "@/components/common/panel-head";
-import { StatusBadge } from "@/components/common/status-badge";
+import { StatusBadge, type StatusBadgeTone } from "@/components/common/status-badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import type { AppData, NotificationSettings } from "@/lib/types";
@@ -55,7 +55,7 @@ export function NotificationSettingsCard({ data, setData, requestPermission, set
   }
 
   const permissionLabel = permission === "granted" ? "اجازه داده شده" : permission === "denied" ? "مسدود شده" : permission === "unsupported" ? "پشتیبانی نمی‌شود" : "در انتظار اجازه";
-  const permissionTone = permission === "granted" ? "success" : permission === "denied" || permission === "unsupported" ? "danger" : "warning";
+  const permissionTone: StatusBadgeTone = permission === "granted" ? "success" : permission === "denied" || permission === "unsupported" ? "danger" : "warning";
 
   return <section className="col-span-full rounded-[15px] border border-[var(--border)] bg-[var(--surface-1)] p-5 shadow-[0_10px_35px_rgba(17,45,55,.055)]">
     <div className="flex flex-wrap items-start justify-between gap-3">
