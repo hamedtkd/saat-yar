@@ -107,7 +107,7 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
         {controller.toast && (
           <div
             className={cn(
-              "fixed left-1/2 top-[22px] z-[1000] flex -translate-x-1/2 items-center gap-2 rounded-xl border border-[color-mix(in_srgb,var(--success)_30%,var(--border))] bg-[var(--success-soft)] px-[17px] py-[11px] text-xs font-bold text-[var(--success)] shadow-[0_18px_50px_rgba(17,45,55,.16)]",
+              "fixed left-1/2 top-[22px] z-[1000] flex -translate-x-1/2 items-center gap-2 rounded-xl border border-[color-mix(in_srgb,var(--success)_30%,var(--border))] bg-[var(--success-soft)] px-[17px] py-[11px] text-xs font-bold text-[var(--success)] shadow-[0_8px_24px_rgba(17,45,55,.10)]",
             )}
             role="status"
           >
@@ -145,7 +145,7 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
           role="main"
           tabIndex={-1}
           className={cn(
-            "mx-auto max-w-[1510px] px-3 pb-6 pt-6 sm:px-5 xl:mr-[264px] xl:px-6",
+            "mx-auto max-w-[1510px] px-3 pb-6 pt-5 sm:px-5 xl:mr-[264px] xl:px-6",
           )}
         >
           {children}
