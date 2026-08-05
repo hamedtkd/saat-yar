@@ -32,7 +32,7 @@ export function DatePickerDialog(props: DatePickerDialogProps) {
       <button
         type="button"
         aria-label="بستن تقویم"
-        className="fixed inset-0 z-[700] border-0 bg-black/45 backdrop-blur-[2px]"
+        className="fixed inset-0 z-[700] border-0 bg-[var(--overlay)] backdrop-blur-[2px]"
         onClick={props.onClose}
       />
       <div

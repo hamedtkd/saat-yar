@@ -7,9 +7,9 @@ import type { MonthTableProps } from "./types";
 
 function Stat({ label, value, dir }: { label: string; value: string; dir?: "ltr" }) {
   return (
-    <div className="rounded-xl bg-white px-3 py-2.5">
-      <span className="block text-[9px] text-[#6c7d89]">{label}</span>
-      <strong dir={dir} className="mt-1 block text-sm font-extrabold text-[#102a3a]">
+    <div className="rounded-xl bg-[var(--surface-1)] px-3 py-2.5">
+      <span className="block text-[9px] text-[var(--text-muted)]">{label}</span>
+      <strong dir={dir} className="mt-1 block text-sm font-extrabold text-[var(--text)]">
         {value}
       </strong>
     </div>
@@ -28,11 +28,11 @@ export function MonthMobileCards({ records, settings, onEdit }: MonthTableProps)
         return (
           <article
             key={item.date}
-            className="rounded-2xl border border-[#e2ebe8] bg-[#fbfdfc] p-4"
+            className="rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-4"
           >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <strong className="block text-sm font-extrabold text-[#102a3a]">
+                <strong className="block text-sm font-extrabold text-[var(--text)]">
                   {jalali(item.date, {
                     weekday: "long",
                     day: "numeric",
@@ -40,7 +40,7 @@ export function MonthMobileCards({ records, settings, onEdit }: MonthTableProps)
                   })}
                 </strong>
                 {item.note && (
-                  <p className="mt-1 truncate text-[10px] text-[#6c7d89]">
+                  <p className="mt-1 truncate text-[10px] text-[var(--text-muted)]">
                     {item.note}
                   </p>
                 )}
@@ -65,8 +65,8 @@ export function MonthMobileCards({ records, settings, onEdit }: MonthTableProps)
               <Stat label="ناهار و وقفه" value={duration(totalRest)} />
             </div>
 
-            <div className="mt-3 flex items-center justify-between rounded-xl border border-[#e2ebe8] bg-white px-3 py-2.5">
-              <span className="text-[10px] font-semibold text-[#526b75]">تراز روز</span>
+            <div className="mt-3 flex items-center justify-between rounded-xl border border-[var(--border)] bg-[var(--surface-1)] px-3 py-2.5">
+              <span className="text-[10px] font-semibold text-[var(--text-muted)]">تراز روز</span>
               <MonthBalanceBadge balance={balance} compact />
             </div>
           </article>

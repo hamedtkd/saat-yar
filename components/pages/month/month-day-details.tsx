@@ -38,7 +38,7 @@ export function MonthDayDetails({ data, selectedDate }: { data: AppData; selecte
           <strong className="text-base font-black text-[var(--text)]">{jalali(selectedDate, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</strong>
           <div className="mt-2 flex flex-wrap gap-2">
             {holiday.isHoliday && <StatusBadge success={false}>{holiday.title || "روز تعطیل"}</StatusBadge>}
-            {leave && <span className="rounded-full bg-[#eef3ff] px-2.5 py-1 text-[10px] font-bold text-[#617fd5]">مرخصی ثبت‌شده</span>}
+            {leave && <span className="rounded-full bg-[var(--info-soft)] px-2.5 py-1 text-[10px] font-bold text-[var(--info)]">مرخصی ثبت‌شده</span>}
             {health && <StatusBadge success={health.state === "complete"}>{health.label}</StatusBadge>}
           </div>
         </div>
@@ -61,14 +61,14 @@ export function MonthDayDetails({ data, selectedDate }: { data: AppData; selecte
         </div>
       ) : (
         <div className="flex min-h-28 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-[var(--border)] bg-[var(--surface-2)] text-center">
-          {leave ? <Palmtree className="size-5 text-[#617fd5]" /> : <Clock3 className="size-5 text-[#8aa0aa]" />}
+          {leave ? <Palmtree className="size-5 text-[var(--info)]" /> : <Clock3 className="size-5 text-[var(--text-muted)]" />}
           <strong className="text-xs text-[var(--text)]">برای این روز هنوز رکورد کاری ثبت نشده است.</strong>
           <span className="text-[10px] text-[var(--text-muted)]">از دکمه ویرایش، ساعت‌ها یا مرخصی روز را ثبت کن.</span>
         </div>
       )}
 
       {health && health.issues.length > 0 && (
-        <div className="mt-3 rounded-xl border border-[#f0dab5] bg-[#fff8ed] p-3 text-[10px] leading-6 text-[#8b6b31]">
+        <div className="mt-3 rounded-xl border border-[color-mix(in_srgb,var(--warning)_30%,var(--border))] bg-[var(--warning-soft)] p-3 text-[10px] leading-6 text-[var(--warning)]">
           {health.issues.map((issue) => <div key={`${issue.code}-${issue.message}`}>• {issue.message}</div>)}
         </div>
       )}
@@ -78,9 +78,9 @@ export function MonthDayDetails({ data, selectedDate }: { data: AppData; selecte
 
 function Detail({ icon, label, value, tone = "default" }: { icon: ReactNode; label: string; value: string; tone?: "default" | "green" | "red" }) {
   return (
-    <div className="rounded-xl border border-[#e7efed] bg-[var(--surface-2)] p-3">
+    <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-3">
       <div className="mb-2 flex items-center gap-2 text-[10px] text-[var(--text-muted)]">{icon}{label}</div>
-      <strong dir="ltr" className={cn("block text-right text-sm font-black text-[var(--text)]", tone === "green" && "text-[var(--accent-strong)]", tone === "red" && "text-[#e54845]")}>{value}</strong>
+      <strong dir="ltr" className={cn("block text-right text-sm font-black text-[var(--text)]", tone === "green" && "text-[var(--accent-strong)]", tone === "red" && "text-[var(--danger)]")}>{value}</strong>
     </div>
   );
 }

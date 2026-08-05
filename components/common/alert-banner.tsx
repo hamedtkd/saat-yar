@@ -5,7 +5,7 @@ type AlertTone = "info" | "warning" | "success" | "danger";
 
 type AlertBannerProps = {
   title?: ReactNode;
-  children: ReactNode;
+  children?: ReactNode;
   icon?: ReactNode;
   action?: ReactNode;
   tone?: AlertTone;
@@ -27,7 +27,7 @@ export function AlertBanner({ title, children, icon, action, tone = "info", clas
         {icon && <span className="mt-0.5 shrink-0 text-current">{icon}</span>}
         <div className="min-w-0">
           {title && <strong className="block text-sm font-extrabold">{title}</strong>}
-          <div className="mt-1 text-xs leading-6 text-[var(--text-muted)]">{children}</div>
+          {children && <div className="mt-1 text-xs leading-6 text-[var(--text-muted)]">{children}</div>}
         </div>
       </div>
       {action && <div className="shrink-0">{action}</div>}

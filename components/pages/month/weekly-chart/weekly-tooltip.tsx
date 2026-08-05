@@ -24,19 +24,19 @@ export function WeeklyTooltip({ active, payload }: WeeklyTooltipProps) {
     <div
       dir="rtl"
       className={cn(
-        "min-w-40 rounded-xl border border-[#dfe7e9] bg-white/98 p-3",
+        "min-w-40 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-3",
         "shadow-[0_16px_45px_rgba(17,45,55,0.16)] backdrop-blur-xl",
       )}
     >
-      <strong className="block text-xs font-extrabold text-[#102a3a]">
+      <strong className="block text-xs font-extrabold text-[var(--text)]">
         {item?.dayFull}
       </strong>
       <div className="mt-2 flex items-center justify-between gap-6">
-        <span className="flex items-center gap-2 text-[11px] text-[#526b75]">
-          <i className="size-2 rounded-full bg-[#079b60]" />
+        <span className="flex items-center gap-2 text-[11px] text-[var(--text-muted)]">
+          <i className="size-2 rounded-full bg-[var(--accent)]" />
           کارکرد
         </span>
-        <strong dir="ltr" className="text-xs font-extrabold text-[#102a3a]">
+        <strong dir="ltr" className="text-xs font-extrabold text-[var(--text)]">
           {duration(minutes)}
         </strong>
       </div>

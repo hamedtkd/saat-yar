@@ -16,7 +16,7 @@ export function MobileBottomNav({ mode, currentPath }: { mode: Mode; currentPath
   return (
     <>
       {open && (
-        <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm xl:hidden" onClick={() => setOpen(false)}>
+        <div className="fixed inset-0 z-40 bg-[var(--overlay)] backdrop-blur-sm xl:hidden" onClick={() => setOpen(false)}>
           <section aria-label="سایر بخش‌ها" className="absolute inset-x-3 bottom-[calc(82px+env(safe-area-inset-bottom))] rounded-[24px] border border-[var(--border)] bg-[var(--surface-1)] p-3 shadow-[0_24px_70px_rgba(0,0,0,.3)]" onClick={(event) => event.stopPropagation()}>
             <div className="mb-2 flex items-center justify-between px-1"><strong className="text-sm">سایر بخش‌ها</strong><button type="button" onClick={() => setOpen(false)} aria-label="بستن منو" className="grid size-10 place-items-center rounded-xl hover:bg-[var(--accent-soft)]"><X aria-hidden="true" /></button></div>
             <div className="grid grid-cols-2 gap-2">

@@ -27,7 +27,7 @@ export function RecordHealthBanner({ record, onReset }: { record: WorkRecord; on
           )}
         </div>
       </div>
-      <Button type="button" variant="outline" size="sm" onClick={onReset} className="rounded-xl bg-white">
+      <Button type="button" variant="outline" size="sm" onClick={onReset} className="rounded-xl bg-[var(--surface-1)]">
         <RotateCcw className="size-4" /> پاک‌کردن رکورد روز
       </Button>
     </section>

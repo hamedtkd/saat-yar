@@ -77,7 +77,7 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
     return (
       <main
         className={cn(
-          "grid min-h-screen place-content-center gap-3 font-extrabold text-[#079b60]",
+          "grid min-h-screen place-content-center gap-3 font-extrabold text-[var(--accent-strong)]",
         )}
       >
         <span className="w-full grid place-items-center">
@@ -100,14 +100,14 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
       <SkipLink />
       <main
         className={cn(
-          "min-h-screen w-full bg-[var(--page)] p-3 pb-28 xl:pb-3 [&_label]:grid [&_label]:gap-[7px] [&_label]:text-[11px] [&_label]:font-semibold [&_label]:text-[#314b58] [&_button]:cursor-pointer [&_svg]:h-[18px] [&_svg]:w-[18px] [&_svg]:stroke-[1.85]",
+          "min-h-screen w-full bg-[var(--page)] p-3 pb-28 xl:pb-3 [&_label]:grid [&_label]:gap-[7px] [&_label]:text-[11px] [&_label]:font-semibold [&_label]:text-[var(--text-muted)] [&_button]:cursor-pointer [&_svg]:h-[18px] [&_svg]:w-[18px] [&_svg]:stroke-[1.85]",
         )}
         dir="rtl"
       >
         {controller.toast && (
           <div
             className={cn(
-              "fixed left-1/2 top-[22px] z-[1000] flex -translate-x-1/2 items-center gap-2 rounded-xl border border-[#bce2d3] bg-[#effaf5] px-[17px] py-[11px] text-xs font-bold text-[#087f50] shadow-[0_18px_50px_rgba(17,45,55,.16)]",
+              "fixed left-1/2 top-[22px] z-[1000] flex -translate-x-1/2 items-center gap-2 rounded-xl border border-[color-mix(in_srgb,var(--success)_30%,var(--border))] bg-[var(--success-soft)] px-[17px] py-[11px] text-xs font-bold text-[var(--success)] shadow-[0_18px_50px_rgba(17,45,55,.16)]",
             )}
             role="status"
           >

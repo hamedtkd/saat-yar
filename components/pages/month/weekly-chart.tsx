@@ -16,7 +16,7 @@ export function WeeklyChart({ values }: WeeklyChartProps) {
     <SurfaceCard as="aside" className="flex min-w-0 flex-col p-4 sm:p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <PanelHead icon={<BarChart3 />} title="کارکرد هفتگی" />
-        <span className="rounded-full bg-[#f1f7f5] px-3 py-1.5 text-[10px] font-bold text-[var(--text-muted)]">
+        <span className="rounded-full bg-[var(--surface-2)] px-3 py-1.5 text-[10px] font-bold text-[var(--text-muted)]">
           ۷ روز هفته
         </span>
       </div>

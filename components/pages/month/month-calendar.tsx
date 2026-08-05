@@ -33,19 +33,19 @@ export function MonthCalendar({ data, selectedDate, setSelectedDate, monthRecord
         const effectiveItem = item ? { ...item, holiday: holiday.isHoliday } : item;
         const result = effectiveItem ? calc(effectiveItem, getDailyTargetMinutes(cell.key, data.settings)) : null;
         const statusClass = hasLeave
-          ? "border-[#cbd8fa] bg-[#eef3ff] [&>i]:bg-[#617fd5]"
+          ? "border-[color-mix(in_srgb,var(--info)_30%,var(--border))] bg-[var(--info-soft)] [&>i]:bg-[var(--info)]"
           : holiday.isHoliday
-            ? "border-red-200 bg-red-50 text-red-700 [&>i]:bg-red-500"
+            ? "border-[color-mix(in_srgb,var(--danger)_30%,var(--border))] bg-[var(--danger-soft)] text-[var(--danger)] [&>i]:bg-[var(--danger)]"
             : effectiveItem?.end
               ? result && result.balance >= 0
-                ? "border-[#b9e2d2] bg-[var(--accent-soft)] [&>i]:bg-[#19a36c]"
-                : "border-[#f0dab5] bg-[#fff8ed] [&>i]:bg-[#e59d2d]"
+                ? "border-[color-mix(in_srgb,var(--success)_30%,var(--border))] bg-[var(--success-soft)] [&>i]:bg-[var(--success)]"
+                : "border-[color-mix(in_srgb,var(--warning)_30%,var(--border))] bg-[var(--warning-soft)] [&>i]:bg-[var(--warning)]"
               : effectiveItem?.start
-                ? "border-[#f0dab5] bg-[#fff8ed] [&>i]:bg-[#e59d2d]"
+                ? "border-[color-mix(in_srgb,var(--warning)_30%,var(--border))] bg-[var(--warning-soft)] [&>i]:bg-[var(--warning)]"
                 : "";
         return <button key={cell.key} type="button" title={holiday.title} aria-label={holiday.title ? `${fa.format(cell.day)}، ${holiday.title}` : fa.format(cell.day)} className={cn(!cell.inMonth && "opacity-30", cell.key === localDateKey() && "shadow-[inset_0_0_0_2px_var(--accent)]", cell.key === selectedDate && "ring-2 ring-[var(--accent)] ring-offset-2", statusClass)} aria-pressed={cell.key === selectedDate} onClick={() => setSelectedDate(cell.key)}><span>{fa.format(cell.day)}</span>{item && <small>{duration(result?.worked ?? 0)}</small>}{statusClass && <i aria-hidden="true" />}</button>;
       })}</div>
-      <div className={cn("mt-[15px] flex flex-wrap gap-[15px] text-[10px] text-[var(--text-muted)] [&_span]:flex [&_span]:items-center [&_span]:gap-1.5 [&_i]:h-2 [&_i]:w-2 [&_i]:rounded-full max-[620px]:gap-[9px]")}><span><i className="bg-[#19a36c]" /> کامل</span><span><i className="bg-[#e59d2d]" /> کسری</span><span><i className="bg-[#617fd5]" /> مرخصی</span><span><i className="bg-red-500" /> تعطیل</span></div>
+      <div className={cn("mt-[15px] flex flex-wrap gap-[15px] text-[10px] text-[var(--text-muted)] [&_span]:flex [&_span]:items-center [&_span]:gap-1.5 [&_i]:h-2 [&_i]:w-2 [&_i]:rounded-full max-[620px]:gap-[9px]")}><span><i className="bg-[var(--success)]" /> کامل</span><span><i className="bg-[var(--warning)]" /> کسری</span><span><i className="bg-[var(--info)]" /> مرخصی</span><span><i className="bg-[var(--danger)]" /> تعطیل</span></div>
     </article>
   );
 }

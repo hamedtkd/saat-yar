@@ -31,8 +31,8 @@ export function MonthDesktopTable({
               <th
                 key={heading}
                 className={cn(
-                  "h-11 whitespace-nowrap border-y border-[#edf1f2]",
-                  "bg-[#fbfcfc] px-3 py-2 text-right font-semibold text-[#536975]",
+                  "h-11 whitespace-nowrap border-y border-[var(--border)]",
+                  "bg-[var(--surface-2)] px-3 py-2 text-right font-semibold text-[var(--text-muted)]",
                 )}
               >
                 {heading}
@@ -51,11 +51,11 @@ export function MonthDesktopTable({
             return (
               <tr
                 key={item.date}
-                className="transition-colors hover:bg-[#fbfdfc]"
+                className="transition-colors hover:bg-[var(--surface-2)]"
               >
-                <td className="border-b border-[#edf1f2] px-3 py-3">
+                <td className="border-b border-[var(--border)] px-3 py-3">
                   <div className="grid gap-1">
-                    <strong className="text-[11px] text-[#102a3a]">
+                    <strong className="text-[11px] text-[var(--text)]">
                       {jalali(item.date, {
                         weekday: "long",
                         day: "numeric",
@@ -63,38 +63,38 @@ export function MonthDesktopTable({
                       })}
                     </strong>
                     {item.holiday && (
-                      <span className="text-[9px] font-semibold text-[#e54845]">
+                      <span className="text-[9px] font-semibold text-[var(--danger)]">
                         روز تعطیل
                       </span>
                     )}
                   </div>
                 </td>
-                <td dir="ltr" className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3 text-[#2e4856]">
+                <td dir="ltr" className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3 text-[var(--text)]">
                   {faDigits(item.start || "—")}
                 </td>
-                <td dir="ltr" className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3 text-[#2e4856]">
+                <td dir="ltr" className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3 text-[var(--text)]">
                   {faDigits(item.end || "—")}
                 </td>
-                <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3">
-                  <strong className="font-extrabold text-[#102a3a]">
+                <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3">
+                  <strong className="font-extrabold text-[var(--text)]">
                     {duration(worked)}
                   </strong>
                 </td>
-                <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3 text-[#2e4856]">
+                <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3 text-[var(--text)]">
                   <div className="grid gap-1">
                     <span>{duration(totalRest)}</span>
-                    <small className="text-[9px] text-[#6c7d89]">ناهار و وقفه</small>
+                    <small className="text-[9px] text-[var(--text-muted)]">ناهار و وقفه</small>
                   </div>
                 </td>
-                <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3">
+                <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3">
                   <MonthBalanceBadge balance={balance} />
                 </td>
-                <td className="max-w-[260px] border-b border-[#edf1f2] px-3 py-3 text-[#2e4856]">
+                <td className="max-w-[260px] border-b border-[var(--border)] px-3 py-3 text-[var(--text)]">
                   <span className="block truncate" title={item.note || undefined}>
                     {item.note || "—"}
                   </span>
                 </td>
-                <td className="border-b border-[#edf1f2] px-3 py-3">
+                <td className="border-b border-[var(--border)] px-3 py-3">
                   <Button
                     type="button"
                     variant="outline"

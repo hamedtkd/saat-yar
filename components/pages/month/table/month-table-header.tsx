@@ -12,7 +12,7 @@ export function MonthTableHeader({ recordCount }: MonthTableHeaderProps) {
       <PanelHead icon={<FileSpreadsheet />} title="جزئیات روزانه" />
 
       {recordCount > 0 && (
-        <span className="rounded-full bg-[#f1f7f5] px-3 py-1.5 text-[10px] font-bold text-[#526b75]">
+        <span className="rounded-full bg-[var(--surface-2)] px-3 py-1.5 text-[10px] font-bold text-[var(--text-muted)]">
           {faDigits(String(recordCount))} روز ثبت‌شده
         </span>
       )}
