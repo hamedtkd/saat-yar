@@ -14,7 +14,7 @@
     "build:vercel": "next build",
     "typecheck": "tsc --noEmit --allowImportingTsExtensions",
     "start": "vinext start",
-    "test": "node --test --experimental-strip-types tests/time-engine.test.ts tests/payroll.test.ts tests/backup-schema.test.ts tests/data-migrations.test.ts tests/work-schedule.test.ts tests/holidays.test.ts tests/record-health.test.ts tests/project-finance.test.ts tests/invoices.test.ts tests/report-filters.test.ts tests/recovery.test.ts tests/clean-architecture.test.ts tests/reusable-ui.test.ts tests/today-time-strip-architecture.test.ts tests/leave-table-architecture.test.ts tests/jalali-date-picker-architecture.test.ts tests/month-view-architecture.test.ts",
+    "test": "node --test --experimental-strip-types tests/time-engine.test.ts tests/payroll.test.ts tests/backup-schema.test.ts tests/data-migrations.test.ts tests/work-schedule.test.ts tests/holidays.test.ts tests/record-health.test.ts tests/project-finance.test.ts tests/invoices.test.ts tests/report-filters.test.ts tests/recovery.test.ts tests/clean-architecture.test.ts tests/reusable-ui.test.ts tests/today-time-strip-architecture.test.ts tests/leave-table-architecture.test.ts tests/jalali-date-picker-architecture.test.ts tests/month-view-architecture.test.ts tests/onboarding-time-picker-architecture.test.ts",
     "test:sites": "npm run build && node --test tests/rendered-html.test.mjs",
     "validate:artifact": "node scripts/validate-artifact.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next --ignore-pattern out",
