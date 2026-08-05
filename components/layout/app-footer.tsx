@@ -1,26 +1,9 @@
 import { ShieldCheck, Wifi, WifiOff } from "lucide-react";
-import { cn } from "@/lib/cn";
 export function AppFooter({ online }: { online: boolean }) {
   return (
-    <footer
-      className={cn(
-        "mx-auto flex min-h-12 max-w-377.5 items-center justify-between gap-5 rounded-xl border border-[#dfe7e9] bg-white/80 px-4 text-[9px] text-[#6c7d89] [&_span]:flex [&_span]:items-center [&_span]:gap-1.5 [&_svg]:w-[15px] [&_svg]:text-[#079b60] max-[900px]:mb-[76px] max-[620px]:flex-col max-[620px]:items-start max-[620px]:py-[10px] print:hidden",
-      )}
-    >
-      <span>
-        {online ? (
-          <>
-            <Wifi /> برنامه آماده استفاده آفلاین است
-          </>
-        ) : (
-          <>
-            <WifiOff /> آفلاین؛ همه تغییرات روی همین دستگاه ذخیره می‌شوند
-          </>
-        )}
-      </span>
-      <span>
-        <ShieldCheck /> اطلاعات شخصی به هیچ سروری ارسال نمی‌شود.
-      </span>
+    <footer className="mx-auto flex min-h-12 max-w-[1510px] items-center justify-between gap-4 rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-1)] px-4 text-[10px] text-[var(--text-muted)] max-[720px]:flex-col max-[720px]:items-start max-[720px]:py-3 print:hidden">
+      <span className="flex items-center gap-2">{online ? <Wifi className="size-4 text-[var(--accent-strong)]" /> : <WifiOff className="size-4 text-[var(--warning)]" />}{online ? "برنامه آماده استفاده آفلاین است" : "آفلاین؛ تغییرات روی همین دستگاه ذخیره می‌شوند"}</span>
+      <span className="flex items-center gap-2"><ShieldCheck className="size-4 text-[var(--accent-strong)]" />اطلاعات شخصی به هیچ سروری ارسال نمی‌شود.</span>
     </footer>
   );
 }

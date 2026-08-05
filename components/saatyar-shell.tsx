@@ -8,6 +8,8 @@ import { SkipLink } from "@/components/common/skip-link";
 import { ThemeRuntime } from "@/components/theme/theme-runtime";
 import { AppFooter } from "@/components/layout/app-footer";
 import { AppHeader } from "@/components/layout/app-header";
+import { SidebarNav } from "@/components/layout/navigation/sidebar-nav";
+import { MobileBottomNav } from "@/components/layout/navigation/mobile-bottom-nav";
 import { Onboarding } from "@/components/layout/onboarding";
 import { useSaatyarController } from "@/hooks/use-saatyar-controller";
 import { cn } from "@/lib/cn";
@@ -98,7 +100,7 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
       <SkipLink />
       <main
         className={cn(
-          "min-h-screen w-full bg-[var(--page)] p-3 max-[900px]:p-[7px] max-[900px]:pb-24 [&_label]:grid [&_label]:gap-[7px] [&_label]:text-[11px] [&_label]:font-semibold [&_label]:text-[#314b58] [&_button]:cursor-pointer [&_svg]:h-[18px] [&_svg]:w-[18px] [&_svg]:stroke-[1.85]",
+          "min-h-screen w-full bg-[var(--page)] p-3 pb-28 xl:pb-3 [&_label]:grid [&_label]:gap-[7px] [&_label]:text-[11px] [&_label]:font-semibold [&_label]:text-[#314b58] [&_button]:cursor-pointer [&_svg]:h-[18px] [&_svg]:w-[18px] [&_svg]:stroke-[1.85]",
         )}
         dir="rtl"
       >
@@ -123,6 +125,8 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
           />
         )}
 
+        <SidebarNav mode={data.settings.mode} currentPath={pathname} name={data.settings.name} />
+
         <AppHeader
           name={data.settings.name}
           mode={data.settings.mode}
@@ -141,13 +145,14 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
           role="main"
           tabIndex={-1}
           className={cn(
-            "mx-auto max-w-[1510px] px-[26px] pb-[18px] pt-[30px] max-[900px]:px-[10px] max-[900px]:py-[22px]",
+            "mx-auto max-w-[1510px] px-3 pb-6 pt-6 sm:px-5 xl:mr-[264px] xl:px-6",
           )}
         >
           {children}
         </div>
 
-        <AppFooter online={controller.online} />
+        <div className="xl:mr-[264px]"><AppFooter online={controller.online} /></div>
+        <MobileBottomNav mode={data.settings.mode} currentPath={pathname} />
       </main>
     </SaatyarContext.Provider>
   );
