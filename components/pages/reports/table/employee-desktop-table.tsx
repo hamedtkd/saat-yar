@@ -37,11 +37,11 @@ export function EmployeeDesktopTable({
             return (
               <tr
                 key={record.date}
-                className="transition-colors hover:bg-[#fbfdfc]"
+                className="transition-colors hover:bg-[var(--surface-2)]"
               >
-                <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3">
+                <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3">
                   <div className="grid gap-1">
-                    <strong className="text-[11px] text-[#102a3a]">
+                    <strong className="text-[11px] text-[var(--text)]">
                       {jalali(record.date, {
                         weekday: "long",
                         day: "numeric",
@@ -50,7 +50,7 @@ export function EmployeeDesktopTable({
                     </strong>
 
                     {record.holiday && (
-                      <span className="text-[9px] font-semibold text-[#e54845]">
+                      <span className="text-[9px] font-semibold text-[var(--danger)]">
                         روز تعطیل
                       </span>
                     )}
@@ -59,26 +59,26 @@ export function EmployeeDesktopTable({
 
                 <td
                   dir="ltr"
-                  className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3 text-[#2e4856]"
+                  className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3 text-[var(--text)]"
                 >
                   {record.start ? faDigits(record.start) : "—"}
                 </td>
 
                 <td
                   dir="ltr"
-                  className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3 text-[#2e4856]"
+                  className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3 text-[var(--text)]"
                 >
                   {record.end ? faDigits(record.end) : "—"}
                 </td>
 
-                <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3 text-[#2e4856]">
+                <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3 text-[var(--text)]">
                   <div className="grid gap-1">
                     <span>{duration(record.lunchMinutes)}</span>
 
                     <small
                       className={cn(
                         "text-[9px]",
-                        record.lunchPaid ? "text-[#079b60]" : "text-[#6c7d89]",
+                        record.lunchPaid ? "text-[var(--accent-strong)]" : "text-[var(--text-muted)]",
                       )}
                     >
                       {record.lunchPaid ? "با حقوق" : "بدون حقوق"}
@@ -86,11 +86,11 @@ export function EmployeeDesktopTable({
                   </div>
                 </td>
 
-                <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3 text-[#2e4856]">
+                <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3 text-[var(--text)]">
                   <div className="grid gap-1">
                     <span>{duration(result.breakMinutes)}</span>
 
-                    <small className="text-[9px] text-[#6c7d89]">
+                    <small className="text-[9px] text-[var(--text-muted)]">
                       {record.breaks.length > 0
                         ? `${faDigits(String(record.breaks.length))} وقفه`
                         : "بدون وقفه"}
@@ -98,16 +98,16 @@ export function EmployeeDesktopTable({
                   </div>
                 </td>
 
-                <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3 font-extrabold text-[#102a3a]">
+                <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3 font-extrabold text-[var(--text)]">
                   {duration(result.worked)}
                 </td>
 
-                <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3 text-[#2e4856]">
+                <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3 text-[var(--text)]">
                   {result.leave > 0 ? (
                     <div className="grid gap-1">
                       <span>{duration(result.leave)}</span>
 
-                      <small className="text-[9px] text-[#6c7d89]">
+                      <small className="text-[9px] text-[var(--text-muted)]">
                         {record.leaveType === "hourly"
                           ? "مرخصی ساعتی"
                           : "مرخصی ثبت‌شده"}
@@ -118,7 +118,7 @@ export function EmployeeDesktopTable({
                   )}
                 </td>
 
-                <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3">
+                <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3">
                   <StatusBadge success={result.balance >= 0}>
                     {result.balance >= 0
                       ? `اضافه ${duration(result.balance)}`
@@ -126,11 +126,11 @@ export function EmployeeDesktopTable({
                   </StatusBadge>
                 </td>
 
-                <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3 font-extrabold text-[#102a3a]">
+                <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3 font-extrabold text-[var(--text)]">
                   {financialsHidden ? "••••••" : money(earnedAmount)} تومان
                 </td>
 
-                <td className="max-w-60 border-b border-[#edf1f2] px-3 py-3 text-[#2e4856]">
+                <td className="max-w-60 border-b border-[var(--border)] px-3 py-3 text-[var(--text)]">
                   <span
                     className="block truncate"
                     title={record.note || undefined}
@@ -144,43 +144,43 @@ export function EmployeeDesktopTable({
         </tbody>
 
         <tfoot>
-          <tr className="bg-[#f8fbfa]">
+          <tr className="bg-[var(--surface-2)]">
             <td
               colSpan={3}
-              className="border-t border-[#dfe7e9] px-3 py-3 font-extrabold text-[#102a3a]"
+              className="border-t border-[var(--border)] px-3 py-3 font-extrabold text-[var(--text)]"
             >
               جمع این ماه
             </td>
 
             <td
               colSpan={2}
-              className="border-t border-[#dfe7e9] px-3 py-3 text-[#526b75]"
+              className="border-t border-[var(--border)] px-3 py-3 text-[var(--text-muted)]"
             >
               استراحت {duration(totals.rest)}
             </td>
 
-            <td className="border-t border-[#dfe7e9] px-3 py-3 font-extrabold text-[#102a3a]">
+            <td className="border-t border-[var(--border)] px-3 py-3 font-extrabold text-[var(--text)]">
               {duration(totals.worked)}
             </td>
 
-            <td className="border-t border-[#dfe7e9] px-3 py-3 text-[#526b75]">
+            <td className="border-t border-[var(--border)] px-3 py-3 text-[var(--text-muted)]">
               {duration(totals.leave)}
             </td>
 
             <td
               className={cn(
-                "border-t border-[#dfe7e9] px-3 py-3 font-extrabold",
-                totals.balance >= 0 ? "text-[#079b60]" : "text-[#e54845]",
+                "border-t border-[var(--border)] px-3 py-3 font-extrabold",
+                totals.balance >= 0 ? "text-[var(--accent-strong)]" : "text-[var(--danger)]",
               )}
             >
               {duration(totals.balance, true)}
             </td>
 
-            <td className="border-t border-[#dfe7e9] px-3 py-3 font-black text-[#079b60]">
+            <td className="border-t border-[var(--border)] px-3 py-3 font-black text-[var(--accent-strong)]">
               {financialsHidden ? "••••••" : money(totals.income)} تومان
             </td>
 
-            <td className="border-t border-[#dfe7e9] px-3 py-3" />
+            <td className="border-t border-[var(--border)] px-3 py-3" />
           </tr>
         </tfoot>
       </table>

@@ -28,14 +28,14 @@ export function EmployeeMobileCards({
           <article
             key={record.date}
             className={cn(
-              "rounded-2xl border border-[#e2ebe8]",
-              "bg-[#fbfdfc] p-4",
+              "rounded-2xl border border-[var(--border)]",
+              "bg-[var(--surface-2)] p-4",
               "shadow-[0_6px_20px_rgba(17,45,55,0.035)]",
             )}
           >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <strong className="block text-sm font-extrabold text-[#102a3a]">
+                <strong className="block text-sm font-extrabold text-[var(--text)]">
                   {jalali(record.date, {
                     weekday: "long",
                     day: "numeric",
@@ -45,13 +45,13 @@ export function EmployeeMobileCards({
 
                 <div className="mt-2 flex flex-wrap items-center gap-1.5">
                   {record.holiday && (
-                    <span className="rounded-full bg-[#fff1f0] px-2 py-1 text-[9px] font-bold text-[#e54845]">
+                    <span className="rounded-full bg-[var(--danger-soft)] px-2 py-1 text-[9px] font-bold text-[var(--danger)]">
                       روز تعطیل
                     </span>
                   )}
 
                   {result.leave > 0 && (
-                    <span className="rounded-full bg-[#eef4ff] px-2 py-1 text-[9px] font-bold text-[#276bd5]">
+                    <span className="rounded-full bg-[var(--info-soft)] px-2 py-1 text-[9px] font-bold text-[var(--info)]">
                       مرخصی {duration(result.leave)}
                     </span>
                   )}
@@ -91,7 +91,7 @@ export function EmployeeMobileCards({
                     <small
                       className={cn(
                         "mr-2 text-[9px] font-medium",
-                        record.lunchPaid ? "text-[#079b60]" : "text-[#6c7d89]",
+                        record.lunchPaid ? "text-[var(--accent-strong)]" : "text-[var(--text-muted)]",
                       )}
                     >
                       {record.lunchPaid ? "با حقوق" : "بدون حقوق"}
@@ -114,15 +114,15 @@ export function EmployeeMobileCards({
               <InfoRow
                 label="حقوق روز"
                 value={`${financialsHidden ? "••••••" : money(earnedAmount)} تومان`}
-                valueClassName="text-[#079b60]"
+                valueClassName="text-[var(--accent-strong)]"
               />
             </div>
 
             {record.note && (
-              <div className="mt-3 rounded-xl border border-[#e7efed] bg-white px-3 py-3">
-                <span className="block text-[9px] text-[#6c7d89]">توضیح</span>
+              <div className="mt-3 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] px-3 py-3">
+                <span className="block text-[9px] text-[var(--text-muted)]">توضیح</span>
 
-                <p className="mt-1 text-[11px] leading-6 text-[#2e4856]">
+                <p className="mt-1 text-[11px] leading-6 text-[var(--text)]">
                   {record.note}
                 </p>
               </div>
@@ -131,8 +131,8 @@ export function EmployeeMobileCards({
         );
       })}
 
-      <article className="rounded-2xl border border-[#cfe6de] bg-[#edf9f4] p-4">
-        <strong className="block text-sm font-extrabold text-[#102a3a]">
+      <article className="rounded-2xl border border-[color-mix(in_srgb,var(--accent)_32%,var(--border))] bg-[var(--accent-soft)] p-4">
+        <strong className="block text-sm font-extrabold text-[var(--text)]">
           جمع این ماه
         </strong>
 
@@ -147,14 +147,14 @@ export function EmployeeMobileCards({
             label="تراز"
             value={duration(totals.balance, true)}
             valueClassName={
-              totals.balance >= 0 ? "text-[#079b60]" : "text-[#e54845]"
+              totals.balance >= 0 ? "text-[var(--accent-strong)]" : "text-[var(--danger)]"
             }
           />
 
           <InfoRow
             label="حقوق تخمینی"
             value={`${financialsHidden ? "••••••" : money(totals.income)} تومان`}
-            valueClassName="text-[#079b60]"
+            valueClassName="text-[var(--accent-strong)]"
           />
         </div>
       </article>

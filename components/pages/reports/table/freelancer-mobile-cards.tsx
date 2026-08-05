@@ -38,18 +38,18 @@ export function FreelancerMobileCards({ data, entries, financialsHidden }: Props
           <article
             key={entry.id}
             className={cn(
-              "rounded-2xl border border-[#e2ebe8]",
-              "bg-[#fbfdfc] p-4",
+              "rounded-2xl border border-[var(--border)]",
+              "bg-[var(--surface-2)] p-4",
               "shadow-[0_6px_20px_rgba(17,45,55,0.035)]",
             )}
           >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <strong className="block truncate text-sm font-extrabold text-[#102a3a]">
+                <strong className="block truncate text-sm font-extrabold text-[var(--text)]">
                   {project?.name || "بدون پروژه"}
                 </strong>
 
-                <span className="mt-1 block text-[10px] text-[#6c7d89]">
+                <span className="mt-1 block text-[10px] text-[var(--text-muted)]">
                   {client?.name || "بدون مشتری"}
                 </span>
               </div>
@@ -59,7 +59,7 @@ export function FreelancerMobileCards({ data, entries, financialsHidden }: Props
               </StatusBadge>
             </div>
 
-            <p className="mt-3 text-[10px] text-[#6c7d89]">
+            <p className="mt-3 text-[10px] text-[var(--text-muted)]">
               {jalali(entry.startedAt, {
                 weekday: "long",
                 day: "numeric",
@@ -79,18 +79,18 @@ export function FreelancerMobileCards({ data, entries, financialsHidden }: Props
                 label="مبلغ"
                 value={`${financialsHidden ? "••••••" : money(amount)} تومان`}
                 valueClassName={
-                  entry.billable ? "text-[#079b60]" : "text-[#6c7d89]"
+                  entry.billable ? "text-[var(--accent-strong)]" : "text-[var(--text-muted)]"
                 }
               />
             </div>
 
             {(entry.note || entry.task) && (
-              <div className="mt-3 rounded-xl border border-[#e7efed] bg-white px-3 py-3">
-                <span className="block text-[9px] text-[#6c7d89]">
+              <div className="mt-3 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] px-3 py-3">
+                <span className="block text-[9px] text-[var(--text-muted)]">
                   شرح فعالیت
                 </span>
 
-                <p className="mt-1 text-[11px] leading-6 text-[#2e4856]">
+                <p className="mt-1 text-[11px] leading-6 text-[var(--text)]">
                   {entry.note || entry.task}
                 </p>
               </div>
@@ -100,8 +100,8 @@ export function FreelancerMobileCards({ data, entries, financialsHidden }: Props
       })}
 
       {entries.length > 0 && (
-        <article className="rounded-2xl border border-[#cfe6de] bg-[#edf9f4] p-4">
-          <strong className="block text-sm font-extrabold text-[#102a3a]">
+        <article className="rounded-2xl border border-[color-mix(in_srgb,var(--accent)_32%,var(--border))] bg-[var(--accent-soft)] p-4">
+          <strong className="block text-sm font-extrabold text-[var(--text)]">
             جمع رکوردهای نمایش‌داده‌شده
           </strong>
 
@@ -111,7 +111,7 @@ export function FreelancerMobileCards({ data, entries, financialsHidden }: Props
             <InfoRow
               label="درآمد"
               value={`${financialsHidden ? "••••••" : money(totalIncome)} تومان`}
-              valueClassName="text-[#079b60]"
+              valueClassName="text-[var(--accent-strong)]"
             />
           </div>
         </article>

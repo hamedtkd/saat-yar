@@ -69,10 +69,10 @@ export function EmployeeSummary({
       <SurfaceCard as="section" className="mb-4 p-5">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <strong className="block text-sm font-extrabold text-[#173747]">فیش حقوقی تخمینی ماه</strong>
-            <small className="text-[10px] leading-6 text-[#6c7d89]">مبالغ بر اساس کارکرد ثبت‌شده، ضرایب و آیتم‌های تنظیمات محاسبه می‌شوند.</small>
+            <strong className="block text-sm font-extrabold text-[var(--text)]">فیش حقوقی تخمینی ماه</strong>
+            <small className="text-[10px] leading-6 text-[var(--text-muted)]">مبالغ بر اساس کارکرد ثبت‌شده، ضرایب و آیتم‌های تنظیمات محاسبه می‌شوند.</small>
           </div>
-          <span className="rounded-full bg-[#edf9f4] px-3 py-1.5 text-xs font-black text-[#079b60]">
+          <span className="rounded-full bg-[var(--accent-soft)] px-3 py-1.5 text-xs font-black text-[var(--accent-strong)]">
             خالص: <PrivateMoney value={payroll.net} hidden={financialsHidden} /> تومان
           </span>
         </div>
@@ -92,11 +92,11 @@ export function EmployeeSummary({
 }
 
 const statTone = {
-  default: "bg-[#f8fbfa] text-[#102a3a]",
-  warning: "bg-[#fff8ed] text-[#8b6b31]",
-  success: "bg-[#edf9f4] text-[#527268]",
-  danger: "bg-[#fff2f1] text-[#8b5d59]",
-  dark: "bg-[#102a3a] text-white",
+  default: "bg-[var(--surface-2)] text-[var(--text)]",
+  warning: "bg-[var(--warning-soft)] text-[var(--warning)]",
+  success: "bg-[var(--success-soft)] text-[var(--success)]",
+  danger: "bg-[var(--danger-soft)] text-[var(--danger)]",
+  dark: "bg-[var(--accent)] text-[var(--accent-foreground)]",
 } as const;
 
 function PayrollStat({

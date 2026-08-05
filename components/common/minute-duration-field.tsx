@@ -91,7 +91,7 @@ export function MinuteDurationField({
             className="pl-16 tabular-nums"
             aria-label="مدت زمان دلخواه به دقیقه"
           />
-          <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-[11px] font-medium text-[#6c7d89]">
+          <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-[11px] font-medium text-[var(--text-muted)]">
             دقیقه
           </span>
         </div>

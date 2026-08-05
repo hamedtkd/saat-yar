@@ -21,6 +21,14 @@
   --border: #dce5df;
   --danger: #dc5149;
   --warning: #d79013;
+  --success: #0f9f63;
+  --info: #3478e5;
+  --chart-grid: #e5ece7;
+  --chart-secondary: #3478e5;
+  --danger-soft: color-mix(in srgb, var(--danger) 12%, transparent);
+  --warning-soft: color-mix(in srgb, var(--warning) 14%, transparent);
+  --success-soft: color-mix(in srgb, var(--success) 13%, transparent);
+  --info-soft: color-mix(in srgb, var(--info) 12%, transparent);
   --card-radius: 22px;
   --control-radius: 14px;
 }
@@ -37,6 +45,10 @@
   --border: rgb(255 255 255 / 10%);
   --danger: #ff746c;
   --warning: #f0b84d;
+  --success: #51e884;
+  --info: #72a7ff;
+  --chart-grid: rgb(255 255 255 / 10%);
+  --chart-secondary: #72a7ff;
 }
 
 :root[data-radius="compact"] { --card-radius: 14px; --control-radius: 10px; }

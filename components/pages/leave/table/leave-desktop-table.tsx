@@ -20,7 +20,7 @@ export function LeaveDesktopTable({ entries, onEdit, onDelete }: LeaveDesktopTab
         <thead>
           <tr>
             {headings.map((heading) => (
-              <th key={heading} className={cn("h-11 whitespace-nowrap", "border-y border-[#edf1f2]", "bg-[#fbfcfc] px-3 py-2", "text-right font-semibold text-[#536975]")}>{heading}</th>
+              <th key={heading} className={cn("h-11 whitespace-nowrap", "border-y border-[var(--border)]", "bg-[var(--surface-2)] px-3 py-2", "text-right font-semibold text-[var(--text-muted)]")}>{heading}</th>
             ))}
           </tr>
         </thead>
@@ -28,19 +28,19 @@ export function LeaveDesktopTable({ entries, onEdit, onDelete }: LeaveDesktopTab
           {entries.map((entry) => {
             const sameDate = entry.startDate === entry.endDate;
             return (
-              <tr key={entry.id} className="transition-colors hover:bg-[#fbfdfc]">
-                <td className="border-b border-[#edf1f2] px-3 py-3">
+              <tr key={entry.id} className="transition-colors hover:bg-[var(--surface-2)]">
+                <td className="border-b border-[var(--border)] px-3 py-3">
                   <div className="grid gap-1">
-                    <strong className="text-[11px] text-[#102a3a]">
+                    <strong className="text-[11px] text-[var(--text)]">
                       {sameDate ? formatLeaveDate(entry.startDate) : `${formatLeaveDate(entry.startDate)} تا ${formatLeaveDate(entry.endDate)}`}
                     </strong>
-                    {!sameDate && <small className="text-[9px] text-[#6c7d89]">مرخصی چندروزه</small>}
+                    {!sameDate && <small className="text-[9px] text-[var(--text-muted)]">مرخصی چندروزه</small>}
                   </div>
                 </td>
-                <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3"><StatusBadge success>{getLeaveTypeLabel(entry.type)}</StatusBadge></td>
-                <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3"><strong className="font-extrabold text-[#102a3a]">{getLeaveDurationLabel(entry)}</strong></td>
-                <td className="max-w-[280px] border-b border-[#edf1f2] px-3 py-3 text-[#2e4856]"><span className="block truncate" title={entry.note || undefined}>{entry.note || "—"}</span></td>
-                <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3"><LeaveActions entry={entry} compact onEdit={onEdit} onDelete={onDelete} /></td>
+                <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3"><StatusBadge success>{getLeaveTypeLabel(entry.type)}</StatusBadge></td>
+                <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3"><strong className="font-extrabold text-[var(--text)]">{getLeaveDurationLabel(entry)}</strong></td>
+                <td className="max-w-[280px] border-b border-[var(--border)] px-3 py-3 text-[var(--text)]"><span className="block truncate" title={entry.note || undefined}>{entry.note || "—"}</span></td>
+                <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3"><LeaveActions entry={entry} compact onEdit={onEdit} onDelete={onDelete} /></td>
               </tr>
             );
           })}

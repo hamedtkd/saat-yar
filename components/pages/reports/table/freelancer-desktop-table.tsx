@@ -48,26 +48,26 @@ export function FreelancerDesktopTable({ data, entries, financialsHidden }: Prop
             return (
               <tr
                 key={entry.id}
-                className="transition-colors hover:bg-[#fbfdfc]"
+                className="transition-colors hover:bg-[var(--surface-2)]"
               >
-                <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3 text-[#2e4856]">
+                <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3 text-[var(--text)]">
                   {jalali(entry.startedAt, {
                     day: "numeric",
                     month: "long",
                   })}
                 </td>
 
-                <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3 text-[#2e4856]">
+                <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3 text-[var(--text)]">
                   {client?.name || "—"}
                 </td>
 
-                <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3">
-                  <strong className="text-[#102a3a]">
+                <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3">
+                  <strong className="text-[var(--text)]">
                     {project?.name || "—"}
                   </strong>
                 </td>
 
-                <td className="max-w-65 border-b border-[#edf1f2] px-3 py-3 text-[#2e4856]">
+                <td className="max-w-65 border-b border-[var(--border)] px-3 py-3 text-[var(--text)]">
                   <span
                     className="block truncate"
                     title={entry.note || entry.task || undefined}
@@ -76,19 +76,19 @@ export function FreelancerDesktopTable({ data, entries, financialsHidden }: Prop
                   </span>
                 </td>
 
-                <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3 font-extrabold text-[#102a3a]">
+                <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3 font-extrabold text-[var(--text)]">
                   {duration(minutes)}
                 </td>
 
-                <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3 text-[#2e4856]">
+                <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3 text-[var(--text)]">
                   {financialsHidden ? "••••••" : money(entry.effectiveRate)} تومان
                 </td>
 
-                <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3 font-extrabold text-[#102a3a]">
+                <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3 font-extrabold text-[var(--text)]">
                   {financialsHidden ? "••••••" : money(amount)} تومان
                 </td>
 
-                <td className="whitespace-nowrap border-b border-[#edf1f2] px-3 py-3">
+                <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3">
                   <StatusBadge success={entry.billable}>
                     {entry.billable ? "قابل صورتحساب" : "غیرقابل صورتحساب"}
                   </StatusBadge>
@@ -100,25 +100,25 @@ export function FreelancerDesktopTable({ data, entries, financialsHidden }: Prop
 
         {entries.length > 0 && (
           <tfoot>
-            <tr className="bg-[#f8fbfa]">
+            <tr className="bg-[var(--surface-2)]">
               <td
                 colSpan={4}
-                className="border-t border-[#dfe7e9] px-3 py-3 font-extrabold text-[#102a3a]"
+                className="border-t border-[var(--border)] px-3 py-3 font-extrabold text-[var(--text)]"
               >
                 جمع رکوردهای نمایش‌داده‌شده
               </td>
 
-              <td className="border-t border-[#dfe7e9] px-3 py-3 font-extrabold text-[#102a3a]">
+              <td className="border-t border-[var(--border)] px-3 py-3 font-extrabold text-[var(--text)]">
                 {duration(totalMinutes)}
               </td>
 
-              <td className="border-t border-[#dfe7e9] px-3 py-3" />
+              <td className="border-t border-[var(--border)] px-3 py-3" />
 
-              <td className="border-t border-[#dfe7e9] px-3 py-3 font-black text-[#079b60]">
+              <td className="border-t border-[var(--border)] px-3 py-3 font-black text-[var(--accent-strong)]">
                 {financialsHidden ? "••••••" : money(totalIncome)} تومان
               </td>
 
-              <td className="border-t border-[#dfe7e9] px-3 py-3" />
+              <td className="border-t border-[var(--border)] px-3 py-3" />
             </tr>
           </tfoot>
         )}

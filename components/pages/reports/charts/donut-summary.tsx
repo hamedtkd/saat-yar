@@ -23,13 +23,13 @@ export function DonutSummary({ icon, title, description, data, ratio, ratioLabel
   return (
     <ChartShell>
       <PanelHead icon={icon} title={title} />
-      <p className="mb-2 text-[10px] leading-6 text-[#6c7d89]">{description}</p>
+      <p className="mb-2 text-[10px] leading-6 text-[var(--text-muted)]">{description}</p>
       <div className="relative h-[230px] w-full">
         <ResponsiveContainer width="100%" height="100%"><PieChart><Tooltip content={<DonutTooltip />} /><Pie data={data} dataKey="value" nameKey="name" cx="50%" cy="48%" innerRadius={64} outerRadius={88} startAngle={90} endAngle={-270} paddingAngle={total > 0 ? 3 : 0} cornerRadius={8} stroke="none">{data.map((item) => <Cell key={item.name} fill={item.color} />)}</Pie></PieChart></ResponsiveContainer>
-        <div className="pointer-events-none absolute inset-0 grid place-items-center"><div className="-translate-y-1 text-center"><strong className="block text-3xl font-black text-[#102a3a]">{fa.format(ratio)}٪</strong><span className="mt-1 block text-[9px] text-[#6c7d89]">{ratioLabel}</span></div></div>
+        <div className="pointer-events-none absolute inset-0 grid place-items-center"><div className="-translate-y-1 text-center"><strong className="block text-3xl font-black text-[var(--text)]">{fa.format(ratio)}٪</strong><span className="mt-1 block text-[9px] text-[var(--text-muted)]">{ratioLabel}</span></div></div>
       </div>
-      <div className="mt-1 grid gap-2">{data.map((item) => <div key={item.name} className="flex items-center justify-between gap-3 rounded-xl bg-[#f8fbfa] px-3 py-2.5"><span className="flex min-w-0 items-center gap-2 text-[11px] font-semibold text-[#526b75]"><i className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: item.color }} />{item.name}</span><strong dir="ltr" className="text-xs font-extrabold text-[#102a3a]">{duration(item.value)}</strong></div>)}</div>
-      <div className="mt-3 flex items-center justify-between border-t border-[#edf2f3] pt-3"><span className="text-[10px] font-semibold text-[#6c7d89]">{footerLabel}</span><strong dir="ltr" className={cn("text-sm font-extrabold", footerTone === "positive" && "text-[#079b60]", footerTone === "negative" && "text-[#e54845]", footerTone === "neutral" && "text-[#102a3a]")}>{footerValue}</strong></div>
+      <div className="mt-1 grid gap-2">{data.map((item) => <div key={item.name} className="flex items-center justify-between gap-3 rounded-xl bg-[var(--surface-2)] px-3 py-2.5"><span className="flex min-w-0 items-center gap-2 text-[11px] font-semibold text-[var(--text-muted)]"><i className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: item.color }} />{item.name}</span><strong dir="ltr" className="text-xs font-extrabold text-[var(--text)]">{duration(item.value)}</strong></div>)}</div>
+      <div className="mt-3 flex items-center justify-between border-t border-[var(--border)] pt-3"><span className="text-[10px] font-semibold text-[var(--text-muted)]">{footerLabel}</span><strong dir="ltr" className={cn("text-sm font-extrabold", footerTone === "positive" && "text-[var(--accent-strong)]", footerTone === "negative" && "text-[var(--danger)]", footerTone === "neutral" && "text-[var(--text)]")}>{footerValue}</strong></div>
     </ChartShell>
   );
 }

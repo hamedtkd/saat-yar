@@ -13,8 +13,8 @@ export function FreelancerReportTable({ data, entries, financialsHidden }: Props
     <article
       className={cn(
         "min-w-0 overflow-hidden rounded-2xl",
-        "border border-[#dfe7e9]",
-        "bg-white/95",
+        "border border-[var(--border)]",
+        "bg-[var(--surface-glass)]",
         "shadow-[0_10px_35px_rgba(17,45,55,0.055)]",
       )}
     >
@@ -22,7 +22,7 @@ export function FreelancerReportTable({ data, entries, financialsHidden }: Props
         <PanelHead icon={<FileSpreadsheet />} title="جزئیات رکوردهای پروژه" />
 
         {entries.length > 0 && (
-          <span className="rounded-full bg-[#f1f7f5] px-3 py-1.5 text-[10px] font-bold text-[#526b75]">
+          <span className="rounded-full bg-[var(--accent-soft)] px-3 py-1.5 text-[10px] font-bold text-[var(--text-muted)]">
             {faDigits(String(entries.length))} رکورد
           </span>
         )}

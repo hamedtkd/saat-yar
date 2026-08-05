@@ -50,12 +50,12 @@ export function ReportFilters({ mode, data, filters, setFilters }: ReportFilters
   ].filter(Boolean).length;
 
   return (
-    <section className={cn("mb-4 rounded-2xl border border-[#dfe7e9] bg-white/95 p-4 shadow-[0_10px_35px_rgba(17,45,55,0.055)] print:hidden")}>
+    <section className={cn("mb-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-glass)] p-4 shadow-[0_10px_35px_rgba(17,45,55,0.055)] print:hidden")}>
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2 text-xs font-extrabold text-[#173747]">
-          <Filter className="size-4 text-[#079b60]" />
+        <div className="flex items-center gap-2 text-xs font-extrabold text-[var(--text)]">
+          <Filter className="size-4 text-[var(--accent-strong)]" />
           فیلترهای پیشرفته
-          {activeCount > 0 && <span className="rounded-full bg-[#edf9f4] px-2 py-1 text-[9px] text-[#079b60]">{activeCount.toLocaleString("fa-IR")} فعال</span>}
+          {activeCount > 0 && <span className="rounded-full bg-[var(--accent-soft)] px-2 py-1 text-[9px] text-[var(--accent-strong)]">{activeCount.toLocaleString("fa-IR")} فعال</span>}
         </div>
         <Button type="button" variant="outline" size="sm" disabled={!activeCount} onClick={resetFilters}>
           <RotateCcw className="size-4" /> پاک‌کردن همه
@@ -63,8 +63,8 @@ export function ReportFilters({ mode, data, filters, setFilters }: ReportFilters
       </div>
 
       <div className="grid grid-cols-4 gap-3 max-[1180px]:grid-cols-2 max-[620px]:grid-cols-1">
-        <div className="search-box flex h-12 min-w-0 items-center gap-2 rounded-xl border border-[#dfe7e9] bg-white px-3 transition-colors focus-within:border-[#079b60] focus-within:ring-3 focus-within:ring-[#079b60]/10">
-          <Search className="size-4 shrink-0 text-[#6c7d89]" />
+        <div className="search-box flex h-12 min-w-0 items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] px-3 transition-colors focus-within:border-[var(--accent)] focus-within:ring-3 focus-within:ring-[var(--accent-soft)]">
+          <Search className="size-4 shrink-0 text-[var(--text-muted)]" />
           <Input
             value={filters.query}
             onChange={(event) => updateFilter("query", event.target.value)}
@@ -92,7 +92,7 @@ export function ReportFilters({ mode, data, filters, setFilters }: ReportFilters
 
         {isEmployee ? (
           <Select value={filters.status} onValueChange={(value) => updateFilter("status", value as ReportFilter["status"])}>
-            <SelectTrigger className="h-12 rounded-xl border-[#dfe7e9] bg-white shadow-none"><SelectValue placeholder="همه وضعیت‌ها" /></SelectTrigger>
+            <SelectTrigger className="h-12 rounded-xl border-[var(--border)] bg-[var(--surface-1)] shadow-none"><SelectValue placeholder="همه وضعیت‌ها" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">همه وضعیت‌ها</SelectItem>
               <SelectItem value="complete">رکورد کامل</SelectItem>
@@ -105,7 +105,7 @@ export function ReportFilters({ mode, data, filters, setFilters }: ReportFilters
           </Select>
         ) : (
           <Select value={filters.clientId} onValueChange={(value) => updateFilter("clientId", value)}>
-            <SelectTrigger className="h-12 rounded-xl border-[#dfe7e9] bg-white shadow-none"><SelectValue placeholder="همه مشتری‌ها" /></SelectTrigger>
+            <SelectTrigger className="h-12 rounded-xl border-[var(--border)] bg-[var(--surface-1)] shadow-none"><SelectValue placeholder="همه مشتری‌ها" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">همه مشتری‌ها</SelectItem>
               {data.clients.map((client) => <SelectItem value={client.id} key={client.id}>{client.name}</SelectItem>)}
@@ -115,14 +115,14 @@ export function ReportFilters({ mode, data, filters, setFilters }: ReportFilters
 
         {!isEmployee && <>
           <Select value={filters.projectId} onValueChange={(value) => updateFilter("projectId", value)}>
-            <SelectTrigger className="h-12 rounded-xl border-[#dfe7e9] bg-white shadow-none"><SelectValue placeholder="همه پروژه‌ها" /></SelectTrigger>
+            <SelectTrigger className="h-12 rounded-xl border-[var(--border)] bg-[var(--surface-1)] shadow-none"><SelectValue placeholder="همه پروژه‌ها" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">همه پروژه‌ها</SelectItem>
               {data.projects.filter((project) => filters.clientId === "all" || project.clientId === filters.clientId).map((project) => <SelectItem value={project.id} key={project.id}>{project.name}</SelectItem>)}
             </SelectContent>
           </Select>
           <Select value={filters.billable} onValueChange={(value) => updateFilter("billable", value)}>
-            <SelectTrigger className="h-12 rounded-xl border-[#dfe7e9] bg-white shadow-none"><SelectValue placeholder="وضعیت صورتحساب" /></SelectTrigger>
+            <SelectTrigger className="h-12 rounded-xl border-[var(--border)] bg-[var(--surface-1)] shadow-none"><SelectValue placeholder="وضعیت صورتحساب" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">همه وضعیت‌ها</SelectItem>
               <SelectItem value="true">قابل صورتحساب</SelectItem>
@@ -132,7 +132,7 @@ export function ReportFilters({ mode, data, filters, setFilters }: ReportFilters
         </>}
       </div>
 
-      <p className="mt-3 text-[10px] leading-6 text-[#6c7d89]">
+      <p className="mt-3 text-[10px] leading-6 text-[var(--text-muted)]">
         فیلترها بلافاصله روی جدول و خروجی CSV/Excel اعمال می‌شوند.
       </p>
     </section>

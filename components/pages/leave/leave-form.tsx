@@ -49,8 +49,8 @@ export function LeaveForm({ draft, setDraft, onSave }: LeaveFormProps) {
         min-w-0
         overflow-hidden
         rounded-2xl
-        border border-[#dfe7e9]
-        bg-white/95
+        border border-[var(--border)]
+        bg-[var(--surface-glass)]
         p-4
         shadow-[0_10px_35px_rgba(17,45,55,0.055)]
         sm:p-5
@@ -66,7 +66,7 @@ export function LeaveForm({ draft, setDraft, onSave }: LeaveFormProps) {
           <label className={cn("grid min-w-0 gap-2",{
             "col-span-2":!isHourly ,
           } )}>
-            <span className="text-xs font-bold text-[#183747]">نوع مرخصی</span>
+            <span className="text-xs font-bold text-[var(--text)]">نوع مرخصی</span>
 
             <Select
               value={draft.type}
@@ -76,7 +76,7 @@ export function LeaveForm({ draft, setDraft, onSave }: LeaveFormProps) {
             >
               <SelectTrigger
                 aria-label="انتخاب نوع مرخصی"
-                className={cn(" h-12 w-full min-w-0 rounded-xl border-[#d5e2e4] bg-white px-3 text-sm font-bold shadow-none",{
+                className={cn(" h-12 w-full min-w-0 rounded-xl border-[var(--border)] bg-[var(--surface-1)] px-3 text-sm font-bold shadow-none",{
                   "col-span-2":!isHourly ,
                 })}
               >
@@ -93,7 +93,7 @@ export function LeaveForm({ draft, setDraft, onSave }: LeaveFormProps) {
 
           {isHourly && (
             <label className="grid min-w-0 gap-2">
-              <span className="text-xs font-bold text-[#183747]">
+              <span className="text-xs font-bold text-[var(--text)]">
                 مدت مرخصی
               </span>
 
@@ -112,7 +112,7 @@ export function LeaveForm({ draft, setDraft, onSave }: LeaveFormProps) {
                     -translate-y-1/2
                     text-[11px]
                     font-semibold
-                    text-[#6c7d89]
+                    text-[var(--text-muted)]
                   "
                 >
                   دقیقه
@@ -123,7 +123,7 @@ export function LeaveForm({ draft, setDraft, onSave }: LeaveFormProps) {
         </div>
 
         <label className="grid min-w-0 gap-2">
-          <span className="text-xs font-bold text-[#183747]">از تاریخ</span>
+          <span className="text-xs font-bold text-[var(--text)]">از تاریخ</span>
 
           <div
             className="
@@ -142,7 +142,7 @@ export function LeaveForm({ draft, setDraft, onSave }: LeaveFormProps) {
         </label>
 
         <label className="grid min-w-0 gap-2">
-          <span className="text-xs font-bold text-[#183747]">تا تاریخ</span>
+          <span className="text-xs font-bold text-[var(--text)]">تا تاریخ</span>
 
           <div
             className="
@@ -161,7 +161,7 @@ export function LeaveForm({ draft, setDraft, onSave }: LeaveFormProps) {
         </label>
 
         <label className="grid min-w-0 gap-2">
-          <span className="text-xs font-bold text-[#183747]">
+          <span className="text-xs font-bold text-[var(--text)]">
             توضیح اختیاری
           </span>
 
@@ -174,14 +174,14 @@ export function LeaveForm({ draft, setDraft, onSave }: LeaveFormProps) {
               w-full
               min-w-0
               rounded-xl
-              border-[#d5e2e4]
-              bg-white
+              border-[var(--border)]
+              bg-[var(--surface-1)]
               px-3
               text-sm
               shadow-none
-              placeholder:text-[#9aabb3]
-              focus-visible:border-[#079b60]
-              focus-visible:ring-[#079b60]/15
+              placeholder:text-[var(--text-muted)]/70
+              focus-visible:border-[var(--accent)]
+              focus-visible:ring-[var(--accent-soft)]
             "
           />
         </label>
@@ -194,12 +194,12 @@ export function LeaveForm({ draft, setDraft, onSave }: LeaveFormProps) {
           h-13
           w-full
           rounded-xl
-          bg-[#0b4556]
+          bg-[var(--accent)]
           text-sm
           font-extrabold
-          text-white
+          text-[var(--accent-foreground)]
           shadow-none
-          hover:bg-[#083b49]
+          hover:brightness-110
           disabled:cursor-not-allowed
           disabled:opacity-50
         "
@@ -219,7 +219,7 @@ export function LeaveForm({ draft, setDraft, onSave }: LeaveFormProps) {
           gap-2
           text-[10px]
           leading-7
-          text-[#6c7d89]
+          text-[var(--text-muted)]
         "
       >
         <Info aria-hidden="true" className="mt-1 size-4 shrink-0" />

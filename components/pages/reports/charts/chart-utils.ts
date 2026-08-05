@@ -8,14 +8,14 @@ export const WEEKDAY_LABELS = [
 ];
 
 export const CHART_COLORS = {
-  worked: "#079b60",
-  target: "#3478e5",
-  overtime: "#079b60",
-  deficit: "#e54845",
-  time: "#079b60",
-  income: "#3478e5",
-  billable: "#079b60",
-  nonBillable: "#f1c65f",
+  worked: "var(--accent)",
+  target: "var(--chart-secondary)",
+  overtime: "var(--success)",
+  deficit: "var(--danger)",
+  time: "var(--accent)",
+  income: "var(--chart-secondary)",
+  billable: "var(--accent)",
+  nonBillable: "var(--warning)",
 };
 
 export function localDateKey(date: Date) {

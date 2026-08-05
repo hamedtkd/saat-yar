@@ -22,18 +22,18 @@ export function SummaryRow({
     <div
       className={cn(
         "flex min-w-0 items-center justify-between gap-4",
-        "rounded-xl border border-[#e7efed]",
-        "bg-[#f8fbfa] px-3 py-3",
+        "rounded-xl border border-[var(--border)]",
+        "bg-[var(--surface-2)] px-3 py-3",
         className,
       )}
     >
       <div className="min-w-0">
-        <span className="block text-[10px] font-medium text-[#6c7d89]">
+        <span className="block text-[10px] font-medium text-[var(--text-muted)]">
           {label}
         </span>
 
         {hint && (
-          <small className="mt-1 block text-[9px] leading-5 text-[#91a0a7]">
+          <small className="mt-1 block text-[9px] leading-5 text-[var(--text-muted)]/75">
             {hint}
           </small>
         )}
@@ -41,7 +41,7 @@ export function SummaryRow({
 
       <strong
         className={cn(
-          "shrink-0 text-sm font-extrabold text-[#102a3a]",
+          "shrink-0 text-sm font-extrabold text-[var(--text)]",
           valueClassName,
         )}
       >

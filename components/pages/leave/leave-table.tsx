@@ -23,12 +23,12 @@ export function LeaveTable({ data, setData, setDraft }: LeaveTableProps) {
   };
 
   return (
-    <article className={cn("min-w-0 overflow-hidden rounded-2xl", "border border-[#dfe7e9]", "bg-white/95", "shadow-[0_12px_38px_rgba(17,45,55,0.055)]")}>
+    <article className={cn("min-w-0 overflow-hidden rounded-2xl", "border border-[var(--border)]", "bg-[var(--surface-glass)]", "shadow-[0_12px_38px_rgba(17,45,55,0.055)]")}>
       <div className="flex flex-wrap items-start justify-between gap-3 px-4 pt-4 sm:px-5 sm:pt-5">
         <PanelHead icon={<Umbrella />} title="تاریخچه مرخصی‌ها" />
         {data.leaves.length > 0 && (
-          <span className={cn("inline-flex items-center gap-1.5", "rounded-full bg-[#f1f7f5]", "px-3 py-1.5", "text-[10px] font-bold text-[#526b75]")}>
-            <CalendarRange className="size-3.5 text-[#079b60]" />
+          <span className={cn("inline-flex items-center gap-1.5", "rounded-full bg-[var(--accent-soft)]", "px-3 py-1.5", "text-[10px] font-bold text-[var(--text-muted)]")}>
+            <CalendarRange className="size-3.5 text-[var(--accent-strong)]" />
             {fa.format(data.leaves.length)} مورد
           </span>
         )}

@@ -26,8 +26,8 @@ export function PrintPreviewAside({ mode }: Props) {
     <aside
       className={cn(
         "order-last rounded-2xl",
-        "border border-[#dfe7e9]",
-        "bg-white/95 p-4",
+        "border border-[var(--border)]",
+        "bg-[var(--surface-glass)] p-4",
         "shadow-[0_10px_35px_rgba(17,45,55,0.055)]",
         "print:hidden",
       )}
@@ -41,26 +41,26 @@ export function PrintPreviewAside({ mode }: Props) {
         className={cn(
           "mx-auto my-5 grid h-44 w-34",
           "place-items-start justify-center gap-3",
-          "rounded-sm border border-[#dfe7e9]",
-          "bg-white p-5",
+          "rounded-sm border border-[var(--border)]",
+          "bg-[var(--surface-1)] p-5",
           "shadow-[0_10px_24px_rgba(17,45,55,0.1)]",
         )}
       >
         <div className="flex w-full items-center justify-between">
-          <BarChart3 className="size-8 text-[#079b60]" />
+          <BarChart3 className="size-8 text-[var(--accent-strong)]" />
 
-          <span className="rounded-full bg-[#edf9f4] px-2 py-1 text-[7px] font-bold text-[#079b60]">
+          <span className="rounded-full bg-[var(--accent-soft)] px-2 py-1 text-[7px] font-bold text-[var(--accent-strong)]">
             PDF
           </span>
         </div>
 
-        <span className="h-1 w-20 rounded-full bg-[#dfe6e7]" />
-        <span className="h-1 w-16 rounded-full bg-[#e8edef]" />
+        <span className="h-1 w-20 rounded-full bg-[var(--border)]" />
+        <span className="h-1 w-16 rounded-full bg-[color-mix(in_srgb,var(--border)_65%,transparent)]" />
 
         <i
           className={cn(
             "h-10 w-20 rounded-md",
-            "bg-[linear-gradient(90deg,#079b60_28%,#dfe9e6_28%_39%,#276bd5_39%_62%,#dfe9e6_62%)]",
+            "bg-[linear-gradient(90deg,var(--accent)_28%,var(--border)_28%_39%,var(--chart-secondary)_39%_62%,var(--border)_62%)]",
           )}
         />
       </div>
@@ -69,10 +69,10 @@ export function PrintPreviewAside({ mode }: Props) {
         {features.map((item) => (
           <li
             key={item}
-            className="flex items-center gap-2 py-1.5 text-[10px] text-[#6c7d89]"
+            className="flex items-center gap-2 py-1.5 text-[10px] text-[var(--text-muted)]"
           >
-            <span className="grid size-5 shrink-0 place-items-center rounded-full bg-[#edf9f4]">
-              <Check className="size-3 text-[#079b60]" />
+            <span className="grid size-5 shrink-0 place-items-center rounded-full bg-[var(--accent-soft)]">
+              <Check className="size-3 text-[var(--accent-strong)]" />
             </span>
 
             {item}
@@ -82,7 +82,7 @@ export function PrintPreviewAside({ mode }: Props) {
 
       <Button
         type="button"
-        className="mt-4 h-11 w-full rounded-xl bg-[#0b4556] hover:bg-[#083b49]"
+        className="mt-4 h-11 w-full rounded-xl bg-[var(--accent)] hover:brightness-110"
         onClick={() => window.print()}
       >
         <Printer className="size-4" />

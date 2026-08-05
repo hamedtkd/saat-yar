@@ -39,25 +39,25 @@ export function FreelancerWeeklyTooltip({
     <div
       dir="rtl"
       className={cn(
-        "min-w-48 rounded-xl border border-[#dfe7e9]",
-        "bg-white/98 p-3",
+        "min-w-48 rounded-xl border border-[var(--border)]",
+        "bg-[var(--surface-glass)] p-3",
         "shadow-[0_16px_45px_rgba(17,45,55,0.16)]",
         "backdrop-blur-xl",
       )}
     >
-      <div className="mb-2 border-b border-[#edf2f3] pb-2">
-        <strong className="block text-xs font-extrabold text-[#102a3a]">
+      <div className="mb-2 border-b border-[var(--border)] pb-2">
+        <strong className="block text-xs font-extrabold text-[var(--text)]">
           {label}
         </strong>
         {chartItem?.fullDate && (
-          <span className="mt-1 block text-[10px] text-[#6c7d89]">
+          <span className="mt-1 block text-[10px] text-[var(--text-muted)]">
             {chartItem.fullDate}
           </span>
         )}
       </div>
       <div className="grid gap-2">
         <div className="flex items-center justify-between gap-5">
-          <span className="flex items-center gap-2 text-[11px] text-[#526b75]">
+          <span className="flex items-center gap-2 text-[11px] text-[var(--text-muted)]">
             <i
               className="size-2 rounded-full"
               style={{
@@ -68,13 +68,13 @@ export function FreelancerWeeklyTooltip({
           </span>
           <strong
             dir="ltr"
-            className="text-xs font-extrabold text-[#102a3a]"
+            className="text-xs font-extrabold text-[var(--text)]"
           >
             {duration(minutes)}
           </strong>
         </div>
         <div className="flex items-center justify-between gap-5">
-          <span className="flex items-center gap-2 text-[11px] text-[#526b75]">
+          <span className="flex items-center gap-2 text-[11px] text-[var(--text-muted)]">
             <i
               className="size-2 rounded-full"
               style={{
@@ -83,7 +83,7 @@ export function FreelancerWeeklyTooltip({
             />
             درآمد
           </span>
-          <strong className="text-xs font-extrabold text-[#102a3a]">
+          <strong className="text-xs font-extrabold text-[var(--text)]">
             {money(income)} تومان
           </strong>
         </div>
@@ -111,25 +111,25 @@ export function EmployeeDailyTooltip({
     <div
       dir="rtl"
       className={cn(
-        "min-w-48 rounded-xl border border-[#dfe7e9]",
-        "bg-white/98 p-3",
+        "min-w-48 rounded-xl border border-[var(--border)]",
+        "bg-[var(--surface-glass)] p-3",
         "shadow-[0_16px_45px_rgba(17,45,55,0.16)]",
         "backdrop-blur-xl",
       )}
     >
-      <div className="mb-2 border-b border-[#edf2f3] pb-2">
-        <strong className="block text-xs font-extrabold text-[#102a3a]">
+      <div className="mb-2 border-b border-[var(--border)] pb-2">
+        <strong className="block text-xs font-extrabold text-[var(--text)]">
           {label}
         </strong>
         {chartItem?.fullDate && (
-          <span className="mt-1 block text-[10px] text-[#6c7d89]">
+          <span className="mt-1 block text-[10px] text-[var(--text-muted)]">
             {chartItem.fullDate}
           </span>
         )}
       </div>
       <div className="grid gap-2">
         <div className="flex items-center justify-between gap-5">
-          <span className="flex items-center gap-2 text-[11px] text-[#526b75]">
+          <span className="flex items-center gap-2 text-[11px] text-[var(--text-muted)]">
             <i
               className="size-2 rounded-full"
               style={{
@@ -140,13 +140,13 @@ export function EmployeeDailyTooltip({
           </span>
           <strong
             dir="ltr"
-            className="text-xs font-extrabold text-[#102a3a]"
+            className="text-xs font-extrabold text-[var(--text)]"
           >
             {duration(worked)}
           </strong>
         </div>
         <div className="flex items-center justify-between gap-5">
-          <span className="flex items-center gap-2 text-[11px] text-[#526b75]">
+          <span className="flex items-center gap-2 text-[11px] text-[var(--text-muted)]">
             <i
               className="size-2 rounded-full"
               style={{
@@ -157,13 +157,13 @@ export function EmployeeDailyTooltip({
           </span>
           <strong
             dir="ltr"
-            className="text-xs font-extrabold text-[#102a3a]"
+            className="text-xs font-extrabold text-[var(--text)]"
           >
             {duration(target)}
           </strong>
         </div>
-        <div className="flex items-center justify-between gap-5 border-t border-[#edf2f3] pt-2">
-          <span className="text-[11px] text-[#526b75]">
+        <div className="flex items-center justify-between gap-5 border-t border-[var(--border)] pt-2">
+          <span className="text-[11px] text-[var(--text-muted)]">
             تراز روز
           </span>
           <strong
@@ -171,8 +171,8 @@ export function EmployeeDailyTooltip({
             className={cn(
               "text-xs font-extrabold",
               balance >= 0
-                ? "text-[#079b60]"
-                : "text-[#e54845]",
+                ? "text-[var(--accent-strong)]"
+                : "text-[var(--danger)]",
             )}
           >
             {duration(balance, true)}
@@ -194,8 +194,8 @@ export function DonutTooltip({
     <div
       dir="rtl"
       className={cn(
-        "rounded-xl border border-[#dfe7e9]",
-        "bg-white/98 px-3 py-2",
+        "rounded-xl border border-[var(--border)]",
+        "bg-[var(--surface-glass)] px-3 py-2",
         "shadow-[0_16px_45px_rgba(17,45,55,0.16)]",
       )}
     >
@@ -208,12 +208,12 @@ export function DonutTooltip({
               CHART_COLORS.billable,
           }}
         />
-        <span className="text-[11px] text-[#526b75]">
+        <span className="text-[11px] text-[var(--text-muted)]">
           {item.name}
         </span>
         <strong
           dir="ltr"
-          className="mr-3 text-xs font-extrabold text-[#102a3a]"
+          className="mr-3 text-xs font-extrabold text-[var(--text)]"
         >
           {duration(item.value ?? 0)}
         </strong>

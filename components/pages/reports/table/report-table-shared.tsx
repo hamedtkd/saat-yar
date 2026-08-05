@@ -28,16 +28,16 @@ export function InfoRow({ label, value, valueClassName, className }: {
   className?: string;
 }) {
   return (
-    <div className={cn("flex min-w-0 items-center justify-between gap-4", "rounded-xl border border-[#e7efed]", "bg-white px-3 py-3", className)}>
-      <span className="shrink-0 text-[10px] font-medium text-[#6c7d89]">{label}</span>
-      <strong className={cn("min-w-0 text-left text-xs font-extrabold text-[#102a3a]", valueClassName)}>{value}</strong>
+    <div className={cn("flex min-w-0 items-center justify-between gap-4", "rounded-xl border border-[var(--border)]", "bg-[var(--surface-1)] px-3 py-3", className)}>
+      <span className="shrink-0 text-[10px] font-medium text-[var(--text-muted)]">{label}</span>
+      <strong className={cn("min-w-0 text-left text-xs font-extrabold text-[var(--text)]", valueClassName)}>{value}</strong>
     </div>
   );
 }
 
 export function TableHeading({ children }: { children: ReactNode }) {
   return (
-    <th className={cn("h-11 whitespace-nowrap", "border-y border-[#edf1f2]", "bg-[#fbfcfc] px-3 py-2", "text-right font-semibold text-[#536975]")}>{children}</th>
+    <th className={cn("h-11 whitespace-nowrap", "border-y border-[var(--border)]", "bg-[var(--surface-2)] px-3 py-2", "text-right font-semibold text-[var(--text-muted)]")}>{children}</th>
   );
 }
 
