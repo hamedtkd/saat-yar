@@ -50,7 +50,7 @@ export function ReportFilters({ mode, data, filters, setFilters }: ReportFilters
   ].filter(Boolean).length;
 
   return (
-    <section className={cn("mb-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-glass)] p-4 shadow-[0_10px_35px_rgba(17,45,55,0.055)] print:hidden")}>
+    <section className={cn("mb-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-glass)] p-4 shadow-[0_6px_20px_rgba(0,0,0,.04)] print:hidden")}>
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2 text-xs font-extrabold text-[var(--text)]">
           <Filter className="size-4 text-[var(--accent-strong)]" />
@@ -63,7 +63,7 @@ export function ReportFilters({ mode, data, filters, setFilters }: ReportFilters
       </div>
 
       <div className="grid grid-cols-4 gap-3 max-[1180px]:grid-cols-2 max-[620px]:grid-cols-1">
-        <div className="search-box flex h-12 min-w-0 items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] px-3 transition-colors focus-within:border-[var(--accent)] focus-within:ring-3 focus-within:ring-[var(--accent-soft)]">
+        <div className="search-box flex h-12 min-w-0 items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] px-3 transition-colors focus-within:border-[var(--accent)] focus-within:ring-2 focus-within:ring-[var(--accent-soft)]">
           <Search className="size-4 shrink-0 text-[var(--text-muted)]" />
           <Input
             value={filters.query}

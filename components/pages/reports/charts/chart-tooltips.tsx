@@ -41,7 +41,7 @@ export function FreelancerWeeklyTooltip({
       className={cn(
         "min-w-48 rounded-xl border border-[var(--border)]",
         "bg-[var(--surface-glass)] p-3",
-        "shadow-[0_16px_45px_rgba(17,45,55,0.16)]",
+        "shadow-[0_8px_24px_rgba(0,0,0,.12)]",
         "backdrop-blur-xl",
       )}
     >
@@ -113,7 +113,7 @@ export function EmployeeDailyTooltip({
       className={cn(
         "min-w-48 rounded-xl border border-[var(--border)]",
         "bg-[var(--surface-glass)] p-3",
-        "shadow-[0_16px_45px_rgba(17,45,55,0.16)]",
+        "shadow-[0_8px_24px_rgba(0,0,0,.12)]",
         "backdrop-blur-xl",
       )}
     >
@@ -196,7 +196,7 @@ export function DonutTooltip({
       className={cn(
         "rounded-xl border border-[var(--border)]",
         "bg-[var(--surface-glass)] px-3 py-2",
-        "shadow-[0_16px_45px_rgba(17,45,55,0.16)]",
+        "shadow-[0_8px_24px_rgba(0,0,0,.12)]",
       )}
     >
       <div className="flex items-center gap-2">

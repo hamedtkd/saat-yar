@@ -46,7 +46,7 @@ export function DatePickerDialog(props: DatePickerDialogProps) {
           "fixed top-1/2 left-1/2 z-[750] w-[min(430px,calc(100vw-24px))]",
           "max-h-[calc(100dvh-24px)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto",
           "rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-4",
-          "shadow-[0_28px_90px_rgba(17,45,55,0.25)]",
+          "shadow-[0_14px_42px_rgba(0,0,0,.2)]",
         )}
       >
         <div className="mb-2 flex items-center justify-between gap-3">

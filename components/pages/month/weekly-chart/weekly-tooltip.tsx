@@ -25,7 +25,7 @@ export function WeeklyTooltip({ active, payload }: WeeklyTooltipProps) {
       dir="rtl"
       className={cn(
         "min-w-40 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-3",
-        "shadow-[0_16px_45px_rgba(17,45,55,0.16)] backdrop-blur-xl",
+        "shadow-[0_8px_24px_rgba(0,0,0,.12)] backdrop-blur-xl",
       )}
     >
       <strong className="block text-xs font-extrabold text-[var(--text)]">
