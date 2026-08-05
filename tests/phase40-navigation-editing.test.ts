@@ -16,10 +16,13 @@ test("month day edit keeps the selected date", async () => {
 });
 
 test("shell normalizes trailing slashes and persists the last route", async () => {
-  const source = await read("components/saatyar-shell.tsx");
-  assert.match(source, /replace\(\/\\\/\+\$\//);
-  assert.match(source, /saatyar:last-route/);
-  assert.match(source, /searchParams\.get\("date"\)/);
+  const navigation = await read("lib/navigation.ts");
+  const guard = await read("components/layout/navigation/route-guard.tsx");
+  const sync = await read("components/layout/route-sync.tsx");
+  assert.match(navigation, /replace\(\/\\\/\+\$\//);
+  assert.match(navigation, /saatyar:last-route/);
+  assert.match(guard, /localStorage\.getItem/);
+  assert.match(sync, /searchParams\.get\("date"\)/);
 });
 
 test("weekly target and checkbox visuals are editable and compact", async () => {

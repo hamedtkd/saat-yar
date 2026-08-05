@@ -2,47 +2,21 @@
 
 import { CheckCircle2 } from "lucide-react";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
-import { createContext, Suspense, useContext, useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { createContext, Suspense, useContext } from "react";
 import { SkipLink } from "@/components/common/skip-link";
 import { ThemeRuntime } from "@/components/theme/theme-runtime";
 import { AppFooter } from "@/components/layout/app-footer";
 import { AppHeader } from "@/components/layout/app-header";
 import { SidebarNav } from "@/components/layout/navigation/sidebar-nav";
 import { MobileBottomNav } from "@/components/layout/navigation/mobile-bottom-nav";
+import { RouteGuard } from "@/components/layout/navigation/route-guard";
 import { RouteSync } from "@/components/layout/route-sync";
 import { Onboarding } from "@/components/layout/onboarding";
 import { useSaatyarController } from "@/hooks/use-saatyar-controller";
 import { cn } from "@/lib/cn";
-import type { Mode, Tab } from "@/lib/types";
 
 const SaatyarContext = createContext<ReturnType<typeof useSaatyarController> | null>(null);
-
-const tabRoutes: Record<Tab, string> = {
-  today: "/today",
-  month: "/month",
-  leave: "/leave",
-  reports: "/reports",
-  clients: "/clients",
-  projects: "/projects",
-  invoices: "/invoices",
-  settings: "/settings",
-};
-
-const allowedTabs: Record<Mode, Tab[]> = {
-  employee: ["today", "month", "leave", "reports", "settings"],
-  freelancer: ["today", "clients", "projects", "invoices", "reports", "settings"],
-  hybrid: ["today", "month", "leave", "reports", "clients", "projects", "invoices", "settings"],
-};
-
-function getPathTab(pathname: string): Tab | null {
-  const cleaned = pathname.split("?")[0].split("#")[0].replace(/\/+$/, "") || "/";
-  return (Object.keys(tabRoutes) as Tab[]).find((tab) => tabRoutes[tab] === cleaned) ?? null;
-}
-
-function getFirstAllowedTab(mode: Mode) {
-  return allowedTabs[mode][0];
-}
 
 export function useSaatyarContext() {
   const context = useContext(SaatyarContext);
@@ -50,34 +24,11 @@ export function useSaatyarContext() {
   return context;
 }
 
-export function getTabHref(tab: Tab) {
-  return tabRoutes[tab];
-}
-
 export function SaatyarShell({ children }: { children: React.ReactNode }) {
   const controller = useSaatyarController();
   const pathname = usePathname() || "/today";
-  const router = useRouter();
-  const pathTab = getPathTab(pathname);
   const { ready, selectedDate, setSelectedDate, data } = controller;
   const mode = data.settings.mode;
-
-  useEffect(() => {
-    if (!ready) return;
-    if (!pathTab) {
-      router.replace("/today");
-      return;
-    }
-
-    if (!allowedTabs[mode].includes(pathTab)) {
-      router.replace(getTabHref(getFirstAllowedTab(mode)));
-    }
-  }, [mode, pathTab, ready, router]);
-
-  useEffect(() => {
-    if (!pathTab) return;
-    window.localStorage.setItem("saatyar:last-route", getTabHref(pathTab));
-  }, [pathTab]);
 
   if (!controller.ready)
     return (
@@ -103,6 +54,7 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
   return (
     <SaatyarContext.Provider value={controller}>
       <ThemeRuntime appearance={data.settings.appearance} />
+      <RouteGuard mode={mode} pathname={pathname} ready={ready} />
       <Suspense fallback={null}>
         <RouteSync selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
       </Suspense>

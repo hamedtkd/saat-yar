@@ -4,6 +4,7 @@ import test from "node:test";
 
 const settingsNavPath = new URL("../components/pages/settings/settings-nav.tsx", import.meta.url);
 const shellPath = new URL("../components/saatyar-shell.tsx", import.meta.url);
+const routeGuardPath = new URL("../components/layout/navigation/route-guard.tsx", import.meta.url);
 
 test("settings navigation derives initial hash state without setState in an effect", async () => {
   const source = await readFile(settingsNavPath, "utf8");
@@ -13,10 +14,11 @@ test("settings navigation derives initial hash state without setState in an effe
   assert.match(source, /cancelAnimationFrame\(frame\)/);
 });
 
-test("shell effect depends on stable controller fields instead of the controller object", async () => {
-  const source = await readFile(shellPath, "utf8");
-  assert.match(source, /const \{ ready, selectedDate, setSelectedDate, data \} = controller;/);
-  assert.doesNotMatch(source, /\[controller\./);
-  assert.match(source, /\[mode, pathTab, ready, router\]/);
-  assert.doesNotMatch(source, /useSearchParams/);
+test("route effects depend on stable fields instead of the controller object", async () => {
+  const shell = await readFile(shellPath, "utf8");
+  const guard = await readFile(routeGuardPath, "utf8");
+  assert.match(shell, /const \{ ready, selectedDate, setSelectedDate, data \} = controller;/);
+  assert.doesNotMatch(shell, /\[controller\./);
+  assert.doesNotMatch(shell, /useSearchParams/);
+  assert.match(guard, /\[mode, pathname, ready, router\]/);
 });
