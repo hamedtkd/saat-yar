@@ -12,7 +12,7 @@ const SelectValue = SelectPrimitive.Value;
 const SelectTrigger = React.forwardRef<React.ElementRef<typeof SelectPrimitive.Trigger>, React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>>(({ className, children, ...props }, ref) => (
   <SelectPrimitive.Trigger dir="rtl" ref={ref} className={cn(
     "group relative flex h-11 w-full min-w-0 items-center justify-start gap-2 overflow-hidden rounded-[var(--control-radius)] border border-[var(--border)] bg-[var(--surface-2)] py-2 pr-3 pl-10 text-right text-xs font-medium text-[var(--text)] outline-none transition-[border-color,box-shadow,background-color]",
-    "hover:border-[color-mix(in_srgb,var(--accent)_28%,var(--border))] hover:bg-[var(--surface-1)] focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-soft)] data-[placeholder]:text-[var(--text-muted)] data-[state=open]:border-[var(--accent)] data-[state=open]:ring-4 data-[state=open]:ring-[var(--accent-soft)] disabled:pointer-events-none disabled:opacity-50 [&>span]:min-w-0 [&>span]:truncate",
+    "hover:border-[color-mix(in_srgb,var(--accent)_28%,var(--border))] hover:bg-[var(--surface-1)] focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent-soft)] focus-visible:outline-none data-[placeholder]:text-[var(--text-muted)] data-[state=open]:border-[var(--accent)] data-[state=open]:ring-2 data-[state=open]:ring-[var(--accent-soft)] disabled:pointer-events-none disabled:opacity-50 [&>span]:min-w-0 [&>span]:truncate",
     className,
   )} {...props}>{children}<SelectPrimitive.Icon asChild><ChevronDown aria-hidden="true" className="pointer-events-none absolute left-3 size-4 shrink-0 text-[var(--text-muted)] transition-transform group-data-[state=open]:rotate-180" /></SelectPrimitive.Icon></SelectPrimitive.Trigger>
 ));
@@ -30,7 +30,7 @@ SelectScrollDownButton.displayName = SelectPrimitive.ScrollDownButton.displayNam
 
 const SelectContent = React.forwardRef<React.ElementRef<typeof SelectPrimitive.Content>, React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>>(({ className, children, position = "popper", sideOffset = 7, align = "start", collisionPadding = 12, ...props }, ref) => (
   <SelectPrimitive.Portal><SelectPrimitive.Content ref={ref} dir="rtl" position={position} sideOffset={sideOffset} align={align} collisionPadding={collisionPadding} className={cn(
-    "relative z-[1000] max-h-[min(18rem,var(--radix-select-content-available-height))] min-w-[8rem] overflow-hidden rounded-[var(--control-radius)] border border-[var(--border)] bg-[var(--surface-1)] text-[var(--text)] shadow-[0_22px_70px_rgba(0,0,0,.22)] outline-none data-[state=closed]:opacity-0 data-[state=open]:opacity-100",
+    "relative z-[1000] max-h-[min(18rem,var(--radix-select-content-available-height))] min-w-[8rem] overflow-hidden rounded-[var(--control-radius)] border border-[var(--border)] bg-[var(--surface-1)] text-[var(--text)] shadow-[0_12px_34px_rgba(0,0,0,.14)] outline-none data-[state=closed]:opacity-0 data-[state=open]:opacity-100",
     position === "popper" && "w-[var(--radix-select-trigger-width)] min-w-[var(--radix-select-trigger-width)]", className,
   )} {...props}><SelectScrollUpButton /><SelectPrimitive.Viewport className={cn("p-1", position === "popper" && "w-full min-w-[var(--radix-select-trigger-width)]")}>{children}</SelectPrimitive.Viewport><SelectScrollDownButton /></SelectPrimitive.Content></SelectPrimitive.Portal>
 ));

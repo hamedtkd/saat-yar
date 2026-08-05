@@ -7,7 +7,7 @@ export function SurfaceCard({ as: Component = "section", className, ...props }: 
   return (
     <Component
       className={cn(
-        "rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-1)] text-[var(--text)] shadow-[0_18px_55px_rgba(0,0,0,.08)] transition-colors dark:shadow-[0_20px_70px_rgba(0,0,0,.28)]",
+        "rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-1)] text-[var(--text)] shadow-[0_8px_24px_rgba(0,0,0,.045)] transition-colors dark:shadow-[0_10px_30px_rgba(0,0,0,.16)]",
         className,
       )}
       {...props}
