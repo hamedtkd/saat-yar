@@ -43,6 +43,11 @@ const settingsSchema = z.object({
     openTimerReminderMinutes: z.number().int().nonnegative(),
     dailyTargetReminder: z.boolean(),
     endOfDayReminder: z.boolean(),
+    breakReminder: z.object({
+      enabled: z.boolean(),
+      intervalMinutes: z.number().int().min(15).max(240),
+      onlyWhenTracking: z.boolean(),
+    }).passthrough(),
   }).passthrough(),
   mode: modeSchema,
 }).passthrough();

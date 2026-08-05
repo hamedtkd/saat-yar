@@ -71,11 +71,18 @@ export type WorkRecord = {
   manuallyEdited?: boolean;
 };
 
+export type BreakReminderSettings = {
+  enabled: boolean;
+  intervalMinutes: number;
+  onlyWhenTracking: boolean;
+};
+
 export type NotificationSettings = {
   enabled: boolean;
   openTimerReminderMinutes: number;
   dailyTargetReminder: boolean;
   endOfDayReminder: boolean;
+  breakReminder: BreakReminderSettings;
 };
 
 export type Settings = {

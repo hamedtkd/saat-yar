@@ -6,7 +6,7 @@ import { migrateAppData } from "../lib/data/migrations.ts";
 import { APP_DATA_SCHEMA_VERSION } from "../lib/data/version.ts";
 
 test("appearance defaults are persisted in schema v13", () => {
-  assert.equal(APP_DATA_SCHEMA_VERSION, 13);
+  assert.equal(APP_DATA_SCHEMA_VERSION, 14);
   assert.equal(defaultSettings.appearance.preset, "spotify");
   assert.equal(defaultSettings.appearance.mode, "system");
 });

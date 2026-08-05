@@ -24,6 +24,7 @@ export const defaultSettings: Settings = {
     openTimerReminderMinutes: 240,
     dailyTargetReminder: true,
     endOfDayReminder: true,
+    breakReminder: { enabled: false, intervalMinutes: 60, onlyWhenTracking: true },
   },
   appearance: { mode: "system", preset: "spotify", accent: "#1ed760", radius: "rounded", surface: "tinted" },
   mode: "employee",

@@ -10,7 +10,14 @@ export function TimePicker({ value, onChange, suggestions = [] }: TimePickerProp
 
   return (
     <div className="relative min-w-0">
-      <TimePickerTrigger value={value} open={picker.open} onOpen={picker.openPicker} />
+      <TimePickerTrigger
+        inputValue={picker.inputValue}
+        error={picker.error}
+        open={picker.open}
+        onInputChange={(nextValue) => { picker.setInputValue(nextValue); picker.setError(""); }}
+        onCommit={picker.commitInput}
+        onOpen={picker.openPicker}
+      />
       {picker.open && (
         <TimePickerDialog
           hour={picker.hour}

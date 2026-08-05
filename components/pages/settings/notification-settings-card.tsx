@@ -1,4 +1,4 @@
-import { BellRing } from "lucide-react";
+import { BellRing, Coffee } from "lucide-react";
 import { NumberField } from "@/components/common/number-field";
 import { PanelHead } from "@/components/common/panel-head";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ export function NotificationSettingsCard({ data, setData, requestPermission, set
 }) {
   const settings = data.settings.notificationSettings;
   const update = <K extends keyof NotificationSettings>(key: K, value: NotificationSettings[K]) => setData((previous) => ({ ...previous, settings: { ...previous.settings, notificationSettings: { ...previous.settings.notificationSettings, [key]: value } } }));
+  const updateBreak = <K extends keyof NotificationSettings["breakReminder"]>(key: K, value: NotificationSettings["breakReminder"][K]) => update("breakReminder", { ...settings.breakReminder, [key]: value });
 
   async function enableNotifications() {
     const granted = await requestPermission();
@@ -22,7 +23,7 @@ export function NotificationSettingsCard({ data, setData, requestPermission, set
 
   return <section className="col-span-full rounded-[15px] border border-[var(--border)] bg-[var(--surface-1)] p-5 shadow-[0_10px_35px_rgba(17,45,55,.055)]">
     <PanelHead icon={<BellRing />} title="اعلان‌ها و یادآوری‌ها" />
-    <p className="mb-4 text-[10px] leading-6 text-[var(--text-muted)]">یادآوری تایمر باز و رسیدن به هدف روزانه فقط روی همین دستگاه و داخل مرورگر انجام می‌شود.</p>
+    <p className="mb-4 text-[10px] leading-6 text-[var(--text-muted)]">یادآوری‌ها فقط وقتی برنامه باز است و اجازه اعلان مرورگر داده شده اجرا می‌شوند.</p>
     <div className="grid grid-cols-3 gap-3 max-[760px]:grid-cols-1">
       <label className="flex min-h-14 cursor-pointer items-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3"><Checkbox checked={settings.enabled} onCheckedChange={(checked) => checked ? void enableNotifications() : update("enabled", false)} /><span><strong className="block text-[11px]">فعال‌بودن اعلان‌ها</strong><small className="text-[9px] text-[var(--text-muted)]">نیازمند اجازه مرورگر است.</small></span></label>
       <label>یادآوری تایمر باز پس از چند دقیقه<NumberField value={settings.openTimerReminderMinutes} min={30} onValueChange={(value) => update("openTimerReminderMinutes", Math.max(30, value))} /></label>
@@ -30,6 +31,11 @@ export function NotificationSettingsCard({ data, setData, requestPermission, set
         <label className="flex items-center gap-2"><Checkbox checked={settings.dailyTargetReminder} onCheckedChange={(checked) => update("dailyTargetReminder", checked)} /> اعلام تکمیل هدف روزانه</label>
         <label className="flex items-center gap-2"><Checkbox checked={settings.endOfDayReminder} onCheckedChange={(checked) => update("endOfDayReminder", checked)} /> یادآوری ثبت خروج</label>
       </div>
+    </div>
+    <div className="mt-4 grid grid-cols-[1.2fr_1fr_1fr] gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-3 max-[760px]:grid-cols-1">
+      <label className="flex cursor-pointer items-center gap-3"><Checkbox checked={settings.breakReminder.enabled} onCheckedChange={(checked) => updateBreak("enabled", checked)} /><Coffee className="text-[var(--accent-strong)]" /><span><strong className="block text-[11px]">یادآوری استراحت</strong><small className="text-[9px] text-[var(--text-muted)]">برای بلندشدن و استراحت کوتاه</small></span></label>
+      <label>هر چند دقیقه<NumberField value={settings.breakReminder.intervalMinutes} min={15} max={240} onValueChange={(value) => updateBreak("intervalMinutes", Math.min(240, Math.max(15, value)))} /></label>
+      <label className="flex items-center gap-2"><Checkbox checked={settings.breakReminder.onlyWhenTracking} onCheckedChange={(checked) => updateBreak("onlyWhenTracking", checked)} /> فقط هنگام ثبت کار</label>
     </div>
     <Button type="button" variant="outline" className="mt-4" onClick={enableNotifications}><BellRing /> درخواست اجازه اعلان</Button>
   </section>;

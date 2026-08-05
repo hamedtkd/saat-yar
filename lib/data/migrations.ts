@@ -218,6 +218,27 @@ function migrateV12ToV13(value: unknown): unknown {
   };
 }
 
+function migrateV13ToV14(value: unknown): unknown {
+  if (!isObject(value)) return value;
+  const settings = isObject(value.settings) ? value.settings : {};
+  const notifications = isObject(settings.notificationSettings) ? settings.notificationSettings : {};
+  return {
+    ...value,
+    settings: {
+      ...settings,
+      notificationSettings: {
+        ...notifications,
+        breakReminder: {
+          enabled: false,
+          intervalMinutes: 60,
+          onlyWhenTracking: true,
+          ...(isObject(notifications.breakReminder) ? notifications.breakReminder : {}),
+        },
+      },
+    },
+  };
+}
+
 const migrations: Record<number, (value: unknown) => unknown> = {
   1: migrateV1ToV2,
   2: migrateV2ToV3,
@@ -231,6 +252,7 @@ const migrations: Record<number, (value: unknown) => unknown> = {
   10: migrateV10ToV11,
   11: migrateV11ToV12,
   12: migrateV12ToV13,
+  13: migrateV13ToV14,
 };
 
 export function migrateAppData(value: unknown): MigrationResult {

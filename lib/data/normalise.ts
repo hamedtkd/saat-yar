@@ -16,7 +16,14 @@ export function normaliseData(value: AppData, defaults: Settings): AppData {
       ...defaults,
       ...incomingSettings,
       weeklySchedule,
-      notificationSettings: { ...defaults.notificationSettings, ...(incomingSettings.notificationSettings ?? {}) },
+      notificationSettings: {
+        ...defaults.notificationSettings,
+        ...(incomingSettings.notificationSettings ?? {}),
+        breakReminder: {
+          ...defaults.notificationSettings.breakReminder,
+          ...(incomingSettings.notificationSettings?.breakReminder ?? {}),
+        },
+      },
       appearance: { ...defaults.appearance, ...(incomingSettings.appearance ?? {}) },
     },
     records: Object.fromEntries(
