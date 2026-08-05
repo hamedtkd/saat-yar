@@ -59,12 +59,14 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathTab = getPathTab(pathname);
+  const { ready, selectedDate, setSelectedDate, data } = controller;
+  const mode = data.settings.mode;
+  const requestedDate = searchParams.get("date");
 
   useEffect(() => {
-    if (!controller.ready) return;
-    const requestedDate = searchParams.get("date");
-    if (requestedDate && /^\d{4}-\d{2}-\d{2}$/.test(requestedDate) && requestedDate !== controller.selectedDate) {
-      controller.setSelectedDate(requestedDate);
+    if (!ready) return;
+    if (requestedDate && /^\d{4}-\d{2}-\d{2}$/.test(requestedDate) && requestedDate !== selectedDate) {
+      setSelectedDate(requestedDate);
     }
 
     if (!pathTab) {
@@ -72,11 +74,10 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    const currentAllowed = allowedTabs[controller.data.settings.mode];
-    if (!currentAllowed.includes(pathTab)) {
-      router.replace(getTabHref(getFirstAllowedTab(controller.data.settings.mode)));
+    if (!allowedTabs[mode].includes(pathTab)) {
+      router.replace(getTabHref(getFirstAllowedTab(mode)));
     }
-  }, [controller.ready, controller.selectedDate, controller.setSelectedDate, pathTab, controller.data.settings.mode, router, searchParams]);
+  }, [mode, pathTab, ready, requestedDate, router, selectedDate, setSelectedDate]);
 
   useEffect(() => {
     if (!pathTab) return;
@@ -102,7 +103,7 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
       </main>
     );
 
-  const { data, setData } = controller;
+  const { setData } = controller;
 
   return (
     <SaatyarContext.Provider value={controller}>

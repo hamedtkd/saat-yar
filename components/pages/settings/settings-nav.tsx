@@ -17,16 +17,22 @@ function isSettingsSectionId(value: string): value is SettingsSectionId {
   return items.some((item) => item.id === value);
 }
 
+function getInitialSection(): SettingsSectionId {
+  if (typeof window === "undefined") return items[0].id;
+  const hash = window.location.hash.slice(1);
+  return isSettingsSectionId(hash) ? hash : items[0].id;
+}
+
 export function SettingsNav() {
-  const [active, setActive] = useState<SettingsSectionId>(items[0].id);
+  const [active, setActive] = useState<SettingsSectionId>(getInitialSection);
 
   useEffect(() => {
     const hash = window.location.hash.slice(1);
     if (!isSettingsSectionId(hash)) return;
-    setActive(hash);
-    requestAnimationFrame(() => {
+    const frame = requestAnimationFrame(() => {
       document.getElementById(hash)?.scrollIntoView({ block: "start" });
     });
+    return () => cancelAnimationFrame(frame);
   }, []);
 
   const goTo = (id: SettingsSectionId) => {
