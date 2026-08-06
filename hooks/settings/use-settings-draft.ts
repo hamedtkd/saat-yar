@@ -1,16 +1,20 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useState } from "react";
+import { registerSettingsDraft } from "@/lib/settings-draft-registry";
 
 export function useSettingsDraft<T>({
   value,
   autoSave,
   onSave,
+  label = "تنظیمات",
 }: {
   value: T;
   autoSave: boolean;
   onSave: (value: T) => void;
+  label?: string;
 }) {
+  const registryId = useId();
   const [editing, setEditing] = useState(false);
   const [localDraft, setLocalDraft] = useState<T>(value);
   const draft = editing ? localDraft : value;
@@ -19,28 +23,33 @@ export function useSettingsDraft<T>({
     [editing, localDraft, value],
   );
 
-  function beginEdit() {
+  const beginEdit = useCallback(() => {
     setLocalDraft(value);
     setEditing(true);
-  }
+  }, [value]);
 
-  function update(next: T | ((previous: T) => T)) {
+  const update = useCallback((next: T | ((previous: T) => T)) => {
     const previous = editing ? localDraft : value;
     const resolved = typeof next === "function"
       ? (next as (current: T) => T)(previous)
       : next;
     if (autoSave) onSave(resolved);
     else setLocalDraft(resolved);
-  }
+  }, [autoSave, editing, localDraft, onSave, value]);
 
-  function save() {
+  const save = useCallback(() => {
     onSave(localDraft);
     setEditing(false);
-  }
+  }, [localDraft, onSave]);
 
-  function cancel() {
+  const cancel = useCallback(() => {
     setEditing(false);
-  }
+  }, []);
+
+  useEffect(
+    () => registerSettingsDraft(registryId, { label, dirty: autoSave ? false : dirty, save, discard: cancel }),
+    [autoSave, cancel, dirty, label, registryId, save],
+  );
 
   return {
     editing: autoSave || editing,

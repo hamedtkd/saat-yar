@@ -42,11 +42,13 @@ export function UnsavedSettingsDialog({
   setPendingNavigation,
   saveAll,
   discardAll,
+  dirtyLabels = [],
 }: {
   pendingNavigation: PendingSettingsNavigation;
   setPendingNavigation: (value: PendingSettingsNavigation) => void;
   saveAll: () => void;
   discardAll: () => void;
+  dirtyLabels?: string[];
 }) {
   const continueNavigation = (mode: "save" | "discard") => {
     if (mode === "save") saveAll();
@@ -64,6 +66,11 @@ export function UnsavedSettingsDialog({
           <AlertDialogDescription>
             قبل از رفتن به بخش دیگر، تغییرات کارت‌های در حال ویرایش را ذخیره کن یا بدون ذخیره ادامه بده.
           </AlertDialogDescription>
+          {dirtyLabels.length > 0 && (
+            <ul className="grid gap-1 rounded-xl bg-[var(--surface-2)] p-3 text-xs text-[var(--text)]">
+              {dirtyLabels.map((label) => <li key={label}>• {label}</li>)}
+            </ul>
+          )}
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogAction onClick={() => continueNavigation("save")}>ذخیره و ادامه</AlertDialogAction>

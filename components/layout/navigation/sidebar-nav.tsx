@@ -1,9 +1,11 @@
-import Link from "next/link";
+"use client";
+
 import { Settings } from "lucide-react";
 import { Brand } from "@/components/common/brand";
 import { cn } from "@/lib/cn";
 import type { Mode } from "@/lib/types";
 import { getVisibleNavItems } from "../app-header/nav-items";
+import { GuardedLink } from "./guarded-link";
 
 type Props = { mode: Mode; currentPath: string; name: string };
 
@@ -19,18 +21,18 @@ export function SidebarNav({ mode, currentPath, name }: Props) {
         {items.map(({ href, label, icon: Icon }) => {
           const active = normalizedPath === href;
           return (
-            <Link key={href} href={href} aria-current={active ? "page" : undefined} className={cn("flex min-h-11 items-center gap-3 rounded-[var(--control-radius)] px-3 text-sm font-bold text-[var(--text-muted)] transition", "hover:bg-[var(--accent-soft)] hover:text-[var(--text)]", active && "bg-[var(--accent-soft)] text-[var(--accent-strong)] shadow-[inset_-2px_0_0_var(--accent)]")}>
+            <GuardedLink key={href} href={href} aria-current={active ? "page" : undefined} className={cn("flex min-h-11 items-center gap-3 rounded-[var(--control-radius)] px-3 text-sm font-bold text-[var(--text-muted)] transition", "hover:bg-[var(--accent-soft)] hover:text-[var(--text)]", active && "bg-[var(--accent-soft)] text-[var(--accent-strong)] shadow-[inset_-2px_0_0_var(--accent)]")}>
               <span className={cn("grid size-7 place-items-center rounded-lg bg-[var(--surface-2)]", active && "bg-[var(--accent)] text-[var(--accent-foreground)]")}><Icon aria-hidden="true" /></span>
               <span>{label}</span>
-            </Link>
+            </GuardedLink>
           );
         })}
       </nav>
       <div className="mt-auto border-t border-[var(--border)] pt-3">
-        <Link href="/settings" aria-current={normalizedPath === "/settings" ? "page" : undefined} className={cn("flex min-h-11 items-center gap-3 rounded-[var(--control-radius)] px-3 text-sm font-bold text-[var(--text-muted)] hover:bg-[var(--accent-soft)] hover:text-[var(--text)]", normalizedPath === "/settings" && "bg-[var(--accent-soft)] text-[var(--accent-strong)]")}>
+        <GuardedLink href="/settings" aria-current={normalizedPath === "/settings" ? "page" : undefined} className={cn("flex min-h-11 items-center gap-3 rounded-[var(--control-radius)] px-3 text-sm font-bold text-[var(--text-muted)] hover:bg-[var(--accent-soft)] hover:text-[var(--text)]", normalizedPath === "/settings" && "bg-[var(--accent-soft)] text-[var(--accent-strong)]")}>
           <span className="grid size-7 place-items-center rounded-lg bg-[var(--surface-2)]"><Settings aria-hidden="true" /></span>
           تنظیمات
-        </Link>
+        </GuardedLink>
       </div>
     </aside>
   );

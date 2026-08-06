@@ -24,7 +24,7 @@ export function WorkSettingsCard({ data, setData, setToast, financialsHidden }: 
     ...previous,
     settings: { ...previous.settings, ...next },
   }));
-  const editor = useSettingsDraft({ value, autoSave: data.settings.autoSaveSettings, onSave: saveSettings });
+  const editor = useSettingsDraft({ value, autoSave: data.settings.autoSaveSettings, label: "تنظیمات کاری و حقوق", onSave: saveSettings });
   const settings = editor.draft;
   const canEdit = editor.editing;
   const setSetting = <K extends keyof WorkSettingsDraft>(key: K, next: WorkSettingsDraft[K]) => editor.update((previous) => ({ ...previous, [key]: next }));

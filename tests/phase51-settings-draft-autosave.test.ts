@@ -17,7 +17,8 @@ test("schema v15 defaults settings autosave to off", () => {
 
 test("settings draft hook avoids effect-driven state syncing", async () => {
   const hook = await read("hooks/settings/use-settings-draft.ts");
-  assert.doesNotMatch(hook, /useEffect/);
+  assert.doesNotMatch(hook, /useEffect\([\s\S]*?set(?:Editing|LocalDraft)\(/);
+  assert.match(hook, /registerSettingsDraft/);
   assert.match(hook, /beginEdit/);
   assert.match(hook, /dirty/);
   assert.match(hook, /onSave\(localDraft\)/);

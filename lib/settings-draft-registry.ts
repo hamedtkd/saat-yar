@@ -1,6 +1,7 @@
 "use client";
 
 type DraftEntry = {
+  label: string;
   dirty: boolean;
   save: () => void;
   discard: () => void;
@@ -33,6 +34,12 @@ export function subscribeSettingsDrafts(listener: () => void) {
 
 export function getSettingsDraftVersion() {
   return version;
+}
+
+export function getUnsavedSettingsDraftLabels() {
+  return [...entries.values()]
+    .filter((entry) => entry.dirty)
+    .map((entry) => entry.label);
 }
 
 export function hasUnsavedSettingsDrafts() {

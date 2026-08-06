@@ -10,6 +10,7 @@ import { AppFooter } from "@/components/layout/app-footer";
 import { AppHeader } from "@/components/layout/app-header";
 import { SidebarNav } from "@/components/layout/navigation/sidebar-nav";
 import { MobileBottomNav } from "@/components/layout/navigation/mobile-bottom-nav";
+import { UnsavedNavigationProvider } from "@/components/layout/navigation/unsaved-navigation-provider";
 import { RouteGuard } from "@/components/layout/navigation/route-guard";
 import { RouteSync } from "@/components/layout/route-sync";
 import { Onboarding } from "@/components/layout/onboarding";
@@ -53,6 +54,7 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
 
   return (
     <SaatyarContext.Provider value={controller}>
+      <UnsavedNavigationProvider>
       <ThemeRuntime appearance={data.settings.appearance} />
       <RouteGuard mode={mode} pathname={pathname} ready={ready} />
       <Suspense fallback={null}>
@@ -115,6 +117,7 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
         <div className="xl:mr-[264px]"><AppFooter online={controller.online} /></div>
         <MobileBottomNav mode={data.settings.mode} currentPath={pathname} />
       </main>
+      </UnsavedNavigationProvider>
     </SaatyarContext.Provider>
   );
 }

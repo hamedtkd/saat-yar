@@ -3,6 +3,7 @@
 import { CalendarDays, Database, Info, UserRound } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/cn";
+import { useUnsavedNavigation } from "@/components/layout/navigation/unsaved-navigation-provider";
 
 const items = [
   { id: "settings-data", label: "داده و پشتیبان", icon: Database },
@@ -25,6 +26,7 @@ function getInitialSection(): SettingsSectionId {
 
 export function SettingsNav() {
   const [active, setActive] = useState<SettingsSectionId>(getInitialSection);
+  const { requestNavigation } = useUnsavedNavigation();
 
   useEffect(() => {
     const hash = window.location.hash.slice(1);
@@ -35,20 +37,20 @@ export function SettingsNav() {
     return () => cancelAnimationFrame(frame);
   }, []);
 
-  const goTo = (id: SettingsSectionId) => {
+  const navigateTo = (id: SettingsSectionId) => {
     setActive(id);
     window.history.replaceState(null, "", `#${id}`);
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  return (
+  return <>
     <aside className="sticky top-[84px] self-start rounded-[15px] border border-[var(--border)] bg-[var(--surface-1)] p-2 shadow-[0_6px_20px_rgba(17,45,55,.04)] max-[900px]:static max-[900px]:flex max-[900px]:overflow-x-auto">
       {items.map(({ id, label, icon: Icon }) => (
         <button
           key={id}
           type="button"
           aria-current={active === id ? "location" : undefined}
-          onClick={() => goTo(id)}
+          onClick={() => requestNavigation(() => navigateTo(id))}
           className={cn(
             "flex min-h-11 w-full items-center gap-3 rounded-[10px] px-3 text-right text-sm font-semibold text-[var(--text)] transition-colors max-[900px]:min-w-max",
             "hover:bg-[var(--accent-soft)]",
@@ -60,5 +62,5 @@ export function SettingsNav() {
         </button>
       ))}
     </aside>
-  );
+  </>;
 }

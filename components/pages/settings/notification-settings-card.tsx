@@ -47,7 +47,7 @@ export function NotificationSettingsCard({ data, setData, requestPermission, set
     ...previous,
     settings: { ...previous.settings, notificationSettings: value },
   }));
-  const editor = useSettingsDraft({ value: data.settings.notificationSettings, autoSave: data.settings.autoSaveSettings, onSave: saveSettings });
+  const editor = useSettingsDraft({ value: data.settings.notificationSettings, autoSave: data.settings.autoSaveSettings, label: "اعلان‌ها و یادآوری‌ها", onSave: saveSettings });
   const settings = editor.draft;
   const canEdit = editor.editing;
   const update = <K extends keyof NotificationSettings>(key: K, value: NotificationSettings[K]) => editor.update((previous) => ({ ...previous, [key]: value }));

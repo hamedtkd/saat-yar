@@ -21,6 +21,7 @@ export function ProfileSettingsCard({
   const profile = useSettingsDraft({
     value: { name: data.settings.name },
     autoSave: data.settings.autoSaveSettings,
+    label: "پروفایل و نام نمایشی",
     onSave: ({ name }) => {
       const normalized = name.trim().slice(0, MAX_NAME_LENGTH);
       setData((previous) => ({

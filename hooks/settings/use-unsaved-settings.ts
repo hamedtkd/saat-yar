@@ -4,6 +4,7 @@ import { useSyncExternalStore } from "react";
 import {
   discardAllSettingsDrafts,
   getSettingsDraftVersion,
+  getUnsavedSettingsDraftLabels,
   hasUnsavedSettingsDrafts,
   saveAllSettingsDrafts,
   subscribeSettingsDrafts,
@@ -14,6 +15,7 @@ export function useUnsavedSettings() {
 
   return {
     hasUnsavedChanges: hasUnsavedSettingsDrafts(),
+    dirtyLabels: getUnsavedSettingsDraftLabels(),
     saveAll: saveAllSettingsDrafts,
     discardAll: discardAllSettingsDrafts,
   };
