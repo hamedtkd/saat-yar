@@ -26,8 +26,9 @@ test("shell normalizes trailing slashes and persists the last route", async () =
 });
 
 test("weekly target and checkbox visuals are editable and compact", async () => {
-  const work = await read("components/pages/settings/work-settings-card.tsx");
+  const schedule = await read("components/pages/settings/work-schedule-editor.tsx");
   const checkbox = await read("components/ui/checkbox.tsx");
-  assert.match(work, /setWeeklyTargetHours/);
+  assert.match(schedule, /applyWeeklyTargetHours\(value, hours\)/);
+  assert.match(schedule, /NumberField[^>]*step=\{0\.5\}/);
   assert.match(checkbox, /size-2\.5/);
 });
