@@ -69,6 +69,9 @@ export type WorkRecord = {
   holiday: boolean;
   updatedAt?: string;
   manuallyEdited?: boolean;
+  autoClosedAt?: string;
+  autoClosedReason?: "page-exit" | "stale-session";
+  needsReview?: boolean;
 };
 
 export type BreakReminderSettings = {

@@ -43,7 +43,9 @@ function breakDuration(item: BreakItem, now: Date) {
 }
 
 export function calc(record: WorkRecord, dailyTarget: number, now = new Date()) {
-  const grossByTimestamp = timestampDuration(record.startedAt, record.endedAt, now);
+  const grossByTimestamp = record.manuallyEdited
+    ? null
+    : timestampDuration(record.startedAt, record.endedAt, now);
   const grossMinutes = !record.start
     ? 0
     : grossByTimestamp !== null

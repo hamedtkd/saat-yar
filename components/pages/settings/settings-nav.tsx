@@ -42,7 +42,7 @@ export function SettingsNav() {
   };
 
   return (
-    <aside className="sticky top-5 self-start rounded-[15px] border border-[var(--border)] bg-[var(--surface-1)] p-2 shadow-[0_6px_20px_rgba(17,45,55,.04)] max-[900px]:static max-[900px]:flex max-[900px]:overflow-x-auto">
+    <aside className="sticky top-[84px] self-start rounded-[15px] border border-[var(--border)] bg-[var(--surface-1)] p-2 shadow-[0_6px_20px_rgba(17,45,55,.04)] max-[900px]:static max-[900px]:flex max-[900px]:overflow-x-auto">
       {items.map(({ id, label, icon: Icon }) => (
         <button
           key={id}

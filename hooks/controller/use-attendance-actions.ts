@@ -16,7 +16,7 @@ export function useAttendanceActions({ record, selectedDate, activeBreak, lunchR
   function saveRecord(next: WorkRecord) {
     setData((previous) => ({ ...previous, records: { ...previous.records, [selectedDate]: { ...next, updatedAt: new Date().toISOString() } } }));
   }
-  function updateRecord(patch: Partial<WorkRecord>) { saveRecord({ ...record, ...patch, manuallyEdited: true }); }
+  function updateRecord(patch: Partial<WorkRecord>) { saveRecord({ ...record, ...patch, manuallyEdited: true, needsReview: false }); }
   function resetRecord() {
     setData((previous) => { const records = { ...previous.records }; delete records[selectedDate]; return { ...previous, records }; });
     setToast("رکورد این روز پاک شد");

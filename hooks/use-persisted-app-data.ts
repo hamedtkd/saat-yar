@@ -5,6 +5,8 @@ import { initialData } from "@/lib/constants";
 import { AppDataStorageAdapter } from "@/lib/storage";
 import type { RecoverySnapshot } from "@/lib/recovery";
 import type { AppData, StorageInfo } from "@/lib/types";
+import { localDateKey } from "@/lib/format";
+import { applyPendingClose, createPendingClose, parsePendingClose, SESSION_CLOSE_KEY } from "@/lib/session-close";
 
 export type SaveState = "idle" | "saving" | "saved" | "error";
 
@@ -29,7 +31,13 @@ export function usePersistedAppData() {
     void (async () => {
       try {
         const { value, migrated, migratedFrom } = await storage.load();
-        if (value) setData(value);
+        if (value) {
+          const pending = parsePendingClose(window.localStorage.getItem(SESSION_CLOSE_KEY));
+          const restored = pending ? applyPendingClose(value, pending) : value;
+          setData(restored);
+          if (pending && restored !== value) setToast("خروج آخر به‌صورت خودکار ثبت شد؛ لطفاً زمان را بررسی کنید");
+          window.localStorage.removeItem(SESSION_CLOSE_KEY);
+        }
         setRecoverySnapshot(storage.loadRecovery());
         if (migrated) {
           setToast(
@@ -76,6 +84,23 @@ export function usePersistedAppData() {
     }, 220);
     return () => window.clearTimeout(id);
   }, [data, persistData, ready]);
+
+
+  useEffect(() => {
+    if (!ready) return;
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      const today = localDateKey();
+      const record = latestDataRef.current.records[today];
+      const pending = record ? createPendingClose(today, record) : null;
+      if (pending) window.localStorage.setItem(SESSION_CLOSE_KEY, JSON.stringify(pending));
+      if (saveState === "saving" || pending) {
+        event.preventDefault();
+        event.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [ready, saveState]);
 
   useEffect(() => {
     const update = () => setOnline(navigator.onLine);
