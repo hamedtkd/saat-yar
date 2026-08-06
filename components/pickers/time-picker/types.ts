@@ -7,4 +7,5 @@ export type TimePickerProps = {
   value: string;
   onChange: (value: string) => void;
   suggestions?: TimeSuggestion[];
+  disabled?: boolean;
 };

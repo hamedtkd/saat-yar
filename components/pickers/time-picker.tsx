@@ -5,7 +5,7 @@ import { TimePickerTrigger } from "./time-picker/time-picker-trigger";
 import type { TimePickerProps } from "./time-picker/types";
 import { useTimePicker } from "./time-picker/use-time-picker";
 
-export function TimePicker({ value, onChange, suggestions = [] }: TimePickerProps) {
+export function TimePicker({ value, onChange, suggestions = [], disabled = false }: TimePickerProps) {
   const picker = useTimePicker(value, onChange);
 
   return (
@@ -14,11 +14,12 @@ export function TimePicker({ value, onChange, suggestions = [] }: TimePickerProp
         inputValue={picker.inputValue}
         error={picker.error}
         open={picker.open}
+        disabled={disabled}
         onInputChange={(nextValue) => { picker.setInputValue(nextValue); picker.setError(""); }}
         onCommit={picker.commitInput}
         onOpen={picker.openPicker}
       />
-      {picker.open && (
+      {!disabled && picker.open && (
         <TimePickerDialog
           hour={picker.hour}
           minute={picker.minute}

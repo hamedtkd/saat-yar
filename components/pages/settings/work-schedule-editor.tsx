@@ -49,9 +49,9 @@ export function WorkScheduleEditor({ value, disabled, onChange }: {
           return (
             <div key={day} className="grid grid-cols-[110px_repeat(3,minmax(130px,1fr))_90px] items-end gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-3 max-[980px]:grid-cols-2 max-[620px]:grid-cols-1">
               <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded-lg px-1"><Checkbox disabled={disabled} checked={schedule.enabled} onCheckedChange={(enabled) => setDay(day, "enabled", enabled)} /><strong className={schedule.enabled ? "text-[var(--text)]" : "text-[var(--text-muted)]"}>{weekdayLabels[day]}</strong></label>
-              <label>شروع<TimePicker value={schedule.start} onChange={(next) => setDay(day, "start", next)} /></label>
-              <label>پایان<TimePicker value={schedule.end} onChange={(next) => setDay(day, "end", next)} /></label>
-              <label>ناهار<MinuteDurationField value={schedule.lunchMinutes} onValueChange={(next) => setDay(day, "lunchMinutes", next)} /></label>
+              <label>شروع<TimePicker disabled={disabled} value={schedule.start} onChange={(next) => setDay(day, "start", next)} /></label>
+              <label>پایان<TimePicker disabled={disabled} value={schedule.end} onChange={(next) => setDay(day, "end", next)} /></label>
+              <label>ناهار<MinuteDurationField disabled={disabled} value={schedule.lunchMinutes} onValueChange={(next) => setDay(day, "lunchMinutes", next)} /></label>
               <div className="flex h-11 items-center justify-center rounded-lg bg-[var(--surface-2)] px-2 text-[10px] font-bold text-[var(--text-muted)]">{schedule.enabled ? `${Math.round(getScheduleTargetMinutes(schedule) / 6) / 10} ساعت` : "تعطیل"}</div>
             </div>
           );

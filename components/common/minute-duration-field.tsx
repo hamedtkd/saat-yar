@@ -22,6 +22,7 @@ type MinuteDurationFieldProps = {
   min?: number;
   max?: number;
   className?: string;
+  disabled?: boolean;
 };
 
 export function MinuteDurationField({
@@ -31,6 +32,7 @@ export function MinuteDurationField({
   min = 0,
   max = 240,
   className,
+  disabled = false,
 }: MinuteDurationFieldProps) {
   const options = useMemo(
     () =>
@@ -54,6 +56,7 @@ export function MinuteDurationField({
   return (
     <div className={cn("grid gap-2", className)}>
       <Select
+        disabled={disabled}
         value={selectValue}
         onValueChange={(nextValue) => {
           if (nextValue === CUSTOM_VALUE) {
@@ -82,6 +85,7 @@ export function MinuteDurationField({
         <div className="relative">
           <Input
             type="number"
+            disabled={disabled}
             inputMode="numeric"
             min={min}
             max={max}

@@ -3,10 +3,11 @@ import type { KeyboardEvent } from "react";
 
 import { Button } from "@/components/ui/button";
 
-export function TimePickerTrigger({ inputValue, error, open, onInputChange, onCommit, onOpen }: {
+export function TimePickerTrigger({ inputValue, error, open, disabled, onInputChange, onCommit, onOpen }: {
   inputValue: string;
   error: string;
   open: boolean;
+  disabled?: boolean;
   onInputChange: (value: string) => void;
   onCommit: () => boolean;
   onOpen: () => void;
@@ -27,6 +28,7 @@ export function TimePickerTrigger({ inputValue, error, open, onInputChange, onCo
           aria-label="زمان"
           aria-invalid={Boolean(error)}
           value={inputValue}
+        disabled={disabled}
           placeholder="مثلاً ۰۸:۳۰"
           className="min-w-0 bg-transparent py-2 text-left font-extrabold tabular-nums text-[var(--text)] outline-none placeholder:font-normal placeholder:text-[var(--text-muted)]"
           onChange={(event) => onInputChange(event.target.value)}

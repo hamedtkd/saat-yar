@@ -1,4 +1,9 @@
 import type { Settings, WeekdayKey, WorkScheduleDay } from "./types.ts";
+
+export type WeeklyScheduleSettings = {
+  weeklyMinutes: number;
+  weeklySchedule: Record<WeekdayKey, WorkScheduleDay>;
+};
 import { timeToMinutes } from "./time-engine.ts";
 
 export const weekdayOrder: WeekdayKey[] = [
@@ -70,14 +75,14 @@ export function getDailyTargetMinutes(date: string, settings: Settings): number 
   return getScheduleTargetMinutes(getWorkScheduleDay(date, settings));
 }
 
-export function getWeeklyTargetMinutes(settings: Settings): number {
+export function getWeeklyTargetMinutes(settings: WeeklyScheduleSettings): number {
   return weekdayOrder.reduce(
     (sum, day) => sum + getScheduleTargetMinutes(settings.weeklySchedule[day]),
     0,
   );
 }
 
-export function applyWeeklyTargetHours(settings: Settings, hours: number): Settings {
+export function applyWeeklyTargetHours<T extends WeeklyScheduleSettings>(settings: T, hours: number): T {
   const enabledDays = weekdayOrder.filter((day) => settings.weeklySchedule[day].enabled);
   if (!enabledDays.length) return settings;
 
