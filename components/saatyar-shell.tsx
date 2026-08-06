@@ -105,7 +105,7 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
           onThemeModeChange={(mode) => setData((previous) => ({ ...previous, settings: { ...previous.settings, appearance: { ...previous.settings.appearance, mode } } }))}
         />
 
-        <LiveTimerOwnershipBanner blocked={controller.liveTimerOwnership.blocked} onTakeOver={controller.liveTimerOwnership.takeOver} />
+        <LiveTimerOwnershipBanner blocked={controller.liveTimerOwnership.blocked} owner={controller.liveTimerOwnership.owner} onTakeOver={controller.liveTimerOwnership.takeOver} />
 
         <MultiTabSyncBanner
           pending={controller.externalSyncPending}

@@ -3,31 +3,33 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createTabId } from "@/lib/multi-tab-sync";
 import {
-  createLiveTimerLock, isOwnedByAnotherTab, LIVE_TIMER_CHANNEL, LIVE_TIMER_HEARTBEAT_MS,
-  LIVE_TIMER_LOCK_KEY, parseLiveTimerLock,
+  createLiveTimerLock, describeTimerDevice, isOwnedByAnotherTab, LIVE_TIMER_CHANNEL,
+  LIVE_TIMER_HEARTBEAT_MS, LIVE_TIMER_LOCK_KEY, parseLiveTimerLock, type LiveTimerLock,
 } from "@/lib/live-timer-lock";
 
 export function useLiveTimerOwnership(active: boolean) {
   const tabIdRef = useRef(createTabId());
   const channelRef = useRef<BroadcastChannel | null>(null);
-  const [blocked, setBlocked] = useState(false);
+  const [owner, setOwner] = useState<LiveTimerLock | null>(null);
+  const blocked = Boolean(owner);
 
   const refresh = useCallback(() => {
     const lock = parseLiveTimerLock(window.localStorage.getItem(LIVE_TIMER_LOCK_KEY));
-    setBlocked(isOwnedByAnotherTab(lock, tabIdRef.current));
+    setOwner(isOwnedByAnotherTab(lock, tabIdRef.current) ? lock : null);
   }, []);
 
   const publish = useCallback(() => {
-    const lock = createLiveTimerLock(tabIdRef.current);
+    const deviceName = describeTimerDevice(window.navigator.userAgent, window.navigator.platform);
+    const lock = createLiveTimerLock(tabIdRef.current, new Date(), deviceName);
     window.localStorage.setItem(LIVE_TIMER_LOCK_KEY, JSON.stringify(lock));
     channelRef.current?.postMessage(lock);
-    setBlocked(false);
+    setOwner(null);
   }, []);
 
   const ensureOwnership = useCallback(() => {
     const lock = parseLiveTimerLock(window.localStorage.getItem(LIVE_TIMER_LOCK_KEY));
     if (isOwnedByAnotherTab(lock, tabIdRef.current)) {
-      setBlocked(true);
+      setOwner(lock);
       return false;
     }
     publish();
@@ -40,22 +42,17 @@ export function useLiveTimerOwnership(active: boolean) {
       window.localStorage.removeItem(LIVE_TIMER_LOCK_KEY);
       channelRef.current?.postMessage({ releasedBy: tabIdRef.current });
     }
-    setBlocked(false);
+    setOwner(null);
   }, []);
 
-  const takeOver = useCallback(() => {
-    publish();
-  }, [publish]);
+  const takeOver = useCallback(() => publish(), [publish]);
 
   useEffect(() => {
     if (typeof BroadcastChannel === "undefined") return;
     const channel = new BroadcastChannel(LIVE_TIMER_CHANNEL);
     channelRef.current = channel;
     channel.addEventListener("message", refresh);
-    return () => {
-      channel.close();
-      channelRef.current = null;
-    };
+    return () => { channel.close(); channelRef.current = null; };
   }, [refresh]);
 
   useEffect(() => {
@@ -68,14 +65,11 @@ export function useLiveTimerOwnership(active: boolean) {
   }, [refresh]);
 
   useEffect(() => {
-    if (!active) {
-      release();
-      return;
-    }
+    if (!active) { release(); return; }
     if (blocked || !ensureOwnership()) return;
     const id = window.setInterval(publish, LIVE_TIMER_HEARTBEAT_MS);
     return () => window.clearInterval(id);
   }, [active, blocked, ensureOwnership, publish, release]);
 
-  return { blocked, ensureOwnership, takeOver };
+  return { blocked, owner, ensureOwnership, takeOver };
 }
