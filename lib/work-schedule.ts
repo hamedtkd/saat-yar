@@ -76,3 +76,24 @@ export function getWeeklyTargetMinutes(settings: Settings): number {
     0,
   );
 }
+
+export function applyWeeklyTargetHours(settings: Settings, hours: number): Settings {
+  const enabledDays = weekdayOrder.filter((day) => settings.weeklySchedule[day].enabled);
+  if (!enabledDays.length) return settings;
+
+  const totalMinutes = Math.max(0, Math.round(hours * 60));
+  const baseTarget = Math.floor(totalMinutes / enabledDays.length);
+  const remainder = totalMinutes % enabledDays.length;
+  const weeklySchedule = { ...settings.weeklySchedule };
+
+  enabledDays.forEach((day, index) => {
+    const schedule = weeklySchedule[day];
+    const start = timeToMinutes(schedule.start);
+    const target = baseTarget + (index < remainder ? 1 : 0);
+    const endMinutes = (start + Math.max(0, schedule.lunchMinutes) + target) % (24 * 60);
+    const end = `${String(Math.floor(endMinutes / 60)).padStart(2, "0")}:${String(endMinutes % 60).padStart(2, "0")}`;
+    weeklySchedule[day] = { ...schedule, end };
+  });
+
+  return { ...settings, weeklyMinutes: totalMinutes, weeklySchedule };
+}
