@@ -31,7 +31,7 @@ test("settings cards use structured responsive surfaces", async () => {
 });
 
 test("manual settings editing is captured in the backlog", async () => {
-  const backlog = await read("BACKLOG_FA.md");
+  const backlog = await read("docs/roadmap/BACKLOG_FA.md");
   assert.match(backlog, /دکمه مداد/);
   assert.match(backlog, /ذخیره خودکار به‌صورت پیش‌فرض خاموش/);
   assert.match(backlog, /ذخیره.*انصراف/);

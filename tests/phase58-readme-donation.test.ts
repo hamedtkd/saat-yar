@@ -15,7 +15,7 @@ test("README documents the product, quality workflow and optional donation", asy
 });
 
 test("documentation roadmap remains visible in the backlog", async () => {
-  const backlog = await read("BACKLOG_FA.md");
+  const backlog = await read("docs/roadmap/BACKLOG_FA.md");
   assert.match(backlog, /مستندات و معرفی پروژه/);
   assert.match(backlog, /README انگلیسی/);
   assert.match(backlog, /اسکرین‌شات‌های به‌روز/);
