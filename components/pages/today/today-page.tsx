@@ -4,6 +4,7 @@ import { AlertTriangle } from "lucide-react";
 import { PageHeading } from "@/components/common/page-heading";
 import { JalaliDatePicker } from "@/components/pickers";
 import { Button } from "@/components/ui/button";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { jalali } from "@/lib/format";
 import { getHolidayInfo } from "@/lib/holidays";
 import { buildGreeting } from "@/lib/greeting";
@@ -28,6 +29,24 @@ export function TodayPage(props: TodayPageProps) {
 
   return (
     <>
+      <AlertDialog open={Boolean(props.pendingPreviousRecord)} onOpenChange={(open) => { if (!open) props.dismissPreviousRecord(); }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>خروج روز قبل ثبت نشده است</AlertDialogTitle>
+            <AlertDialogDescription>
+              برای جلوگیری از محاسبه اشتباه ساعت و اضافه‌کاری، قبل از شروع امروز باید رکورد {props.pendingPreviousRecord ? jalali(props.pendingPreviousRecord.date, { weekday: "long", day: "numeric", month: "long" }) : "روز قبل"} تعیین تکلیف شود.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="rounded-[var(--control-radius)] border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2 text-xs text-[var(--text-muted)]">
+            با «ثبت خروج و شروع امروز»، ساعت پایان برنامه کاری همان روز ثبت می‌شود و رکورد برای بازبینی علامت می‌خورد.
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={props.closePreviousAndStart}>ثبت خروج و شروع امروز</AlertDialogAction>
+            <AlertDialogCancel onClick={props.reviewPreviousRecord}>بررسی و اصلاح روز قبل</AlertDialogCancel>
+            <AlertDialogCancel>فعلاً شروع نکن</AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <PageHeading
         title={`${buildGreeting(props.data.settings.name)}؛ امروز روی چه چیزی کار می‌کنی؟`}
         description={jalali(props.selectedDate, {

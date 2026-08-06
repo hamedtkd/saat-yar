@@ -70,7 +70,7 @@ export type WorkRecord = {
   updatedAt?: string;
   manuallyEdited?: boolean;
   autoClosedAt?: string;
-  autoClosedReason?: "page-exit" | "stale-session";
+  autoClosedReason?: "page-exit" | "stale-session" | "day-rollover";
   needsReview?: boolean;
 };
 

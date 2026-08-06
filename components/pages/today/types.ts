@@ -16,6 +16,10 @@ export type TodayPageProps = {
   timerDraft: TimerDraft;
   setTimerDraft: React.Dispatch<React.SetStateAction<TimerDraft>>;
   startWork: () => void;
+  pendingPreviousRecord?: WorkRecord;
+  closePreviousAndStart: () => void;
+  reviewPreviousRecord: () => void;
+  dismissPreviousRecord: () => void;
   finishWork: () => void;
   updateRecord: (patch: Partial<WorkRecord>) => void;
   resetRecord: () => void;

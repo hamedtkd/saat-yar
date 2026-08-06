@@ -1,18 +1,24 @@
+import { useState } from "react";
 import { minutesToTime, spanMinutes, timeToMinutes } from "@/lib/time-engine";
 import { nowTime } from "@/lib/format";
+import { closePreviousRecordForNewDay, findPreviousOpenRecord } from "@/lib/previous-day-session";
 import type { Dispatch, SetStateAction } from "react";
 import type { AppData, WorkRecord } from "@/lib/types";
 
 type Args = {
+  data: AppData;
   record: WorkRecord;
   selectedDate: string;
   activeBreak?: WorkRecord["breaks"][number];
   lunchRunning: boolean;
   setData: Dispatch<SetStateAction<AppData>>;
+  setSelectedDate: (date: string) => void;
   setToast: (message: string) => void;
 };
 
-export function useAttendanceActions({ record, selectedDate, activeBreak, lunchRunning, setData, setToast }: Args) {
+export function useAttendanceActions({ data, record, selectedDate, activeBreak, lunchRunning, setData, setSelectedDate, setToast }: Args) {
+  const [pendingPreviousRecord, setPendingPreviousRecord] = useState<WorkRecord>();
+
   function saveRecord(next: WorkRecord) {
     setData((previous) => ({ ...previous, records: { ...previous.records, [selectedDate]: { ...next, updatedAt: new Date().toISOString() } } }));
   }
@@ -21,7 +27,32 @@ export function useAttendanceActions({ record, selectedDate, activeBreak, lunchR
     setData((previous) => { const records = { ...previous.records }; delete records[selectedDate]; return { ...previous, records }; });
     setToast("رکورد این روز پاک شد");
   }
-  function startWork() { updateRecord({ start: nowTime(), end: "", startedAt: new Date().toISOString(), endedAt: undefined }); setToast("شروع روز ثبت شد"); }
+  function beginCurrentDay() {
+    updateRecord({ start: nowTime(), end: "", startedAt: new Date().toISOString(), endedAt: undefined });
+    setToast("شروع روز ثبت شد");
+  }
+  function startWork() {
+    const previousOpen = findPreviousOpenRecord(data.records, selectedDate);
+    if (previousOpen) return setPendingPreviousRecord(previousOpen);
+    beginCurrentDay();
+  }
+  function closePreviousAndStart() {
+    if (!pendingPreviousRecord) return;
+    const closed = closePreviousRecordForNewDay(pendingPreviousRecord, data.settings);
+    setData((previous) => ({
+      ...previous,
+      records: { ...previous.records, [closed.date]: closed },
+    }));
+    setPendingPreviousRecord(undefined);
+    beginCurrentDay();
+    setToast("خروج روز قبل با ساعت برنامه ثبت شد؛ لطفاً آن را بررسی کنید");
+  }
+  function reviewPreviousRecord() {
+    if (!pendingPreviousRecord) return;
+    const date = pendingPreviousRecord.date;
+    setPendingPreviousRecord(undefined);
+    setSelectedDate(date);
+  }
   function finishWork() {
     if (activeBreak || lunchRunning) return setToast("ابتدا تایمر ناهار یا وقفه را پایان دهید");
     updateRecord({ end: nowTime(), endedAt: new Date().toISOString() }); setToast("ساعت خروج ثبت شد");
@@ -47,5 +78,6 @@ export function useAttendanceActions({ record, selectedDate, activeBreak, lunchR
       endedAt: minutes && item.startedAt ? new Date(new Date(item.startedAt).getTime() + minutes * 60_000).toISOString() : new Date().toISOString() } : item) });
     setToast(minutes ? `وقفه ${minutes.toLocaleString("fa-IR")} دقیقه‌ای ثبت شد` : "وقفه پایان یافت");
   }
-  return { updateRecord, resetRecord, startWork, finishWork, startLunch, finishLunch, startBreak, finishBreak };
+  return { updateRecord, resetRecord, startWork, finishWork, startLunch, finishLunch, startBreak, finishBreak,
+    pendingPreviousRecord, closePreviousAndStart, reviewPreviousRecord, dismissPreviousRecord: () => setPendingPreviousRecord(undefined) };
 }

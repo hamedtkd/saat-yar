@@ -32,8 +32,8 @@ export function useSaatyarController() {
 
   const derived = useControllerDerived(data, selectedDate, selectedProjectId, reportFilter);
   const attendance = useAttendanceActions({
-    record: derived.record, selectedDate, activeBreak: derived.activeBreak,
-    lunchRunning: derived.lunchRunning, setData, setToast,
+    data, record: derived.record, selectedDate, activeBreak: derived.activeBreak,
+    lunchRunning: derived.lunchRunning, setData, setSelectedDate, setToast,
   });
   const business = useBusinessActions({
     data, setData, setToast, clientDraft, setClientDraft, projectDraft, setProjectDraft,
