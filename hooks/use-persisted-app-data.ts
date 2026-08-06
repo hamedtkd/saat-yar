@@ -6,7 +6,11 @@ import { AppDataStorageAdapter } from "@/lib/storage";
 import type { RecoverySnapshot } from "@/lib/recovery";
 import type { AppData, StorageInfo } from "@/lib/types";
 import { localDateKey } from "@/lib/format";
-import { applyPendingClose, createPendingClose, parsePendingClose, SESSION_CLOSE_KEY } from "@/lib/session-close";
+import {
+  applyPendingClose, applyStaleHeartbeat, createPendingClose, createSessionHeartbeat,
+  parsePendingClose, parseSessionHeartbeat, SESSION_CLOSE_KEY, SESSION_HEARTBEAT_INTERVAL_MS,
+  SESSION_HEARTBEAT_KEY,
+} from "@/lib/session-close";
 
 export type SaveState = "idle" | "saving" | "saved" | "error";
 
@@ -33,10 +37,17 @@ export function usePersistedAppData() {
         const { value, migrated, migratedFrom } = await storage.load();
         if (value) {
           const pending = parsePendingClose(window.localStorage.getItem(SESSION_CLOSE_KEY));
-          const restored = pending ? applyPendingClose(value, pending) : value;
+          const heartbeat = parseSessionHeartbeat(window.localStorage.getItem(SESSION_HEARTBEAT_KEY));
+          const restoredFromClose = pending ? applyPendingClose(value, pending) : value;
+          const restored = pending || !heartbeat ? restoredFromClose : applyStaleHeartbeat(restoredFromClose, heartbeat);
           setData(restored);
-          if (pending && restored !== value) setToast("خروج آخر به‌صورت خودکار ثبت شد؛ لطفاً زمان را بررسی کنید");
+          if (restored !== value) {
+            setToast(pending
+              ? "خروج آخر هنگام بستن صفحه ثبت شد؛ لطفاً زمان را بررسی کنید"
+              : "نشست باز پس از قطع ناگهانی تا آخرین زمان فعال ثبت شد؛ لطفاً آن را بررسی کنید");
+          }
           window.localStorage.removeItem(SESSION_CLOSE_KEY);
+          if (restored !== value || !heartbeat) window.localStorage.removeItem(SESSION_HEARTBEAT_KEY);
         }
         setRecoverySnapshot(storage.loadRecovery());
         if (migrated) {
@@ -85,6 +96,28 @@ export function usePersistedAppData() {
     return () => window.clearTimeout(id);
   }, [data, persistData, ready]);
 
+
+
+  useEffect(() => {
+    if (!ready) return;
+    const writeHeartbeat = () => {
+      const today = localDateKey();
+      const record = latestDataRef.current.records[today];
+      const heartbeat = record ? createSessionHeartbeat(today, record) : null;
+      if (heartbeat) window.localStorage.setItem(SESSION_HEARTBEAT_KEY, JSON.stringify(heartbeat));
+      else window.localStorage.removeItem(SESSION_HEARTBEAT_KEY);
+    };
+    writeHeartbeat();
+    const id = window.setInterval(writeHeartbeat, SESSION_HEARTBEAT_INTERVAL_MS);
+    const handleVisibility = () => { if (document.visibilityState === "hidden") writeHeartbeat(); };
+    window.addEventListener("pagehide", writeHeartbeat);
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => {
+      window.clearInterval(id);
+      window.removeEventListener("pagehide", writeHeartbeat);
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
+  }, [ready]);
 
   useEffect(() => {
     if (!ready) return;
