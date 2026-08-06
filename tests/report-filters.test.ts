@@ -4,6 +4,7 @@ import test from "node:test";
 import { defaultSettings } from "../lib/constants.ts";
 import { recordMatchesReportFilter } from "../lib/report-filters.ts";
 import type { ReportFilter, WorkRecord } from "../lib/types.ts";
+import { makeWorkRecord } from "./fixtures/work-record.ts";
 
 const baseFilter: ReportFilter = {
   clientId: "all",
@@ -16,18 +17,14 @@ const baseFilter: ReportFilter = {
 };
 
 function record(patch: Partial<WorkRecord> = {}): WorkRecord {
-  return {
+  return makeWorkRecord({
     date: "2026-08-03",
     start: "07:30",
     end: "16:15",
     lunchMinutes: 45,
-    breaks: [],
-    leaveMinutes: 0,
-    leaveType: "none",
     note: "جلسه برنامه‌ریزی",
-    holiday: false,
     ...patch,
-  };
+  });
 }
 
 test("filters records by date range", () => {

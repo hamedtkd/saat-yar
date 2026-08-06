@@ -2,21 +2,17 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { readFile } from "node:fs/promises";
 import { getWorkRecordChanges } from "../lib/work-record-diff.ts";
-import type { WorkRecord } from "../lib/types.ts";
+import { makeWorkRecord } from "./fixtures/work-record.ts";
 
-const base: WorkRecord = {
+const base = makeWorkRecord({
   date: "2026-08-05",
   start: "08:30",
   end: "16:30",
   lunchMinutes: 30,
   lunchStart: "12:30",
   lunchEnd: "13:00",
-  breaks: [],
-  leaveMinutes: 0,
-  leaveType: "none",
   note: "نسخه قبلی",
-  holiday: false,
-};
+});
 
 test("historical record diff reports only changed fields", () => {
   const changes = getWorkRecordChanges(base, { ...base, end: "17:00", note: "نسخه جدید" });

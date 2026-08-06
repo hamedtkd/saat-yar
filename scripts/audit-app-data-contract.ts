@@ -1,5 +1,4 @@
-import { parseBackup } from "../lib/backup-schema.ts";
-import { createBackupEnvelope } from "../lib/backup-workflow.ts";
+import { createBackupEnvelope, parseBackupEnvelope } from "../lib/backup-workflow.ts";
 import { createInitialData, defaultSettings } from "../lib/constants.ts";
 import {
   formatAppDataAuditExecutionError,
@@ -38,7 +37,7 @@ const paths: AuditPath[] = [
     label: "previous migration",
     create: () => migrateAppData({ schemaVersion: previousVersion, data: legacy }).data,
   },
-  { label: "backup round-trip", create: () => parseBackup(createBackupEnvelope(initial)) },
+  { label: "backup round-trip", create: () => parseBackupEnvelope(createBackupEnvelope(initial)) },
   {
     label: "recovery round-trip",
     create: () => recoverySnapshotToData(createRecoverySnapshot(initial, "manual")),

@@ -34,6 +34,13 @@ export function createEmptyAppDataCollections(): Omit<AppData, "settings"> {
   ) as Omit<AppData, "settings">;
 }
 
+
+export function pickAppData(value: AppData): AppData {
+  return Object.fromEntries(
+    APP_DATA_KEYS.map((key) => [key, value[key]]),
+  ) as AppData;
+}
+
 export function getMissingAppDataKeys(value: unknown): AppDataKey[] {
   if (!value || typeof value !== "object" || Array.isArray(value)) return [...APP_DATA_KEYS];
   return APP_DATA_KEYS.filter((key) => !Object.prototype.hasOwnProperty.call(value, key));

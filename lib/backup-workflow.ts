@@ -1,4 +1,5 @@
 import { parseBackup } from "./backup-schema.ts";
+import { pickAppData } from "./data/app-data-contract.ts";
 import { APP_DATA_SCHEMA_VERSION } from "./data/version.ts";
 import type { AppData } from "./types.ts";
 
@@ -21,5 +22,5 @@ export function createBackupEnvelope(data: AppData, exportedAt = new Date().toIS
 }
 
 export function parseBackupEnvelope(value: unknown): AppData {
-  return parseBackup(value);
+  return pickAppData(parseBackup(value));
 }

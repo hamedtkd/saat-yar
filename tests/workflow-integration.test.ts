@@ -6,23 +6,20 @@ import { calc } from "../lib/time-engine.ts";
 import { calculateEmployeeDayPay } from "../lib/payroll.ts";
 import { getProjectFinanceSummary } from "../lib/project-finance.ts";
 import { getInvoiceTotals, getEffectiveInvoiceStatus, nextInvoiceNumber } from "../lib/invoices.ts";
-import type { AppData, Invoice, WorkRecord } from "../lib/types.ts";
+import { APP_DATA_KEYS } from "../lib/data/app-data-contract.ts";
+import type { AppData, Invoice } from "../lib/types.ts";
+import { makeWorkRecord } from "./fixtures/work-record.ts";
 
 const DAY_TARGET = 8 * 60;
 
 test("employee attendance workflow calculates work, overtime and pay", () => {
-  const record: WorkRecord = {
+  const record = makeWorkRecord({
     date: "2026-08-05",
     start: "08:00",
     end: "18:00",
     lunchMinutes: 60,
-    lunchPaid: false,
     breaks: [{ id: "b1", start: "15:00", end: "15:15", title: "استراحت", paid: false }],
-    leaveMinutes: 0,
-    leaveType: "none",
-    note: "",
-    holiday: false,
-  };
+  });
 
   const result = calc(record, DAY_TARGET, new Date("2026-08-05T18:00:00"));
   assert.equal(result.worked, 525);
@@ -65,6 +62,9 @@ test("backup workflow round-trips and merges without duplicate ids", () => {
   const envelope = createBackupEnvelope(base, "2026-08-05T00:00:00.000Z");
   const restored = parseBackupEnvelope(JSON.parse(JSON.stringify(envelope)));
   assert.deepEqual(restored.clients, base.clients);
+  assert.deepEqual(Object.keys(restored).sort(), [...APP_DATA_KEYS].sort());
+  assert.equal("appName" in restored, false);
+  assert.equal("schemaVersion" in restored, false);
 
   const incoming: AppData = structuredClone(restored);
   incoming.clients.push({ id: "c2", name: "مشتری دوم", color: "#111", archived: false });

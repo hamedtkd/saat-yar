@@ -7,19 +7,13 @@ import {
   breakReminderSnoozeKey,
   isRecordPaused,
 } from "../lib/notification-reminders.ts";
-import type { WorkRecord } from "../lib/types.ts";
+import { makeWorkRecord } from "./fixtures/work-record.ts";
 
-const baseRecord = (): WorkRecord => ({
+const baseRecord = () => makeWorkRecord({
   date: "2026-08-05",
   start: "08:00",
   end: "",
   startedAt: "2026-08-05T08:00:00.000Z",
-  lunchMinutes: 0,
-  breaks: [],
-  leaveMinutes: 0,
-  leaveType: "none",
-  note: "",
-  holiday: false,
 });
 
 test("active reminder time excludes lunch and breaks", () => {

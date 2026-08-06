@@ -2,9 +2,16 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { getRecordStatus } from "../lib/record-health.ts";
 import type { WorkRecord } from "../lib/types.ts";
+import { makeWorkRecord } from "./fixtures/work-record.ts";
 
 function record(patch: Partial<WorkRecord> = {}): WorkRecord {
-  return { date: "2026-08-03", start: "08:00", end: "16:00", lunchMinutes: 30, breaks: [], leaveMinutes: 0, leaveType: "none", note: "", holiday: false, ...patch };
+  return makeWorkRecord({
+    date: "2026-08-03",
+    start: "08:00",
+    end: "16:00",
+    lunchMinutes: 30,
+    ...patch,
+  });
 }
 
 test("marks a complete record as complete", () => {

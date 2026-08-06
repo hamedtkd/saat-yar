@@ -4,13 +4,17 @@ import { readFile } from "node:fs/promises";
 
 import { initialData } from "../lib/constants.ts";
 import { applyStaleHeartbeat, createSessionHeartbeat } from "../lib/session-close.ts";
-import type { WorkRecord } from "../lib/types.ts";
+import { makeWorkRecord } from "./fixtures/work-record.ts";
+
+const openRecord = () => makeWorkRecord({
+  date: "2026-08-06",
+  start: "07:40",
+  end: "",
+  lunchMinutes: 45,
+});
 
 test("stale heartbeat closes an open work session at the last active time", () => {
-  const record: WorkRecord = {
-    date: "2026-08-06", start: "07:40", end: "", lunchMinutes: 45, breaks: [],
-    leaveMinutes: 0, leaveType: "none", note: "", holiday: false,
-  };
+  const record = openRecord();
   const heartbeat = createSessionHeartbeat("2026-08-06", record, new Date("2026-08-06T16:00:00"));
   assert.ok(heartbeat);
   const next = applyStaleHeartbeat(
@@ -24,10 +28,7 @@ test("stale heartbeat closes an open work session at the last active time", () =
 });
 
 test("recent heartbeat does not close a session during a normal reload", () => {
-  const record: WorkRecord = {
-    date: "2026-08-06", start: "07:40", end: "", lunchMinutes: 45, breaks: [],
-    leaveMinutes: 0, leaveType: "none", note: "", holiday: false,
-  };
+  const record = openRecord();
   const heartbeat = createSessionHeartbeat("2026-08-06", record, new Date("2026-08-06T16:00:00"));
   const data = { ...initialData, records: { "2026-08-06": record } };
   assert.equal(applyStaleHeartbeat(data, heartbeat!, new Date("2026-08-06T16:00:30")), data);

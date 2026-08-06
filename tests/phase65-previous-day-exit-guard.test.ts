@@ -2,11 +2,13 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { closePreviousRecordForNewDay, findPreviousOpenRecord } from "../lib/previous-day-session.ts";
 import { initialData } from "../lib/constants.ts";
-import type { WorkRecord } from "../lib/types.ts";
+import { makeWorkRecord } from "./fixtures/work-record.ts";
 
-const record = (date: string, end = ""): WorkRecord => ({
-  date, start: "07:40", end, lunchMinutes: 30, breaks: [], leaveMinutes: 0,
-  leaveType: "none", note: "", holiday: false,
+const record = (date: string, end = "") => makeWorkRecord({
+  date,
+  start: "07:40",
+  end,
+  lunchMinutes: 30,
 });
 
 test("finds the latest unfinished record before a new work day", () => {

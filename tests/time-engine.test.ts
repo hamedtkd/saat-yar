@@ -2,21 +2,15 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { calc, minutesToTime, spanMinutes, timeToMinutes } from "../lib/time-engine.ts";
 import type { WorkRecord } from "../lib/types.ts";
+import { makeWorkRecord } from "./fixtures/work-record.ts";
 
-function record(overrides: Partial<WorkRecord> = {}): WorkRecord {
-  return {
-    date: "2026-08-02",
-    start: "07:30",
-    end: "16:15",
-    lunchMinutes: 45,
-    breaks: [],
-    leaveMinutes: 0,
-    leaveType: "none",
-    note: "",
-    holiday: false,
-    ...overrides,
-  };
-}
+const record = (overrides: Partial<WorkRecord> = {}) => makeWorkRecord({
+  date: "2026-08-02",
+  start: "07:30",
+  end: "16:15",
+  lunchMinutes: 45,
+  ...overrides,
+});
 
 test("suggests 16:15 for 07:30 with eight hours plus 45 minute lunch", () => {
   assert.equal(minutesToTime(calc(record({ end: "" }), 480, new Date("2026-08-02T07:30:00")).plannedExit), "16:15");
