@@ -43,8 +43,19 @@ export function getUnsavedSettingsDraftLabels() {
     .map((entry) => entry.label);
 }
 
+export function getUnsavedSettingsDraftLabelsExcept(id: string) {
+  return [...entries.entries()]
+    .filter(([entryId, entry]) => entryId !== id && entry.dirty)
+    .map(([, entry]) => entry.label);
+}
+
 export function hasUnsavedSettingsDrafts() {
   return [...entries.values()].some((entry) => entry.dirty);
+}
+
+export function hasUnsavedSettingsDraftsExcept(id: string) {
+  return [...entries.entries()]
+    .some(([entryId, entry]) => entryId !== id && entry.dirty);
 }
 
 export function saveAllSettingsDrafts() {

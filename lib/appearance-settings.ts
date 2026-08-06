@@ -14,6 +14,15 @@ import type {
 
 export type ResolvedThemeMode = Exclude<ThemeMode, "system">;
 
+type PreviewColors = {
+  page: string;
+  surface1: string;
+  surface2: string;
+  text: string;
+  muted: string;
+  border: string;
+};
+
 const themeModes: ThemeMode[] = ["light", "dark", "system"];
 const themePresetsList: ThemePreset[] = ["spotify", "emerald", "ocean", "violet", "sunset", "custom"];
 const radiusScales: RadiusScale[] = ["compact", "balanced", "rounded"];
@@ -25,7 +34,7 @@ const radiusTokens: Record<RadiusScale, { card: string; control: string }> = {
   rounded: { card: "24px", control: "15px" },
 };
 
-const baseColors: Record<ResolvedThemeMode, Record<string, string>> = {
+const baseColors: Record<ResolvedThemeMode, PreviewColors> = {
   light: {
     page: "#f5f8f6",
     surface1: "#ffffff",
@@ -44,7 +53,10 @@ const baseColors: Record<ResolvedThemeMode, Record<string, string>> = {
   },
 };
 
-const surfaceOverrides: Record<ResolvedThemeMode, Partial<Record<SurfaceStyle, Partial<Record<string, string>>>>> = {
+const surfaceOverrides: Record<
+  ResolvedThemeMode,
+  Partial<Record<SurfaceStyle, Partial<PreviewColors>>>
+> = {
   light: {
     neutral: { page: "#f6f7f6", surface2: "#f3f5f4" },
     contrast: { page: "#eef4f0", surface1: "#ffffff", surface2: "#e9f1ec", border: "#cbd9d0" },
@@ -77,6 +89,22 @@ export function normalizeAppearanceSettings(value: AppearanceSettings): Appearan
   return { ...value, accent };
 }
 
+function resolvePreviewColors(
+  mode: ResolvedThemeMode,
+  surface: SurfaceStyle,
+): PreviewColors {
+  const base = baseColors[mode];
+  const override = surfaceOverrides[mode][surface];
+  return {
+    page: override?.page ?? base.page,
+    surface1: override?.surface1 ?? base.surface1,
+    surface2: override?.surface2 ?? base.surface2,
+    text: override?.text ?? base.text,
+    muted: override?.muted ?? base.muted,
+    border: override?.border ?? base.border,
+  };
+}
+
 export function createAppearancePreviewTokens(
   value: AppearanceSettings,
   resolvedMode: ResolvedThemeMode,
@@ -86,10 +114,7 @@ export function createAppearancePreviewTokens(
     : value;
   const accent = resolveAccent(safeValue);
   const accentTokens = resolveAccentTokens(accent, resolvedMode);
-  const colors = {
-    ...baseColors[resolvedMode],
-    ...(surfaceOverrides[resolvedMode][value.surface] ?? {}),
-  };
+  const colors = resolvePreviewColors(resolvedMode, value.surface);
   const radius = radiusTokens[value.radius];
 
   return {

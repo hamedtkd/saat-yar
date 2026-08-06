@@ -56,6 +56,7 @@ export function useSettingsDraft<T>({
   );
 
   return {
+    registryId,
     editing: autoSave || editing,
     manualEditing: editing,
     draft: autoSave ? value : draft,
