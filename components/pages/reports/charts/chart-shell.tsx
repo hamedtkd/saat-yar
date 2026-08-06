@@ -5,7 +5,7 @@ export function ChartShell({ children }: { children: ReactNode }) {
   return (
     <article className={cn(
       "min-w-0 rounded-2xl border border-[var(--border)]",
-      "bg-[var(--surface-glass)] p-4 shadow-[0_12px_38px_rgba(17,45,55,0.055)] sm:p-5 print:break-inside-avoid print:bg-white print:p-3 print:shadow-none",
+      "bg-[var(--surface-glass)] p-4 shadow-[0_12px_38px_rgba(17,45,55,0.055)] sm:p-5 print:break-inside-avoid print:bg-[var(--surface-1)] print:p-3 print:shadow-none",
     )}>
       {children}
     </article>
