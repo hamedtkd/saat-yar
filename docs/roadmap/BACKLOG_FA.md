@@ -134,5 +134,6 @@
 - [x] ایجاد Factory مرکزی برای Collectionهای اجباری `AppData`.
 - [x] تکمیل قرارداد Schema v16 در Route امروز و Merge فایل پشتیبان.
 - [x] حفظ رکوردهای سطل بازیابی هنگام Merge بدون شناسه تکراری.
-- [ ] افزودن Audit خودکار برای تغییرات آینده Schema در Factory، Migration، Backup و Recovery.
+- [x] افزودن Audit خودکار برای تغییرات آینده Schema در Factory، Migration، Backup و Recovery.
+- [ ] افزودن گزارش قابل‌خواندن از اختلاف Schema هنگام شکست Audit در CI.
 

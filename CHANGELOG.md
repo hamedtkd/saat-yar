@@ -47,6 +47,7 @@
 
 ### Added
 
+- Audit خودکار قرارداد `AppData` برای Factory، Migration، Backup، Recovery، Snapshot و Merge
 - زیرساخت Migration مرحله‌ای و نسخه‌بندی‌شده برای داده‌های Local-first
 - Snapshot نسخه‌بندی‌شده برای ذخیره‌سازی IndexedDB
 - تست‌های بازگشت‌ناپذیری Migration و رد نسخه‌های جدیدتر ناسازگار
