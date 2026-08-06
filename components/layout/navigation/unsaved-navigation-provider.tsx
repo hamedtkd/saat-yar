@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext } from "react";
+import { useBrowserHistoryGuard } from "./use-browser-history-guard";
 import {
   UnsavedSettingsDialog,
   useSettingsNavigationGuard,
@@ -15,6 +16,10 @@ const UnsavedNavigationContext = createContext<UnsavedNavigationContextValue | n
 
 export function UnsavedNavigationProvider({ children }: { children: React.ReactNode }) {
   const guard = useSettingsNavigationGuard();
+  useBrowserHistoryGuard({
+    hasUnsavedChanges: guard.unsaved.hasUnsavedChanges,
+    requestNavigation: guard.requestNavigation,
+  });
 
   return (
     <UnsavedNavigationContext.Provider
