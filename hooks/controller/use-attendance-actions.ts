@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { minutesToTime, spanMinutes, timeToMinutes } from "@/lib/time-engine";
 import { nowTime } from "@/lib/format";
 import { closePreviousRecordForNewDay, findPreviousOpenRecord } from "@/lib/previous-day-session";
@@ -19,14 +19,37 @@ type Args = {
 
 export function useAttendanceActions({ data, record, selectedDate, activeBreak, lunchRunning, setData, setSelectedDate, setToast, ensureLiveTimerOwnership }: Args) {
   const [pendingPreviousRecord, setPendingPreviousRecord] = useState<WorkRecord>();
+  const [resetUndo, setResetUndo] = useState<{ date: string; record: WorkRecord }>();
+  const resetUndoTimerRef = useRef<number | undefined>(undefined);
+
+  useEffect(() => () => {
+    if (resetUndoTimerRef.current) window.clearTimeout(resetUndoTimerRef.current);
+  }, []);
 
   function saveRecord(next: WorkRecord) {
     setData((previous) => ({ ...previous, records: { ...previous.records, [selectedDate]: { ...next, updatedAt: new Date().toISOString() } } }));
   }
   function updateRecord(patch: Partial<WorkRecord>) { saveRecord({ ...record, ...patch, manuallyEdited: true, needsReview: false }); }
+  function dismissResetUndo() {
+    if (resetUndoTimerRef.current) window.clearTimeout(resetUndoTimerRef.current);
+    resetUndoTimerRef.current = undefined;
+    setResetUndo(undefined);
+  }
   function resetRecord() {
+    const snapshot = { ...record, breaks: record.breaks.map((item) => ({ ...item })) };
+    setResetUndo({ date: selectedDate, record: snapshot });
+    if (resetUndoTimerRef.current) window.clearTimeout(resetUndoTimerRef.current);
+    resetUndoTimerRef.current = window.setTimeout(() => setResetUndo(undefined), 10_000);
     setData((previous) => { const records = { ...previous.records }; delete records[selectedDate]; return { ...previous, records }; });
-    setToast("رکورد این روز پاک شد");
+    setToast("رکورد این روز پاک شد؛ امکان بازگردانی موقت فعال است");
+  }
+  function undoResetRecord() {
+    if (!resetUndo) return;
+    const restored = { ...resetUndo.record, updatedAt: new Date().toISOString() };
+    setData((previous) => ({ ...previous, records: { ...previous.records, [resetUndo.date]: restored } }));
+    setSelectedDate(resetUndo.date);
+    dismissResetUndo();
+    setToast("رکورد حذف‌شده بازگردانی شد");
   }
   function beginCurrentDay() {
     updateRecord({ start: nowTime(), end: "", startedAt: new Date().toISOString(), endedAt: undefined });
@@ -85,6 +108,6 @@ export function useAttendanceActions({ data, record, selectedDate, activeBreak, 
       endedAt: minutes && item.startedAt ? new Date(new Date(item.startedAt).getTime() + minutes * 60_000).toISOString() : new Date().toISOString() } : item) });
     setToast(minutes ? `وقفه ${minutes.toLocaleString("fa-IR")} دقیقه‌ای ثبت شد` : "وقفه پایان یافت");
   }
-  return { updateRecord, resetRecord, startWork, finishWork, startLunch, finishLunch, startBreak, finishBreak,
+  return { updateRecord, resetRecord, undoResetRecord, dismissResetUndo, resetUndoDate: resetUndo?.date, startWork, finishWork, startLunch, finishLunch, startBreak, finishBreak,
     pendingPreviousRecord, closePreviousAndStart, reviewPreviousRecord, dismissPreviousRecord: () => setPendingPreviousRecord(undefined) };
 }

@@ -13,6 +13,7 @@ import { TodayMetrics } from "./today-metrics";
 import { TodaySmartSummary } from "./today-smart-summary";
 import { TodayTimeline } from "./today-timeline";
 import { RecordHealthBanner } from "./record-health-banner";
+import { RecordResetUndo } from "./record-reset-undo";
 import { CompletedDayEditor } from "./completed-day-editor";
 import type { TodayPageProps } from "./types.ts";
 import { cn } from "@/lib/cn";
@@ -79,6 +80,7 @@ export function TodayPage(props: TodayPageProps) {
         </div>
       )}
       <RecordHealthBanner record={props.record} onReset={props.resetRecord} />
+      <RecordResetUndo date={props.resetUndoDate} onUndo={props.undoResetRecord} onDismiss={props.dismissResetUndo} />
       <TodaySmartSummary
         started={Boolean(props.record.start)}
         finished={Boolean(props.record.end)}

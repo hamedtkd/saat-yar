@@ -59,7 +59,7 @@ export function RecordHealthBanner({ record, onReset }: { record: WorkRecord; on
           <AlertDialogHeader>
             <AlertDialogTitle>رکورد این روز پاک شود؟</AlertDialogTitle>
             <AlertDialogDescription>
-              ورود، خروج، ناهار، وقفه‌ها و یادداشت این روز حذف می‌شوند. این عملیات قابل بازگشت نیست؛ مگر اینکه قبلاً فایل پشتیبان یا نسخه بازیابی ساخته باشی.
+              ورود، خروج، ناهار، وقفه‌ها و یادداشت این روز حذف می‌شوند. پس از تأیید، برای چند ثانیه امکان بازگردانی کامل رکورد نمایش داده می‌شود؛ بعد از پایان این فرصت فقط نسخه پشتیبان یا بازیابی می‌تواند کمک کند.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="flex items-start gap-3 rounded-[var(--control-radius)] border border-[color-mix(in_srgb,var(--danger)_25%,var(--border))] bg-[color-mix(in_srgb,var(--danger)_8%,var(--surface-1))] px-3 py-3 text-xs leading-6 text-[var(--danger)]">
