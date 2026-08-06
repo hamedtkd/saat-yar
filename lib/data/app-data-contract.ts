@@ -46,6 +46,9 @@ export function assertCompleteAppData(value: unknown, label = "AppData"): assert
   }
 
   const candidate = value as AppData;
+  if (!candidate.settings || typeof candidate.settings !== "object" || Array.isArray(candidate.settings)) {
+    throw new Error(`${label}.settings must be an object`);
+  }
   if (!candidate.records || typeof candidate.records !== "object" || Array.isArray(candidate.records)) {
     throw new Error(`${label}.records must be an object`);
   }

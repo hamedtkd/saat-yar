@@ -53,6 +53,7 @@
 
 ### Added
 
+- گزارش خوانای اختلاف قرارداد `AppData` با مسیر شکست، نسخه Schema و دسته‌بندی Missing/Unexpected/Invalid در CI
 - Audit خودکار قرارداد `AppData` برای Factory، Migration، Backup، Recovery، Snapshot و Merge
 - زیرساخت Migration مرحله‌ای و نسخه‌بندی‌شده برای داده‌های Local-first
 - Snapshot نسخه‌بندی‌شده برای ذخیره‌سازی IndexedDB

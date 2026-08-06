@@ -1,6 +1,6 @@
 import { createServer } from "node:http";
 import { stat, readFile } from "node:fs/promises";
-import { extname, join, relative, resolve, sep } from "node:path";
+import { extname, relative, resolve, sep } from "node:path";
 
 const MIME_TYPES = new Map([
   [".css", "text/css; charset=utf-8"],

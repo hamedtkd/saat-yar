@@ -1,7 +1,13 @@
 import { parseBackup } from "../lib/backup-schema.ts";
 import { createBackupEnvelope } from "../lib/backup-workflow.ts";
 import { createInitialData, defaultSettings } from "../lib/constants.ts";
-import { assertCompleteAppData, APP_DATA_KEYS } from "../lib/data/app-data-contract.ts";
+import {
+  formatAppDataAuditExecutionError,
+  formatAppDataAuditFailure,
+  hasAppDataContractDiff,
+  inspectAppDataContract,
+} from "../lib/data/app-data-audit.ts";
+import { APP_DATA_KEYS } from "../lib/data/app-data-contract.ts";
 import { createCompleteAppData } from "../lib/data/app-data-factory.ts";
 import { mergeAppData } from "../lib/data/merge-app-data.ts";
 import { migrateAppData } from "../lib/data/migrations.ts";
@@ -15,21 +21,55 @@ const initial = createInitialData({ onboarded: true });
 const legacy = { settings: structuredClone(defaultSettings), records: {} } as AppData;
 const previousVersion = Math.max(1, APP_DATA_SCHEMA_VERSION - 1);
 
-const candidates: Array<[string, unknown]> = [
-  ["factory", createCompleteAppData({ settings: structuredClone(defaultSettings) })],
-  ["initial data", initial],
-  ["normalisation", normaliseData(legacy, defaultSettings)],
-  ["current migration", migrateAppData({ schemaVersion: APP_DATA_SCHEMA_VERSION, data: initial }).data],
-  ["previous migration", migrateAppData({ schemaVersion: previousVersion, data: legacy }).data],
-  ["backup round-trip", parseBackup(createBackupEnvelope(initial))],
-  ["recovery round-trip", recoverySnapshotToData(createRecoverySnapshot(initial, "manual"))],
-  ["snapshot payload", createAppDataSnapshot(initial).data],
-  ["merge", mergeAppData(initial, createInitialData({ onboarded: true }))],
+type AuditPath = {
+  label: string;
+  create: () => unknown;
+};
+
+const paths: AuditPath[] = [
+  { label: "factory", create: () => createCompleteAppData({ settings: structuredClone(defaultSettings) }) },
+  { label: "initial data", create: () => initial },
+  { label: "normalisation", create: () => normaliseData(legacy, defaultSettings) },
+  {
+    label: "current migration",
+    create: () => migrateAppData({ schemaVersion: APP_DATA_SCHEMA_VERSION, data: initial }).data,
+  },
+  {
+    label: "previous migration",
+    create: () => migrateAppData({ schemaVersion: previousVersion, data: legacy }).data,
+  },
+  { label: "backup round-trip", create: () => parseBackup(createBackupEnvelope(initial)) },
+  {
+    label: "recovery round-trip",
+    create: () => recoverySnapshotToData(createRecoverySnapshot(initial, "manual")),
+  },
+  { label: "snapshot payload", create: () => createAppDataSnapshot(initial).data },
+  { label: "merge", create: () => mergeAppData(initial, createInitialData({ onboarded: true })) },
 ];
 
-for (const [label, candidate] of candidates) assertCompleteAppData(candidate, label);
+const failures: string[] = [];
+for (const path of paths) {
+  try {
+    const diff = inspectAppDataContract(path.create());
+    if (hasAppDataContractDiff(diff)) {
+      failures.push(formatAppDataAuditFailure(path.label, APP_DATA_SCHEMA_VERSION, diff));
+    }
+  } catch (error) {
+    failures.push(formatAppDataAuditExecutionError(path.label, APP_DATA_SCHEMA_VERSION, error));
+  }
+}
 
-const uniqueKeyCount = new Set(APP_DATA_KEYS).size;
-if (uniqueKeyCount !== APP_DATA_KEYS.length) throw new Error("AppData contract contains duplicate keys");
+if (new Set(APP_DATA_KEYS).size !== APP_DATA_KEYS.length) {
+  failures.push(formatAppDataAuditExecutionError(
+    "contract key registry",
+    APP_DATA_SCHEMA_VERSION,
+    new Error("AppData contract contains duplicate keys"),
+  ));
+}
 
-console.log(`AppData schema audit passed for v${APP_DATA_SCHEMA_VERSION} across ${candidates.length} paths.`);
+if (failures.length > 0) {
+  console.error(failures.join("\n\n----------------------------------------\n\n"));
+  process.exitCode = 1;
+} else {
+  console.log(`AppData schema audit passed for v${APP_DATA_SCHEMA_VERSION} across ${paths.length} paths.`);
+}

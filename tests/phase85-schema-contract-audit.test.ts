@@ -67,5 +67,7 @@ test("quality pipeline runs the schema audit before TypeScript and tests", async
     scripts: Record<string, string>;
   };
   assert.equal(packageJson.scripts["audit:schema"], "node --experimental-strip-types scripts/audit-app-data-contract.ts");
-  assert.match(packageJson.scripts.check, /check:imports && npm run audit:schema && npm run typecheck/);
+  const check = packageJson.scripts.check;
+  assert.ok(check.indexOf("npm run check:imports") < check.indexOf("npm run audit:schema"));
+  assert.ok(check.indexOf("npm run audit:schema") < check.indexOf("npm run typecheck"));
 });
