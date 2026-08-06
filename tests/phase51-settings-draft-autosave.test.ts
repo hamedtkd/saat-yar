@@ -21,7 +21,8 @@ test("settings draft hook avoids effect-driven state syncing", async () => {
   assert.match(hook, /registerSettingsDraft/);
   assert.match(hook, /beginEdit/);
   assert.match(hook, /dirty/);
-  assert.match(hook, /onSave\(localDraft\)/);
+  assert.match(hook, /const prepared = prepare \? prepare\(localDraft\) : localDraft/);
+  assert.match(hook, /onSave\(prepared\)/);
 });
 
 test("notification settings use edit save and cancel actions", async () => {

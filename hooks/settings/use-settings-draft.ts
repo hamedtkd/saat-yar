@@ -8,11 +8,13 @@ export function useSettingsDraft<T>({
   autoSave,
   onSave,
   label = "تنظیمات",
+  prepare,
 }: {
   value: T;
   autoSave: boolean;
   onSave: (value: T) => void;
   label?: string;
+  prepare?: (value: T) => T;
 }) {
   const registryId = useId();
   const [editing, setEditing] = useState(false);
@@ -38,9 +40,11 @@ export function useSettingsDraft<T>({
   }, [autoSave, editing, localDraft, onSave, value]);
 
   const save = useCallback(() => {
-    onSave(localDraft);
+    const prepared = prepare ? prepare(localDraft) : localDraft;
+    onSave(prepared);
+    setLocalDraft(prepared);
     setEditing(false);
-  }, [localDraft, onSave]);
+  }, [localDraft, onSave, prepare]);
 
   const cancel = useCallback(() => {
     setEditing(false);
