@@ -1,5 +1,8 @@
 # مستندات ساعت‌یار
 
+- [README فارسی](../README.md)
+- [English README](../README_EN.md)
+
 ## توسعه و مشارکت
 
 - [راهنمای جامع فارسی Agentها و مشارکت‌کنندگان](./agents/AGENT_GUIDE_FA.md)
@@ -7,6 +10,12 @@
 - [چک‌لیست تغییرات حساس](./agents/CHANGE_CHECKLISTS.md)
 - [معماری پروژه](./ARCHITECTURE.md)
 - [قرارداد Migration داده](./DATA_MIGRATIONS.md)
+
+## اجرا و سازگاری
+
+- [عیب‌یابی Windows و npm — فارسی](./TROUBLESHOOTING_FA.md)
+- [Windows and npm troubleshooting — English](./TROUBLESHOOTING_EN.md)
+- [سازگاری مرورگر / Browser compatibility](./BROWSER_COMPATIBILITY.md)
 
 ## برنامه‌ریزی و تاریخچه
 

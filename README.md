@@ -4,13 +4,13 @@
 
 ### وب‌اپ فارسی و Local-first برای ثبت زمان، کارکرد، حقوق، پروژه و درآمد
 
-[![Quality](https://img.shields.io/badge/quality-165%20tests%20passing-16a34a)](#کنترل-کیفیت)
+[![Quality](https://img.shields.io/badge/quality-300%2B%20tests%20passing-16a34a)](#کنترل-کیفیت)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/license-MIT-0f766e)](./LICENSE)
 [![RTL](https://img.shields.io/badge/RTL-Persian-7c3aed)](#ویژگیها)
 
-[نسخه آنلاین](https://saat-yar.vercel.app) · [راهنمای اجرا](./RUN_AND_DEPLOY_FA.md) · [مشارکت](./CONTRIBUTING.md) · [حمایت مالی](https://daramet.com/hamedtkd)
+[English](./README_EN.md) · [نسخه آنلاین](https://saat-yar.vercel.app) · [راهنمای اجرا](./RUN_AND_DEPLOY_FA.md) · [مشارکت](./CONTRIBUTING.md) · [حمایت مالی](https://daramet.com/hamedtkd)
 
 </div>
 
@@ -228,7 +228,7 @@ tests/                         تست‌های دامنه، Regression و معم
 - Build نهایی Next.js و prerender تمام Routeها
 - Smoke Test مرورگر واقعی برای بارگذاری اولیه، تکمیل Onboarding و تغییر تاریخ
 
-کنترل کیفیت پروژه شامل بیش از **۲۷۰ تست منطق و معماری**، Audit قرارداد داده و Build کامل Next.js است.
+کنترل کیفیت پروژه شامل بیش از **۳۰۰ تست منطق، Regression، معماری و قرارداد مخزن**، Audit قرارداد داده و Build کامل Next.js است.
 
 ## سیاست رابط و Style
 
@@ -243,6 +243,9 @@ tests/                         تست‌های دامنه، Regression و معم
 راهنمای مرحله‌ای Windows، macOS، Linux، Docker، GitHub Pages و Vercel در فایل زیر قرار دارد:
 
 [راهنمای اجرا و استقرار](./RUN_AND_DEPLOY_FA.md)
+
+- [عیب‌یابی Windows و خطاهای npm](./docs/TROUBLESHOOTING_FA.md)
+- [جدول سازگاری مرورگر و محدودیت‌های Notification/PWA](./docs/BROWSER_COMPATIBILITY.md)
 
 ## مشارکت
 
@@ -267,7 +270,7 @@ npm run test:browser:production
 - بازطراحی نمودارهای گزارش و Empty Stateها
 - بهبود بازیابی نشست در Crashهای سخت
 - مستندات تصویری و ویدیوی معرفی
-- تکمیل README انگلیسی و راهنمای Contributor
+- کاهش تدریجی تست‌های شکننده Source-based و گسترش تست رفتاری
 
 ## حمایت مالی
 

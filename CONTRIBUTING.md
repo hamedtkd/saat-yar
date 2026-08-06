@@ -8,8 +8,13 @@
 - [`docs/agents/AGENT_GUIDE_FA.md`](./docs/agents/AGENT_GUIDE_FA.md)
 - [`docs/agents/AGENT_GUIDE_EN.md`](./docs/agents/AGENT_GUIDE_EN.md)
 - [`docs/agents/CHANGE_CHECKLISTS.md`](./docs/agents/CHANGE_CHECKLISTS.md)
+- [`README_EN.md`](./README_EN.md)
+- [`docs/TROUBLESHOOTING_FA.md`](./docs/TROUBLESHOOTING_FA.md)
+- [`docs/BROWSER_COMPATIBILITY.md`](./docs/BROWSER_COMPATIBILITY.md)
 
 ## راه‌اندازی
+
+برای خطاهای نصب Windows، Registry، `npm ci` و Smoke Test مرورگر از [راهنمای عیب‌یابی](./docs/TROUBLESHOOTING_FA.md) استفاده کنید. وضعیت مرورگرهای غیر Chromium در [ماتریس سازگاری](./docs/BROWSER_COMPATIBILITY.md) ثبت شده است.
 
 ```bash
 git clone https://github.com/hamedtkd/saat-yar.git
