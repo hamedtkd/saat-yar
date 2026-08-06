@@ -12,12 +12,14 @@ type Args = {
   setSelectedProjectId: Dispatch<SetStateAction<string>>;
   setShowClientForm: Dispatch<SetStateAction<boolean>>; setShowProjectForm: Dispatch<SetStateAction<boolean>>;
   activeEntry?: AppData["timeEntries"][number];
+  ensureLiveTimerOwnership: () => boolean;
 };
 
 export function useBusinessActions(args: Args) {
   const { data, setData, setToast, clientDraft, setClientDraft, projectDraft, setProjectDraft, timerDraft, setTimerDraft,
-    leaveDraft, setLeaveDraft, setSelectedProjectId, setShowClientForm, setShowProjectForm, activeEntry } = args;
+    leaveDraft, setLeaveDraft, setSelectedProjectId, setShowClientForm, setShowProjectForm, activeEntry, ensureLiveTimerOwnership } = args;
   function toggleProjectTimer(projectId?: string) {
+    if (!ensureLiveTimerOwnership()) return setToast("کنترل تایمر در تب دیگری فعال است");
     if (activeEntry) {
       setData((previous) => ({ ...previous, timeEntries: previous.timeEntries.map((entry) => entry.id === activeEntry.id ? { ...entry, endedAt: new Date().toISOString() } : entry) }));
       return setToast("تایمر پروژه متوقف و ذخیره شد");

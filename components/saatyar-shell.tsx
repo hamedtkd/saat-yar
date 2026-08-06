@@ -9,6 +9,7 @@ import { ThemeRuntime } from "@/components/theme/theme-runtime";
 import { AppFooter } from "@/components/layout/app-footer";
 import { AppHeader } from "@/components/layout/app-header";
 import { MultiTabSyncBanner } from "@/components/layout/multi-tab-sync-banner";
+import { LiveTimerOwnershipBanner } from "@/components/layout/live-timer-ownership-banner";
 import { SidebarNav } from "@/components/layout/navigation/sidebar-nav";
 import { MobileBottomNav } from "@/components/layout/navigation/mobile-bottom-nav";
 import { UnsavedNavigationProvider } from "@/components/layout/navigation/unsaved-navigation-provider";
@@ -103,6 +104,8 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
           appearance={data.settings.appearance}
           onThemeModeChange={(mode) => setData((previous) => ({ ...previous, settings: { ...previous.settings, appearance: { ...previous.settings.appearance, mode } } }))}
         />
+
+        <LiveTimerOwnershipBanner blocked={controller.liveTimerOwnership.blocked} onTakeOver={controller.liveTimerOwnership.takeOver} />
 
         <MultiTabSyncBanner
           pending={controller.externalSyncPending}

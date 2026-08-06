@@ -14,9 +14,10 @@ type Args = {
   setData: Dispatch<SetStateAction<AppData>>;
   setSelectedDate: (date: string) => void;
   setToast: (message: string) => void;
+  ensureLiveTimerOwnership: () => boolean;
 };
 
-export function useAttendanceActions({ data, record, selectedDate, activeBreak, lunchRunning, setData, setSelectedDate, setToast }: Args) {
+export function useAttendanceActions({ data, record, selectedDate, activeBreak, lunchRunning, setData, setSelectedDate, setToast, ensureLiveTimerOwnership }: Args) {
   const [pendingPreviousRecord, setPendingPreviousRecord] = useState<WorkRecord>();
 
   function saveRecord(next: WorkRecord) {
@@ -32,6 +33,7 @@ export function useAttendanceActions({ data, record, selectedDate, activeBreak, 
     setToast("شروع روز ثبت شد");
   }
   function startWork() {
+    if (!ensureLiveTimerOwnership()) return setToast("کنترل تایمر در تب دیگری فعال است");
     const previousOpen = findPreviousOpenRecord(data.records, selectedDate);
     if (previousOpen) return setPendingPreviousRecord(previousOpen);
     beginCurrentDay();
@@ -54,24 +56,29 @@ export function useAttendanceActions({ data, record, selectedDate, activeBreak, 
     setSelectedDate(date);
   }
   function finishWork() {
+    if (!ensureLiveTimerOwnership()) return setToast("کنترل تایمر در تب دیگری فعال است");
     if (activeBreak || lunchRunning) return setToast("ابتدا تایمر ناهار یا وقفه را پایان دهید");
     updateRecord({ end: nowTime(), endedAt: new Date().toISOString() }); setToast("ساعت خروج ثبت شد");
   }
   function startLunch() {
+    if (!ensureLiveTimerOwnership()) return setToast("کنترل تایمر در تب دیگری فعال است");
     if (activeBreak) return setToast("ابتدا وقفه در حال اجرا را پایان دهید");
     updateRecord({ lunchStart: nowTime(), lunchEnd: "", lunchStartedAt: new Date().toISOString(), lunchEndedAt: undefined }); setToast("تایمر ناهار شروع شد");
   }
   function finishLunch() {
+    if (!ensureLiveTimerOwnership()) return setToast("کنترل تایمر در تب دیگری فعال است");
     const end = nowTime();
     updateRecord({ lunchEnd: end, lunchEndedAt: new Date().toISOString(), lunchMinutes: spanMinutes(record.lunchStart ?? end, end) });
     setToast("ناهار ثبت شد");
   }
   function startBreak() {
+    if (!ensureLiveTimerOwnership()) return setToast("کنترل تایمر در تب دیگری فعال است");
     if (activeBreak || lunchRunning) return setToast("یک تایمر دیگر در حال اجراست");
     updateRecord({ breaks: [...record.breaks, { id: crypto.randomUUID(), start: nowTime(), end: "", startedAt: new Date().toISOString(), title: "وقفه شخصی", paid: false }] });
     setToast("تایمر وقفه شروع شد");
   }
   function finishBreak(minutes?: number) {
+    if (!ensureLiveTimerOwnership()) return setToast("کنترل تایمر در تب دیگری فعال است");
     if (!activeBreak) return;
     const end = minutes ? minutesToTime(timeToMinutes(activeBreak.start) + minutes) : nowTime();
     updateRecord({ breaks: record.breaks.map((item) => item.id === activeBreak.id ? { ...item, end,

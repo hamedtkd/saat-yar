@@ -11,6 +11,7 @@ import { useBackupActions } from "./controller/use-backup-actions";
 import { useBusinessActions } from "./controller/use-business-actions";
 import { useControllerDerived } from "./controller/use-controller-derived";
 import { useNotificationReminders } from "./controller/use-notification-reminders";
+import { useLiveTimerOwnership } from "./use-live-timer-ownership";
 import { useReportActions } from "./controller/use-report-actions";
 
 export function useSaatyarController() {
@@ -37,14 +38,20 @@ export function useSaatyarController() {
   }
 
   const derived = useControllerDerived(data, selectedDate, selectedProjectId, reportFilter);
+  const liveTimerActive = Boolean(derived.activeEntry || Object.values(data.records).some((item) =>
+    (item.start && !item.end) || (item.lunchStart && !item.lunchEnd) || item.breaks.some((entry) => !entry.end),
+  ));
+  const liveTimerOwnership = useLiveTimerOwnership(liveTimerActive);
   const attendance = useAttendanceActions({
     data, record: derived.record, selectedDate, activeBreak: derived.activeBreak,
     lunchRunning: derived.lunchRunning, setData, setSelectedDate, setToast,
+    ensureLiveTimerOwnership: liveTimerOwnership.ensureOwnership,
   });
   const business = useBusinessActions({
     data, setData, setToast, clientDraft, setClientDraft, projectDraft, setProjectDraft,
     timerDraft, setTimerDraft, leaveDraft, setLeaveDraft, setSelectedProjectId,
     setShowClientForm, setShowProjectForm, activeEntry: derived.activeEntry,
+    ensureLiveTimerOwnership: liveTimerOwnership.ensureOwnership,
   });
   const backup = useBackupActions({ data, setData, setToast, importPreview, setImportPreview, storage });
   const reports = useReportActions({
@@ -72,6 +79,6 @@ export function useSaatyarController() {
     editingEntry, setEditingEntry, reportFilter, setReportFilter,
     leaveDraft, setLeaveDraft, importPreview, financialsHidden, setFinancialsHidden,
     ...derived, ...attendance, ...business, ...backup, ...reports, ...notifications,
-    requestPersistence,
+    requestPersistence, liveTimerOwnership,
   };
 }
