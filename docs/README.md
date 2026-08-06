@@ -17,6 +17,13 @@
 - [Windows and npm troubleshooting — English](./TROUBLESHOOTING_EN.md)
 - [سازگاری مرورگر / Browser compatibility](./BROWSER_COMPATIBILITY.md)
 
+## انتشار ۲.۱.۰
+
+- [یادداشت انتشار فارسی](./releases/RELEASE_NOTES_2.1.0_FA.md)
+- [English release notes](./releases/RELEASE_NOTES_2.1.0_EN.md)
+- [Release manifest](./releases/2.1.0.json)
+- [چک‌لیست انتشار](../RELEASE_CHECKLIST_FA.md)
+
 ## برنامه‌ریزی و تاریخچه
 
 - [بک‌لاگ و نقشه راه](./roadmap/BACKLOG_FA.md)

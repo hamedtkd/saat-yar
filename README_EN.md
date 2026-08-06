@@ -254,6 +254,8 @@ The Persian deployment guide covers Windows, macOS, Linux, Docker, GitHub Pages,
 
 [Run and deployment guide](./RUN_AND_DEPLOY_FA.md)
 
+- [Saatyar 2.1.0 release notes](./docs/releases/RELEASE_NOTES_2.1.0_EN.md)
+
 ## Contributing
 
 Bug reports, UX suggestions, documentation fixes, and pull requests are welcome.
@@ -262,7 +264,13 @@ Before opening a pull request, read [CONTRIBUTING.md](./CONTRIBUTING.md) and the
 
 ## Roadmap
 
-The active roadmap is maintained in [docs/roadmap/BACKLOG_FA.md](./docs/roadmap/BACKLOG_FA.md). The remaining release-readiness work includes current product screenshots, a short onboarding/workday/report demo, and gradual replacement of brittle source-regex tests with behavioral coverage.
+Version **2.1.0** is prepared for release. See the [2.1.0 release notes](./docs/releases/RELEASE_NOTES_2.1.0_EN.md) and the Persian [release checklist](./RELEASE_CHECKLIST_FA.md) for the final evidence and manual verification steps.
+
+The remaining follow-up work is tracked in [docs/roadmap/BACKLOG_FA.md](./docs/roadmap/BACKLOG_FA.md):
+
+- Add current real-product screenshots to the READMEs
+- Record a short onboarding, workday, and reporting demo
+- Gradually replace brittle source-based assertions with behavioral tests
 
 ## Support development
 

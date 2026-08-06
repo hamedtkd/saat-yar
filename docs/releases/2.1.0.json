@@ -1,0 +1,16 @@
+{
+  "product": "Saatyar",
+  "package": "saatyar-worklog",
+  "version": "2.1.0",
+  "releaseDate": "2026-08-07",
+  "status": "release-candidate",
+  "dataSchemaVersion": 16,
+  "nodeEngine": "22.x",
+  "verifiedTestCount": 305,
+  "qualityCommand": "npm run check:release",
+  "browserGate": "scripts/production-browser-smoke.mjs",
+  "releaseNotes": {
+    "fa": "docs/releases/RELEASE_NOTES_2.1.0_FA.md",
+    "en": "docs/releases/RELEASE_NOTES_2.1.0_EN.md"
+  }
+}

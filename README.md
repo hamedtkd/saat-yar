@@ -246,6 +246,7 @@ tests/                         تست‌های دامنه، Regression و معم
 
 - [عیب‌یابی Windows و خطاهای npm](./docs/TROUBLESHOOTING_FA.md)
 - [جدول سازگاری مرورگر و محدودیت‌های Notification/PWA](./docs/BROWSER_COMPATIBILITY.md)
+- [یادداشت انتشار ساعت‌یار ۲.۱.۰](./docs/releases/RELEASE_NOTES_2.1.0_FA.md)
 
 ## مشارکت
 
@@ -263,14 +264,13 @@ npm run test:browser:production
 
 ## نقشه راه
 
-موارد اصلی برنامه‌ریزی‌شده در [docs/roadmap/BACKLOG_FA.md](./docs/roadmap/BACKLOG_FA.md) نگهداری می‌شوند. محورهای بعدی شامل این موارد هستند:
+نسخه **۲.۱.۰** برای انتشار آماده شده است. جزئیات تغییرات در [یادداشت انتشار ۲.۱.۰](./docs/releases/RELEASE_NOTES_2.1.0_FA.md) و کنترل‌های نهایی در [چک‌لیست انتشار](./RELEASE_CHECKLIST_FA.md) ثبت شده‌اند.
 
-- تکمیل الگوی ویرایش دستی در تمام کارت‌های تنظیمات
-- هشدار یکپارچه برای Draft ذخیره‌نشده
-- بازطراحی نمودارهای گزارش و Empty Stateها
-- بهبود بازیابی نشست در Crashهای سخت
-- مستندات تصویری و ویدیوی معرفی
-- کاهش تدریجی تست‌های شکننده Source-based و گسترش تست رفتاری
+موارد باز بعد از این انتشار در [docs/roadmap/BACKLOG_FA.md](./docs/roadmap/BACKLOG_FA.md) نگهداری می‌شوند:
+
+- افزودن اسکرین‌شات‌های واقعی و به‌روز به README
+- تهیه دموی کوتاه Onboarding، ثبت روز و گزارش
+- کاهش تدریجی تست‌های شکننده Source-based و جایگزینی با تست رفتاری
 
 ## حمایت مالی
 
