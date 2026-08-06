@@ -1,3 +1,5 @@
+import type { SyncChangeKind } from "./multi-tab-sync";
+
 export type SyncEventKind = "loaded" | "deferred";
 
 export type SyncEvent = {
@@ -6,6 +8,7 @@ export type SyncEvent = {
   savedAt: string;
   receivedAt: string;
   sourcePath: string;
+  changeKind: SyncChangeKind;
 };
 
 export type MultiTabSyncStatus = {
@@ -82,4 +85,8 @@ export function formatSyncSourcePath(path: string) {
     "/invoices": "صورتحساب‌ها",
   };
   return labels[path] ?? path;
+}
+
+export function formatSyncChangeKind(kind: SyncChangeKind) {
+  return { attendance: "حضور و زمان", settings: "تنظیمات", business: "اطلاعات کاری", reporting: "گزارش‌ها", general: "داده عمومی" }[kind];
 }

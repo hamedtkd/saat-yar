@@ -13,7 +13,7 @@ export function ScheduleStep({ settings, setSetting }: { settings: AppData["sett
       <h1>برنامه کاری تو</h1>
       <p>اعداد اولیه را وارد کن؛ همه موارد بعداً قابل ویرایش‌اند.</p>
       <div className={cn("mb-4 grid grid-cols-3 gap-[14px] max-[620px]:grid-cols-1")}>
-        <label>هدف هفتگی (ساعت)<NumberField value={settings.weeklyMinutes / 60} onValueChange={(value) => setSetting("weeklyMinutes", value * 60)} /></label>
+        <label>هدف هفتگی (ساعت)<NumberField min={0.5} max={168} step={0.5} value={settings.weeklyMinutes / 60} onValueChange={(value) => setSetting("weeklyMinutes", Math.round(value * 60))} /></label>
         <label>
           روزهای کاری
           <Select value={String(settings.workDays)} onValueChange={(value) => setSetting("workDays", Number(value))}>

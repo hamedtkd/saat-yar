@@ -66,6 +66,7 @@ export function useMultiTabDataSync({ ready, saveState, storage, setData, setToa
         savedAt: event.data.savedAt,
         receivedAt,
         sourcePath: event.data.sourcePath,
+        changeKind: event.data.changeKind,
       }));
       if (pending) {
         setExternalSyncPending(true);

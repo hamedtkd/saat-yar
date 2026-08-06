@@ -20,6 +20,7 @@ test("sync status records the latest external save and pending conflict state", 
     savedAt: "2026-08-06T12:00:00.000Z",
     receivedAt: "2026-08-06T12:00:01.000Z",
     sourcePath: "/today",
+    changeKind: "attendance",
   });
   assert.equal(status.sourceTabId, "tab-source");
   assert.equal(status.savedAt, "2026-08-06T12:00:00.000Z");

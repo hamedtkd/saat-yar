@@ -2,7 +2,7 @@ import { Clock3, History, MonitorSmartphone, RefreshCw, Trash2, TriangleAlert } 
 import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/common/status-badge";
-import { formatSyncSourcePath, formatSyncTime, shortTabId, type MultiTabSyncStatus } from "@/lib/multi-tab-sync-status";
+import { formatSyncChangeKind, formatSyncSourcePath, formatSyncTime, shortTabId, type MultiTabSyncStatus } from "@/lib/multi-tab-sync-status";
 
 export function MultiTabHealthPanel({ status, onClear }: { status: MultiTabSyncStatus; onClear: () => void }) {
   return (
@@ -46,7 +46,7 @@ export function MultiTabHealthPanel({ status, onClear }: { status: MultiTabSyncS
           <div className="flex items-center gap-2 text-[10px] font-bold text-[var(--text)]"><History className="size-4" /> رخدادهای اخیر</div>
           {status.events.map((event) => (
             <div key={`${event.receivedAt}-${event.sourceTabId}`} className="flex flex-wrap items-center justify-between gap-2 border-t border-[var(--border)] pt-2 text-[10px]">
-              <span className="text-[var(--text-muted)]">تب {shortTabId(event.sourceTabId)} · {formatSyncSourcePath(event.sourcePath)} · {formatSyncTime(event.savedAt)}</span>
+              <span className="text-[var(--text-muted)]">تب {shortTabId(event.sourceTabId)} · {formatSyncSourcePath(event.sourcePath)} · {formatSyncChangeKind(event.changeKind)} · {formatSyncTime(event.savedAt)}</span>
               <StatusBadge tone={event.kind === "deferred" ? "warning" : "success"}>{event.kind === "deferred" ? "به‌تعویق‌افتاده" : "بارگذاری‌شده"}</StatusBadge>
             </div>
           ))}
