@@ -16,8 +16,10 @@ import { RecordHealthBanner } from "./record-health-banner";
 import { CompletedDayEditor } from "./completed-day-editor";
 import type { TodayPageProps } from "./types.ts";
 import { cn } from "@/lib/cn";
+import { useUnsavedNavigation } from "@/components/layout/navigation/unsaved-navigation-provider";
 
 export function TodayPage(props: TodayPageProps) {
+  const { requestNavigation } = useUnsavedNavigation();
   const holiday = getHolidayInfo(props.selectedDate, {
     mode: props.data.settings.mode,
     manualHoliday: props.record.holiday,
@@ -58,7 +60,7 @@ export function TodayPage(props: TodayPageProps) {
         <div>
           <JalaliDatePicker
             value={props.selectedDate}
-            onChange={props.setSelectedDate}
+            onChange={(date) => requestNavigation(() => props.setSelectedDate(date))}
             recordedDates={Object.keys(props.data.records)}
             mode={props.data.settings.mode}
             includeOfficialHolidays={props.data.settings.autoOfficialHolidays}

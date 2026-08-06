@@ -6,6 +6,8 @@ import { AppDataStorageAdapter } from "@/lib/storage";
 import type { RecoverySnapshot } from "@/lib/recovery";
 import type { AppData, StorageInfo } from "@/lib/types";
 import { localDateKey } from "@/lib/format";
+import { hasUnsavedSettingsDrafts } from "@/lib/settings-draft-registry";
+import { APP_SYNC_CHANNEL, createDataSavedMessage, createTabId, isAppSyncMessage } from "@/lib/multi-tab-sync";
 import {
   applyPendingClose, applyStaleHeartbeat, createPendingClose, createSessionHeartbeat,
   parsePendingClose, parseSessionHeartbeat, SESSION_CLOSE_KEY, SESSION_HEARTBEAT_INTERVAL_MS,
@@ -25,7 +27,11 @@ export function usePersistedAppData() {
   const [lastSavedAt, setLastSavedAt] = useState<string | null>(null);
   const [saveError, setSaveError] = useState("");
   const [recoverySnapshot, setRecoverySnapshot] = useState<RecoverySnapshot | null>(null);
+  const [externalSyncPending, setExternalSyncPending] = useState(false);
   const latestDataRef = useRef(data);
+  const tabIdRef = useRef("");
+  const channelRef = useRef<BroadcastChannel | null>(null);
+  const skipNextPersistRef = useRef(false);
 
   useEffect(() => {
     latestDataRef.current = data;
@@ -73,7 +79,9 @@ export function usePersistedAppData() {
     if (recovery) setRecoverySnapshot(recovery);
     try {
       await storage.save(value);
-      setLastSavedAt(new Date().toISOString());
+      const savedAt = new Date();
+      setLastSavedAt(savedAt.toISOString());
+      channelRef.current?.postMessage(createDataSavedMessage(tabIdRef.current, savedAt));
       setSaveState("saved");
       setStorageInfo(await storage.estimate());
       return true;
@@ -90,6 +98,10 @@ export function usePersistedAppData() {
 
   useEffect(() => {
     if (!ready) return;
+    if (skipNextPersistRef.current) {
+      skipNextPersistRef.current = false;
+      return;
+    }
     const id = window.setTimeout(() => {
       void persistData(data);
     }, 220);
@@ -97,6 +109,39 @@ export function usePersistedAppData() {
   }, [data, persistData, ready]);
 
 
+
+  const loadExternalData = useCallback(async () => {
+    if (hasUnsavedSettingsDrafts()) {
+      setToast("ابتدا تغییرات در حال ویرایش را ذخیره یا لغو کنید");
+      return false;
+    }
+    const { value } = await storage.load();
+    if (!value) return false;
+    skipNextPersistRef.current = true;
+    setData(value);
+    setExternalSyncPending(false);
+    setToast("تغییرات تب دیگر بارگذاری شد");
+    return true;
+  }, [storage]);
+
+  useEffect(() => {
+    if (!ready || typeof BroadcastChannel === "undefined") return;
+    tabIdRef.current = createTabId();
+    const channel = new BroadcastChannel(APP_SYNC_CHANNEL);
+    channelRef.current = channel;
+    channel.addEventListener("message", (event) => {
+      if (!isAppSyncMessage(event.data) || event.data.tabId === tabIdRef.current) return;
+      if (hasUnsavedSettingsDrafts() || saveState === "saving") {
+        setExternalSyncPending(true);
+        return;
+      }
+      void loadExternalData();
+    });
+    return () => {
+      channel.close();
+      channelRef.current = null;
+    };
+  }, [loadExternalData, ready, saveState]);
 
   useEffect(() => {
     if (!ready) return;
@@ -186,22 +231,12 @@ export function usePersistedAppData() {
   }, [setToast, storage]);
 
   return {
-    data,
-    setData,
-    ready,
-    toast,
-    setToast,
-    online,
-    storageInfo,
-    setStorageInfo,
-    storage,
-    saveState,
-    lastSavedAt,
-    saveError,
-    recoverySnapshot,
-    retrySave,
-    createManualRecovery,
-    restoreRecovery,
-    clearRecovery,
+    data, setData, ready, toast, setToast, online,
+    storageInfo, setStorageInfo, storage,
+    saveState, lastSavedAt, saveError, recoverySnapshot,
+    retrySave, createManualRecovery, restoreRecovery, clearRecovery,
+    externalSyncPending,
+    reloadExternalData: loadExternalData,
+    dismissExternalSync: () => setExternalSyncPending(false),
   };
 }

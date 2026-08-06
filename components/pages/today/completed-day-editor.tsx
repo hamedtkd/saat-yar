@@ -1,8 +1,9 @@
 "use client";
 
 import { CheckCircle2, Pencil, RotateCcw, Save, X } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { registerSettingsDraft } from "@/lib/settings-draft-registry";
 import { getWorkRecordChanges } from "@/lib/work-record-diff";
 import type { WorkRecord } from "@/lib/types";
 import { RecordChangeSummary } from "./record-change-summary";
@@ -12,6 +13,7 @@ import { TodayTimeStrip } from "./today-time-strip";
 
 export function CompletedDayEditor(props: TodayPageProps) {
   const completed = Boolean(props.record.start && props.record.end);
+  const registryId = useId();
   const [editing, setEditing] = useState(!completed);
   const [baseline, setBaseline] = useState<WorkRecord>(props.record);
   const [draft, setDraft] = useState<WorkRecord>(props.record);
@@ -39,6 +41,16 @@ export function CompletedDayEditor(props: TodayPageProps) {
     setDraft(saved);
     setEditing(false);
   };
+  useEffect(
+    () => registerSettingsDraft(registryId, {
+      label: `ویرایش رکورد ${props.selectedDate}`,
+      dirty: completed && editing && dirty,
+      save: saveEdit,
+      discard: cancelEdit,
+    }),
+    [cancelEdit, completed, dirty, editing, props.selectedDate, registryId, saveEdit],
+  );
+
   const childProps = { ...props, record: visibleRecord, updateRecord: updateVisibleRecord };
 
   return <>

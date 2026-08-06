@@ -8,6 +8,7 @@ import { SkipLink } from "@/components/common/skip-link";
 import { ThemeRuntime } from "@/components/theme/theme-runtime";
 import { AppFooter } from "@/components/layout/app-footer";
 import { AppHeader } from "@/components/layout/app-header";
+import { MultiTabSyncBanner } from "@/components/layout/multi-tab-sync-banner";
 import { SidebarNav } from "@/components/layout/navigation/sidebar-nav";
 import { MobileBottomNav } from "@/components/layout/navigation/mobile-bottom-nav";
 import { UnsavedNavigationProvider } from "@/components/layout/navigation/unsaved-navigation-provider";
@@ -101,6 +102,12 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
           saveState={controller.saveState}
           appearance={data.settings.appearance}
           onThemeModeChange={(mode) => setData((previous) => ({ ...previous, settings: { ...previous.settings, appearance: { ...previous.settings.appearance, mode } } }))}
+        />
+
+        <MultiTabSyncBanner
+          pending={controller.externalSyncPending}
+          onReload={() => { void controller.reloadExternalData(); }}
+          onDismiss={controller.dismissExternalSync}
         />
 
         <div

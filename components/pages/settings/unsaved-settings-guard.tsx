@@ -64,7 +64,7 @@ export function UnsavedSettingsDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>تغییرات ذخیره‌نشده داری</AlertDialogTitle>
           <AlertDialogDescription>
-            قبل از رفتن به بخش دیگر، تغییرات کارت‌های در حال ویرایش را ذخیره کن یا بدون ذخیره ادامه بده.
+            قبل از رفتن به بخش یا تاریخ دیگر، تغییرات در حال ویرایش را ذخیره کن یا بدون ذخیره ادامه بده.
           </AlertDialogDescription>
           {dirtyLabels.length > 0 && (
             <ul className="grid gap-1 rounded-xl bg-[var(--surface-2)] p-3 text-xs text-[var(--text)]">
