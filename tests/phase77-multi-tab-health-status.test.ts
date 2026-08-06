@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
-import { formatSyncTime, shortTabId } from "../lib/multi-tab-sync-status.ts";
+import { addSyncEvent, createInitialSyncStatus, formatSyncTime, shortTabId } from "../lib/multi-tab-sync-status.ts";
 
 const root = new URL("../", import.meta.url);
 const read = (path: string) => readFile(new URL(path, root), "utf8");
@@ -13,13 +13,17 @@ test("multi-tab health helpers keep tab identifiers compact and timestamps reada
   assert.equal(formatSyncTime("bad"), "زمان نامعتبر");
 });
 
-test("persistence exposes the latest external save and pending conflict state", async () => {
-  const source = await read("hooks/use-persisted-app-data.ts");
-  assert.match(source, /multiTabSyncStatus/);
-  assert.match(source, /sourceTabId: event\.data\.tabId/);
-  assert.match(source, /savedAt: event\.data\.savedAt/);
-  assert.match(source, /receivedAt/);
-  assert.match(source, /pending,/);
+test("sync status records the latest external save and pending conflict state", () => {
+  const status = addSyncEvent(createInitialSyncStatus(), {
+    kind: "deferred",
+    sourceTabId: "tab-source",
+    savedAt: "2026-08-06T12:00:00.000Z",
+    receivedAt: "2026-08-06T12:00:01.000Z",
+  });
+  assert.equal(status.sourceTabId, "tab-source");
+  assert.equal(status.savedAt, "2026-08-06T12:00:00.000Z");
+  assert.equal(status.receivedAt, "2026-08-06T12:00:01.000Z");
+  assert.equal(status.pending, true);
 });
 
 test("data health center renders multi-tab support, source tab and conflict state", async () => {

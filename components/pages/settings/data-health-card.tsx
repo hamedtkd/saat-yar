@@ -17,7 +17,7 @@ function formatDate(date: string) {
   return new Intl.DateTimeFormat("fa-IR-u-ca-persian", { weekday: "long", day: "numeric", month: "long" }).format(new Date(`${date}T12:00:00`));
 }
 
-export function DataHealthCard({ records, syncStatus }: { records: Record<string, WorkRecord>; syncStatus: MultiTabSyncStatus }) {
+export function DataHealthCard({ records, syncStatus, clearSyncHistory }: { records: Record<string, WorkRecord>; syncStatus: MultiTabSyncStatus; clearSyncHistory: () => void }) {
   const items = collectDataHealthItems(records);
   const summary = getDataHealthSummary(items);
 
@@ -56,7 +56,7 @@ export function DataHealthCard({ records, syncStatus }: { records: Record<string
           </div>
         </>
       )}
-      <MultiTabHealthPanel status={syncStatus} />
+      <MultiTabHealthPanel status={syncStatus} onClear={clearSyncHistory} />
     </section>
   );
 }

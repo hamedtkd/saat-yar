@@ -1,3 +1,12 @@
+export type SyncEventKind = "loaded" | "deferred";
+
+export type SyncEvent = {
+  kind: SyncEventKind;
+  sourceTabId: string;
+  savedAt: string;
+  receivedAt: string;
+};
+
 export type MultiTabSyncStatus = {
   supported: boolean;
   currentTabId: string | null;
@@ -5,7 +14,42 @@ export type MultiTabSyncStatus = {
   savedAt: string | null;
   receivedAt: string | null;
   pending: boolean;
+  events: SyncEvent[];
 };
+
+export function createInitialSyncStatus(): MultiTabSyncStatus {
+  return {
+    supported: false,
+    currentTabId: null,
+    sourceTabId: null,
+    savedAt: null,
+    receivedAt: null,
+    pending: false,
+    events: [],
+  };
+}
+
+export function addSyncEvent(status: MultiTabSyncStatus, event: SyncEvent): MultiTabSyncStatus {
+  return {
+    ...status,
+    sourceTabId: event.sourceTabId,
+    savedAt: event.savedAt,
+    receivedAt: event.receivedAt,
+    pending: event.kind === "deferred",
+    events: [event, ...status.events].slice(0, 5),
+  };
+}
+
+export function clearSyncHistory(status: MultiTabSyncStatus): MultiTabSyncStatus {
+  return {
+    ...status,
+    sourceTabId: null,
+    savedAt: null,
+    receivedAt: null,
+    pending: false,
+    events: [],
+  };
+}
 
 export function shortTabId(tabId: string | null) {
   if (!tabId) return "نامشخص";

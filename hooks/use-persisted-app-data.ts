@@ -8,7 +8,7 @@ import type { AppData, StorageInfo } from "@/lib/types";
 import { localDateKey } from "@/lib/format";
 import { hasUnsavedSettingsDrafts } from "@/lib/settings-draft-registry";
 import { APP_SYNC_CHANNEL, createDataSavedMessage, createTabId, isAppSyncMessage } from "@/lib/multi-tab-sync";
-import type { MultiTabSyncStatus } from "@/lib/multi-tab-sync-status";
+import { addSyncEvent, clearSyncHistory, createInitialSyncStatus } from "@/lib/multi-tab-sync-status";
 import {
   applyPendingClose, applyStaleHeartbeat, createPendingClose, createSessionHeartbeat,
   parsePendingClose, parseSessionHeartbeat, SESSION_CLOSE_KEY, SESSION_HEARTBEAT_INTERVAL_MS,
@@ -29,9 +29,7 @@ export function usePersistedAppData() {
   const [saveError, setSaveError] = useState("");
   const [recoverySnapshot, setRecoverySnapshot] = useState<RecoverySnapshot | null>(null);
   const [externalSyncPending, setExternalSyncPending] = useState(false);
-  const [multiTabSyncStatus, setMultiTabSyncStatus] = useState<MultiTabSyncStatus>({
-    supported: false, currentTabId: null, sourceTabId: null, savedAt: null, receivedAt: null, pending: false,
-  });
+  const [multiTabSyncStatus, setMultiTabSyncStatus] = useState(createInitialSyncStatus);
   const latestDataRef = useRef(data);
   const tabIdRef = useRef("");
   const channelRef = useRef<BroadcastChannel | null>(null);
@@ -137,8 +135,10 @@ export function usePersistedAppData() {
       if (!isAppSyncMessage(event.data) || event.data.tabId === tabIdRef.current) return;
       const receivedAt = new Date().toISOString();
       const pending = hasUnsavedSettingsDrafts() || saveState === "saving";
-      setMultiTabSyncStatus((current) => ({ ...current, sourceTabId: event.data.tabId,
-        savedAt: event.data.savedAt, receivedAt, pending }));
+      setMultiTabSyncStatus((current) => addSyncEvent(current, {
+        kind: pending ? "deferred" : "loaded", sourceTabId: event.data.tabId,
+        savedAt: event.data.savedAt, receivedAt,
+      }));
       if (pending) {
         setExternalSyncPending(true);
         return;
@@ -243,6 +243,7 @@ export function usePersistedAppData() {
     saveState, lastSavedAt, saveError, recoverySnapshot,
     retrySave, createManualRecovery, restoreRecovery, clearRecovery,
     externalSyncPending, multiTabSyncStatus,
+    clearMultiTabSyncHistory: () => setMultiTabSyncStatus(clearSyncHistory),
     reloadExternalData: loadExternalData,
     dismissExternalSync: () => setExternalSyncPending(false),
   };
