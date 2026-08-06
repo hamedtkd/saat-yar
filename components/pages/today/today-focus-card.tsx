@@ -9,7 +9,7 @@ import { cn } from "@/lib/cn";
 import { duration, faDigits } from "@/lib/format";
 import type { TodayPageProps } from "./types.ts";
 
-type Props = Pick<TodayPageProps, "data" | "record" | "timerDraft" | "setTimerDraft" | "activeEntry" | "todayCalc" | "suggestedExit" | "toggleProjectTimer" | "startWork" | "finishWork">;
+type Props = Pick<TodayPageProps, "data" | "record" | "timerDraft" | "setTimerDraft" | "activeEntry" | "todayCalc" | "suggestedExit" | "toggleProjectTimer" | "startWork" | "finishWork" | "updateRecord">;
 
 export function TodayFocusCard(props: Props) {
   const mode = props.data.settings.mode;

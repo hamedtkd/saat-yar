@@ -14,3 +14,7 @@ export type TodayTimeStripProps = Pick<
   | "startBreak"
   | "finishBreak"
 >;
+
+export type TodayTimeStripViewProps = TodayTimeStripProps & {
+  showQuickActions?: boolean;
+};

@@ -22,7 +22,8 @@ test("completed days are read only until explicit edit", async () => {
   assert.match(source, /completed = Boolean\(props\.record\.start && props\.record\.end\)/);
   assert.match(source, /fieldset disabled=\{locked\}/);
   assert.match(source, /ویرایش این روز/);
-  assert.match(source, /پایان ویرایش/);
+  assert.match(source, /ذخیره تغییرات/);
+  assert.match(source, /انصراف/);
 });
 
 test("day editor state resets when selected date changes", async () => {
