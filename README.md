@@ -1,151 +1,292 @@
-# ساعت‌یار (Saatyar)
+<div align="center" dir="rtl">
 
-ساعت‌یار یک وب‌اپ فارسی، راست‌به‌چپ، Local-first و قابل نصب برای ثبت ساعت کاری،
-وقفه، ناهار، مرخصی، پروژه و درآمد است. داده‌های کاربر در مرورگر خودش ذخیره
-می‌شوند و اجرای برنامه به Backend، حساب کاربری یا فایل `.env` نیاز ندارد.
+# ساعت‌یار
 
-> **English:** Saatyar is an open-source, Persian-first, RTL, local-first worklog
-> and time-tracking web app for employees, freelancers, and hybrid workers.
+### وب‌اپ فارسی و Local-first برای ثبت زمان، کارکرد، حقوق، پروژه و درآمد
 
-## چرا ساعت‌یار؟
+[![Quality](https://img.shields.io/badge/quality-160%20tests%20passing-16a34a)](#کنترل-کیفیت)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6)](https://www.typescriptlang.org/)
+[![License](https://img.shields.io/badge/license-MIT-0f766e)](./LICENSE)
+[![RTL](https://img.shields.io/badge/RTL-Persian-7c3aed)](#ویژگیها)
 
-- سه فضای کاری: کارمند، فریلنسر و ترکیبی
-- ثبت شروع/پایان روز، ناهار و چند وقفه مستقل
-- ویرایش دقیق ساعت شروع، پایان و مدت ناهار و وقفه‌ها
-- محاسبه کارکرد خالص، کسری، اضافه‌کاری و خروج پیشنهادی
-- محاسبه صحیح حقوق روزانه بر پایه `حقوق ماهانه ÷ ۳۰`
-- پشتیبانی از ضریب اضافه‌کاری و کار در روز تعطیل
-- تقویم شمسی، مرخصی، گزارش ماهانه و خروجی CSV/Excel
-- مشتری، پروژه، نرخ ساعتی، بودجه و تایمر قابل صورتحساب
-- ذخیره‌سازی Local-first در IndexedDB و Backup/Restore نسخه‌بندی‌شده
-- PWA، فونت Vazirmatn آفلاین و رابط Responsive
+[نسخه آنلاین](https://saat-yar.vercel.app) · [راهنمای اجرا](./RUN_AND_DEPLOY_FA.md) · [مشارکت](./CONTRIBUTING.md) · [حمایت مالی](https://daramet.com/hamedtkd)
 
-## وضعیت حریم خصوصی
+</div>
 
-ساعت‌یار به‌صورت پیش‌فرض هیچ داده‌ای را به سرور ارسال نمی‌کند. داده‌ها در
-IndexedDB همان مرورگر و همان دامنه نگهداری می‌شوند. حذف داده‌های سایت، تغییر
-دامنه یا تعویض مرورگر می‌تواند دسترسی به اطلاعات محلی را از بین ببرد؛ بنابراین
-Backup منظم JSON ضروری است.
+---
+
+## ساعت‌یار چیست؟
+
+ساعت‌یار یک وب‌اپ متن‌باز، فارسی، راست‌به‌چپ و **Local-first** برای مدیریت زمان و کار روزانه است. کارمند، فریلنسر یا کاربر ترکیبی می‌تواند بدون ساخت حساب کاربری و بدون وابستگی به سرور، ساعت ورود و خروج، ناهار، وقفه، مرخصی، پروژه، صورتحساب و گزارش مالی خود را ثبت کند.
+
+داده‌های اصلی در مرورگر خود کاربر و داخل IndexedDB نگهداری می‌شوند. برنامه برای استفاده روزمره به Backend، حساب ابری یا فایل `.env` نیاز ندارد.
+
+> Saatyar is an open-source, Persian-first, RTL, local-first worklog and time-tracking web app for employees, freelancers, and hybrid workers.
+
+## نسخه آنلاین
+
+نسخه عمومی برنامه در این آدرس در دسترس است:
+
+**https://saat-yar.vercel.app**
+
+برای اطلاعات واقعی و بلندمدت، پس از ورود به برنامه حتماً از بخش «داده و پشتیبان» یک نسخه پشتیبان JSON بسازید.
+
+## ویژگی‌ها
+
+### ثبت زمان و حضور
+
+- شروع و پایان روز کاری
+- ثبت ناهار با حقوق یا بدون حقوق
+- ثبت چند وقفه مستقل
+- ویرایش دقیق ساعت شروع، پایان و مدت وقفه‌ها
+- محاسبه شیفت‌هایی که از نیمه‌شب عبور می‌کنند
+- خروج پیشنهادی بر اساس برنامه همان روز
+- بازیابی نشست بازمانده و علامت‌گذاری برای بررسی کاربر
+- یادآوری استراحت دوره‌ای و اعلان تایمر باز
+
+### حالت‌های کاری
+
+- **کارمند:** حضور، موظفی، اضافه‌کاری، کسری، مرخصی و حقوق
+- **فریلنسر:** مشتری، پروژه، نرخ ساعتی، بودجه، هزینه و صورتحساب
+- **ترکیبی:** دسترسی هم‌زمان به قابلیت‌های کارمندی و فریلنسری
+
+### برنامه کاری و حقوق
+
+- برنامه مستقل برای هر روز هفته
+- هدف هفتگی قابل تنظیم و توزیع میان روزهای فعال
+- ضریب اضافه‌کاری و کار در تعطیلات
+- تشخیص تعطیلات رسمی و تعطیل هفتگی
+- حقوق پایه روزانه بر مبنای `حقوق ماهانه ÷ ۳۰`
+- محاسبه حقوق تخمینی، مزایا، کسورات و خالص پرداختی
+
+### گزارش و مدیریت داده
+
+- گزارش ماهانه کارکرد، موظفی، اضافه‌کاری و کسری
+- جزئیات روزانه و فیلتر رکوردها
+- خروجی CSV و Excel
+- چاپ و PDF سازگار با A4
+- Backup و Restore نسخه‌بندی‌شده
+- Migration خودکار داده‌های قدیمی
+- نسخه بازیابی محلی برای کاهش ریسک ازدست‌رفتن اطلاعات
+
+### تجربه کاربری
+
+- رابط کامل فارسی و RTL
+- تقویم و نمایش تاریخ شمسی
+- تم روشن، تاریک و پیروی از سیستم
+- چند Accent و سطح ظاهری قابل انتخاب
+- فونت Vazirmatn به‌صورت محلی
+- طراحی Responsive برای موبایل و دسکتاپ
+- دسترسی‌پذیری کیبورد، Focus management و Reduced motion
+- PWA و امکان نصب روی دستگاه
+
+## حریم خصوصی و مدل Local-first
+
+ساعت‌یار به‌صورت پیش‌فرض اطلاعات کاری شما را به سرور ارسال نمی‌کند. داده‌ها در همان مرورگر و همان دامنه ذخیره می‌شوند.
+
+این مدل مزایای مهمی دارد:
+
+- نیاز نداشتن به ثبت‌نام و حساب کاربری
+- کنترل مستقیم کاربر روی اطلاعات
+- کارکرد اصلی بدون وابستگی دائمی به اینترنت
+- نبود پایگاه داده مرکزی حاوی اطلاعات شخصی کاربران
+
+اما یک محدودیت مهم هم دارد: پاک‌کردن داده‌های سایت، تعویض مرورگر یا دستگاه، استفاده از حالت Private و تغییر دامنه می‌تواند باعث ازدست‌رفتن اطلاعات محلی شود. برای استفاده جدی، Backup منظم ضروری است.
 
 ## شروع سریع
 
-پیش‌نیازها:
+### پیش‌نیازها
 
 - Node.js `22.x`
 - npm همراه Node.js
+- Git برای دریافت سورس
+
+### دریافت و اجرا
 
 ```bash
+git clone https://github.com/hamedtkd/saat-yar.git
+cd saat-yar
 npm ci
 npm run dev
 ```
 
-آدرس توسعه معمولاً `http://localhost:5173` است.
+آدرس توسعه Vite/Vinext معمولاً:
 
-برای اجرای نسخه Next.js در حالت توسعه:
+```text
+http://localhost:5173
+```
+
+اجرای مستقیم با Next.js:
 
 ```bash
 npm run dev:next
 ```
 
-## کنترل کیفیت
-
-```bash
-npm run typecheck
-npm run lint
-npm test
-npm run build:pages
-```
-
-یا همه بررسی‌های اصلی:
-
-```bash
-npm run check
-```
-
-## منطق محاسبه زمان و حقوق
-
-### کارکرد خالص
+آدرس پیش‌فرض Next.js:
 
 ```text
-کارکرد خالص = زمان حضور − ناهار بدون حقوق − وقفه‌های بدون حقوق
-زمان قابل محاسبه = کارکرد خالص + مرخصی قابل محاسبه
-تراز روز = زمان قابل محاسبه − هدف روزانه
+http://localhost:3000
 ```
 
-وقفه و ناهار «با حقوق» از کارکرد کم نمی‌شوند.
+## دستورات مهم
 
-### حقوق روزانه
+| دستور | کاربرد |
+| --- | --- |
+| `npm ci` | نصب دقیق Dependencyها از Lockfile |
+| `npm run dev` | اجرای محیط توسعه Vite/Vinext |
+| `npm run dev:next` | اجرای مستقیم Next.js |
+| `npm run typecheck` | بررسی TypeScript بدون تولید خروجی |
+| `npm run lint` | اجرای ESLint با صفر Warning مجاز |
+| `npm test` | اجرای تست‌های منطق و معماری |
+| `npm run check` | پاک‌سازی فایل‌های قدیمی، Import check، Typecheck، Lint و Test |
+| `npm run check:quality` | اجرای تمام کنترل‌های کیفیت و Build نهایی Next.js |
+| `npm run build:pages` | ساخت خروجی Static |
+| `npm run build:vercel` | Build مناسب Vercel |
+| `npm start` | اجرای خروجی Vinext |
+
+برای بررسی کامل قبل از Push:
+
+```bash
+npm run check:quality
+```
+
+## منطق محاسبه زمان
+
+```text
+زمان حضور = خروج − ورود
+کارکرد خالص = زمان حضور − ناهار بدون حقوق − وقفه‌های بدون حقوق
+زمان قابل محاسبه = کارکرد خالص + مرخصی قابل محاسبه
+تراز روز = زمان قابل محاسبه − هدف همان روز
+```
+
+ناهار یا وقفه «با حقوق» از کارکرد خالص کم نمی‌شود. برای رکوردهای ویرایش‌شده دستی، ساعت‌های همان روز مبنای محاسبه هستند تا Timestamp قدیمی باعث اضافه‌کاری چندروزه نشود.
+
+## منطق حقوق
 
 ```text
 حقوق پایه روزانه = حقوق ماهانه ÷ ۳۰
 ```
 
-روز ناقص به نسبت زمان قابل محاسبه پرداخت می‌شود. زمان بیشتر از هدف روزانه با
-ضریب اضافه‌کاری و کار روز تعطیل با ضریب تعطیل محاسبه می‌شود. این محاسبه یک
-ابزار شخصی است و جایگزین فیش حقوقی یا مقررات سازمان شما نیست.
+روز ناقص متناسب با زمان قابل محاسبه پرداخت می‌شود. زمان بیشتر از هدف روزانه با ضریب اضافه‌کاری و کار در تعطیلات با ضریب تعطیل محاسبه می‌شود.
+
+> محاسبات ساعت‌یار یک ابزار شخصی و تخمینی است و جایگزین قرارداد استخدام، فیش رسمی حقوق، نظر حسابدار یا قوانین محل کار نیست.
 
 ## معماری پروژه
 
 ```text
-app/                         مسیرها و Layout برنامه
+app/                           Routeها و Layout برنامه
 components/
-  common/                    اجزای عمومی رابط
-  layout/                    Header، Footer و Onboarding
-  pages/                     Featureهای Today، Month، Reports و ...
-  ui/                        Primitiveهای رابط
+  common/                      اجزای مشترک محصول
+  layout/                      Shell، Header، Navigation و Onboarding
+  pages/                       قابلیت‌های Today، Month، Reports و Settings
+  pickers/                     انتخابگرهای تاریخ و زمان
+  ui/                          Primitiveهای رابط کاربری
 hooks/
-  use-saatyar-controller.ts  هماهنگی state و عملیات محصول
-  use-persisted-app-data.ts  بارگذاری و ذخیره Local-first
+  controller/                  عملیات و Workflowهای برنامه
+  settings/                    Draft و ویرایش تنظیمات
+  use-saatyar-controller.ts    Facade اصلی State محصول
+  use-persisted-app-data.ts    بارگذاری و ذخیره Local-first
 lib/
-  time-engine.ts             موتور خالص محاسبات زمان
-  payroll.ts                 محاسبات حقوق روزانه و اضافه‌کاری
-  backup-schema.ts           اعتبارسنجی Backup با Zod
-  storage.ts                 Adapter ذخیره‌سازی IndexedDB
-  types.ts                   قراردادهای دامنه
-  format.ts                  تاریخ، اعداد و قالب‌بندی فارسی
-tests/                       تست‌های Node برای منطق دامنه
+  data/                        Migration، Normalization و Version
+  time-engine.ts               موتور محاسبه زمان
+  payroll.ts                   محاسبات حقوق
+  work-schedule.ts             برنامه هفتگی و هدف روزانه
+  backup-schema.ts             اعتبارسنجی Backup
+  storage.ts                   Adapter ذخیره‌سازی IndexedDB
+  types.ts                     قراردادهای دامنه
+  format.ts                    قالب‌بندی فارسی
+scripts/                       Build و Quality utilities
+tests/                         تست‌های دامنه، Regression و معماری
 ```
 
+## ذخیره‌سازی و Migration
 
-### نسخه‌بندی و Migration داده
+نسخه Schema داده در `lib/data/version.ts` تعریف می‌شود. هر تغییر ناسازگار باید همراه این موارد باشد:
 
-داده‌های IndexedDB و فایل‌های پشتیبان پیش از ورود به برنامه از Migrationهای مرحله‌ای عبور می‌کنند. نسخه جاری در `lib/data/version.ts` تعریف شده است و هر تغییر ناسازگار در مدل داده باید Migration و تست متناظر داشته باشد. جزئیات در `docs/DATA_MIGRATIONS.md` آمده است.
+1. افزایش نسخه Schema
+2. Migration مرحله‌ای
+3. Normalization داده
+4. اعتبارسنجی Backup
+5. تست Regression
 
-### سیاست Tailwind
+جزئیات بیشتر در [docs/DATA_MIGRATIONS.md](./docs/DATA_MIGRATIONS.md) قرار دارد.
 
-کلاس‌های Tailwind در همان Component و کنار Markup نوشته شده‌اند. پروژه هیچ
-Style Registry مرکزی مانند `lib/tw.ts` ندارد. فایل `app/globals.css` فقط ورودی
-ضروری Tailwind را import می‌کند:
+## کنترل کیفیت
 
-```css
-@import "tailwindcss";
-```
+پروژه برای جلوگیری از Regression از چند لایه کنترل استفاده می‌کند:
 
-این سیاست باعث می‌شود محل اثر هر Style روشن باشد و Tailwind بتواند همه کلاس‌ها
-را به‌صورت ایستا تشخیص دهد.
+- بررسی تمام Importهای محلی
+- TypeScript strict validation
+- ESLint با `--max-warnings=0`
+- تست‌های منطق زمان، حقوق، Backup و Migration
+- تست‌های معماری و سقف ۲۵۰ خط برای فایل‌های Production
+- تست‌های Theme و Semantic token
+- Build نهایی Next.js و prerender تمام Routeها
 
-## دستورات
+آخرین کنترل ثبت‌شده پروژه شامل **۱۶۰ تست موفق** و Build کامل Next.js بوده است.
 
-| دستور | کاربرد |
-| --- | --- |
-| `npm run dev` | توسعه با Vite/Vinext |
-| `npm run dev:next` | توسعه مستقیم با Next.js |
-| `npm run typecheck` | بررسی TypeScript |
-| `npm run lint` | بررسی ESLint |
-| `npm test` | تست منطق زمان، حقوق و Backup |
-| `npm run build:pages` | ساخت Static در پوشه `out` |
-| `npm run build:vercel` | Build مناسب Vercel |
-| `npm run check` | Typecheck + Lint + Test |
+## سیاست رابط و Style
 
-راهنمای کامل Windows، macOS، Linux، Docker، GitHub Pages و Vercel در
-[RUN_AND_DEPLOY_FA.md](./RUN_AND_DEPLOY_FA.md) قرار دارد.
+- کلاس‌های Tailwind کنار Markup همان Component نوشته می‌شوند.
+- رنگ‌های ثابت در بخش‌های اصلی مجاز نیستند و UI باید از Semantic tokenها استفاده کند.
+- فایل Style Registry مرکزی مانند `lib/tw.ts` وجود ندارد.
+- `app/globals.css` فقط Styleهای سراسری، Tokenها و قواعد چاپ را نگهداری می‌کند.
+- فایل‌های Production تا حد ممکن زیر ۲۵۰ خط باقی می‌مانند.
+
+## استقرار
+
+راهنمای مرحله‌ای Windows، macOS، Linux، Docker، GitHub Pages و Vercel در فایل زیر قرار دارد:
+
+[راهنمای اجرا و استقرار](./RUN_AND_DEPLOY_FA.md)
 
 ## مشارکت
 
-پیش از Pull Request، فایل [CONTRIBUTING.md](./CONTRIBUTING.md) را بخوانید و
-دستور `npm run check` را اجرا کنید. گزارش آسیب‌پذیری امنیتی باید طبق
-[SECURITY.md](./SECURITY.md) انجام شود و نه در Issue عمومی.
+Issue، پیشنهاد UX، گزارش باگ و Pull Request خوش‌آمد است.
+
+پیش از Pull Request:
+
+```bash
+npm ci
+npm run check:quality
+```
+
+سپس دستورالعمل [CONTRIBUTING.md](./CONTRIBUTING.md) را مطالعه کنید. آسیب‌پذیری امنیتی نباید در Issue عمومی منتشر شود؛ روش گزارش مسئولانه در [SECURITY.md](./SECURITY.md) آمده است.
+
+## نقشه راه
+
+موارد اصلی برنامه‌ریزی‌شده در [BACKLOG_FA.md](./BACKLOG_FA.md) نگهداری می‌شوند. محورهای بعدی شامل این موارد هستند:
+
+- تکمیل الگوی ویرایش دستی در تمام کارت‌های تنظیمات
+- هشدار یکپارچه برای Draft ذخیره‌نشده
+- بازطراحی نمودارهای گزارش و Empty Stateها
+- بهبود بازیابی نشست در Crashهای سخت
+- مستندات تصویری و ویدیوی معرفی
+- تکمیل README انگلیسی و راهنمای Contributor
+
+## حمایت مالی
+
+ساعت‌یار رایگان و متن‌باز باقی می‌ماند. اگر برنامه برایتان مفید بوده و مایلید از ادامه توسعه، تست و نگهداری آن حمایت کنید، می‌توانید به‌صورت کاملاً اختیاری از صفحه زیر استفاده کنید:
+
+### [حمایت از توسعه ساعت‌یار در دارمت](https://daramet.com/hamedtkd)
+
+حمایت مالی هیچ قابلیت اضافه‌ای را باز نمی‌کند و برای استفاده از برنامه الزامی نیست.
 
 ## مجوز
 
-این پروژه تحت مجوز [MIT](./LICENSE) منتشر می‌شود.
+این پروژه تحت مجوز [MIT](./LICENSE) منتشر شده است. استفاده، تغییر و توزیع آن طبق شرایط این مجوز آزاد است.
+
+## نویسنده
+
+توسعه و نگهداری: **Hamed Ahmadi — hamedtkd**
+
+- GitHub: [hamedtkd](https://github.com/hamedtkd)
+- حمایت مالی: [daramet.com/hamedtkd](https://daramet.com/hamedtkd)
+
+---
+
+<div align="center" dir="rtl">
+
+اگر ساعت‌یار برایتان مفید است، Star دادن به مخزن و معرفی آن به دیگران نیز کمک بزرگی است.
+
+</div>
