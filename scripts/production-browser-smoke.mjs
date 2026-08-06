@@ -1,10 +1,11 @@
 import { spawn } from "node:child_process";
 import { existsSync } from "node:fs";
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdtemp } from "node:fs/promises";
 import { createServer } from "node:net";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve, win32 } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { cleanupBrowserProfile } from "./browser-profile-cleanup.mjs";
 import { startStaticExportServer } from "./static-export-server.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -159,8 +160,16 @@ async function clickButton(client, text) {
   if (!clicked) throw new Error(`Button not found: ${text}`);
 }
 
+async function waitForProcessExit(child, timeoutMs = 5_000) {
+  if (!child || child.exitCode !== null || child.signalCode !== null) return;
+  await Promise.race([
+    new Promise((resolveExit) => child.once("exit", resolveExit)),
+    new Promise((resolveTimeout) => setTimeout(resolveTimeout, timeoutMs)),
+  ]);
+}
+
 async function terminate(child) {
-  if (!child || child.exitCode !== null) return;
+  if (!child || child.exitCode !== null || child.signalCode !== null) return;
   if (process.platform === "win32") {
     await new Promise((resolveKill) => {
       const killer = spawn("taskkill", ["/pid", String(child.pid), "/T", "/F"], { stdio: "ignore" });
@@ -170,6 +179,7 @@ async function terminate(child) {
   } else {
     child.kill("SIGTERM");
   }
+  await waitForProcessExit(child);
 }
 
 export async function runProductionBrowserSmoke() {
@@ -260,7 +270,7 @@ export async function runProductionBrowserSmoke() {
     client?.close();
     await terminate(browser);
     await staticServer?.close();
-    await rm(profileDir, { recursive: true, force: true });
+    await cleanupBrowserProfile(profileDir);
   }
 }
 
