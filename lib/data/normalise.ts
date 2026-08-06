@@ -81,5 +81,12 @@ export function normaliseData(value: AppData, defaults: Settings): AppData {
       ...item,
       isHoliday: item.isHoliday !== false,
     })),
+    deletedRecords: (value.deletedRecords ?? []).map((item) => ({
+      ...item,
+      record: {
+        ...item.record,
+        breaks: (item.record.breaks ?? []).map((entry) => ({ ...entry })),
+      },
+    })),
   };
 }

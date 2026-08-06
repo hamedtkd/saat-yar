@@ -4,6 +4,7 @@ import { nowTime } from "@/lib/format";
 import { closePreviousRecordForNewDay, findPreviousOpenRecord } from "@/lib/previous-day-session";
 import type { Dispatch, SetStateAction } from "react";
 import type { AppData, WorkRecord } from "@/lib/types";
+import { createDeletedWorkRecord } from "@/lib/record-recycle-bin";
 
 type Args = {
   data: AppData;
@@ -19,7 +20,7 @@ type Args = {
 
 export function useAttendanceActions({ data, record, selectedDate, activeBreak, lunchRunning, setData, setSelectedDate, setToast, ensureLiveTimerOwnership }: Args) {
   const [pendingPreviousRecord, setPendingPreviousRecord] = useState<WorkRecord>();
-  const [resetUndo, setResetUndo] = useState<{ date: string; record: WorkRecord }>();
+  const [resetUndo, setResetUndo] = useState<{ id: string; date: string; record: WorkRecord }>();
   const resetUndoTimerRef = useRef<number | undefined>(undefined);
 
   useEffect(() => () => {
@@ -36,17 +37,25 @@ export function useAttendanceActions({ data, record, selectedDate, activeBreak, 
     setResetUndo(undefined);
   }
   function resetRecord() {
-    const snapshot = { ...record, breaks: record.breaks.map((item) => ({ ...item })) };
-    setResetUndo({ date: selectedDate, record: snapshot });
+    const deleted = createDeletedWorkRecord(selectedDate, record);
+    setResetUndo({ id: deleted.id, date: selectedDate, record: deleted.record });
     if (resetUndoTimerRef.current) window.clearTimeout(resetUndoTimerRef.current);
     resetUndoTimerRef.current = window.setTimeout(() => setResetUndo(undefined), 10_000);
-    setData((previous) => { const records = { ...previous.records }; delete records[selectedDate]; return { ...previous, records }; });
-    setToast("رکورد این روز پاک شد؛ امکان بازگردانی موقت فعال است");
+    setData((previous) => {
+      const records = { ...previous.records };
+      delete records[selectedDate];
+      return { ...previous, records, deletedRecords: [deleted, ...previous.deletedRecords] };
+    });
+    setToast("رکورد این روز به سطل بازیابی منتقل شد؛ بازگردانی سریع فعال است");
   }
   function undoResetRecord() {
     if (!resetUndo) return;
     const restored = { ...resetUndo.record, updatedAt: new Date().toISOString() };
-    setData((previous) => ({ ...previous, records: { ...previous.records, [resetUndo.date]: restored } }));
+    setData((previous) => ({
+      ...previous,
+      records: { ...previous.records, [resetUndo.date]: restored },
+      deletedRecords: previous.deletedRecords.filter((item) => item.id !== resetUndo.id),
+    }));
     setSelectedDate(resetUndo.date);
     dismissResetUndo();
     setToast("رکورد حذف‌شده بازگردانی شد");

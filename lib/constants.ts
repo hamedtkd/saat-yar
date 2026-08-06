@@ -56,6 +56,7 @@ export function createInitialData(options: { onboarded?: boolean } = {}): AppDat
     expenses: [],
     invoices: [],
     holidayOverrides: [],
+    deletedRecords: [],
   };
 }
 

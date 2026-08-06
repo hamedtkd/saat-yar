@@ -7,10 +7,11 @@ const read = (path: string) => readFile(new URL(path, root), "utf8");
 
 test("daily record reset keeps a temporary snapshot and exposes undo", async () => {
   const source = await read("hooks/controller/use-attendance-actions.ts");
-  assert.match(source, /setResetUndo\(\{ date: selectedDate, record: snapshot \}\)/);
+  assert.match(source, /setResetUndo\(\{ id: deleted\.id, date: selectedDate, record: deleted\.record \}\)/);
   assert.match(source, /window\.setTimeout\(\(\) => setResetUndo\(undefined\), 10_000\)/);
   assert.match(source, /function undoResetRecord\(\)/);
   assert.match(source, /\[resetUndo\.date\]: restored/);
+  assert.match(source, /deletedRecords: previous\.deletedRecords\.filter/);
 });
 
 test("today page renders an accessible undo action after reset", async () => {

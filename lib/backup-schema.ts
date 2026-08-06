@@ -170,6 +170,15 @@ const timeEntrySchema = z.object({
   effectiveRate: z.number().nonnegative(),
 }).passthrough();
 
+
+const deletedWorkRecordSchema = z.object({
+  id: z.string(),
+  date: isoDateSchema,
+  record: workRecordSchema,
+  deletedAt: z.string(),
+  expiresAt: z.string(),
+}).passthrough();
+
 export const appDataSchema = z.object({
   settings: settingsSchema,
   records: z.record(z.string(), workRecordSchema),
@@ -180,6 +189,7 @@ export const appDataSchema = z.object({
   expenses: z.array(expenseSchema),
   invoices: z.array(invoiceSchema),
   holidayOverrides: z.array(holidayOverrideSchema),
+  deletedRecords: z.array(deletedWorkRecordSchema),
 }).passthrough();
 
 export type BackupData = AppData & {

@@ -251,6 +251,14 @@ function migrateV14ToV15(value: unknown): unknown {
   };
 }
 
+function migrateV15ToV16(value: unknown): unknown {
+  if (!isObject(value)) return value;
+  return {
+    ...value,
+    deletedRecords: Array.isArray(value.deletedRecords) ? value.deletedRecords : [],
+  };
+}
+
 const migrations: Record<number, (value: unknown) => unknown> = {
   1: migrateV1ToV2,
   2: migrateV2ToV3,
@@ -266,6 +274,7 @@ const migrations: Record<number, (value: unknown) => unknown> = {
   12: migrateV12ToV13,
   13: migrateV13ToV14,
   14: migrateV14ToV15,
+  15: migrateV15ToV16,
 };
 
 export function migrateAppData(value: unknown): MigrationResult {

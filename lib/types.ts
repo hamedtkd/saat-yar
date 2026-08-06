@@ -74,6 +74,14 @@ export type WorkRecord = {
   needsReview?: boolean;
 };
 
+export type DeletedWorkRecord = {
+  id: string;
+  date: string;
+  record: WorkRecord;
+  deletedAt: string;
+  expiresAt: string;
+};
+
 export type BreakReminderSettings = {
   enabled: boolean;
   intervalMinutes: number;
@@ -204,6 +212,7 @@ export type AppData = {
   expenses: Expense[];
   invoices: Invoice[];
   holidayOverrides: HolidayOverride[];
+  deletedRecords: DeletedWorkRecord[];
 };
 
 export type TimerDraft = {
