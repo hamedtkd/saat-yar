@@ -38,6 +38,12 @@ export function formatShortDate(date: Date) {
   }).format(date);
 }
 
+export function formatPersianDayNumber(date: Date) {
+  return new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
+    day: "numeric",
+  }).format(date);
+}
+
 export function compactMoney(value: number) {
   const absoluteValue = Math.abs(value);
   if (absoluteValue >= 1_000_000_000) return `${fa.format(Math.round(value / 1_000_000_000))} میلیارد`;

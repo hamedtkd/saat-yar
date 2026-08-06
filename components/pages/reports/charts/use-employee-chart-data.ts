@@ -1,9 +1,8 @@
 import { useMemo } from "react";
 
-import { fa } from "@/lib/format";
 import { calc } from "@/lib/time-engine";
 import type { Settings, WorkRecord } from "@/lib/types";
-import { CHART_COLORS, formatShortDate, getDailyTarget, parseLocalDate } from "./chart-utils";
+import { CHART_COLORS, formatPersianDayNumber, formatShortDate, getDailyTarget, parseLocalDate } from "./chart-utils";
 import type { EmployeeChartItem, MonthStats } from "./types";
 
 export function useEmployeeChartData(
@@ -20,7 +19,7 @@ export function useEmployeeChartData(
         const result = calc(record, dailyTarget);
         return {
           key: record.date,
-          day: fa.format(date.getDate()),
+          day: formatPersianDayNumber(date),
           fullDate: formatShortDate(date),
           worked: result.worked,
           target: result.target,

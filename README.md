@@ -4,7 +4,7 @@
 
 ### وب‌اپ فارسی و Local-first برای ثبت زمان، کارکرد، حقوق، پروژه و درآمد
 
-[![Quality](https://img.shields.io/badge/quality-160%20tests%20passing-16a34a)](#کنترل-کیفیت)
+[![Quality](https://img.shields.io/badge/quality-165%20tests%20passing-16a34a)](#کنترل-کیفیت)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/license-MIT-0f766e)](./LICENSE)
