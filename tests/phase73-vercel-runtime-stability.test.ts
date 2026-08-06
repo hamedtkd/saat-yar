@@ -11,11 +11,12 @@ test("data health collector keeps an explicit DataHealthItem array", async () =>
 });
 
 test("phase 72 fixtures follow the current WorkRecord contract", async () => {
-  const source = await read("tests/phase72-data-health-center.test.ts");
-  assert.match(source, /lunchPaid: false/);
-  assert.match(source, /end: ""/);
-  assert.doesNotMatch(source, /paidLunch/);
-  assert.doesNotMatch(source, /end: undefined/);
+  const healthTest = await read("tests/phase72-data-health-center.test.ts");
+  const fixture = await read("tests/fixtures/work-record.ts");
+  assert.match(healthTest, /makeWorkRecord/);
+  assert.match(fixture, /lunchPaid: false/);
+  assert.match(fixture, /holiday: false/);
+  assert.doesNotMatch(fixture, /paidLunch/);
 });
 
 test("draft registry cleanup only publishes removal of dirty entries", async () => {
