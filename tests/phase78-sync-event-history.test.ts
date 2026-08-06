@@ -14,6 +14,7 @@ test("sync history keeps only the five newest events", () => {
       sourceTabId: `tab-${index}`,
       savedAt: `2026-08-06T12:00:0${index}.000Z`,
       receivedAt: `2026-08-06T12:00:1${index}.000Z`,
+      sourcePath: "/today",
     });
   }
   assert.equal(status.events.length, 5);
@@ -25,6 +26,7 @@ test("clearing sync history preserves browser support and current tab", () => {
   const status = addSyncEvent({ ...createInitialSyncStatus(), supported: true, currentTabId: "tab-current" }, {
     kind: "deferred", sourceTabId: "tab-other",
     savedAt: "2026-08-06T12:00:00.000Z", receivedAt: "2026-08-06T12:00:01.000Z",
+    sourcePath: "/today",
   });
   const cleared = clearSyncHistory(status);
   assert.equal(cleared.supported, true);

@@ -7,7 +7,7 @@ const read = (path: string) => readFile(new URL(`../${path}`, import.meta.url), 
 
 test("multi-tab messages are versioned by type and validate timestamps", () => {
   const message = createDataSavedMessage("tab-a", new Date("2026-08-06T10:00:00.000Z"));
-  assert.deepEqual(message, { type: "data-saved", tabId: "tab-a", savedAt: "2026-08-06T10:00:00.000Z" });
+  assert.deepEqual(message, { type: "data-saved", tabId: "tab-a", savedAt: "2026-08-06T10:00:00.000Z", sourcePath: "/" });
   assert.equal(isAppSyncMessage(message), true);
   assert.equal(isAppSyncMessage({ ...message, savedAt: "invalid" }), false);
 });

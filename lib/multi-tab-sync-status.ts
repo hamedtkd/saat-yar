@@ -5,6 +5,7 @@ export type SyncEvent = {
   sourceTabId: string;
   savedAt: string;
   receivedAt: string;
+  sourcePath: string;
 };
 
 export type MultiTabSyncStatus = {
@@ -66,4 +67,19 @@ export function formatSyncTime(value: string | null) {
     minute: "2-digit",
     second: "2-digit",
   }).format(date);
+}
+
+export function formatSyncSourcePath(path: string) {
+  const labels: Record<string, string> = {
+    "/": "خانه",
+    "/today": "امروز",
+    "/month": "ماه من",
+    "/leave": "مرخصی‌ها",
+    "/reports": "گزارش‌ها",
+    "/settings": "تنظیمات",
+    "/clients": "مشتری‌ها",
+    "/projects": "پروژه‌ها",
+    "/invoices": "صورتحساب‌ها",
+  };
+  return labels[path] ?? path;
 }

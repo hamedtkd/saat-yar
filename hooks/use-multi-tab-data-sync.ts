@@ -30,7 +30,7 @@ export function useMultiTabDataSync({ ready, saveState, storage, setData, setToa
   }, []);
 
   const publishSaved = useCallback((savedAt: Date) => {
-    channelRef.current?.postMessage(createDataSavedMessage(tabIdRef.current, savedAt));
+    channelRef.current?.postMessage(createDataSavedMessage(tabIdRef.current, savedAt, window.location.pathname));
   }, []);
 
   const loadExternalData = useCallback(async () => {
@@ -65,6 +65,7 @@ export function useMultiTabDataSync({ ready, saveState, storage, setData, setToa
         sourceTabId: event.data.tabId,
         savedAt: event.data.savedAt,
         receivedAt,
+        sourcePath: event.data.sourcePath,
       }));
       if (pending) {
         setExternalSyncPending(true);
