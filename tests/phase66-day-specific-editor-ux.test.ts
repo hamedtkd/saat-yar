@@ -19,7 +19,7 @@ test("employee notes belong to the selected work record instead of a global time
 
 test("completed days are read only until explicit edit", async () => {
   const source = await read("components/pages/today/completed-day-editor.tsx");
-  assert.match(source, /completed = Boolean\(props\.record\.start && props\.record\.end\)/);
+  assert.match(source, /completed = Boolean\(record\.start && record\.end\)/);
   assert.match(source, /fieldset disabled=\{locked\}/);
   assert.match(source, /ویرایش این روز/);
   assert.match(source, /ذخیره تغییرات/);

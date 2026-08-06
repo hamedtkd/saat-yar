@@ -8,7 +8,7 @@ test("settings navigation uses a typed section id", async () => {
   const source = await read("components/pages/settings/settings-nav.tsx");
   assert.match(source, /type SettingsSectionId = \(typeof items\)\[number\]\["id"\]/);
   assert.match(source, /useState<SettingsSectionId>/);
-  assert.match(source, /goTo = \(id: SettingsSectionId\)/);
+  assert.match(source, /navigateTo = \(id: SettingsSectionId\)/);
 });
 
 test("settings sections expose real scroll anchors", async () => {

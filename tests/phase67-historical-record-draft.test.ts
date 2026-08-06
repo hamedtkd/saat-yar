@@ -29,7 +29,7 @@ test("completed records edit through an isolated draft with explicit save and ca
   assert.match(source, /ذخیره تغییرات/);
   assert.match(source, /انصراف/);
   assert.match(source, /getWorkRecordChanges/);
-  assert.match(source, /props\.updateRecord\(saved\)/);
+  assert.match(source, /updateRecord\(saved\)/);
 });
 
 test("completed historical days hide live lunch and break actions", async () => {
