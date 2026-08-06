@@ -28,6 +28,7 @@ export default function SettingsRoute() {
       createRecovery={() => { controller.createManualRecovery(); }}
       restoreRecovery={() => { controller.restoreRecovery(); }}
       clearRecovery={() => { controller.clearRecovery(); }}
+      multiTabSyncStatus={controller.multiTabSyncStatus}
     />
   );
 }

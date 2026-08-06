@@ -4,6 +4,8 @@ import { PanelHead } from "@/components/common/panel-head";
 import { StatusBadge, type StatusBadgeTone } from "@/components/common/status-badge";
 import { collectDataHealthItems, getDataHealthSummary, type DataHealthItem } from "@/lib/data-health";
 import type { WorkRecord } from "@/lib/types";
+import type { MultiTabSyncStatus } from "@/lib/multi-tab-sync-status";
+import { MultiTabHealthPanel } from "./multi-tab-health-panel";
 
 const toneByState: Record<DataHealthItem["state"], StatusBadgeTone> = {
   invalid: "danger",
@@ -15,7 +17,7 @@ function formatDate(date: string) {
   return new Intl.DateTimeFormat("fa-IR-u-ca-persian", { weekday: "long", day: "numeric", month: "long" }).format(new Date(`${date}T12:00:00`));
 }
 
-export function DataHealthCard({ records }: { records: Record<string, WorkRecord> }) {
+export function DataHealthCard({ records, syncStatus }: { records: Record<string, WorkRecord>; syncStatus: MultiTabSyncStatus }) {
   const items = collectDataHealthItems(records);
   const summary = getDataHealthSummary(items);
 
@@ -54,6 +56,7 @@ export function DataHealthCard({ records }: { records: Record<string, WorkRecord
           </div>
         </>
       )}
+      <MultiTabHealthPanel status={syncStatus} />
     </section>
   );
 }

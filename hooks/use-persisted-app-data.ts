@@ -8,6 +8,7 @@ import type { AppData, StorageInfo } from "@/lib/types";
 import { localDateKey } from "@/lib/format";
 import { hasUnsavedSettingsDrafts } from "@/lib/settings-draft-registry";
 import { APP_SYNC_CHANNEL, createDataSavedMessage, createTabId, isAppSyncMessage } from "@/lib/multi-tab-sync";
+import type { MultiTabSyncStatus } from "@/lib/multi-tab-sync-status";
 import {
   applyPendingClose, applyStaleHeartbeat, createPendingClose, createSessionHeartbeat,
   parsePendingClose, parseSessionHeartbeat, SESSION_CLOSE_KEY, SESSION_HEARTBEAT_INTERVAL_MS,
@@ -28,15 +29,16 @@ export function usePersistedAppData() {
   const [saveError, setSaveError] = useState("");
   const [recoverySnapshot, setRecoverySnapshot] = useState<RecoverySnapshot | null>(null);
   const [externalSyncPending, setExternalSyncPending] = useState(false);
+  const [multiTabSyncStatus, setMultiTabSyncStatus] = useState<MultiTabSyncStatus>({
+    supported: false, currentTabId: null, sourceTabId: null, savedAt: null, receivedAt: null, pending: false,
+  });
   const latestDataRef = useRef(data);
   const tabIdRef = useRef("");
   const channelRef = useRef<BroadcastChannel | null>(null);
   const skipNextPersistRef = useRef(false);
-
   useEffect(() => {
     latestDataRef.current = data;
   }, [data]);
-
   useEffect(() => {
     void (async () => {
       try {
@@ -95,7 +97,6 @@ export function usePersistedAppData() {
       return false;
     }
   }, [storage]);
-
   useEffect(() => {
     if (!ready) return;
     if (skipNextPersistRef.current) {
@@ -109,7 +110,6 @@ export function usePersistedAppData() {
   }, [data, persistData, ready]);
 
 
-
   const loadExternalData = useCallback(async () => {
     if (hasUnsavedSettingsDrafts()) {
       setToast("ابتدا تغییرات در حال ویرایش را ذخیره یا لغو کنید");
@@ -120,6 +120,7 @@ export function usePersistedAppData() {
     skipNextPersistRef.current = true;
     setData(value);
     setExternalSyncPending(false);
+    setMultiTabSyncStatus((current) => ({ ...current, pending: false }));
     setToast("تغییرات تب دیگر بارگذاری شد");
     return true;
   }, [storage]);
@@ -127,11 +128,18 @@ export function usePersistedAppData() {
   useEffect(() => {
     if (!ready || typeof BroadcastChannel === "undefined") return;
     tabIdRef.current = createTabId();
+    queueMicrotask(() => setMultiTabSyncStatus((current) => ({
+      ...current, supported: true, currentTabId: tabIdRef.current,
+    })));
     const channel = new BroadcastChannel(APP_SYNC_CHANNEL);
     channelRef.current = channel;
     channel.addEventListener("message", (event) => {
       if (!isAppSyncMessage(event.data) || event.data.tabId === tabIdRef.current) return;
-      if (hasUnsavedSettingsDrafts() || saveState === "saving") {
+      const receivedAt = new Date().toISOString();
+      const pending = hasUnsavedSettingsDrafts() || saveState === "saving";
+      setMultiTabSyncStatus((current) => ({ ...current, sourceTabId: event.data.tabId,
+        savedAt: event.data.savedAt, receivedAt, pending }));
+      if (pending) {
         setExternalSyncPending(true);
         return;
       }
@@ -142,7 +150,6 @@ export function usePersistedAppData() {
       channelRef.current = null;
     };
   }, [loadExternalData, ready, saveState]);
-
   useEffect(() => {
     if (!ready) return;
     const writeHeartbeat = () => {
@@ -235,7 +242,7 @@ export function usePersistedAppData() {
     storageInfo, setStorageInfo, storage,
     saveState, lastSavedAt, saveError, recoverySnapshot,
     retrySave, createManualRecovery, restoreRecovery, clearRecovery,
-    externalSyncPending,
+    externalSyncPending, multiTabSyncStatus,
     reloadExternalData: loadExternalData,
     dismissExternalSync: () => setExternalSyncPending(false),
   };
