@@ -234,13 +234,40 @@ http://localhost:8080
 - برای کاهش احتمال حذف داده، در تنظیمات روی «درخواست ذخیره پایدار» بزنید.
 - Persistent Storage تضمین دائمی نیست؛ Backup منظم همچنان ضروری است.
 
+## تست مرورگر نسخه Production
+
+برای بررسی جریان واقعی برنامه در مرورگر، شامل بارگذاری اولیه، تکمیل Onboarding و جابه‌جایی میان تاریخ‌ها:
+
+```powershell
+npm.cmd install
+npm.cmd run test:browser:production
+```
+
+اسکریپت به‌ترتیب Chrome، Edge و Chromium را پیدا می‌کند. برای تعیین دستی مرورگر:
+
+```powershell
+$env:SAATYAR_BROWSER_PATH = "C:\Program Files\Google\Chrome\Application\chrome.exe"
+npm.cmd run test:browser:production
+```
+
+برای کنترل نهایی پیش از Release که Build تکراری انجام ندهد:
+
+```powershell
+npm.cmd run check:release
+```
+
+پس از دریافت فازی که Dependency جدید دارد، حتماً `npm install` اجرا شود. دستور `npm run check:dependencies` پیش از TypeScript، پکیج‌های نصب‌نشده را با پیام قابل‌فهم گزارش می‌کند.
+
 ## دستورات مرجع
 
 | هدف | دستور |
 | --- | --- |
 | نصب تکرارپذیر | `npm ci` |
 | توسعه | `npm run dev` |
-| بررسی کامل کیفیت | `npm run check` |
+| بررسی کامل کیفیت | `npm run check:quality` |
+| بررسی Dependencyهای نصب‌شده | `npm run check:dependencies` |
+| Smoke Test مرورگر Production | `npm run test:browser:production` |
+| کنترل نهایی Release | `npm run check:release` |
 | Typecheck | `npm run typecheck` |
 | تست واحد | `npm test` |
 | Lint | `npm run lint` |

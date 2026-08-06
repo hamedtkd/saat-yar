@@ -136,11 +136,14 @@ http://localhost:3000
 | `npm ci` | نصب دقیق Dependencyها از Lockfile |
 | `npm run dev` | اجرای محیط توسعه Vite/Vinext |
 | `npm run dev:next` | اجرای مستقیم Next.js |
+| `npm run check:dependencies` | بررسی نصب بودن Dependencyهای مستقیم پس از دریافت فاز جدید |
 | `npm run typecheck` | بررسی TypeScript بدون تولید خروجی |
 | `npm run lint` | اجرای ESLint با صفر Warning مجاز |
 | `npm test` | اجرای تست‌های منطق و معماری |
 | `npm run check` | پاک‌سازی فایل‌های قدیمی، Import check، Typecheck، Lint و Test |
 | `npm run check:quality` | اجرای تمام کنترل‌های کیفیت و Build نهایی Next.js |
+| `npm run test:browser:production` | Build و اجرای Smoke Test واقعی در Chrome، Edge یا Chromium |
+| `npm run check:release` | Quality کامل و سپس Smoke Test مرورگر روی همان Build |
 | `npm run build:pages` | ساخت خروجی Static |
 | `npm run build:vercel` | Build مناسب Vercel |
 | `npm start` | اجرای خروجی Vinext |
@@ -223,8 +226,9 @@ tests/                         تست‌های دامنه، Regression و معم
 - تست‌های معماری و سقف ۲۵۰ خط برای فایل‌های Production
 - تست‌های Theme و Semantic token
 - Build نهایی Next.js و prerender تمام Routeها
+- Smoke Test مرورگر واقعی برای بارگذاری اولیه، تکمیل Onboarding و تغییر تاریخ
 
-آخرین کنترل ثبت‌شده پروژه شامل **۱۶۰ تست موفق** و Build کامل Next.js بوده است.
+کنترل کیفیت پروژه شامل بیش از **۲۷۰ تست منطق و معماری**، Audit قرارداد داده و Build کامل Next.js است.
 
 ## سیاست رابط و Style
 
@@ -249,6 +253,7 @@ Issue، پیشنهاد UX، گزارش باگ و Pull Request خوش‌آمد ا
 ```bash
 npm ci
 npm run check:quality
+npm run test:browser:production
 ```
 
 سپس دستورالعمل [CONTRIBUTING.md](./CONTRIBUTING.md) را مطالعه کنید. آسیب‌پذیری امنیتی نباید در Issue عمومی منتشر شود؛ روش گزارش مسئولانه در [SECURITY.md](./SECURITY.md) آمده است.

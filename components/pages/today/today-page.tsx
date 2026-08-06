@@ -31,7 +31,7 @@ export function TodayPage(props: TodayPageProps) {
 
   return (
     <>
-      <AlertDialog open={Boolean(props.pendingPreviousRecord)} onOpenChange={(open) => { if (!open) props.dismissPreviousRecord(); }}>
+      <AlertDialog open={Boolean(props.pendingPreviousRecord)} onOpenChange={(open: boolean) => { if (!open) props.dismissPreviousRecord(); }}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>خروج روز قبل ثبت نشده است</AlertDialogTitle>

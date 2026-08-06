@@ -59,7 +59,7 @@ export function UnsavedSettingsDialog({
   };
 
   return (
-    <AlertDialog open={Boolean(pendingNavigation)} onOpenChange={(open) => !open && setPendingNavigation(null)}>
+    <AlertDialog open={Boolean(pendingNavigation)} onOpenChange={(open: boolean) => !open && setPendingNavigation(null)}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>تغییرات ذخیره‌نشده داری</AlertDialogTitle>

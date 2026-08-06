@@ -113,7 +113,7 @@ export function PayrollSettingsCard({ data, setData, setToast, financialsHidden 
         </div>
       </fieldset>
 
-      <AlertDialog open={Boolean(pendingRemovalId)} onOpenChange={(open) => !open && setPendingRemovalId(null)}>
+      <AlertDialog open={Boolean(pendingRemovalId)} onOpenChange={(open: boolean) => !open && setPendingRemovalId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>این آیتم حقوقی حذف شود؟</AlertDialogTitle>

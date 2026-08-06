@@ -145,7 +145,7 @@ export function HolidayOverridesCard({ data, setData, setToast }: Props) {
         {!items.length && <div className="rounded-xl border border-dashed border-[var(--border)] p-5 text-center text-xs text-[var(--text-muted)]">هنوز استثنای تعطیلی ثبت نشده است.</div>}
       </div>
 
-      <AlertDialog open={Boolean(pendingRemovalId)} onOpenChange={(open) => !open && setPendingRemovalId(null)}>
+      <AlertDialog open={Boolean(pendingRemovalId)} onOpenChange={(open: boolean) => !open && setPendingRemovalId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>این استثنای تعطیلی حذف شود؟</AlertDialogTitle>

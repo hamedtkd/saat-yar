@@ -110,7 +110,7 @@ export function RecordRecycleBinCard({ data, setData, setToast }: {
       </div>
     )}
 
-    <AlertDialog open={Boolean(deleteId)} onOpenChange={(open) => { if (!open) setDeleteId(""); }}>
+    <AlertDialog open={Boolean(deleteId)} onOpenChange={(open: boolean) => { if (!open) setDeleteId(""); }}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>رکورد برای همیشه حذف شود؟</AlertDialogTitle>
