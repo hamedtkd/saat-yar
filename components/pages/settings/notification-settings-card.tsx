@@ -1,12 +1,14 @@
 "use client";
 
-import { BellRing, Coffee, Send } from "lucide-react";
+import { BellRing, Coffee, Send, TimerOff } from "lucide-react";
 import { useState } from "react";
 import { NumberField } from "@/components/common/number-field";
 import { PanelHead } from "@/components/common/panel-head";
 import { StatusBadge, type StatusBadgeTone } from "@/components/common/status-badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { localDateKey } from "@/lib/format";
+import { breakReminderSnoozeKey } from "@/lib/notification-reminders";
 import type { AppData, NotificationSettings } from "@/lib/types";
 
 type PermissionState = NotificationPermission | "unsupported";
@@ -44,6 +46,12 @@ export function NotificationSettingsCard({ data, setData, requestPermission, set
     if (granted) updateBreak("enabled", true);
   }
 
+  function snoozeBreakReminderToday() {
+    if (typeof window === "undefined") return;
+    sessionStorage.setItem(breakReminderSnoozeKey(localDateKey()), "1");
+    setToast("یادآوری استراحت تا فردا متوقف شد");
+  }
+
   async function sendTestNotification() {
     const granted = permission === "granted" ? true : await ensurePermission();
     if (!granted || typeof Notification === "undefined") return;
@@ -79,6 +87,7 @@ export function NotificationSettingsCard({ data, setData, requestPermission, set
     <div className="mt-4 flex flex-wrap gap-2">
       <Button type="button" variant="outline" onClick={() => void ensurePermission()}><BellRing /> درخواست اجازه اعلان</Button>
       <Button type="button" variant="secondary" onClick={() => void sendTestNotification()} disabled={permission === "unsupported"}><Send /> ارسال اعلان آزمایشی</Button>
+      <Button type="button" variant="ghost" onClick={snoozeBreakReminderToday} disabled={!settings.breakReminder.enabled}><TimerOff /> امروز یادآوری نکن</Button>
     </div>
     {permission === "denied" && <p className="mt-3 text-[10px] leading-6 text-[var(--danger)]" role="alert">اعلان‌ها در تنظیمات مرورگر مسدود شده‌اند. از بخش مجوزهای سایت، Notification را روی Allow قرار بده.</p>}
   </section>;
