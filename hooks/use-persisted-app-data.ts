@@ -6,14 +6,12 @@ import { AppDataStorageAdapter } from "@/lib/storage";
 import type { RecoverySnapshot } from "@/lib/recovery";
 import type { AppData, StorageInfo } from "@/lib/types";
 import { localDateKey } from "@/lib/format";
-import { hasUnsavedSettingsDrafts } from "@/lib/settings-draft-registry";
-import { APP_SYNC_CHANNEL, createDataSavedMessage, createTabId, isAppSyncMessage } from "@/lib/multi-tab-sync";
-import { addSyncEvent, clearSyncHistory, createInitialSyncStatus } from "@/lib/multi-tab-sync-status";
 import {
   applyPendingClose, applyStaleHeartbeat, createPendingClose, createSessionHeartbeat,
   parsePendingClose, parseSessionHeartbeat, SESSION_CLOSE_KEY, SESSION_HEARTBEAT_INTERVAL_MS,
   SESSION_HEARTBEAT_KEY,
 } from "@/lib/session-close";
+import { useMultiTabDataSync } from "./use-multi-tab-data-sync";
 
 export type SaveState = "idle" | "saving" | "saved" | "error";
 
@@ -28,15 +26,14 @@ export function usePersistedAppData() {
   const [lastSavedAt, setLastSavedAt] = useState<string | null>(null);
   const [saveError, setSaveError] = useState("");
   const [recoverySnapshot, setRecoverySnapshot] = useState<RecoverySnapshot | null>(null);
-  const [externalSyncPending, setExternalSyncPending] = useState(false);
-  const [multiTabSyncStatus, setMultiTabSyncStatus] = useState(createInitialSyncStatus);
   const latestDataRef = useRef(data);
-  const tabIdRef = useRef("");
-  const channelRef = useRef<BroadcastChannel | null>(null);
-  const skipNextPersistRef = useRef(false);
   useEffect(() => {
     latestDataRef.current = data;
   }, [data]);
+  const {
+    externalSyncPending, multiTabSyncStatus, publishSaved, consumeSkipNextPersist,
+    reloadExternalData, dismissExternalSync, clearMultiTabSyncHistory,
+  } = useMultiTabDataSync({ ready, saveState, storage, setData, setToast });
   useEffect(() => {
     void (async () => {
       try {
@@ -81,7 +78,7 @@ export function usePersistedAppData() {
       await storage.save(value);
       const savedAt = new Date();
       setLastSavedAt(savedAt.toISOString());
-      channelRef.current?.postMessage(createDataSavedMessage(tabIdRef.current, savedAt));
+      publishSaved(savedAt);
       setSaveState("saved");
       setStorageInfo(await storage.estimate());
       return true;
@@ -94,62 +91,17 @@ export function usePersistedAppData() {
         : "ذخیره اصلی و نسخه بازیابی هر دو ناموفق بودند؛ همین حالا فایل پشتیبان دانلود کنید.");
       return false;
     }
-  }, [storage]);
+  }, [publishSaved, storage]);
   useEffect(() => {
     if (!ready) return;
-    if (skipNextPersistRef.current) {
-      skipNextPersistRef.current = false;
-      return;
-    }
+    if (consumeSkipNextPersist()) return;
     const id = window.setTimeout(() => {
       void persistData(data);
     }, 220);
     return () => window.clearTimeout(id);
-  }, [data, persistData, ready]);
+  }, [consumeSkipNextPersist, data, persistData, ready]);
 
 
-  const loadExternalData = useCallback(async () => {
-    if (hasUnsavedSettingsDrafts()) {
-      setToast("ابتدا تغییرات در حال ویرایش را ذخیره یا لغو کنید");
-      return false;
-    }
-    const { value } = await storage.load();
-    if (!value) return false;
-    skipNextPersistRef.current = true;
-    setData(value);
-    setExternalSyncPending(false);
-    setMultiTabSyncStatus((current) => ({ ...current, pending: false }));
-    setToast("تغییرات تب دیگر بارگذاری شد");
-    return true;
-  }, [storage]);
-
-  useEffect(() => {
-    if (!ready || typeof BroadcastChannel === "undefined") return;
-    tabIdRef.current = createTabId();
-    queueMicrotask(() => setMultiTabSyncStatus((current) => ({
-      ...current, supported: true, currentTabId: tabIdRef.current,
-    })));
-    const channel = new BroadcastChannel(APP_SYNC_CHANNEL);
-    channelRef.current = channel;
-    channel.addEventListener("message", (event) => {
-      if (!isAppSyncMessage(event.data) || event.data.tabId === tabIdRef.current) return;
-      const receivedAt = new Date().toISOString();
-      const pending = hasUnsavedSettingsDrafts() || saveState === "saving";
-      setMultiTabSyncStatus((current) => addSyncEvent(current, {
-        kind: pending ? "deferred" : "loaded", sourceTabId: event.data.tabId,
-        savedAt: event.data.savedAt, receivedAt,
-      }));
-      if (pending) {
-        setExternalSyncPending(true);
-        return;
-      }
-      void loadExternalData();
-    });
-    return () => {
-      channel.close();
-      channelRef.current = null;
-    };
-  }, [loadExternalData, ready, saveState]);
   useEffect(() => {
     if (!ready) return;
     const writeHeartbeat = () => {
@@ -242,9 +194,7 @@ export function usePersistedAppData() {
     storageInfo, setStorageInfo, storage,
     saveState, lastSavedAt, saveError, recoverySnapshot,
     retrySave, createManualRecovery, restoreRecovery, clearRecovery,
-    externalSyncPending, multiTabSyncStatus,
-    clearMultiTabSyncHistory: () => setMultiTabSyncStatus(clearSyncHistory),
-    reloadExternalData: loadExternalData,
-    dismissExternalSync: () => setExternalSyncPending(false),
+    externalSyncPending, multiTabSyncStatus, clearMultiTabSyncHistory,
+    reloadExternalData, dismissExternalSync,
   };
 }

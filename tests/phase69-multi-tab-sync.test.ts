@@ -13,12 +13,15 @@ test("multi-tab messages are versioned by type and validate timestamps", () => {
 });
 
 test("persisted data broadcasts successful saves and defers unsafe reloads", async () => {
-  const source = await read("hooks/use-persisted-app-data.ts");
-  assert.match(source, /new BroadcastChannel\(APP_SYNC_CHANNEL\)/);
-  assert.match(source, /postMessage\(createDataSavedMessage/);
-  assert.match(source, /hasUnsavedSettingsDrafts\(\)/);
-  assert.match(source, /setExternalSyncPending\(true\)/);
-  assert.match(source, /skipNextPersistRef\.current = true/);
+  const persisted = await read("hooks/use-persisted-app-data.ts");
+  const sync = await read("hooks/use-multi-tab-data-sync.ts");
+  assert.match(persisted, /useMultiTabDataSync/);
+  assert.match(persisted, /publishSaved\(savedAt\)/);
+  assert.match(sync, /new BroadcastChannel\(APP_SYNC_CHANNEL\)/);
+  assert.match(sync, /postMessage\(createDataSavedMessage/);
+  assert.match(sync, /hasUnsavedSettingsDrafts\(\)/);
+  assert.match(sync, /setExternalSyncPending\(true\)/);
+  assert.match(sync, /skipNextPersistRef\.current = true/);
 });
 
 test("shell exposes an actionable semantic multi-tab conflict banner", async () => {
