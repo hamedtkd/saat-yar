@@ -19,6 +19,7 @@ export const defaultSettings: Settings = {
   payrollComponents: [],
   autoOfficialHolidays: true,
   autoWeeklyHoliday: true,
+  autoSaveSettings: false,
   notificationSettings: {
     enabled: false,
     openTimerReminderMinutes: 240,
@@ -41,7 +42,10 @@ export function createInitialData(options: { onboarded?: boolean } = {}): AppDat
         Object.entries(defaultSettings.weeklySchedule).map(([day, schedule]) => [day, { ...schedule }]),
       ) as Settings["weeklySchedule"],
       payrollComponents: defaultSettings.payrollComponents.map((component) => ({ ...component })),
-      notificationSettings: { ...defaultSettings.notificationSettings },
+      notificationSettings: {
+        ...defaultSettings.notificationSettings,
+        breakReminder: { ...defaultSettings.notificationSettings.breakReminder },
+      },
       appearance: { ...defaultSettings.appearance },
     },
     records: {},

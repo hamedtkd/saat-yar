@@ -239,6 +239,18 @@ function migrateV13ToV14(value: unknown): unknown {
   };
 }
 
+function migrateV14ToV15(value: unknown): unknown {
+  if (!isObject(value)) return value;
+  const settings = isObject(value.settings) ? value.settings : {};
+  return {
+    ...value,
+    settings: {
+      ...settings,
+      autoSaveSettings: false,
+    },
+  };
+}
+
 const migrations: Record<number, (value: unknown) => unknown> = {
   1: migrateV1ToV2,
   2: migrateV2ToV3,
@@ -253,6 +265,7 @@ const migrations: Record<number, (value: unknown) => unknown> = {
   11: migrateV11ToV12,
   12: migrateV12ToV13,
   13: migrateV13ToV14,
+  14: migrateV14ToV15,
 };
 
 export function migrateAppData(value: unknown): MigrationResult {

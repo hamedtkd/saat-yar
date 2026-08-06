@@ -38,6 +38,7 @@ const settingsSchema = z.object({
     radius: z.enum(["compact", "balanced", "rounded"]),
     surface: z.enum(["neutral", "tinted", "contrast"]),
   }).passthrough(),
+  autoSaveSettings: z.boolean(),
   notificationSettings: z.object({
     enabled: z.boolean(),
     openTimerReminderMinutes: z.number().int().nonnegative(),

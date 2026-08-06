@@ -103,6 +103,7 @@ export type Settings = {
   autoOfficialHolidays: boolean;
   autoWeeklyHoliday: boolean;
   notificationSettings: NotificationSettings;
+  autoSaveSettings: boolean;
   appearance: AppearanceSettings;
   mode: Mode;
 };
