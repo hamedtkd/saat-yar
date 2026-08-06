@@ -9,7 +9,10 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { activeDeletedRecords, permanentlyDeleteRecord, restoreDeletedRecord } from "@/lib/record-recycle-bin";
+import {
+  activeDeletedRecords, expiredDeletedRecords, permanentlyDeleteRecord,
+  purgeExpiredDeletedRecords, restoreAllDeletedRecords, restoreDeletedRecord,
+} from "@/lib/record-recycle-bin";
 import type { AppData } from "@/lib/types";
 
 function formatDate(value: string) {
@@ -27,7 +30,10 @@ export function RecordRecycleBinCard({ data, setData, setToast }: {
   setToast: (message: string) => void;
 }) {
   const [deleteId, setDeleteId] = useState("");
+  const [confirmExpiredCleanup, setConfirmExpiredCleanup] = useState(false);
   const items = activeDeletedRecords(data.deletedRecords);
+  const expiredItems = expiredDeletedRecords(data.deletedRecords);
+  const restorableCount = items.filter((item) => !data.records[item.date]).length;
 
   function restore(id: string) {
     const item = data.deletedRecords.find((entry) => entry.id === id);
@@ -40,6 +46,18 @@ export function RecordRecycleBinCard({ data, setData, setToast }: {
     setToast("رکورد از سطل بازیابی برگردانده شد");
   }
 
+  function restoreAll() {
+    const result = restoreAllDeletedRecords(data);
+    if (result.restoredCount === 0) {
+      setToast(result.blockedCount ? "همه رکوردهای قابل نمایش با رکورد فعال همان تاریخ تداخل دارند" : "رکوردی برای بازیابی وجود ندارد");
+      return;
+    }
+    setData(result.data);
+    const restored = result.restoredCount.toLocaleString("fa-IR");
+    const blocked = result.blockedCount.toLocaleString("fa-IR");
+    setToast(result.blockedCount ? `${restored} رکورد بازگردانده شد؛ ${blocked} مورد به‌دلیل تداخل باقی ماند` : `${restored} رکورد بازگردانده شد`);
+  }
+
   function removeForever() {
     if (!deleteId) return;
     setData((current) => permanentlyDeleteRecord(current, deleteId));
@@ -47,17 +65,32 @@ export function RecordRecycleBinCard({ data, setData, setToast }: {
     setDeleteId("");
   }
 
+  function cleanupExpired() {
+    const result = purgeExpiredDeletedRecords(data);
+    setData(result.data);
+    setToast(`${result.removedCount.toLocaleString("fa-IR")} رکورد منقضی‌شده برای همیشه پاک شد`);
+    setConfirmExpiredCleanup(false);
+  }
+
   return <section className="col-span-full overflow-hidden rounded-[15px] border border-[var(--border)] bg-[var(--surface-1)] shadow-[0_6px_20px_rgba(17,45,55,.04)]">
     <div className="flex flex-wrap items-start justify-between gap-3 border-b border-[var(--border)] p-5">
       <div className="grid gap-2">
         <PanelHead icon={<Trash2 />} title="سطل بازیابی رکوردها" />
-        <p className="text-[10px] leading-5 text-[var(--text-muted)]">رکوردهای حذف‌شده تا ۳۰ روز قابل بازگردانی‌اند و سپس منقضی می‌شوند.</p>
+        <p className="text-[10px] leading-5 text-[var(--text-muted)]">رکوردهای حذف‌شده تا ۳۰ روز قابل بازگردانی‌اند و سپس برای پاک‌سازی آماده می‌شوند.</p>
       </div>
-      <StatusBadge tone={items.length ? "info" : "success"}>{items.length ? `${items.length.toLocaleString("fa-IR")} رکورد` : "خالی"}</StatusBadge>
+      <div className="flex flex-wrap gap-2">
+        <StatusBadge tone={items.length ? "info" : "success"}>{items.length ? `${items.length.toLocaleString("fa-IR")} قابل بازیابی` : "سطل فعال خالی"}</StatusBadge>
+        {expiredItems.length > 0 && <StatusBadge tone="warning">{expiredItems.length.toLocaleString("fa-IR")} منقضی‌شده</StatusBadge>}
+      </div>
+    </div>
+
+    <div className="flex flex-wrap gap-2 border-b border-[var(--border)] p-4 sm:p-5">
+      <Button type="button" variant="outline" disabled={restorableCount === 0} onClick={restoreAll}><RotateCcw /> بازگردانی همه</Button>
+      <Button type="button" variant="destructive" disabled={expiredItems.length === 0} onClick={() => setConfirmExpiredCleanup(true)}><Trash2 /> پاک‌سازی منقضی‌ها</Button>
     </div>
 
     {items.length === 0 ? (
-      <p className="p-5 text-sm text-[var(--text-muted)]">رکورد حذف‌شده‌ای برای بازیابی وجود ندارد.</p>
+      <p className="p-5 text-sm text-[var(--text-muted)]">رکورد فعالی برای بازیابی وجود ندارد.{expiredItems.length ? " رکوردهای منقضی‌شده را می‌توانی یکجا پاک کنی." : ""}</p>
     ) : (
       <div className="grid gap-2 p-4 sm:p-5">
         {items.map((item) => {
@@ -86,6 +119,19 @@ export function RecordRecycleBinCard({ data, setData, setToast }: {
         <AlertDialogFooter>
           <AlertDialogCancel>انصراف</AlertDialogCancel>
           <AlertDialogAction className="bg-[var(--danger)] text-white" onClick={removeForever}>بله، حذف دائمی</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
+    <AlertDialog open={confirmExpiredCleanup} onOpenChange={setConfirmExpiredCleanup}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>رکوردهای منقضی‌شده پاک شوند؟</AlertDialogTitle>
+          <AlertDialogDescription>{expiredItems.length.toLocaleString("fa-IR")} رکوردی که مهلت ۳۰ روزه آن‌ها تمام شده برای همیشه حذف می‌شوند. این عملیات از داخل برنامه قابل بازگشت نیست.</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>انصراف</AlertDialogCancel>
+          <AlertDialogAction className="bg-[var(--danger)] text-white" onClick={cleanupExpired}>بله، پاک‌سازی شوند</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
