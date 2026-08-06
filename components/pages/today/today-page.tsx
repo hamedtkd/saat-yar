@@ -9,12 +9,11 @@ import { jalali } from "@/lib/format";
 import { getHolidayInfo } from "@/lib/holidays";
 import { buildGreeting } from "@/lib/greeting";
 import { ManualEntryForm } from "./manual-entry-form";
-import { TodayFocusCard } from "./today-focus-card";
 import { TodayMetrics } from "./today-metrics";
 import { TodaySmartSummary } from "./today-smart-summary";
-import { TodayTimeStrip } from "./today-time-strip";
 import { TodayTimeline } from "./today-timeline";
 import { RecordHealthBanner } from "./record-health-banner";
+import { CompletedDayEditor } from "./completed-day-editor";
 import type { TodayPageProps } from "./types.ts";
 import { cn } from "@/lib/cn";
 
@@ -88,8 +87,7 @@ export function TodayPage(props: TodayPageProps) {
         openBreak={Boolean(props.activeBreak)}
         lunchRunning={props.lunchRunning}
       />
-      <TodayFocusCard {...props} />
-      <TodayTimeStrip {...props} />
+      <CompletedDayEditor key={props.selectedDate} {...props} />
       {props.editingEntry === "manual" &&
         props.data.settings.mode !== "employee" && (
           <ManualEntryForm {...props} />

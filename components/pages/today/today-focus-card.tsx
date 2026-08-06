@@ -34,7 +34,7 @@ export function TodayFocusCard(props: Props) {
           <label className={cn("grid min-w-0 gap-2 text-xs font-bold text-[var(--text-muted)]", isEmployee ? "w-full" : "col-span-8 max-[720px]:col-span-12")}>
             توضیحات
             {isEmployee ? (
-              <Textarea rows={4} className="min-h-28" placeholder="مثلاً کارهای انجام‌شده، پیگیری‌های فردا یا نتیجه جلسه" value={props.timerDraft.note} onChange={(event) => props.setTimerDraft((previous) => ({ ...previous, note: event.target.value }))} />
+              <Textarea rows={4} className="min-h-28" placeholder="مثلاً کارهای انجام‌شده، پیگیری‌های فردا یا نتیجه جلسه" value={props.record.note} onChange={(event) => props.updateRecord({ note: event.target.value })} />
             ) : (
               <Input placeholder="شرح کوتاه کار امروز" value={props.timerDraft.note} onChange={(event) => props.setTimerDraft((previous) => ({ ...previous, note: event.target.value }))} />
             )}

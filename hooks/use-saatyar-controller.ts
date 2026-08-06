@@ -16,7 +16,7 @@ import { useReportActions } from "./controller/use-report-actions";
 export function useSaatyarController() {
   const persisted = usePersistedAppData();
   const { data, setData, setToast, storage } = persisted;
-  const [selectedDate, setSelectedDate] = useState(localDateKey());
+  const [selectedDate, setSelectedDateState] = useState(localDateKey());
   const [selectedProjectId, setSelectedProjectId] = useState("");
   const [onboardingStep, setOnboardingStep] = useState(2);
   const [showClientForm, setShowClientForm] = useState(false);
@@ -29,6 +29,12 @@ export function useSaatyarController() {
   const [leaveDraft, setLeaveDraft] = useState<LeaveEntry>(createLeaveDraft());
   const [importPreview, setImportPreview] = useState<AppData | null>(null);
   const [financialsHidden, setFinancialsHidden] = useState(false);
+
+  function setSelectedDate(date: string) {
+    setSelectedDateState(date);
+    setTimerDraft({ ...initialTimerDraft, note: data.records[date]?.note ?? "" });
+    setEditingEntry("");
+  }
 
   const derived = useControllerDerived(data, selectedDate, selectedProjectId, reportFilter);
   const attendance = useAttendanceActions({
