@@ -34,8 +34,9 @@ test("settings navigation guards dirty drafts with an accessible alert dialog", 
   assert.match(guard, /ذخیره و ادامه/);
   assert.match(guard, /بدون ذخیره ادامه بده/);
   assert.match(guard, /ماندن در این بخش/);
-  assert.match(dialog, /role="alertdialog"/);
-  assert.match(dialog, /aria-modal="true"/);
+  assert.match(dialog, /@radix-ui\/react-alert-dialog/);
+  assert.match(dialog, /AlertDialogPrimitive\.Portal/);
+  assert.match(dialog, /AlertDialogPrimitive\.Content/);
 });
 
 test("settings drafts register through the shared hook", async () => {
