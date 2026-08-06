@@ -17,8 +17,10 @@ export function useBrowserHistoryGuard({
   const hasUnsavedRef = useRef(hasUnsavedChanges);
   const requestNavigationRef = useRef(requestNavigation);
 
-  hasUnsavedRef.current = hasUnsavedChanges;
-  requestNavigationRef.current = requestNavigation;
+  useEffect(() => {
+    hasUnsavedRef.current = hasUnsavedChanges;
+    requestNavigationRef.current = requestNavigation;
+  }, [hasUnsavedChanges, requestNavigation]);
 
   useEffect(() => {
     acceptedHref.current = window.location.href;

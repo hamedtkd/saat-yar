@@ -11,7 +11,7 @@ export function useLiveTimerOwnership(active: boolean) {
   const tabIdRef = useRef(createTabId());
   const channelRef = useRef<BroadcastChannel | null>(null);
   const [owner, setOwner] = useState<LiveTimerLock | null>(null);
-  const blocked = Boolean(owner);
+  const blocked = active && Boolean(owner);
 
   const refresh = useCallback(() => {
     const lock = parseLiveTimerLock(window.localStorage.getItem(LIVE_TIMER_LOCK_KEY));
@@ -36,13 +36,11 @@ export function useLiveTimerOwnership(active: boolean) {
     return true;
   }, [publish]);
 
-  const release = useCallback(() => {
+  const releaseLock = useCallback(() => {
     const lock = parseLiveTimerLock(window.localStorage.getItem(LIVE_TIMER_LOCK_KEY));
-    if (lock?.tabId === tabIdRef.current) {
-      window.localStorage.removeItem(LIVE_TIMER_LOCK_KEY);
-      channelRef.current?.postMessage({ releasedBy: tabIdRef.current });
-    }
-    setOwner(null);
+    if (lock?.tabId !== tabIdRef.current) return;
+    window.localStorage.removeItem(LIVE_TIMER_LOCK_KEY);
+    channelRef.current?.postMessage({ releasedBy: tabIdRef.current });
   }, []);
 
   const takeOver = useCallback(() => publish(), [publish]);
@@ -65,11 +63,14 @@ export function useLiveTimerOwnership(active: boolean) {
   }, [refresh]);
 
   useEffect(() => {
-    if (!active) { release(); return; }
+    if (!active) {
+      releaseLock();
+      return;
+    }
     if (blocked || !ensureOwnership()) return;
     const id = window.setInterval(publish, LIVE_TIMER_HEARTBEAT_MS);
     return () => window.clearInterval(id);
-  }, [active, blocked, ensureOwnership, publish, release]);
+  }, [active, blocked, ensureOwnership, publish, releaseLock]);
 
   return { blocked, owner, ensureOwnership, takeOver };
 }

@@ -101,3 +101,9 @@
 
 - [x] ایجاد Fixture مشترک و Type-safe برای `WorkRecord` و حذف Fixture ناقص مرکز سلامت داده.
 - [ ] مهاجرت تدریجی سایر تست‌های دارای رکورد دستی به Fixture مشترک.
+
+## پایداری React Hooks
+
+- [x] انتقال به‌روزرسانی Refهای ناوبری از Render به Effect.
+- [x] حذف SetState هم‌زمان از Effect مالکیت تایمر.
+- [x] دقیق‌کردن Dependencyهای Callback ویرایش رکورد تاریخی.

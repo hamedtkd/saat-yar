@@ -12,43 +12,44 @@ import { TodayFocusCard } from "./today-focus-card";
 import { TodayTimeStrip } from "./today-time-strip";
 
 export function CompletedDayEditor(props: TodayPageProps) {
-  const completed = Boolean(props.record.start && props.record.end);
+  const { record, selectedDate, updateRecord } = props;
+  const completed = Boolean(record.start && record.end);
   const registryId = useId();
   const [editing, setEditing] = useState(!completed);
-  const [baseline, setBaseline] = useState<WorkRecord>(props.record);
-  const [draft, setDraft] = useState<WorkRecord>(props.record);
+  const [baseline, setBaseline] = useState<WorkRecord>(record);
+  const [draft, setDraft] = useState<WorkRecord>(record);
   const locked = completed && !editing;
   const changes = useMemo(() => getWorkRecordChanges(baseline, draft), [baseline, draft]);
   const dirty = changes.length > 0;
   const visibleRecord = completed ? draft : props.record;
   const updateVisibleRecord = completed
     ? (patch: Partial<WorkRecord>) => setDraft((current) => ({ ...current, ...patch }))
-    : props.updateRecord;
+    : updateRecord;
 
   const beginEdit = useCallback(() => {
-    setBaseline(props.record);
-    setDraft(props.record);
+    setBaseline(record);
+    setDraft(record);
     setEditing(true);
-  }, [props.record]);
+  }, [record]);
   const cancelEdit = useCallback(() => {
     setDraft(baseline);
     setEditing(false);
   }, [baseline]);
   const saveEdit = useCallback(() => {
     const saved = { ...draft, manuallyEdited: true, needsReview: false };
-    props.updateRecord(saved);
+    updateRecord(saved);
     setBaseline(saved);
     setDraft(saved);
     setEditing(false);
-  }, [draft, props.updateRecord]);
+  }, [draft, updateRecord]);
   useEffect(
     () => registerSettingsDraft(registryId, {
-      label: `ویرایش رکورد ${props.selectedDate}`,
+      label: `ویرایش رکورد ${selectedDate}`,
       dirty: completed && editing && dirty,
       save: saveEdit,
       discard: cancelEdit,
     }),
-    [cancelEdit, completed, dirty, editing, props.selectedDate, registryId, saveEdit],
+    [cancelEdit, completed, dirty, editing, registryId, saveEdit, selectedDate],
   );
 
   const childProps = { ...props, record: visibleRecord, updateRecord: updateVisibleRecord };
