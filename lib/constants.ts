@@ -1,6 +1,7 @@
 import type { AppData, LeaveEntry, Settings } from "./types.ts";
 import { localDateKey } from "./format.ts";
 import { createDefaultWeeklySchedule } from "./work-schedule.ts";
+import { createCompleteAppData } from "./data/app-data-factory.ts";
 
 export const defaultSettings: Settings = {
   name: "",
@@ -34,7 +35,7 @@ export const defaultSettings: Settings = {
 export const colors = ["#0969a9", "#f4a500", "#0a9d63", "#7d55b6", "#e76f1e", "#238d9a"];
 
 export function createInitialData(options: { onboarded?: boolean } = {}): AppData {
-  return {
+  return createCompleteAppData({
     settings: {
       ...defaultSettings,
       onboarded: options.onboarded ?? defaultSettings.onboarded,
@@ -48,16 +49,7 @@ export function createInitialData(options: { onboarded?: boolean } = {}): AppDat
       },
       appearance: { ...defaultSettings.appearance },
     },
-    records: {},
-    leaves: [],
-    clients: [],
-    projects: [],
-    timeEntries: [],
-    expenses: [],
-    invoices: [],
-    holidayOverrides: [],
-    deletedRecords: [],
-  };
+  });
 }
 
 export const initialData: AppData = createInitialData();

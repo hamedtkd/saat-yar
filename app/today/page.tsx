@@ -34,6 +34,9 @@ export default function TodayRoute() {
       finishWork={controller.finishWork}
       updateRecord={controller.updateRecord}
       resetRecord={controller.resetRecord}
+      resetUndoDate={controller.resetUndoDate}
+      undoResetRecord={controller.undoResetRecord}
+      dismissResetUndo={controller.dismissResetUndo}
       startLunch={controller.startLunch}
       finishLunch={controller.finishLunch}
       startBreak={controller.startBreak}

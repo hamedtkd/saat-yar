@@ -1,5 +1,6 @@
 import type { AppData, Settings, WeekdayKey } from "../types.ts";
 import { weekdayOrder } from "../work-schedule.ts";
+import { createCompleteAppData } from "./app-data-factory.ts";
 
 export function normaliseData(value: AppData, defaults: Settings): AppData {
   const incomingSettings = value.settings ?? defaults;
@@ -11,7 +12,7 @@ export function normaliseData(value: AppData, defaults: Settings): AppData {
     }]),
   ) as Settings["weeklySchedule"];
 
-  return {
+  return createCompleteAppData({
     settings: {
       ...defaults,
       ...incomingSettings,
@@ -88,5 +89,5 @@ export function normaliseData(value: AppData, defaults: Settings): AppData {
         breaks: (item.record.breaks ?? []).map((entry) => ({ ...entry })),
       },
     })),
-  };
+  });
 }
