@@ -58,7 +58,7 @@ test("notification hook avoids whole-record effect dependencies and supports dai
   const hook = await readFile(new URL("../hooks/controller/use-notification-reminders.ts", import.meta.url), "utf8");
   const card = await readFile(new URL("../components/pages/settings/notification-settings-card.tsx", import.meta.url), "utf8");
 
-  assert.doesNotMatch(hook, /\], \[.*\brecord\b/s);
+  assert.doesNotMatch(hook, /\], \[[\s\S]*?\brecord\b/);
   assert.match(hook, /activeTrackingMinutes/);
   assert.match(hook, /breakReminderSnoozeKey/);
   assert.match(card, /امروز یادآوری نکن/);
