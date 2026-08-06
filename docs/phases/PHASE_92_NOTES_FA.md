@@ -31,7 +31,7 @@ npm run test:browser:production
 این فرمان:
 
 1. Build نهایی Next.js را می‌سازد.
-2. `next start` را روی پورت آزاد اجرا می‌کند.
+2. خروجی Static داخل `out/` را روی پورت آزاد سرو می‌کند. این بخش در فاز ۹۳ برای سازگاری قطعی با `output: export` سخت‌سازی شد.
 3. Chrome، Edge یا Chromium نصب‌شده را در حالت Headless باز می‌کند.
 4. با Chrome DevTools Protocol و APIهای داخلی Node.js به مرورگر متصل می‌شود.
 5. بارگذاری اولیه برنامه را بررسی می‌کند.

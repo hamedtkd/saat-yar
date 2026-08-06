@@ -258,6 +258,19 @@ npm.cmd run check:release
 
 پس از دریافت فازی که Dependency جدید دارد، حتماً `npm install` اجرا شود. دستور `npm run check:dependencies` پیش از TypeScript، پکیج‌های نصب‌نشده را با پیام قابل‌فهم گزارش می‌کند.
 
+Smoke Test این پروژه با `next start` اجرا نمی‌شود؛ چون تنظیم `output: export` فعال است. اسکریپت، پوشه `out/` را با یک سرور Static داخلی و بدون Dependency اضافه سرو می‌کند.
+
+اگر پس از نصب با تعداد زیادی خطای فایل گم‌شده در `lucide-react` روبه‌رو شدی، نصب محلی ناقص است. در PowerShell اجرا کن:
+
+```powershell
+Remove-Item -Recurse -Force ".\node_modules" -ErrorAction SilentlyContinue
+Remove-Item -Recurse -Force ".\.next" -ErrorAction SilentlyContinue
+npm cache verify
+npm ci
+```
+
+هشدار `EPERM` در مرحله cleanup به‌تنهایی شکست نصب نیست؛ معیار اصلی پایان موفق `npm ci` و عبور `npm run check:dependencies` است.
+
 ## دستورات مرجع
 
 | هدف | دستور |

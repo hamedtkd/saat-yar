@@ -5,14 +5,27 @@ import { createServer } from "node:net";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve, win32 } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { startStaticExportServer } from "./static-export-server.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const WAIT_TIMEOUT_MS = 30_000;
 
+/** @param {unknown} value @returns {value is string} */
+function isNonEmptyString(value) {
+  return typeof value === "string" && value.length > 0;
+}
+
+/**
+ * @param {Record<string, string | undefined>} [env]
+ * @param {NodeJS.Platform} [platform]
+ * @returns {string[]}
+ */
 export function browserExecutableCandidates(env = process.env, platform = process.platform) {
-  const overrides = [env.SAATYAR_BROWSER_PATH, env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH, env.CHROME_PATH].filter(Boolean);
+  const overrides = [env.SAATYAR_BROWSER_PATH, env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH, env.CHROME_PATH]
+    .filter(isNonEmptyString);
   if (platform === "win32") {
-    const programFiles = [env.PROGRAMFILES, env["PROGRAMFILES(X86)"], env.LOCALAPPDATA].filter(Boolean);
+    const programFiles = [env.PROGRAMFILES, env["PROGRAMFILES(X86)"], env.LOCALAPPDATA]
+      .filter(isNonEmptyString);
     return [...overrides, ...programFiles.flatMap((base) => [
       win32.join(base, "Google", "Chrome", "Application", "chrome.exe"),
       win32.join(base, "Microsoft", "Edge", "Application", "msedge.exe"),
@@ -160,35 +173,28 @@ async function terminate(child) {
 }
 
 export async function runProductionBrowserSmoke() {
-  const nextBin = resolve(ROOT, "node_modules", "next", "dist", "bin", "next");
-  if (!existsSync(nextBin)) throw new Error("Next.js is not installed. Run npm install first.");
-  if (!existsSync(resolve(ROOT, ".next", "BUILD_ID"))) throw new Error("Production build is missing. Run npm run build:vercel first.");
+  const outputDirectory = resolve(ROOT, "out");
+  if (!existsSync(resolve(outputDirectory, "index.html"))) {
+    throw new Error("Static production export is missing. Run npm run build:vercel first.");
+  }
 
   const browserExecutable = findBrowserExecutable();
   if (!browserExecutable) {
     throw new Error("Chrome, Edge or Chromium was not found. Set SAATYAR_BROWSER_PATH to the browser executable.");
   }
 
-  const appPort = await freePort();
   const debugPort = await freePort();
-  const origin = `http://127.0.0.1:${appPort}`;
   const profileDir = await mkdtemp(join(tmpdir(), "saatyar-browser-smoke-"));
-  let server;
+  let staticServer;
   let browser;
   let client;
-  let serverOutput = "";
   let browserOutput = "";
 
   try {
-    server = spawn(process.execPath, [nextBin, "start", "-H", "127.0.0.1", "-p", String(appPort)], {
-      cwd: ROOT,
-      env: { ...process.env, NODE_ENV: "production" },
-      stdio: ["ignore", "pipe", "pipe"],
-    });
-    server.stdout.on("data", (chunk) => { serverOutput += chunk; });
-    server.stderr.on("data", (chunk) => { serverOutput += chunk; });
+    staticServer = await startStaticExportServer({ outputDirectory });
+    const { origin } = staticServer;
     await waitForHttp(origin);
-    console.log("✓ Production server is reachable");
+    console.log("✓ Static production export is reachable");
 
     const browserArgs = [
       "--headless=new",
@@ -224,7 +230,7 @@ export async function runProductionBrowserSmoke() {
     await clickButton(client, "ادامه");
     await waitFor(client, "document.body?.innerText.includes('اطلاعات فقط روی دستگاه تو می‌ماند')", "onboarding privacy step");
     await clickButton(client, "شروع ساعت‌یار");
-    await waitFor(client, "location.pathname === '/today' && !document.body?.innerText.includes('شروع ساعت‌یار')", "today route after onboarding");
+    await waitFor(client, "['/today', '/today/'].includes(location.pathname) && !document.body?.innerText.includes('شروع ساعت‌یار')", "today route after onboarding");
     await new Promise((resolveWait) => setTimeout(resolveWait, 400));
     console.log("✓ Onboarding completed and today route rendered");
 
@@ -248,13 +254,12 @@ export async function runProductionBrowserSmoke() {
     if (runtimeErrors.length > 0) throw new Error(`Browser runtime errors:\n${runtimeErrors.join("\n")}`);
     console.log("Production browser smoke passed.");
   } catch (error) {
-    if (serverOutput.trim()) console.error(`\nNext output:\n${serverOutput.trim()}`);
     if (browserOutput.trim()) console.error(`\nBrowser output:\n${browserOutput.trim()}`);
     throw error;
   } finally {
     client?.close();
     await terminate(browser);
-    await terminate(server);
+    await staticServer?.close();
     await rm(profileDir, { recursive: true, force: true });
   }
 }

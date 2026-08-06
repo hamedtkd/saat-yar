@@ -142,7 +142,7 @@ http://localhost:3000
 | `npm test` | اجرای تست‌های منطق و معماری |
 | `npm run check` | پاک‌سازی فایل‌های قدیمی، Import check، Typecheck، Lint و Test |
 | `npm run check:quality` | اجرای تمام کنترل‌های کیفیت و Build نهایی Next.js |
-| `npm run test:browser:production` | Build و اجرای Smoke Test واقعی در Chrome، Edge یا Chromium |
+| `npm run test:browser:production` | Build خروجی Static و اجرای Smoke Test واقعی در Chrome، Edge یا Chromium |
 | `npm run check:release` | Quality کامل و سپس Smoke Test مرورگر روی همان Build |
 | `npm run build:pages` | ساخت خروجی Static |
 | `npm run build:vercel` | Build مناسب Vercel |
