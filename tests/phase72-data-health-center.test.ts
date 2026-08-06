@@ -5,11 +5,11 @@ import { collectDataHealthItems, getDataHealthSummary } from "../lib/data-health
 import type { WorkRecord } from "../lib/types.ts";
 
 const read = (path: string) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
-const base: WorkRecord = { date: "2026-08-06", start: "08:00", end: "16:00", lunchMinutes: 0, paidLunch: false, breaks: [], leaveMinutes: 0, leaveType: "none", note: "" };
+const base: WorkRecord = { date: "2026-08-06", start: "08:00", end: "16:00", lunchMinutes: 0, lunchPaid: false, breaks: [], leaveMinutes: 0, leaveType: "none", note: "" };
 
 test("data health center collects invalid incomplete and review records", () => {
   const items = collectDataHealthItems({
-    "2026-08-04": { ...base, date: "2026-08-04", end: undefined },
+    "2026-08-04": { ...base, date: "2026-08-04", end: "" },
     "2026-08-05": { ...base, date: "2026-08-05", needsReview: true, autoClosedAt: new Date().toISOString() },
     "2026-08-06": base,
   });

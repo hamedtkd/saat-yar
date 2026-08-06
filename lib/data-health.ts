@@ -10,22 +10,34 @@ export type DataHealthItem = {
 };
 
 export function collectDataHealthItems(records: Record<string, WorkRecord>): DataHealthItem[] {
-  return Object.entries(records)
-    .flatMap(([date, record]) => {
-      const status = getRecordStatus(record);
-      if (record.needsReview) {
-        return [{ date, record, state: "review" as const, label: "نیازمند بررسی", messages: ["این رکورد به‌صورت خودکار بسته شده و باید بررسی شود."] }];
-      }
-      if (status.state !== "invalid" && status.state !== "incomplete") return [];
-      return [{
+  const items: DataHealthItem[] = [];
+
+  for (const [date, record] of Object.entries(records)) {
+    const status = getRecordStatus(record);
+
+    if (record.needsReview) {
+      items.push({
         date,
         record,
-        state: status.state,
-        label: status.label,
-        messages: status.issues.map((issue) => issue.message),
-      }];
-    })
-    .sort((a, b) => b.date.localeCompare(a.date));
+        state: "review",
+        label: "نیازمند بررسی",
+        messages: ["این رکورد به‌صورت خودکار بسته شده و باید بررسی شود."],
+      });
+      continue;
+    }
+
+    if (status.state !== "invalid" && status.state !== "incomplete") continue;
+
+    items.push({
+      date,
+      record,
+      state: status.state,
+      label: status.label,
+      messages: status.issues.map((issue) => issue.message),
+    });
+  }
+
+  return items.sort((a, b) => b.date.localeCompare(a.date));
 }
 
 export function getDataHealthSummary(items: DataHealthItem[]) {

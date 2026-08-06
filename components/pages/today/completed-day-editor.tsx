@@ -1,7 +1,7 @@
 "use client";
 
 import { CheckCircle2, Pencil, RotateCcw, Save, X } from "lucide-react";
-import { useEffect, useId, useMemo, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { registerSettingsDraft } from "@/lib/settings-draft-registry";
 import { getWorkRecordChanges } from "@/lib/work-record-diff";
@@ -25,22 +25,22 @@ export function CompletedDayEditor(props: TodayPageProps) {
     ? (patch: Partial<WorkRecord>) => setDraft((current) => ({ ...current, ...patch }))
     : props.updateRecord;
 
-  const beginEdit = () => {
+  const beginEdit = useCallback(() => {
     setBaseline(props.record);
     setDraft(props.record);
     setEditing(true);
-  };
-  const cancelEdit = () => {
+  }, [props.record]);
+  const cancelEdit = useCallback(() => {
     setDraft(baseline);
     setEditing(false);
-  };
-  const saveEdit = () => {
+  }, [baseline]);
+  const saveEdit = useCallback(() => {
     const saved = { ...draft, manuallyEdited: true, needsReview: false };
     props.updateRecord(saved);
     setBaseline(saved);
     setDraft(saved);
     setEditing(false);
-  };
+  }, [draft, props.updateRecord]);
   useEffect(
     () => registerSettingsDraft(registryId, {
       label: `ویرایش رکورد ${props.selectedDate}`,

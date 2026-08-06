@@ -22,8 +22,9 @@ export function registerSettingsDraft(id: string, entry: DraftEntry) {
   if (previous?.dirty !== entry.dirty) emit();
 
   return () => {
+    const current = entries.get(id);
     if (!entries.delete(id)) return;
-    emit();
+    if (current?.dirty) emit();
   };
 }
 
