@@ -16,6 +16,7 @@ import { RecoveryCard } from "./recovery-card";
 import { AppearanceSettingsCard } from "./appearance/appearance-settings-card";
 import { SettingsBehaviorCard } from "./settings-behavior-card";
 import { ProfileSettingsCard } from "./profile-settings-card";
+import { DataHealthCard } from "./data-health-card";
 
 export function SettingsPage({ data, setData, storage, exportBackup, previewImport, importPreview, applyImport, requestPersistence, requestNotificationPermission, setToast, financialsHidden, saveState, lastSavedAt, saveError, recoverySnapshot, retrySave, createRecovery, restoreRecovery, clearRecovery }: {
   data: AppData;
@@ -44,7 +45,7 @@ export function SettingsPage({ data, setData, storage, exportBackup, previewImpo
       <SettingsNav />
       <div className={cn("grid grid-cols-2 items-start gap-4 max-[620px]:grid-cols-1")}>
         <span id="settings-general" className="col-span-full block scroll-mt-24" aria-hidden="true" /><div className="contents"><ProfileSettingsCard data={data} setData={setData} setToast={setToast} /><AppearanceSettingsCard data={data} setData={setData} setToast={setToast} /><SettingsBehaviorCard data={data} setData={setData} /></div>
-        <span id="settings-data" className="col-span-full block scroll-mt-24" aria-hidden="true" /><div className="contents"><StorageCard storage={storage} requestPersistence={requestPersistence} /><RecoveryCard saveState={saveState} lastSavedAt={lastSavedAt} saveError={saveError} recoverySnapshot={recoverySnapshot} retrySave={retrySave} createRecovery={createRecovery} restoreRecovery={restoreRecovery} clearRecovery={clearRecovery} /><BackupCard exportBackup={exportBackup} /><RestoreCard previewImport={previewImport} importPreview={importPreview} applyImport={applyImport} /></div>
+        <span id="settings-data" className="col-span-full block scroll-mt-24" aria-hidden="true" /><div className="contents"><DataHealthCard records={data.records} /><StorageCard storage={storage} requestPersistence={requestPersistence} /><RecoveryCard saveState={saveState} lastSavedAt={lastSavedAt} saveError={saveError} recoverySnapshot={recoverySnapshot} retrySave={retrySave} createRecovery={createRecovery} restoreRecovery={restoreRecovery} clearRecovery={clearRecovery} /><BackupCard exportBackup={exportBackup} /><RestoreCard previewImport={previewImport} importPreview={importPreview} applyImport={applyImport} /></div>
         <span id="settings-work" className="col-span-full block scroll-mt-24" aria-hidden="true" /><div className="contents"><WorkSettingsCard data={data} setData={setData} setToast={setToast} financialsHidden={financialsHidden} /><HolidayOverridesCard data={data} setData={setData} setToast={setToast} /><PayrollSettingsCard data={data} setData={setData} setToast={setToast} financialsHidden={financialsHidden} /><NotificationSettingsCard data={data} setData={setData} requestPermission={requestNotificationPermission} setToast={setToast} /></div>
         <span id="settings-about" className="col-span-full block scroll-mt-24" aria-hidden="true" /><div className="contents"><DangerZone setData={setData} setToast={setToast} /></div>
       </div>

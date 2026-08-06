@@ -9,6 +9,7 @@ test("settings draft registry saves and discards dirty cards", () => {
   let saved = 0;
   let discarded = 0;
   const unregister = registerSettingsDraft("phase61", {
+    label: "کارت تست فاز ۶۱",
     dirty: true,
     save: () => { saved += 1; },
     discard: () => { discarded += 1; },
