@@ -13,7 +13,7 @@ test("greeting follows local day periods and includes the saved name", () => {
 
 test("settings navigation stays sticky on desktop", async () => {
   const source = await readFile("components/pages/settings/settings-nav.tsx", "utf8");
-  assert.match(source, /sticky top-5/);
+  assert.match(source, /sticky top-\[84px\]/);
   assert.match(source, /max-\[900px\]:static/);
 });
 

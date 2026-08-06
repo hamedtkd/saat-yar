@@ -22,10 +22,12 @@ test("disabled days stay unchanged when weekly target changes", () => {
 test("settings cards use structured responsive surfaces", async () => {
   const notification = await read("components/pages/settings/notification-settings-card.tsx");
   const work = await read("components/pages/settings/work-settings-card.tsx");
+  const schedule = await read("components/pages/settings/work-schedule-editor.tsx");
   assert.match(notification, /lg:grid-cols-\[1\.1fr_1fr_1fr\]/);
   assert.match(notification, /bg-\[var\(--accent-soft\)\]/);
-  assert.match(work, /applyWeeklyTargetHours\(previous\.settings, hours\)/);
-  assert.match(work, /md:grid-cols-\[1fr_auto\]/);
+  assert.match(schedule, /applyWeeklyTargetHours\(value, hours\)/);
+  assert.match(schedule, /md:grid-cols-\[1fr_auto\]/);
+  assert.match(work, /WorkScheduleEditor/);
 });
 
 test("manual settings editing is captured in the backlog", async () => {
