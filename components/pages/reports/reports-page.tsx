@@ -68,14 +68,16 @@ export function ReportsPage({
       )}
 
       <FinancialChartsGuard hidden={financialsHidden && mode !== "employee"}>
-        <ReportCharts
+        <div className="report-charts print:hidden">
+          <ReportCharts
           mode={mode}
           entries={entries}
           reportBillable={reportBillable}
           monthRecords={monthRecords}
           monthStats={summary.effectiveMonthStats}
           settings={data.settings}
-        />
+          />
+        </div>
       </FinancialChartsGuard>
 
       <ReportTable mode={mode} data={data} entries={entries} monthRecords={monthRecords} financialsHidden={financialsHidden} />

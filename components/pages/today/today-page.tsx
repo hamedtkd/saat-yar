@@ -6,6 +6,7 @@ import { JalaliDatePicker } from "@/components/pickers";
 import { Button } from "@/components/ui/button";
 import { jalali } from "@/lib/format";
 import { getHolidayInfo } from "@/lib/holidays";
+import { buildGreeting } from "@/lib/greeting";
 import { ManualEntryForm } from "./manual-entry-form";
 import { TodayFocusCard } from "./today-focus-card";
 import { TodayMetrics } from "./today-metrics";
@@ -28,7 +29,7 @@ export function TodayPage(props: TodayPageProps) {
   return (
     <>
       <PageHeading
-        title="امروز روی چه چیزی کار می‌کنی؟"
+        title={`${buildGreeting(props.data.settings.name)}؛ امروز روی چه چیزی کار می‌کنی؟`}
         description={jalali(props.selectedDate, {
           weekday: "long",
           day: "numeric",

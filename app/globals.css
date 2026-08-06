@@ -64,10 +64,16 @@
 
 
 @media print {
-  header, footer, nav, button { display: none !important; }
-  body, main { background: #fff !important; }
+  @page { size: A4; margin: 12mm; }
+  header, footer, nav, aside, button, .report-charts { display: none !important; }
+  html, body, main { background: #fff !important; }
+  body { color: #111 !important; font-size: 10pt; }
   main { padding: 0 !important; }
-  section { box-shadow: none !important; }
+  #main-content { margin: 0 !important; max-width: none !important; padding: 0 !important; }
+  section, article { box-shadow: none !important; break-inside: avoid; }
+  table { width: 100% !important; font-size: 8.5pt !important; }
+  tr, td, th { break-inside: avoid; }
+  a[href]::after { content: none !important; }
 }
 
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
