@@ -1,5 +1,5 @@
 import { BriefcaseBusiness } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { Mode } from "@/lib/types";
 
 export function WorkspaceSwitcher({ mode, onChange }: { mode: Mode; onChange: (mode: Mode) => void }) {
@@ -11,15 +11,17 @@ export function WorkspaceSwitcher({ mode, onChange }: { mode: Mode; onChange: (m
           <SelectValue />
         </SelectTrigger>
         <SelectContent className="min-w-[240px]">
-          <SelectLabel>فضای کاری · بخش‌های قابل دسترس را تغییر می‌دهد</SelectLabel>
           <div className="mx-1 mb-1 grid gap-1 rounded-lg bg-[var(--surface-2)] px-2.5 py-2 text-[9px] leading-5 text-[var(--text-muted)]">
             <span><b className="text-[var(--text)]">کارمند:</b> حضور، مرخصی و حقوق</span>
             <span><b className="text-[var(--text)]">فریلنسر:</b> مشتری، پروژه و فاکتور</span>
             <span><b className="text-[var(--text)]">ترکیبی:</b> هر دو فضای کاری</span>
           </div>
-          <SelectItem value="employee">کارمند</SelectItem>
-          <SelectItem value="freelancer">فریلنسر</SelectItem>
-          <SelectItem value="hybrid">ترکیبی</SelectItem>
+          <SelectGroup>
+            <SelectLabel>فضای کاری · بخش‌های قابل دسترس را تغییر می‌دهد</SelectLabel>
+            <SelectItem value="employee">کارمند</SelectItem>
+            <SelectItem value="freelancer">فریلنسر</SelectItem>
+            <SelectItem value="hybrid">ترکیبی</SelectItem>
+          </SelectGroup>
         </SelectContent>
       </Select>
     </div>

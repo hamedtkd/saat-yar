@@ -210,3 +210,4 @@
 - [x] فاز ۱۲۱: پالیش UX پس از 2.2.0؛ Profile Menu محلی و Responsive، Header سبک‌تر، Save State موقت، جستجوی Settings و ناوبری سریع روز قبل/بعد در صفحه امروز.
 - [x] فاز ۱۲۲: Hotfix پس از فاز ۱۲۱؛ حذف setState مبتنی بر Effect از Settings Hash Navigation و هماهنگی تست‌های قدیمی Unsaved Guard با Deep Linkهای Profile.
 - [x] Phase 123: harden the production onboarding browser smoke with deterministic pre-boot storage reset, structural step markers, and actionable timeout diagnostics.
+- [x] فاز ۱۲۴: رفع Runtime crash ناشی از `SelectLabel` خارج از `SelectGroup` در Workspace Switcher و fail-fast کردن Browser Smoke روی خطاهای hydration/runtime.

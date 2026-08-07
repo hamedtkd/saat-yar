@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+### Fixed
+
+- رفع crash زمان اجرا در Workspace Switcher ناشی از استفاده نادرست `SelectLabel` رادیکس و بهبود تشخیص فوری Runtime exception در Production Browser Smoke.
+
+
 ### اصلاح شد
 
 - Production browser smoke now starts from a clean `about:blank` target, clears origin storage before boot, and follows structural onboarding step markers with timeout diagnostics.

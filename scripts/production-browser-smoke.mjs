@@ -94,6 +94,7 @@ class CdpClient {
     this.nextId = 1;
     this.pending = new Map();
     this.listeners = new Map();
+    this.runtimeErrors = [];
     this.socket = new WebSocket(url);
     this.ready = new Promise((resolveReady, reject) => {
       this.socket.onopen = resolveReady;
@@ -157,6 +158,10 @@ async function waitFor(client, expression, label, timeout = WAIT_TIMEOUT_MS) {
   while (Date.now() < deadline) {
     try {
       if (await evaluate(client, expression)) return;
+      if (client.runtimeErrors.length > 0) {
+        const snapshot = await browserStateSnapshot(client);
+        throw new Error(`Browser runtime error while waiting for ${label}: ${client.runtimeErrors.join("\n")}${snapshot ? ` Browser state: ${JSON.stringify(snapshot)}` : ""}`);
+      }
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       if (!/execution context|Cannot find context|Inspected target navigated or closed/i.test(message)) throw error;
@@ -262,10 +267,9 @@ export async function runProductionBrowserSmoke() {
       { method: "PUT" },
     );
     client = new CdpClient(target.webSocketDebuggerUrl);
-    const runtimeErrors = [];
     client.on("Runtime.exceptionThrown", ({ exceptionDetails }) => {
       const description = exceptionDetails?.exception?.description || exceptionDetails?.text || "Runtime exception";
-      runtimeErrors.push(description);
+      client.runtimeErrors.push(description);
     });
     await client.call("Page.enable");
     await client.call("Runtime.enable");
@@ -348,7 +352,7 @@ export async function runProductionBrowserSmoke() {
     await waitFor(client, "document.readyState === 'complete' && document.body?.innerText.includes('ساعت‌یار')", "offline PWA reload", 45_000);
     console.log("✓ Installed shell reloads while offline");
 
-    if (runtimeErrors.length > 0) throw new Error(`Browser runtime errors:\n${runtimeErrors.join("\n")}`);
+    if (client.runtimeErrors.length > 0) throw new Error(`Browser runtime errors:\n${client.runtimeErrors.join("\n")}`);
     console.log("Production browser smoke passed.");
   } catch (error) {
     if (browserOutput.trim()) console.error(`\nBrowser output:\n${browserOutput.trim()}`);
