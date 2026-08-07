@@ -4,11 +4,15 @@ import { readFile } from "node:fs/promises";
 
 const read = (path: string) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
-test("settings navigation uses a typed section id", async () => {
-  const source = await read("components/pages/settings/settings-nav.tsx");
-  assert.match(source, /type SettingsSectionId = \(typeof items\)\[number\]\["id"\]/);
-  assert.match(source, /useSyncExternalStore\(subscribeToHashSection, getHashSectionSnapshot/);
-  assert.match(source, /navigateTo = \(id: SettingsSectionId\)/);
+test("settings navigation uses a typed detailed section id", async () => {
+  const [source, model] = await Promise.all([
+    read("components/pages/settings/settings-nav.tsx"),
+    read("components/pages/settings/settings-navigation-model.ts"),
+  ]);
+  assert.match(source, /type SettingsItemId = \(typeof settingsNavItems\)\[number\]\["id"\]/);
+  assert.match(source, /useSyncExternalStore\(subscribeToSettingsPosition, getVisibleSettingsItem/);
+  assert.match(source, /navigateTo = \(id: SettingsItemId\)/);
+  assert.match(model, /settings-device-transfer/);
 });
 
 test("settings sections expose real scroll anchors", async () => {
@@ -23,4 +27,5 @@ test("settings section hash survives reload", async () => {
   const source = await read("components/pages/settings/settings-nav.tsx");
   assert.match(source, /window\.location\.hash/);
   assert.match(source, /history\.replaceState/);
+  assert.match(source, /resolveSettingsNavItem/);
 });

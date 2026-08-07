@@ -1,99 +1,127 @@
 "use client";
 
-import { CalendarDays, Database, ShieldCheck, UserRound } from "lucide-react";
 import { useEffect, useSyncExternalStore } from "react";
 import { cn } from "@/lib/cn";
 import { useUnsavedNavigation } from "@/components/layout/navigation/unsaved-navigation-provider";
+import { resolveSettingsNavItem, settingsNavGroups, settingsNavItems } from "./settings-navigation-model";
 
-const items = [
-  { id: "settings-general", label: "عمومی و ظاهر", icon: UserRound },
-  { id: "settings-data", label: "داده و پشتیبان", icon: Database },
-  { id: "settings-work", label: "برنامه کاری و حقوق", icon: CalendarDays },
-  { id: "settings-about", label: "ایمنی", icon: ShieldCheck },
-] as const;
+type SettingsItemId = (typeof settingsNavItems)[number]["id"];
 
-type SettingsSectionId = (typeof items)[number]["id"];
+function getVisibleSettingsItem(): SettingsItemId {
+  if (typeof window === "undefined") return settingsNavItems[0].id;
+  const threshold = Math.min(176, Math.max(108, window.innerHeight * 0.2));
+  const hashItem = resolveSettingsNavItem(window.location.hash.slice(1));
+  if (hashItem) {
+    const hashElement = document.getElementById(hashItem);
+    const hashRect = hashElement?.getBoundingClientRect();
+    if (hashRect && hashRect.top <= window.innerHeight * 0.7 && hashRect.bottom >= threshold) {
+      return hashItem as SettingsItemId;
+    }
+  }
 
-function isSettingsSectionId(value: string): value is SettingsSectionId {
-  return items.some((item) => item.id === value);
+  let nearestAbove: { id: SettingsItemId; distance: number } | null = null;
+  let nearestBelow: { id: SettingsItemId; distance: number } | null = null;
+
+  for (const item of settingsNavItems) {
+    const element = document.getElementById(item.id);
+    if (!element) continue;
+    const distance = element.getBoundingClientRect().top - threshold;
+    if (distance <= 0 && (!nearestAbove || distance > nearestAbove.distance)) {
+      nearestAbove = { id: item.id as SettingsItemId, distance };
+    } else if (distance > 0 && (!nearestBelow || distance < nearestBelow.distance)) {
+      nearestBelow = { id: item.id as SettingsItemId, distance };
+    }
+  }
+
+  return nearestAbove?.id ?? nearestBelow?.id ?? (hashItem as SettingsItemId | null) ?? settingsNavItems[0].id;
 }
 
-const anchorParents: Record<string, SettingsSectionId> = {
-  "settings-profile": "settings-general",
-  "settings-appearance": "settings-general",
-  "settings-behavior": "settings-general",
-  "settings-health": "settings-data",
-  "settings-recycle": "settings-data",
-  "settings-storage": "settings-data",
-  "settings-recovery": "settings-data",
-  "settings-backup": "settings-data",
-  "settings-restore": "settings-data",
-  "settings-device-transfer": "settings-data",
-  "settings-work-schedule": "settings-work",
-  "settings-holidays": "settings-work",
-  "settings-payroll": "settings-work",
-  "settings-payroll-components": "settings-work",
-  "settings-notifications": "settings-work",
-  "settings-danger": "settings-about",
-};
-
-function resolveSettingsSection(value: string): SettingsSectionId | null {
-  if (isSettingsSectionId(value)) return value;
-  return anchorParents[value] ?? null;
+function subscribeToSettingsPosition(onStoreChange: () => void) {
+  let frame = 0;
+  const schedule = () => {
+    cancelAnimationFrame(frame);
+    frame = requestAnimationFrame(onStoreChange);
+  };
+  window.addEventListener("scroll", schedule, { passive: true });
+  window.addEventListener("resize", schedule);
+  window.addEventListener("hashchange", schedule);
+  return () => {
+    cancelAnimationFrame(frame);
+    window.removeEventListener("scroll", schedule);
+    window.removeEventListener("resize", schedule);
+    window.removeEventListener("hashchange", schedule);
+  };
 }
 
-function getHashSectionSnapshot(): SettingsSectionId {
-  if (typeof window === "undefined") return items[0].id;
-  return resolveSettingsSection(window.location.hash.slice(1)) ?? items[0].id;
-}
-
-function subscribeToHashSection(onStoreChange: () => void) {
-  window.addEventListener("hashchange", onStoreChange);
-  return () => window.removeEventListener("hashchange", onStoreChange);
-}
-
-function replaceSettingsHash(id: SettingsSectionId) {
+function replaceSettingsHash(id: SettingsItemId) {
   const previousUrl = window.location.href;
   window.history.replaceState(null, "", `#${id}`);
   window.dispatchEvent(new HashChangeEvent("hashchange", { oldURL: previousUrl, newURL: window.location.href }));
 }
 
 export function SettingsNav() {
-  const active = useSyncExternalStore(subscribeToHashSection, getHashSectionSnapshot, () => items[0].id);
+  const active = useSyncExternalStore(subscribeToSettingsPosition, getVisibleSettingsItem, () => settingsNavItems[0].id);
   const { requestNavigation } = useUnsavedNavigation();
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
       const hash = window.location.hash.slice(1);
-      if (resolveSettingsSection(hash)) document.getElementById(hash)?.scrollIntoView({ block: "start" });
+      const target = resolveSettingsNavItem(hash) ? hash : "";
+      if (target) document.getElementById(target)?.scrollIntoView({ block: "start" });
     });
     return () => cancelAnimationFrame(frame);
   }, []);
 
-  const navigateTo = (id: SettingsSectionId) => {
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      document.querySelector<HTMLElement>(`[data-settings-nav-id="${active}"]`)?.scrollIntoView({ block: "nearest", inline: "nearest" });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [active]);
+
+  const navigateTo = (id: SettingsItemId) => {
     replaceSettingsHash(id);
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
-    <aside className="dashboard-card sticky top-[84px] self-start rounded-[var(--card-radius)] border border-[var(--dashboard-border)] p-2.5 shadow-[0_6px_20px_rgba(0,0,0,.035)] max-[900px]:static max-[900px]:flex max-[900px]:overflow-x-auto">
-      {items.map(({ id, label, icon: Icon }) => (
-        <button
-          key={id}
-          type="button"
-          aria-current={active === id ? "location" : undefined}
-          onClick={() => requestNavigation(() => navigateTo(id))}
-          className={cn(
-            "group relative flex min-h-11 w-full items-center gap-3 rounded-[12px] px-3 text-right text-[12px] font-bold text-[var(--text)] transition-colors max-[900px]:min-w-max",
-            "hover:bg-[var(--accent-soft)]",
-            active === id &&
-              "bg-[var(--accent-soft)] text-[var(--accent-strong)] shadow-[inset_-3px_0_0_var(--accent)] max-[900px]:shadow-[inset_0_-3px_0_var(--accent)]",
-          )}
-        >
-          <Icon aria-hidden="true" />
-          {label}
-        </button>
-      ))}
+    <aside
+      aria-label="بخش‌های تنظیمات"
+      className={cn(
+        "dashboard-card sticky top-[84px] max-h-[calc(100dvh-104px)] self-start overflow-y-auto rounded-[var(--card-radius)] border border-[var(--dashboard-border)] p-2.5 shadow-[0_6px_20px_rgba(0,0,0,.035)]",
+        "max-[900px]:top-[72px] max-[900px]:z-20 max-[900px]:flex max-[900px]:max-h-none max-[900px]:gap-1.5 max-[900px]:overflow-x-auto max-[900px]:overflow-y-hidden max-[900px]:p-1.5",
+      )}
+    >
+      {settingsNavGroups.map((group) => {
+        const groupItems = settingsNavItems.filter((item) => item.groupId === group.id);
+        return (
+          <div key={group.id} className="grid gap-1 max-[900px]:contents">
+            <p className="mb-0.5 mt-2 px-2 text-[9px] font-black text-[var(--text-muted)] first:mt-0 max-[900px]:hidden">{group.label}</p>
+            {groupItems.map(({ id, label, icon: Icon }) => {
+              const isActive = active === id;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  data-settings-nav-id={id}
+                  aria-current={isActive ? "location" : undefined}
+                  onClick={() => requestNavigation(() => navigateTo(id as SettingsItemId))}
+                  className={cn(
+                    "group flex min-h-9 w-full items-center gap-2.5 rounded-[11px] px-2.5 text-right text-[11px] font-bold text-[var(--text-muted)] transition-colors",
+                    "hover:bg-[var(--accent-soft)] hover:text-[var(--text)]",
+                    "max-[900px]:min-h-10 max-[900px]:w-auto max-[900px]:min-w-max max-[900px]:shrink-0 max-[900px]:rounded-[13px] max-[900px]:px-3",
+                    isActive && "bg-[var(--accent-soft)] text-[var(--accent-strong)] ring-1 ring-[color-mix(in_srgb,var(--accent)_22%,transparent)]",
+                  )}
+                >
+                  <Icon aria-hidden="true" className="size-4 shrink-0" />
+                  <span>{label}</span>
+                  {isActive && <span aria-hidden="true" className="mr-auto size-1.5 rounded-full bg-[var(--accent)] max-[900px]:hidden" />}
+                </button>
+              );
+            })}
+          </div>
+        );
+      })}
     </aside>
   );
 }

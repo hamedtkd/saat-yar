@@ -9,6 +9,9 @@ import { GuardedLink } from "./guarded-link";
 
 const normalizePath = (path: string) => path.replace(/\/+$/, "") || "/";
 
+const mobileNavCell = "flex min-h-[54px] items-center justify-center rounded-[16px] text-[10px] font-bold text-[var(--text-muted)] outline-none transition-colors focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]";
+const mobileNavCapsule = "flex min-w-[54px] flex-col items-center justify-center gap-0.5 rounded-[13px] px-2 py-1.5 transition-[background-color,color,box-shadow]";
+
 export function MobileBottomNav({ mode, currentPath }: { mode: Mode; currentPath: string }) {
   const [open, setOpen] = useState(false);
   const normalizedPath = normalizePath(currentPath);
@@ -76,25 +79,21 @@ export function MobileBottomNav({ mode, currentPath }: { mode: Mode; currentPath
 
       <nav
         aria-label="ناوبری موبایل"
-        className="fixed bottom-[calc(8px+env(safe-area-inset-bottom))] left-1/2 z-50 grid w-[calc(100%-16px)] max-w-[520px] -translate-x-1/2 grid-cols-5 rounded-[21px] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] p-1.5 shadow-[0_10px_30px_rgba(0,0,0,.16)] backdrop-blur-2xl xl:hidden"
+        className="fixed bottom-[calc(8px+env(safe-area-inset-bottom))] left-1/2 z-50 grid w-[calc(100%-16px)] max-w-[520px] -translate-x-1/2 grid-cols-5 rounded-[21px] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] p-1 shadow-[0_10px_30px_rgba(0,0,0,.16)] backdrop-blur-2xl xl:hidden"
       >
         {primary.map(({ href, label, icon: Icon }) => {
           const active = normalizedPath === href;
           return (
-            <GuardedLink
-              key={href}
-              href={href}
-              aria-current={active ? "page" : undefined}
-              className={cn(
-                "relative flex min-h-12 flex-col items-center justify-center gap-1 rounded-2xl text-[10px] font-bold text-[var(--text-muted)] transition-colors",
-                active && "bg-[var(--accent-soft)] text-[var(--accent-strong)]",
-              )}
-            >
-              <span className={cn("grid size-7 place-items-center rounded-[10px]", active && "bg-[var(--surface-accent)]")}>
+            <GuardedLink key={href} href={href} aria-current={active ? "page" : undefined} className={mobileNavCell}>
+              <span
+                className={cn(
+                  mobileNavCapsule,
+                  active && "bg-[var(--accent-soft)] text-[var(--accent-strong)] ring-1 ring-[color-mix(in_srgb,var(--accent)_20%,transparent)]",
+                )}
+              >
                 <Icon aria-hidden="true" className="size-[19px]" />
+                <span className="leading-4">{label}</span>
               </span>
-              <span>{label}</span>
-              {active && <span aria-hidden="true" className="absolute bottom-0.5 h-0.5 w-4 rounded-full bg-[var(--accent)]" />}
             </GuardedLink>
           );
         })}
@@ -103,16 +102,17 @@ export function MobileBottomNav({ mode, currentPath }: { mode: Mode; currentPath
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}
           aria-controls="mobile-more-menu"
-          className={cn(
-            "relative flex min-h-12 flex-col items-center justify-center gap-1 rounded-2xl text-[10px] font-bold text-[var(--text-muted)] transition-colors",
-            (open || overflowActive) && "bg-[var(--accent-soft)] text-[var(--accent-strong)]",
-          )}
+          className={mobileNavCell}
         >
-          <span className={cn("grid size-7 place-items-center rounded-[10px]", (open || overflowActive) && "bg-[var(--surface-accent)]")}>
+          <span
+            className={cn(
+              mobileNavCapsule,
+              (open || overflowActive) && "bg-[var(--accent-soft)] text-[var(--accent-strong)] ring-1 ring-[color-mix(in_srgb,var(--accent)_20%,transparent)]",
+            )}
+          >
             <MoreHorizontal aria-hidden="true" className="size-[19px]" />
+            <span className="leading-4">بیشتر</span>
           </span>
-          <span>بیشتر</span>
-          {(open || overflowActive) && <span aria-hidden="true" className="absolute bottom-0.5 h-0.5 w-4 rounded-full bg-[var(--accent)]" />}
         </button>
       </nav>
     </>

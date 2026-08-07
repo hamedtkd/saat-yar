@@ -5,9 +5,12 @@ import { readFile } from "node:fs/promises";
 const read = (path: string) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
 test("settings navigation performs section scrolling", async () => {
-  const source = await read("components/pages/settings/settings-nav.tsx");
+  const [source, model] = await Promise.all([
+    read("components/pages/settings/settings-nav.tsx"),
+    read("components/pages/settings/settings-navigation-model.ts"),
+  ]);
   assert.match(source, /scrollIntoView/);
-  assert.match(source, /settings-work/);
+  assert.match(model, /settings-work-schedule/);
 });
 
 test("month day edit keeps the selected date", async () => {

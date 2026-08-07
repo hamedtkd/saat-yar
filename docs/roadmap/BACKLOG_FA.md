@@ -211,3 +211,5 @@
 - [x] فاز ۱۲۲: Hotfix پس از فاز ۱۲۱؛ حذف setState مبتنی بر Effect از Settings Hash Navigation و هماهنگی تست‌های قدیمی Unsaved Guard با Deep Linkهای Profile.
 - [x] Phase 123: harden the production onboarding browser smoke with deterministic pre-boot storage reset, structural step markers, and actionable timeout diagnostics.
 - [x] فاز ۱۲۴: رفع Runtime crash ناشی از `SelectLabel` خارج از `SelectGroup` در Workspace Switcher و fail-fast کردن Browser Smoke روی خطاهای hydration/runtime.
+- [x] فاز ۱۲۵: یکدست‌سازی کنترل‌های Header و ارتقای هویت Profile و میانبر امن لوگوی Sidebar.
+- [x] فاز ۱۲۶: بازطراحی Active state ناوبری موبایل، نمایش همه مقصدهای Settings و دنبال‌کردن Section فعال هنگام Scroll.

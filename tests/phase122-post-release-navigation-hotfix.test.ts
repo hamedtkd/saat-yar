@@ -4,13 +4,13 @@ import test from "node:test";
 
 const read = (path: string) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
-test("settings hash navigation is external-store driven instead of effect-driven state", async () => {
+test("settings navigation is external-store driven instead of effect-driven state", async () => {
   const nav = await read("components/pages/settings/settings-nav.tsx");
   assert.match(nav, /useSyncExternalStore/);
-  assert.match(nav, /subscribeToHashSection/);
-  assert.match(nav, /getHashSectionSnapshot/);
+  assert.match(nav, /subscribeToSettingsPosition/);
+  assert.match(nav, /getVisibleSettingsItem/);
   assert.match(nav, /replaceSettingsHash/);
-  assert.doesNotMatch(nav, /useState<SettingsSectionId>/);
+  assert.doesNotMatch(nav, /useState<SettingsItemId>/);
   const effectBody = nav.match(/useEffect\(\(\) => \{([\s\S]*?)\n  \}, \[\]\);/)?.[1] ?? "";
   assert.doesNotMatch(effectBody, /set[A-Z][A-Za-z0-9_]*\(/);
 });

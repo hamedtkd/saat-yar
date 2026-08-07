@@ -59,3 +59,4 @@
 - [یادداشت فاز ۱۲۲: Hotfix ناوبری Settings و Profile](./phases/PHASE_122_NOTES_FA.md)
 - [Phase 123: production onboarding browser smoke hardening](./phases/PHASE_123_NOTES_FA.md)
 - [فاز ۱۲۵: پالیش کنترل‌های Header و هویت Profile](./phases/PHASE_125_NOTES_FA.md)
+- [فاز ۱۲۶: پالیش Navigation موبایل و Settings](./phases/PHASE_126_NOTES_FA.md)

@@ -4,23 +4,7 @@ import { ArrowLeft, Search, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { cn } from "@/lib/cn";
 import { useUnsavedNavigation } from "@/components/layout/navigation/unsaved-navigation-provider";
-
-const destinations = [
-  { label: "پروفایل و نام نمایشی", section: "settings-profile", group: "عمومی", keywords: "نام پروفایل حساب کاربر خوشامدگویی" },
-  { label: "ظاهر، تم و رنگ‌بندی", section: "settings-appearance", group: "عمومی", keywords: "تم دارک روشن رنگ ظاهر پوسته" },
-  { label: "رفتار ذخیره تنظیمات", section: "settings-behavior", group: "عمومی", keywords: "ذخیره خودکار autosave draft" },
-  { label: "سلامت داده و چند تب", section: "settings-health", group: "داده", keywords: "سلامت تعارض تب sync همگام سازی" },
-  { label: "سطل بازیابی رکوردها", section: "settings-recycle", group: "داده", keywords: "حذف بازیابی recycle رکورد" },
-  { label: "فضای ذخیره‌سازی و Recovery", section: "settings-storage", group: "داده", keywords: "storage recovery بازیابی فضا" },
-  { label: "پشتیبان و واردکردن فایل", section: "settings-backup", group: "داده", keywords: "backup پشتیبان خروجی import restore" },
-  { label: "انتقال موبایل و لپ‌تاپ", section: "settings-device-transfer", group: "داده", keywords: "qr webrtc انتقال دستگاه موبایل لپ تاپ sync" },
-  { label: "برنامه کاری و هدف هفتگی", section: "settings-work-schedule", group: "کار و حقوق", keywords: "ساعت شروع پایان هدف برنامه کار" },
-  { label: "تعطیلات و استثناها", section: "settings-holidays", group: "کار و حقوق", keywords: "تعطیل holiday تقویم استثنا" },
-  { label: "روش محاسبه حقوق", section: "settings-payroll", group: "کار و حقوق", keywords: "حقوق payroll ماهانه ساعتی روزکاری اضافه کاری کسر کار" },
-  { label: "مزایا و کسورات حقوق", section: "settings-payroll-components", group: "کار و حقوق", keywords: "مزایا کسورات پاداش مالی حقوق" },
-  { label: "اعلان‌ها و یادآورها", section: "settings-notifications", group: "کار و حقوق", keywords: "اعلان notification یادآور وقفه پایان کار" },
-  { label: "بازنشانی و عملیات حساس", section: "settings-danger", group: "ایمنی", keywords: "حذف reset بازنشانی خطر حساس" },
-] as const;
+import { settingsNavItems } from "./settings-navigation-model";
 
 export function SettingsSearch() {
   const [query, setQuery] = useState("");
@@ -28,7 +12,9 @@ export function SettingsSearch() {
   const normalized = query.trim().toLocaleLowerCase("fa-IR");
   const results = useMemo(() => {
     if (!normalized) return [];
-    return destinations.filter((item) => `${item.label} ${item.group} ${item.keywords}`.toLocaleLowerCase("fa-IR").includes(normalized)).slice(0, 7);
+    return settingsNavItems
+      .filter((item) => `${item.label} ${item.group} ${item.keywords}`.toLocaleLowerCase("fa-IR").includes(normalized))
+      .slice(0, 7);
   }, [normalized]);
 
   const goTo = (section: string) => {
@@ -65,9 +51,9 @@ export function SettingsSearch() {
             <div className="grid gap-1">
               {results.map((item) => (
                 <button
-                  key={item.label}
+                  key={item.id}
                   type="button"
-                  onClick={() => goTo(item.section)}
+                  onClick={() => goTo(item.id)}
                   className="group flex min-h-11 items-center justify-between gap-3 rounded-xl px-3 text-right transition-colors hover:bg-[var(--accent-soft)]"
                 >
                   <span className="grid gap-0.5">

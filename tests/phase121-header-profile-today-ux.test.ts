@@ -53,19 +53,22 @@ test("today hero exposes guarded previous and next day navigation", async () => 
 });
 
 test("settings search and anchors shorten access to deep features", async () => {
-  const [page, search, nav, profile, payroll, transfer] = await Promise.all([
+  const [page, search, nav, model, profile, payroll, transfer] = await Promise.all([
     read("components/pages/settings/settings-page.tsx"),
     read("components/pages/settings/settings-search.tsx"),
     read("components/pages/settings/settings-nav.tsx"),
+    read("components/pages/settings/settings-navigation-model.ts"),
     read("components/pages/settings/profile-settings-card.tsx"),
     read("components/pages/settings/payroll-policy-card.tsx"),
     read("components/pages/settings/device-transfer-card.tsx"),
   ]);
   assert.match(page, /<SettingsSearch/);
   assert.match(search, /جستجو در تنظیمات/);
-  assert.match(search, /settings-payroll/);
-  assert.match(search, /settings-device-transfer/);
-  assert.match(nav, /settings-general[\s\S]*settings-data[\s\S]*settings-work[\s\S]*settings-about/);
+  assert.match(search, /settingsNavItems/);
+  assert.match(model, /settings-payroll/);
+  assert.match(model, /settings-device-transfer/);
+  assert.match(model, /settings-general[\s\S]*settings-data[\s\S]*settings-work[\s\S]*settings-about/);
+  assert.match(nav, /settingsNavGroups/);
   assert.match(profile, /id="settings-profile"/);
   assert.match(payroll, /id="settings-payroll"/);
   assert.match(transfer, /id="settings-device-transfer"/);
