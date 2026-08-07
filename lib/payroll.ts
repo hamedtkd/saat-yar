@@ -1,6 +1,6 @@
 import { calculatePayrollWithPolicy } from "./payroll-engine.ts";
-import { createLegacyPayrollPolicy } from "./payroll-policy.ts";
-import type { PayrollComponent } from "./types.ts";
+import { createLegacyPayrollPolicy, normalizePayrollPolicy, type PayrollCalculationPolicy, type PayrollFacts } from "./payroll-policy.ts";
+import type { PayrollComponent, Settings } from "./types.ts";
 
 export const STANDARD_MONTH_DAYS = 30;
 
@@ -68,4 +68,48 @@ export function calculateMonthlyPayroll(input: MonthlyPayrollInput) {
     holidayMinutes: input.holidayMinutes,
     components: input.components,
   });
+}
+
+
+export function getPayrollPolicy(settings: Settings): PayrollCalculationPolicy {
+  return normalizePayrollPolicy(settings.payrollPolicy ?? createLegacyPayrollPolicy({
+    monthlySalary: settings.salary,
+    overtimeMultiplier: settings.overtimeMultiplier,
+    holidayMultiplier: settings.holidayMultiplier,
+  }));
+}
+
+export function calculateMonthlyPayrollForSettings(settings: Settings, facts: Omit<PayrollFacts, "components">) {
+  return calculatePayrollWithPolicy(getPayrollPolicy(settings), { ...facts, components: settings.payrollComponents });
+}
+
+export function calculateEmployeeDayPayForSettings({
+  settings, creditedMinutes, dailyTargetMinutes, holiday = false,
+}: {
+  settings: Settings;
+  creditedMinutes: number;
+  dailyTargetMinutes: number;
+  holiday?: boolean;
+}) {
+  const policy = getPayrollPolicy(settings);
+  const dayPolicy: PayrollCalculationPolicy = {
+    ...policy,
+    baseAmount: policy.baseMode.startsWith("monthly-") ? policy.baseAmount / STANDARD_MONTH_DAYS : policy.baseAmount,
+    overtime: { ...policy.overtime },
+    holiday: { ...policy.holiday },
+    deficit: { ...policy.deficit },
+    rounding: { ...policy.rounding },
+  };
+  const target = Math.max(1, dailyTargetMinutes);
+  const credited = Math.max(0, creditedMinutes);
+  const holidayMinutes = holiday ? credited : 0;
+  const overtimeMinutes = holiday ? 0 : Math.max(0, credited - target);
+  return calculatePayrollWithPolicy(dayPolicy, {
+    workedMinutes: credited,
+    targetMinutes: target,
+    overtimeMinutes,
+    deficitMinutes: 0,
+    holidayMinutes,
+    components: [],
+  }).net;
 }

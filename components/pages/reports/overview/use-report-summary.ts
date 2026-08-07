@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import { entryMinutes } from "@/lib/format";
-import { calculateMonthlyPayroll } from "@/lib/payroll";
+import { calculateMonthlyPayrollForSettings } from "@/lib/payroll";
 import { calc } from "@/lib/time-engine";
 import { getDailyTargetMinutes } from "@/lib/work-schedule";
 import type { AppData, TimeEntry, WorkRecord } from "@/lib/types";
@@ -51,16 +51,12 @@ export function useReportSummary({
       0,
       Math.max(0, effectiveMonthStats.balance) - holidayMinutes,
     );
-    const payroll = calculateMonthlyPayroll({
-      monthlySalary: data.settings.salary,
+    const payroll = calculateMonthlyPayrollForSettings(data.settings, {
       workedMinutes: effectiveMonthStats.worked,
       targetMinutes: effectiveMonthStats.target,
       overtimeMinutes,
       deficitMinutes,
       holidayMinutes,
-      overtimeMultiplier: data.settings.overtimeMultiplier,
-      holidayMultiplier: data.settings.holidayMultiplier,
-      components: data.settings.payrollComponents,
     });
 
     return {

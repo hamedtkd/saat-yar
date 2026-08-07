@@ -13,12 +13,12 @@ import { PrivateMoney } from "@/components/common/private-money";
 import { SurfaceCard } from "@/components/common/surface-card";
 import { cn } from "@/lib/cn";
 import { duration, fa } from "@/lib/format";
-import type { calculateMonthlyPayroll } from "@/lib/payroll";
+import type { calculateMonthlyPayrollForSettings } from "@/lib/payroll";
 import type { WorkRecord } from "@/lib/types";
 
 import type { MonthStats } from "./types";
 
-type Payroll = ReturnType<typeof calculateMonthlyPayroll>;
+type Payroll = ReturnType<typeof calculateMonthlyPayrollForSettings>;
 
 type EmployeeSummaryProps = {
   stats: MonthStats;
@@ -70,7 +70,7 @@ export function EmployeeSummary({
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div>
             <strong className="block text-sm font-extrabold text-[var(--text)]">فیش حقوقی تخمینی ماه</strong>
-            <small className="text-[10px] leading-6 text-[var(--text-muted)]">مبالغ بر اساس کارکرد ثبت‌شده، ضرایب و آیتم‌های تنظیمات محاسبه می‌شوند.</small>
+            <small className="text-[10px] leading-6 text-[var(--text-muted)]">مبالغ با Policy حقوق ذخیره‌شده، کارکرد این ماه و آیتم‌های مزایا/کسورات محاسبه می‌شوند.</small>
           </div>
           <span className="rounded-full bg-[var(--accent-soft)] px-3 py-1.5 text-xs font-black text-[var(--accent-strong)]">
             خالص: <PrivateMoney value={payroll.net} hidden={financialsHidden} /> تومان
@@ -85,6 +85,15 @@ export function EmployeeSummary({
           <PayrollStat label="کسورات ثابت" value={payroll.deductions} hidden={financialsHidden} tone="danger" />
           <PayrollStat label="ناخالص" value={payroll.gross} hidden={financialsHidden} />
           <PayrollStat label="خالص پرداختی" value={payroll.net} hidden={financialsHidden} tone="dark" />
+        </div>
+        <div className="mt-4 grid gap-2 border-t border-[var(--border)] pt-4">
+          <strong className="text-xs text-[var(--text)]">ریز محاسبه</strong>
+          {payroll.breakdown.filter((line) => line.amount > 0).map((line) => (
+            <div key={line.key} className="flex items-center justify-between gap-3 text-[10px] text-[var(--text-muted)]">
+              <span>{line.direction === "deduction" ? "−" : "+"} {line.title}</span>
+              <strong className={line.direction === "deduction" ? "text-[var(--danger)]" : "text-[var(--text)]"}><PrivateMoney value={line.amount} hidden={financialsHidden} /> تومان</strong>
+            </div>
+          ))}
         </div>
       </SurfaceCard>
     </>

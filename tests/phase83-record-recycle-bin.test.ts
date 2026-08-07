@@ -10,7 +10,7 @@ const now = new Date("2026-08-06T10:00:00.000Z");
 
 test("schema v16 adds a persistent deleted record collection", () => {
   const migrated = migrateAppData({ schemaVersion: 15, data: createInitialData({ onboarded: true }) });
-  assert.equal(APP_DATA_SCHEMA_VERSION, 16);
+  assert.equal(APP_DATA_SCHEMA_VERSION, 17);
   assert.deepEqual(migrated.data.deletedRecords, []);
 });
 

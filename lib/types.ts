@@ -1,3 +1,5 @@
+import type { PayrollCalculationPolicy } from "./payroll-policy.ts";
+
 export type Mode = "employee" | "freelancer" | "hybrid";
 export type ThemeMode = "light" | "dark" | "system";
 export type ThemePreset = "spotify" | "emerald" | "ocean" | "violet" | "sunset" | "custom";
@@ -111,6 +113,7 @@ export type Settings = {
   overtimeMultiplier: number;
   holidayMultiplier: number;
   payrollComponents: PayrollComponent[];
+  payrollPolicy: PayrollCalculationPolicy;
   autoOfficialHolidays: boolean;
   autoWeeklyHoliday: boolean;
   notificationSettings: NotificationSettings;

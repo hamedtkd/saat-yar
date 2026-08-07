@@ -39,8 +39,8 @@ test("service worker cache version invalidates stale PWA icon assets", () => {
 
 test("roadmap captures customizable payroll and QR peer-to-peer transfer", () => {
   const backlog = read("docs/roadmap/BACKLOG_FA.md");
-  assert.match(backlog, /فاز ۱۱۰: طراحی قرارداد و Schema موتور محاسبه حقوق قابل‌سفارشی‌سازی/);
-  assert.match(backlog, /فاز ۱۱۳: Pairing سریع موبایل و لپ‌تاپ با QR و WebRTC DataChannel/);
+  assert.match(backlog, /موتور محاسبه حقوق Rule-based/);
+  assert.match(backlog, /Pairing سریع موبایل و لپ‌تاپ با QR و WebRTC DataChannel/);
   const notes = read("docs/phases/PHASE_105_NOTES_FA.md");
   assert.match(notes, /Cloud Sync دائمی/);
   assert.match(notes, /RTCDataChannel/);

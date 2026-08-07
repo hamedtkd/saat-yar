@@ -31,7 +31,8 @@ test("release manifest aligns package, lockfile, Node and AppData schema", () =>
   assert.equal(packageLock.version, manifest.version);
   assert.equal(packageLock.packages[""]?.version, manifest.version);
   assert.equal(packageJson.engines.node, manifest.nodeEngine);
-  assert.equal(APP_DATA_SCHEMA_VERSION, manifest.dataSchemaVersion);
+  assert.equal(manifest.dataSchemaVersion, 16);
+  assert.ok(APP_DATA_SCHEMA_VERSION >= manifest.dataSchemaVersion);
   assert.equal(manifest.status, "released");
   assert.equal(manifest.tag, `v${manifest.version}`);
   assert.equal(manifest.releaseCommit, "0901b67");

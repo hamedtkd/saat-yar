@@ -8,6 +8,7 @@ import { StorageCard } from "./storage-card";
 import { WorkSettingsCard } from "./work-settings-card";
 import { HolidayOverridesCard } from "./holiday-overrides-card";
 import { PayrollSettingsCard } from "./payroll-settings-card";
+import { PayrollPolicyCard } from "./payroll-policy-card";
 import { NotificationSettingsCard } from "./notification-settings-card";
 import { cn } from "@/lib/cn";
 import { SettingsNav } from "./settings-nav";
@@ -69,8 +70,9 @@ export function SettingsPage({ data, setData, storage, exportBackup, previewImpo
 
         <span id="settings-work" className="block scroll-mt-24" aria-hidden="true" />
         <SettingsSection icon={<CalendarClock />} eyebrow="قوانین کار" title="برنامه کاری و حقوق" description="هدف‌ها، تقویم، مزایا و اعلان‌های مرتبط با روز کاری.">
-          <WorkSettingsCard data={data} setData={setData} setToast={setToast} financialsHidden={financialsHidden} />
+          <WorkSettingsCard data={data} setData={setData} setToast={setToast} />
           <HolidayOverridesCard data={data} setData={setData} setToast={setToast} />
+          <PayrollPolicyCard data={data} setData={setData} setToast={setToast} financialsHidden={financialsHidden} />
           <PayrollSettingsCard data={data} setData={setData} setToast={setToast} financialsHidden={financialsHidden} />
           <NotificationSettingsCard data={data} setData={setData} requestPermission={requestNotificationPermission} setToast={setToast} />
         </SettingsSection>

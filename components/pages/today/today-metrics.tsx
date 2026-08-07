@@ -4,7 +4,7 @@ import { PrivateMoney } from "@/components/common/private-money";
 import { ProgressRing } from "@/components/common/progress-ring";
 import { SurfaceCard } from "@/components/common/surface-card";
 import { duration, entryMinutes, fa, localDateKey } from "@/lib/format";
-import { calculateEmployeeDayPay } from "@/lib/payroll";
+import { calculateEmployeeDayPayForSettings } from "@/lib/payroll";
 import type { ReturnTypeCalc } from "@/lib/type-helpers";
 import type { AppData, WorkRecord } from "@/lib/types";
 
@@ -22,7 +22,7 @@ export function TodayMetrics({ data, record, selectedDate, result, dailyTarget, 
   const projectMinutes = todayEntries.reduce((sum, entry) => sum + entryMinutes(entry), 0);
   const billableMinutes = todayEntries.reduce((sum, entry) => sum + (entry.billable ? entryMinutes(entry) : 0), 0);
   const projectIncome = todayEntries.reduce((sum, entry) => sum + (entry.billable ? entryMinutes(entry) / 60 * entry.effectiveRate : 0), 0);
-  const employeeIncome = calculateEmployeeDayPay({ monthlySalary: data.settings.salary, creditedMinutes: result.credited, dailyTargetMinutes: dailyTarget, overtimeMultiplier: data.settings.overtimeMultiplier, holidayMultiplier: data.settings.holidayMultiplier, holiday: record.holiday });
+  const employeeIncome = calculateEmployeeDayPayForSettings({ settings: data.settings, creditedMinutes: result.credited, dailyTargetMinutes: dailyTarget, holiday: record.holiday });
   const isEmployee = data.settings.mode === "employee";
   const isHybrid = data.settings.mode === "hybrid";
   const income = isEmployee ? employeeIncome : isHybrid ? employeeIncome + projectIncome : projectIncome;

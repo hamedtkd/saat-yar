@@ -45,6 +45,6 @@ test("phase 110 is wired into quality and roadmap advances payroll after hardeni
   assert.match(packageJson.scripts.test, /phase110-pwa-media-hardening\.test\.ts/);
   const backlog = read("docs/roadmap/BACKLOG_FA.md");
   assert.match(backlog, /فاز ۱۱۰: مقاوم‌سازی Offline PWA و Media Capture/);
-  assert.match(backlog, /فاز ۱۱۱: طراحی قرارداد و Schema موتور محاسبه حقوق/);
+  assert.match(backlog, /فاز ۱۱۱: طراحی و پیاده‌سازی موتور محاسبه حقوق Rule-based/);
   assert.match(backlog, /فاز ۱۱۴: Pairing سریع موبایل و لپ‌تاپ با QR/);
 });

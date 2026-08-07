@@ -3,6 +3,7 @@ import type { AppData } from "../types.ts";
 import { normaliseData } from "./normalise.ts";
 import { APP_DATA_SCHEMA_VERSION } from "./version.ts";
 import { createDefaultWeeklySchedule } from "../work-schedule.ts";
+import { createLegacyPayrollPolicy } from "../payroll-policy.ts";
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -259,6 +260,22 @@ function migrateV15ToV16(value: unknown): unknown {
   };
 }
 
+
+function migrateV16ToV17(value: unknown): unknown {
+  if (!isObject(value)) return value;
+  const settings = isObject(value.settings) ? value.settings : {};
+  const salary = typeof settings.salary === "number" ? settings.salary : defaultSettings.salary;
+  const overtimeMultiplier = typeof settings.overtimeMultiplier === "number" ? settings.overtimeMultiplier : defaultSettings.overtimeMultiplier;
+  const holidayMultiplier = typeof settings.holidayMultiplier === "number" ? settings.holidayMultiplier : defaultSettings.holidayMultiplier;
+  return {
+    ...value,
+    settings: {
+      ...settings,
+      payrollPolicy: createLegacyPayrollPolicy({ monthlySalary: salary, overtimeMultiplier, holidayMultiplier }),
+    },
+  };
+}
+
 const migrations: Record<number, (value: unknown) => unknown> = {
   1: migrateV1ToV2,
   2: migrateV2ToV3,
@@ -275,6 +292,7 @@ const migrations: Record<number, (value: unknown) => unknown> = {
   13: migrateV13ToV14,
   14: migrateV14ToV15,
   15: migrateV15ToV16,
+  16: migrateV16ToV17,
 };
 
 export function migrateAppData(value: unknown): MigrationResult {

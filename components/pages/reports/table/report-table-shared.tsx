@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 import { cn } from "@/lib/cn";
-import { calculateEmployeeDayPay } from "@/lib/payroll";
+import { calculateEmployeeDayPayForSettings } from "@/lib/payroll";
 import { calc, timeToMinutes } from "@/lib/time-engine";
 import type { Settings, WorkRecord } from "@/lib/types";
 
@@ -47,12 +47,10 @@ export function getDailyTarget(settings: Settings) {
 
 export function getEmployeeDayPay({ record, settings, dailyTarget }: { record: WorkRecord; settings: Settings; dailyTarget: number }) {
   const result = calc(record, dailyTarget);
-  return calculateEmployeeDayPay({
-    monthlySalary: settings.salary,
+  return calculateEmployeeDayPayForSettings({
+    settings,
     creditedMinutes: result.credited,
     dailyTargetMinutes: dailyTarget,
-    overtimeMultiplier: settings.overtimeMultiplier,
-    holidayMultiplier: settings.holidayMultiplier,
     holiday: record.holiday,
   });
 }

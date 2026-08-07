@@ -7,6 +7,25 @@ const modeSchema = z.enum(["employee", "freelancer", "hybrid"]);
 const isoDateSchema = z.string().min(1);
 const timeSchema = z.string().regex(/^$|^\d{2}:\d{2}$/);
 
+
+const payrollRateRuleSchema = z.object({
+  mode: z.enum(["multiplier", "fixed-hourly", "ignore"]),
+  multiplier: z.number().nonnegative(),
+  hourlyRate: z.number().nonnegative(),
+}).passthrough();
+
+const payrollPolicySchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  baseMode: z.enum(["monthly-prorated", "monthly-fixed", "hourly", "daily"]),
+  baseAmount: z.number().nonnegative(),
+  standardDayMinutes: z.number().int().positive(),
+  overtime: payrollRateRuleSchema,
+  holiday: payrollRateRuleSchema,
+  deficit: z.object({ mode: z.enum(["deduct", "ignore"]), multiplier: z.number().nonnegative() }).passthrough(),
+  rounding: z.object({ mode: z.enum(["nearest", "floor", "ceil"]), increment: z.number().positive() }).passthrough(),
+}).passthrough();
+
 const payrollComponentSchema = z.object({
   id: z.string(),
   title: z.string(),
@@ -29,6 +48,7 @@ const settingsSchema = z.object({
   overtimeMultiplier: z.number().nonnegative(),
   holidayMultiplier: z.number().nonnegative(),
   payrollComponents: z.array(payrollComponentSchema),
+  payrollPolicy: payrollPolicySchema,
   autoOfficialHolidays: z.boolean(),
   autoWeeklyHoliday: z.boolean(),
   appearance: z.object({

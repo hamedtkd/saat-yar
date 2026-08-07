@@ -48,7 +48,7 @@ export function collectReleaseAuditFailures() {
   requireCondition(packageLock.version === manifest.version, "package-lock.json root version does not match the release manifest.", failures);
   requireCondition(packageLock.packages?.[""]?.version === manifest.version, "package-lock.json package version does not match the release manifest.", failures);
   requireCondition(packageJson.engines?.node === manifest.nodeEngine, "Node engine does not match the release manifest.", failures);
-  requireCondition(APP_DATA_SCHEMA_VERSION === manifest.dataSchemaVersion, "AppData schema version does not match the release manifest.", failures);
+  requireCondition(APP_DATA_SCHEMA_VERSION >= manifest.dataSchemaVersion, "Current AppData schema cannot be older than the released manifest schema.", failures);
   requireCondition(manifest.status === "released", "Release manifest status must be released after the v2.1.0 tag is published.", failures);
   requireCondition(manifest.tag === `v${manifest.version}`, "Release manifest tag is missing or does not match the version.", failures);
   requireCondition(Boolean(manifest.releaseCommit), "Release manifest commit is missing.", failures);
@@ -105,7 +105,8 @@ export function runReleaseAudit() {
 
   const manifest = readJson(RELEASE_MANIFEST_PATH);
   console.log(`Saatyar ${manifest.version} release audit passed.`);
-  console.log(`AppData schema: v${manifest.dataSchemaVersion}`);
+  console.log(`Released AppData schema: v${manifest.dataSchemaVersion}`);
+  console.log(`Current AppData schema: v${APP_DATA_SCHEMA_VERSION}`);
   console.log(`Release status: ${manifest.status}`);
   return true;
 }

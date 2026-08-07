@@ -43,3 +43,5 @@
 - [یادداشت‌های فازها](./phases/)
 
 فایل‌های قراردادی متداول مانند `README.md`، `SECURITY.md`، `CHANGELOG.md`، `LICENSE`، `CONTRIBUTING.md` و `AGENTS.md` عمداً در ریشه مخزن باقی می‌مانند.
+
+- [فاز ۱۱۲ — Policy حقوق و Schema v17](phases/PHASE_112_NOTES_FA.md)

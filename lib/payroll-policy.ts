@@ -99,6 +99,17 @@ export function createPayrollPreset(
   return { id: preset, title: titles[preset], baseMode: preset, baseAmount, ...common };
 }
 
+
+export function clonePayrollPolicy(policy: PayrollCalculationPolicy): PayrollCalculationPolicy {
+  return {
+    ...policy,
+    overtime: { ...policy.overtime },
+    holiday: { ...policy.holiday },
+    deficit: { ...policy.deficit },
+    rounding: { ...policy.rounding },
+  };
+}
+
 export function normalizePayrollPolicy(policy: PayrollCalculationPolicy): PayrollCalculationPolicy {
   const normalizeRule = (rule: PayrollRateRule): PayrollRateRule => ({
     mode: rule.mode,

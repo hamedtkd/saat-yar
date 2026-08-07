@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+- افزودن Policy قابل‌سفارشی‌سازی حقوق به Settings و ارتقای AppData به Schema v17 با Migration سازگار از v16.
+- اتصال گزارش ماهانه و حقوق روز به موتور Rule-based و نمایش Breakdown شفاف محاسبه.
+
 ### Fixed
 
 - Hardened the offline PWA shell by precaching generated Next.js assets and testing a real CDP page reload while offline.
