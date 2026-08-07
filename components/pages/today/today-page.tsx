@@ -12,6 +12,7 @@ import { ManualEntryForm } from "./manual-entry-form";
 import { TodayMetrics } from "./today-metrics";
 import { TodaySmartSummary } from "./today-smart-summary";
 import { TodayTimeline } from "./today-timeline";
+import { TodayAttendanceLog } from "./today-attendance-log";
 import { RecordHealthBanner } from "./record-health-banner";
 import { RecordResetUndo } from "./record-reset-undo";
 import { CompletedDayEditor } from "./completed-day-editor";
@@ -50,6 +51,7 @@ export function TodayPage(props: TodayPageProps) {
         </AlertDialogContent>
       </AlertDialog>
       <PageHeading
+        variant="dashboard"
         title={`${buildGreeting(props.data.settings.name)}؛ امروز روی چه چیزی کار می‌کنی؟`}
         description={jalali(props.selectedDate, {
           weekday: "long",
@@ -96,6 +98,11 @@ export function TodayPage(props: TodayPageProps) {
         props.data.settings.mode !== "employee" && (
           <ManualEntryForm {...props} />
         )}
+      {props.data.settings.mode === "employee" ? (
+        <TodayAttendanceLog record={props.record} />
+      ) : (
+        <TodayTimeline {...props} />
+      )}
       <TodayMetrics
         data={props.data}
         record={props.record}
@@ -104,9 +111,6 @@ export function TodayPage(props: TodayPageProps) {
         dailyTarget={props.dailyTarget}
         financialsHidden={props.financialsHidden}
       />
-      {props.data.settings.mode !== "employee" && (
-        <TodayTimeline {...props} />
-      )}
       {props.record.start &&
         !props.record.end &&
         props.todayCalc.worked > 4 * 60 && (

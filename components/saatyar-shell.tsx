@@ -60,7 +60,7 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
       <SkipLink />
       <main
         className={cn(
-          "min-h-screen w-full bg-[var(--page)] p-3 pb-28 xl:pb-3 [&_label]:grid [&_label]:gap-[7px] [&_label]:text-[11px] [&_label]:font-semibold [&_label]:text-[var(--text-muted)] [&_button]:cursor-pointer [&_svg]:h-[18px] [&_svg]:w-[18px] [&_svg]:stroke-[1.85]",
+          "dashboard-shell min-h-screen w-full bg-[var(--page)] p-3 pb-28 xl:pb-3 [&_label]:grid [&_label]:gap-[7px] [&_label]:text-[11px] [&_label]:font-semibold [&_label]:text-[var(--text-muted)] [&_button]:cursor-pointer [&_svg]:h-[18px] [&_svg]:w-[18px] [&_svg]:stroke-[1.85]",
         )}
         dir="rtl"
       >

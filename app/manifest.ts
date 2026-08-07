@@ -1,6 +1,8 @@
 import type { MetadataRoute } from "next";
 import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/site-metadata";
 
+export const dynamic = "force-static";
+
 const basePath = process.env.PAGES_BASE_PATH ?? "";
 const withBase = (path: string) => `${basePath}${path}`;
 

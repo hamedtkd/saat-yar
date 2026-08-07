@@ -30,10 +30,10 @@ export function TodayTimeline(
   return (
     <section
       className={cn(
-        "grid grid-cols-[minmax(0,1fr)_320px] gap-[14px] max-[900px]:grid-cols-1",
+        "mb-4 grid grid-cols-[minmax(0,1fr)_300px] gap-2.5 max-[900px]:grid-cols-1",
       )}
     >
-      <SurfaceCard className="min-w-0 p-[13px]">
+      <SurfaceCard className="dashboard-card min-w-0 p-3 shadow-[0_5px_16px_rgba(0,0,0,.03)]">
         <PanelHead icon={<Clock3 />} title="خط زمانی امروز">
           {props.data.settings.mode !== "employee" && (
             <Button
@@ -170,7 +170,7 @@ export function TodayTimeline(
         </div>
       </SurfaceCard>
       {props.data.settings.mode !== "employee" && (
-        <SurfaceCard as="aside" className="p-[17px] max-[900px]:order-first [&>button]:mt-3">
+        <SurfaceCard as="aside" className="dashboard-card p-4 shadow-[0_5px_16px_rgba(0,0,0,.03)] max-[900px]:order-first [&>button]:mt-3">
           <PanelHead icon={<Info />} title="پروژه‌های اخیر" />
           {recentProjects.map((project) => (
             <div

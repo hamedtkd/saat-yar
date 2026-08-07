@@ -27,13 +27,13 @@ export function TodayMetrics({ data, record, selectedDate, result, dailyTarget, 
   const income = isEmployee ? employeeIncome : isHybrid ? employeeIncome + projectIncome : projectIncome;
 
   return (
-    <section className="mb-5 grid grid-cols-4 gap-4 max-[1180px]:grid-cols-2 max-[620px]:grid-cols-1">
+    <section className="mb-4 grid grid-cols-4 gap-2.5 max-[1180px]:grid-cols-2 max-[620px]:grid-cols-1 [&>article]:min-h-[104px] [&>article]:shadow-[0_5px_16px_rgba(0,0,0,.03)]">
       <MetricCard icon={<Clock3 />} label="کارکرد خالص امروز" value={duration(result.worked)} suffix="ساعت" />
-      <MetricCard icon={<Tag />} label={isEmployee ? "زمان قابل محاسبه" : "قابل صورتحساب"} value={duration(isEmployee ? result.credited : billableMinutes)} suffix="ساعت" />
-      <MetricCard icon={<WalletCards />} label={isEmployee ? "حقوق امروز" : isHybrid ? "درآمد ترکیبی امروز" : "درآمد پروژه امروز"} value={<PrivateMoney value={income} hidden={financialsHidden} />} suffix="تومان" tone="blue" />
-      <SurfaceCard as="article" className="flex min-h-32 items-center justify-center gap-4 p-5">
-        <ProgressRing value={progress}><strong className="text-lg font-black">{fa.format(progress)}٪</strong></ProgressRing>
-        <div><small className="block text-xs text-[var(--text-muted)]">هدف روزانه</small><strong className="mt-1 block text-lg font-black">{duration(result.credited)}</strong><span className="text-[11px] text-[var(--text-muted)]">از {duration(dailyTarget)}{!isEmployee ? ` · پروژه ${duration(projectMinutes)}` : ""}</span></div>
+      <MetricCard icon={<Tag />} label={isEmployee ? "زمان قابل محاسبه" : "قابل صورتحساب"} value={duration(isEmployee ? result.credited : billableMinutes)} suffix="ساعت" tone="amber" />
+      <MetricCard icon={<WalletCards />} label={isEmployee ? "حقوق امروز" : isHybrid ? "درآمد ترکیبی امروز" : "درآمد پروژه امروز"} value={<PrivateMoney value={income} hidden={financialsHidden} />} suffix="تومان" tone="green" />
+      <SurfaceCard as="article" className="dashboard-card flex min-h-[104px] items-center justify-center gap-4 p-4">
+        <ProgressRing value={progress} size="sm"><strong className="text-sm font-black">{fa.format(progress)}٪</strong></ProgressRing>
+        <div><small className="block text-[10px] text-[var(--text-muted)]">هدف روزانه</small><strong className="mt-1 block text-lg font-black">{duration(result.credited)}</strong><span className="text-[10px] text-[var(--text-muted)]">از {duration(dailyTarget)}{!isEmployee ? ` · پروژه ${duration(projectMinutes)}` : ""}</span></div>
       </SurfaceCard>
     </section>
   );

@@ -6,6 +6,8 @@ export type TodayTimeStripProps = Pick<
   | "data"
   | "suggestedExit"
   | "updateRecord"
+  | "startWork"
+  | "finishWork"
   | "lunchRunning"
   | "startLunch"
   | "finishLunch"

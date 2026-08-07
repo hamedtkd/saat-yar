@@ -12,10 +12,13 @@
   --accent-foreground: #07130c;
   --accent-strong: #087f45;
   --accent-soft: color-mix(in srgb, var(--accent) 14%, transparent);
-  --page: #f5f8f6;
+  --page: color-mix(in srgb, var(--accent) 2.5%, #f7f8f7);
   --surface-1: #ffffff;
-  --surface-2: #f9fbfa;
-  --surface-glass: rgb(255 255 255 / 92%);
+  --surface-2: color-mix(in srgb, var(--accent) 2.2%, #f8faf9);
+  --surface-glass: rgb(255 255 255 / 94%);
+  --surface-raised: color-mix(in srgb, var(--accent) 3.8%, #ffffff);
+  --surface-accent: color-mix(in srgb, var(--accent) 8%, #ffffff);
+  --dashboard-border: color-mix(in srgb, var(--accent) 8%, var(--border));
   --text: #10221a;
   --text-muted: #65746c;
   --border: #dce5df;
@@ -37,10 +40,13 @@
 :root[data-theme="dark"] {
   --accent-foreground: #06140b;
   --accent-strong: #51e884;
-  --page: #0a0f0d;
-  --surface-1: #101713;
-  --surface-2: #151d19;
-  --surface-glass: rgb(16 23 19 / 92%);
+  --page: color-mix(in srgb, var(--accent) 4.5%, #070c0a);
+  --surface-1: color-mix(in srgb, var(--accent) 3.6%, #0d1411);
+  --surface-2: color-mix(in srgb, var(--accent) 5.2%, #111a16);
+  --surface-glass: color-mix(in srgb, var(--accent) 4%, rgb(13 20 17 / 94%));
+  --surface-raised: color-mix(in srgb, var(--accent) 5.5%, #111915);
+  --surface-accent: color-mix(in srgb, var(--accent) 11%, #101713);
+  --dashboard-border: color-mix(in srgb, var(--accent) 10%, var(--border));
   --text: #f7faf8;
   --text-muted: #9aa9a0;
   --border: rgb(255 255 255 / 10%);
@@ -61,6 +67,22 @@
 :root[data-theme="dark"][data-surface="neutral"] { --page: #0b0d0c; --surface-1: #121514; --surface-2: #171a18; }
 :root[data-surface="contrast"] { --page: #eef4f0; --surface-1: #ffffff; --surface-2: #e9f1ec; --border: #cbd9d0; }
 :root[data-theme="dark"][data-surface="contrast"] { --page: #050806; --surface-1: #0d130f; --surface-2: #17211b; --border: rgb(255 255 255 / 15%); }
+
+
+.dashboard-shell {
+  background-image:
+    radial-gradient(circle at 18% 12%, color-mix(in srgb, var(--accent) 5%, transparent), transparent 30%),
+    linear-gradient(180deg, color-mix(in srgb, var(--accent) 1.5%, transparent), transparent 38%);
+}
+
+.dashboard-card {
+  border-color: var(--dashboard-border);
+  background: linear-gradient(145deg, var(--surface-1), var(--surface-raised));
+}
+
+.dashboard-glow {
+  box-shadow: 0 0 34px color-mix(in srgb, var(--accent) 11%, transparent);
+}
 
 
 @media print {
