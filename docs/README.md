@@ -77,3 +77,4 @@
 - [فاز ۱۳۷: ناوبری واقعی SPA و دوام Workflow فریلنسر](./phases/PHASE_137_NOTES_FA.md)
 
 - [فاز ۱۳۸: اصلاح Navigation Discovery در Static Export](./phases/PHASE_138_NOTES_FA.md)
+- [فاز ۱۳۹: ایمن‌سازی Syntax مسیرهای Browser Smoke](./phases/PHASE_139_NOTES_FA.md)

@@ -225,4 +225,5 @@
 - [x] فاز ۱۳۶: مقاوم‌سازی Freelancer Browser UX smoke پس از اجرای واقعی Windows؛ تزریق React-compatible برای Controlled Input، Enter native-like، diagnostics دقیق و حذف noise مرورگر.
 - [x] فاز ۱۳۷: اصلاح وفاداری Freelancer Browser UX smoke به ناوبری واقعی App Router و جداسازی SPA navigation از Reload durability با تأیید صریح IndexedDB.
 - [x] فاز ۱۳۸: اصلاح Navigation Discovery در Static Export با پشتیبانی از `trailingSlash`، تشخیص Route نرمال‌شده و diagnostics لینک‌های واقعی DOM.
-- [ ] فاز ۱۳۹: ادامه پالیش Workflow فریلنسر فقط بر اساس اولین شکست واقعی بعدی در Project Detail، Timer، Expense، Invoice یا Mobile Dialog.
+- [x] فاز ۱۳۹: رفع SyntaxError در Browser Route Expression فاز ۱۳۸ با جداکردن سازنده Expression، حذف Regex شکننده از کد تزریق‌شده CDP و افزودن Compile Contract پیش از اجرای Browser Smoke.
+- [ ] فاز ۱۴۰: ادامه Workflow فریلنسر فقط بر اساس اولین شکست واقعی پس از عبور Navigation؛ Project Detail، Timer، Expense، Invoice یا Mobile Dialog.

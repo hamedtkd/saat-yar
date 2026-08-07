@@ -4,11 +4,13 @@ import test from "node:test";
 
 const read = (path: string) => readFileSync(path, "utf8");
 const smoke = read("scripts/freelancer-browser-ux-smoke.mjs");
+const routeExpressions = read("scripts/browser-route-expression.mjs");
 
 test("freelancer smoke follows real in-app links between business routes", () => {
   assert.match(smoke, /async function navigateInApp/);
-  assert.match(smoke, /querySelectorAll\('a\[href\]'\)/);
-  assert.match(smoke, /anchor\.click\(\)/);
+  assert.match(routeExpressions, /querySelectorAll\('a\[href\]'\)/);
+  assert.match(routeExpressions, /anchor\.click\(\)/);
+  assert.match(smoke, /buildAppNavigationExpression\(pathname\)/);
   assert.match(smoke, /await navigateInApp\(client, "\/projects", PROJECT_NAME\)/);
   assert.match(smoke, /await navigateInApp\(client, "\/invoices", "فاکتورها"\)/);
   assert.doesNotMatch(smoke, /navigate\(client, `\$\{server\.origin\}\/projects`, PROJECT_NAME\)/);

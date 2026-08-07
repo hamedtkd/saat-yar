@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 import { createMediaDemoData } from "./media/demo-data.ts";
 import { cleanupBrowserProfile } from "./browser-profile-cleanup.mjs";
 import { findBrowserExecutable } from "./production-browser-smoke.mjs";
+import { buildAppNavigationExpression, buildRouteReadyExpression } from "./browser-route-expression.mjs";
 import { startStaticExportServer } from "./static-export-server.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -124,49 +125,11 @@ async function navigate(client, url, text) {
 }
 
 async function navigateInApp(client, pathname, text) {
-  const result = await evaluate(client, `(() => {
-    const wanted = ${JSON.stringify(pathname)};
-    const normalize = (value) => {
-      try {
-        const candidate = new URL(value, location.href).pathname.replace(/\/+$/, "") || "/";
-        return candidate;
-      } catch { return ""; }
-    };
-    const wantedPath = normalize(wanted);
-    const anchors = [...document.querySelectorAll('a[href]')];
-    const labels = { "/projects": "پروژه‌ها", "/invoices": "فاکتورها", "/clients": "مشتری‌ها" };
-    const normalizeText = (value) => (value || "").replace(/\s+/g, " ").trim();
-    let anchor = anchors.find((item) => {
-      const candidate = normalize(item.href);
-      return candidate === wantedPath || (wantedPath !== "/" && candidate.endsWith(wantedPath));
-    });
-    if (!anchor && labels[wantedPath]) {
-      anchor = anchors.find((item) => normalizeText(item.textContent).includes(labels[wantedPath]));
-    }
-    if (!anchor) {
-      return {
-        clicked: false,
-        available: anchors.slice(0, 24).map((item) => ({
-          href: item.getAttribute("href") || "",
-          pathname: normalize(item.href),
-          text: (item.textContent || "").replace(/\s+/g, " ").trim().slice(0, 80),
-        })),
-      };
-    }
-    const href = anchor.getAttribute("href") || anchor.href;
-    const label = (anchor.textContent || "").replace(/\s+/g, " ").trim().slice(0, 80);
-    anchor.click();
-    return { clicked: true, href, label };
-  })()`);
+  const result = await evaluate(client, buildAppNavigationExpression(pathname));
   if (!result?.clicked) {
     throw new Error(`App navigation link not found: ${pathname}. Available anchors: ${JSON.stringify(result?.available ?? [])}`);
   }
-  await waitFor(client, `(() => {
-    const normalize = (value) => (value || "/").replace(/\/+$/, "") || "/";
-    const current = normalize(location.pathname);
-    const wanted = normalize(${JSON.stringify(pathname)});
-    return current === wanted || (wanted !== "/" && current.endsWith(wanted));
-  })()`, `in-app navigation ${pathname}`);
+  await waitFor(client, buildRouteReadyExpression(pathname), `in-app navigation ${pathname}`);
   if (text) await waitFor(client, `document.body?.innerText.includes(${JSON.stringify(text)})`, text);
   await settleUi(client);
 }

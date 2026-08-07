@@ -1,28 +1,38 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import { buildAppNavigationExpression, buildRouteReadyExpression } from "../scripts/browser-route-expression.mjs";
 
 const read = (path: string) => readFileSync(path, "utf8");
-const smoke = read("scripts/freelancer-browser-ux-smoke.mjs");
+
+function compileExpression(expression: string) {
+  return new Function(`return (${expression});`);
+}
 
 test("in-app route discovery normalizes static-export trailing slashes", () => {
-  assert.ok(smoke.includes('pathname.replace(/\\/+$/, "") || "/"'));
-  assert.match(smoke, /candidate === wantedPath/);
-  assert.match(smoke, /candidate\.endsWith\(wantedPath\)/);
-  assert.match(smoke, /labels = \{ "\/projects": "پروژه‌ها"/);
-  assert.match(smoke, /normalizeText\(item\.textContent\)\.includes\(labels\[wantedPath\]\)/);
+  const expression = buildAppNavigationExpression("/projects");
+  assert.match(expression, /candidate\.endsWith\("\/"\)/);
+  assert.match(expression, /candidate = candidate\.slice\(0, -1\)/);
+  assert.match(expression, /candidate === wantedPath/);
+  assert.match(expression, /candidate\.endsWith\(wantedPath\)/);
+  assert.match(expression, /"\/projects": "پروژه‌ها"/);
+  assert.doesNotThrow(() => compileExpression(expression));
 });
 
 test("route transition wait accepts both slash and non-slash pathnames", () => {
-  assert.match(smoke, /const current = normalize\(location\.pathname\)/);
-  assert.match(smoke, /const wanted = normalize\(\$\{JSON\.stringify\(pathname\)\}\)/);
-  assert.match(smoke, /current === wanted \|\| \(wanted !== "\/" && current\.endsWith\(wanted\)\)/);
+  const expression = buildRouteReadyExpression("/projects");
+  assert.match(expression, /const current = normalize\(location\.pathname\)/);
+  assert.match(expression, /const wanted = normalize\("\/projects"\)/);
+  assert.match(expression, /current === wanted \|\| \(wanted !== "\/" && current\.endsWith\(wanted\)\)/);
+  assert.doesNotThrow(() => compileExpression(expression));
 });
 
 test("missing app links report the rendered href and label inventory", () => {
-  assert.match(smoke, /available: anchors\.slice\(0, 24\)/);
-  assert.match(smoke, /href: item\.getAttribute\("href"\)/);
-  assert.match(smoke, /pathname: normalize\(item\.href\)/);
+  const expression = buildAppNavigationExpression("/invoices");
+  const smoke = read("scripts/freelancer-browser-ux-smoke.mjs");
+  assert.match(expression, /available: anchors\.slice\(0, 24\)/);
+  assert.match(expression, /href: item\.getAttribute\("href"\)/);
+  assert.match(expression, /pathname: normalize\(item\.href\)/);
   assert.match(smoke, /Available anchors:/);
 });
 
