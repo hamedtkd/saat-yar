@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+- مسیر کارمند اکنون وضعیت Paid/Unpaid هر وقفه را صریحاً در ویرایشگر نمایش می‌دهد و Browser Journey قرارداد وقفه ۱۵ دقیقه‌ای بدون حقوق را تا محاسبه خالص `۸:۱۵` بررسی می‌کند.
+
 - Release Gate اکنون Browser UX Journey حالت کارمند را نیز بعد از مسیر فریلنسر اجرا می‌کند؛ Start/Lunch/Break/End، یادداشت، محاسبه ۸:۱۵، Month/Reports، Snapshot IndexedDB، Hard Reload و viewport موبایل روی خروجی Production بررسی می‌شوند.
 
 - Freelancer Browser UX smoke اکنون snapshot envelope واقعی IndexedDB را باز می‌کند، قرارداد فعلی `Invoice.lines` را بررسی می‌کند و پس از تأیید persistence یک Hard Reload واقعی برای بازگشت Invoice اجرا می‌کند.
@@ -11,6 +13,7 @@
 
 ### Fixed
 
+- Patchهای حضور و غیاب روی آخرین WorkRecord موجود در state merge می‌شوند تا تعامل‌های سریع Lunch/Break/Clock-out داده تازه را با snapshot قدیمی بازنویسی نکنند.
 - پس از ثبت «پایان روز» در حالت کارمند، ویرایشگر روز اکنون از حالت Live به Completed remount می‌شود؛ رکورد کامل‌شده بلافاصله read-only است و CTA «ویرایش این روز» به‌درستی نمایش داده می‌شود.
 - همگام‌سازی نمایش `TimePicker` با مقدار کنترل‌شده بعد از توزیع مجدد هدف هفتگی؛ ساعت پایان دیگر مقدار قدیمی را کنار هدف جدید نشان نمی‌دهد.
 - همگام‌سازی `weeklyMinutes` با ویرایش مستقیم برنامه روزها و حذف warning بلااستفاده فاز ۱۲۶.

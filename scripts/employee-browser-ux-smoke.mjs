@@ -226,6 +226,26 @@ async function setSectionTimeValue(client, sectionTitle, fieldTitle, value, occu
   await pressKey(client, "Enter", "Enter");
 }
 
+async function ensureFirstBreakUnpaid(client) {
+  const state = await evaluate(client, `(() => {
+    const checkbox = document.querySelector('[role="checkbox"][aria-label="وقفه 1 با حقوق"]');
+    if (!checkbox) return { found: false, checked: null };
+    return {
+      found: true,
+      checked: checkbox.getAttribute("data-state") === "checked" || checkbox.getAttribute("aria-checked") === "true",
+    };
+  })()`);
+  if (!state?.found) throw new Error("Break paid/unpaid control not found.");
+  if (state.checked) {
+    await evaluate(client, `document.querySelector('[role="checkbox"][aria-label="وقفه 1 با حقوق"]')?.click()`);
+    await settleUi(client);
+  }
+  await waitFor(client, `(() => {
+    const checkbox = document.querySelector('[role="checkbox"][aria-label="وقفه 1 با حقوق"]');
+    return checkbox && checkbox.getAttribute("data-state") !== "checked" && checkbox.getAttribute("aria-checked") !== "true";
+  })()`, "unpaid break contract");
+}
+
 async function setEmployeeNote(client, value) {
   await focusBySelector(client, `document.querySelector('textarea[placeholder*="کارهای انجام‌شده"]')`, "employee note");
   await replaceFocusedText(client, value);
@@ -372,7 +392,8 @@ async function main() {
     await waitFor(client, `document.body?.innerText.includes("ثبت وقفه")`, "break saved");
     await setSectionTimeValue(client, "وقفه‌ها", "شروع", "15:00");
     await setSectionTimeValue(client, "وقفه‌ها", "پایان", "15:15");
-    console.log("✓ Break flow records a separate unpaid interruption and remains editable");
+    await ensureFirstBreakUnpaid(client);
+    console.log("✓ Break flow records a separate 15-minute unpaid interruption and exposes its pay status");
 
     await setEmployeeNote(client, EMPLOYEE_NOTE);
     await clickButton(client, "پایان روز", true);

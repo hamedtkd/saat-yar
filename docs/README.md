@@ -84,3 +84,4 @@
 - [فاز ۱۴۱: Browser UX Journey حالت کارمند](./phases/PHASE_141_NOTES_FA.md)
 
 - [فاز ۱۴۲: تکمیل Transition روز کارمند و Browser Journey](./phases/PHASE_142_NOTES_FA.md)
+- [فاز ۱۴۳: تثبیت محاسبه وقفه کارمند و Patchهای رکورد](./phases/PHASE_143_NOTES_FA.md)

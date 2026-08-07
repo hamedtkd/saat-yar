@@ -27,10 +27,24 @@ export function useAttendanceActions({ data, record, selectedDate, activeBreak, 
     if (resetUndoTimerRef.current) window.clearTimeout(resetUndoTimerRef.current);
   }, []);
 
-  function saveRecord(next: WorkRecord) {
-    setData((previous) => ({ ...previous, records: { ...previous.records, [selectedDate]: { ...next, updatedAt: new Date().toISOString() } } }));
+  function updateRecord(patch: Partial<WorkRecord>) {
+    setData((previous) => {
+      const current = previous.records[selectedDate] ?? record;
+      return {
+        ...previous,
+        records: {
+          ...previous.records,
+          [selectedDate]: {
+            ...current,
+            ...patch,
+            manuallyEdited: true,
+            needsReview: false,
+            updatedAt: new Date().toISOString(),
+          },
+        },
+      };
+    });
   }
-  function updateRecord(patch: Partial<WorkRecord>) { saveRecord({ ...record, ...patch, manuallyEdited: true, needsReview: false }); }
   function dismissResetUndo() {
     if (resetUndoTimerRef.current) window.clearTimeout(resetUndoTimerRef.current);
     resetUndoTimerRef.current = undefined;
