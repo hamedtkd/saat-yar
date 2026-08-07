@@ -76,6 +76,8 @@ export type WorkRecord = {
   needsReview?: boolean;
 };
 
+export type WorkRecordPatch = Partial<WorkRecord> | ((current: WorkRecord) => Partial<WorkRecord>);
+
 export type DeletedWorkRecord = {
   id: string;
   date: string;

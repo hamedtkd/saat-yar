@@ -87,3 +87,5 @@
 - [فاز ۱۴۳: تثبیت محاسبه وقفه کارمند و Patchهای رکورد](./phases/PHASE_143_NOTES_FA.md)
 - [فاز ۱۴۴: مقاوم‌سازی Startup مرورگر در Release Gate](./phases/PHASE_144_NOTES_FA.md)
 - [فاز ۱۴۵: رفع TypeScript contract در Browser Debug Startup](./phases/PHASE_145_NOTES_FA.md)
+
+- [فاز ۱۴۷: Atomic Break Edit Contract](./phases/PHASE_147_NOTES_FA.md)

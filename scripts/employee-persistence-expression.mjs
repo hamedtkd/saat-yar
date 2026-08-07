@@ -22,7 +22,7 @@ export function buildEmployeePersistenceProbeExpression({ date, note }) {
           start: record?.start === "08:00",
           end: record?.end === "17:00",
           lunch: record?.lunchStart === "12:00" && record?.lunchEnd === "12:30" && Number(record?.lunchMinutes) === 30,
-          break: Array.isArray(record?.breaks) && record.breaks.some((item) => item?.start === "15:00" && item?.end === "15:15"),
+          break: Array.isArray(record?.breaks) && record.breaks.some((item) => item?.start === "15:00" && item?.end === "15:15" && item?.paid === false),
           note: record?.note === ${JSON.stringify(note)},
         };
         db.close();
@@ -38,6 +38,7 @@ export function buildEmployeePersistenceProbeExpression({ date, note }) {
             lunchEnd: record.lunchEnd,
             lunchMinutes: record.lunchMinutes,
             breakCount: Array.isArray(record.breaks) ? record.breaks.length : 0,
+            breaks: Array.isArray(record.breaks) ? record.breaks.map((item) => ({ start: item.start, end: item.end, paid: item.paid })) : [],
             note: record.note,
           } : null,
         });

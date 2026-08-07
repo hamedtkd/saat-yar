@@ -20,7 +20,7 @@ test("08:00-17:00 minus 30m lunch and 15m unpaid break is 8:15", () => {
 test("attendance patches merge into the latest stored record instead of a stale render snapshot", async () => {
   const source = await read("hooks/controller/use-attendance-actions.ts");
   assert.match(source, /const current = previous\.records\[selectedDate\] \?\? record/);
-  assert.match(source, /\.\.\.current,\s*\.\.\.patch/);
+  assert.match(source, /\.\.\.current,\s*\.\.\.(?:resolvedPatch|patch)/);
   assert.doesNotMatch(source, /saveRecord\(\{ \.\.\.record, \.\.\.patch/);
 });
 

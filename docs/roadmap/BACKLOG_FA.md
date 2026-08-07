@@ -233,5 +233,6 @@
 - [x] فاز ۱۴۴: مقاوم‌سازی startup مرورگر در Release Gate؛ Retry محدود و تمیز فقط برای failure زیرساختی CDP با Port/Profile تازه، بدون تکرار شکست‌های واقعی UX.
 - [x] فاز ۱۴۵: رفع TypeScript contract در Browser Debug Startup؛ جلوگیری از استنتاج `never[]` برای `extraArgs` در مصرف‌کننده‌های strict بدون تغییر رفتار Runtime.
 - [x] فاز ۱۴۶: همگام‌سازی Employee Browser Smoke با Checkbox native واقعی؛ استفاده از `HTMLInputElement.checked` به‌جای قرارداد قدیمی Radix و حفظ Gate واقعی وقفه بدون حقوق.
-- [ ] فاز ۱۴۷: آماده‌سازی Release Candidate نسخه 2.3.0؛ نسخه، Manifest، Changelog، Release Notes، رسانه‌ها و Gate evidence.
-- [ ] فاز ۱۴۸: نهایی‌سازی Release 2.3.0 و Tag نهایی پس از Gate سبز Candidate.
+- [x] فاز ۱۴۷: اتمیک‌کردن ویرایش nested رکورد کارمند؛ اعمال Lunch/Break روی آخرین WorkRecord، تثبیت Paid/Unpaid و اضافه‌کردن Browser contract برای 15:00–15:15 قبل از Clock-out.
+- [ ] فاز ۱۴۸: آماده‌سازی Release Candidate نسخه 2.3.0؛ نسخه، Manifest، Changelog، Release Notes، رسانه‌ها و Gate evidence.
+- [ ] فاز ۱۴۹: نهایی‌سازی Release 2.3.0 و Tag نهایی پس از Gate سبز Candidate.

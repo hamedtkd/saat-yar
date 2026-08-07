@@ -5,7 +5,7 @@ import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { registerSettingsDraft } from "@/lib/settings-draft-registry";
 import { getWorkRecordChanges } from "@/lib/work-record-diff";
-import type { WorkRecord } from "@/lib/types";
+import type { WorkRecord, WorkRecordPatch } from "@/lib/types";
 import { RecordChangeSummary } from "./record-change-summary";
 import type { TodayPageProps } from "./types";
 import { TodayFocusCard } from "./today-focus-card";
@@ -23,7 +23,10 @@ export function CompletedDayEditor(props: TodayPageProps) {
   const dirty = changes.length > 0;
   const visibleRecord = completed ? draft : props.record;
   const updateVisibleRecord = completed
-    ? (patch: Partial<WorkRecord>) => setDraft((current) => ({ ...current, ...patch }))
+    ? (patch: WorkRecordPatch) => setDraft((current) => ({
+        ...current,
+        ...(typeof patch === "function" ? patch(current) : patch),
+      }))
     : updateRecord;
 
   const beginEdit = useCallback(() => {

@@ -1,6 +1,6 @@
 import type React from "react";
 import type { ReturnTypeCalc } from "@/lib/type-helpers";
-import type { AppData, BreakItem, ClientDraft, ProjectDraft, Tab, TimeEntry, TimerDraft, WorkRecord } from "@/lib/types";
+import type { AppData, BreakItem, ClientDraft, ProjectDraft, Tab, TimeEntry, TimerDraft, WorkRecord, WorkRecordPatch } from "@/lib/types";
 
 export type TodayPageProps = {
   data: AppData;
@@ -21,7 +21,7 @@ export type TodayPageProps = {
   reviewPreviousRecord: () => void;
   dismissPreviousRecord: () => void;
   finishWork: () => void;
-  updateRecord: (patch: Partial<WorkRecord>) => void;
+  updateRecord: (patch: WorkRecordPatch) => void;
   resetRecord: () => void;
   resetUndoDate?: string;
   undoResetRecord: () => void;

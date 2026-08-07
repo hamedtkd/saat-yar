@@ -3,7 +3,7 @@ import { minutesToTime, spanMinutes, timeToMinutes } from "@/lib/time-engine";
 import { nowTime } from "@/lib/format";
 import { closePreviousRecordForNewDay, findPreviousOpenRecord } from "@/lib/previous-day-session";
 import type { Dispatch, SetStateAction } from "react";
-import type { AppData, WorkRecord } from "@/lib/types";
+import type { AppData, WorkRecord, WorkRecordPatch } from "@/lib/types";
 import { createDeletedWorkRecord } from "@/lib/record-recycle-bin";
 
 type Args = {
@@ -27,16 +27,17 @@ export function useAttendanceActions({ data, record, selectedDate, activeBreak, 
     if (resetUndoTimerRef.current) window.clearTimeout(resetUndoTimerRef.current);
   }, []);
 
-  function updateRecord(patch: Partial<WorkRecord>) {
+  function updateRecord(patch: WorkRecordPatch) {
     setData((previous) => {
       const current = previous.records[selectedDate] ?? record;
+      const resolvedPatch = typeof patch === "function" ? patch(current) : patch;
       return {
         ...previous,
         records: {
           ...previous.records,
           [selectedDate]: {
             ...current,
-            ...patch,
+            ...resolvedPatch,
             manuallyEdited: true,
             needsReview: false,
             updatedAt: new Date().toISOString(),
@@ -120,15 +121,15 @@ export function useAttendanceActions({ data, record, selectedDate, activeBreak, 
   function startBreak() {
     if (!ensureLiveTimerOwnership()) return setToast("کنترل تایمر در تب دیگری فعال است");
     if (activeBreak || lunchRunning) return setToast("یک تایمر دیگر در حال اجراست");
-    updateRecord({ breaks: [...record.breaks, { id: crypto.randomUUID(), start: nowTime(), end: "", startedAt: new Date().toISOString(), title: "وقفه شخصی", paid: false }] });
+    updateRecord((current) => ({ breaks: [...current.breaks, { id: crypto.randomUUID(), start: nowTime(), end: "", startedAt: new Date().toISOString(), title: "وقفه شخصی", paid: false }] }));
     setToast("تایمر وقفه شروع شد");
   }
   function finishBreak(minutes?: number) {
     if (!ensureLiveTimerOwnership()) return setToast("کنترل تایمر در تب دیگری فعال است");
     if (!activeBreak) return;
     const end = minutes ? minutesToTime(timeToMinutes(activeBreak.start) + minutes) : nowTime();
-    updateRecord({ breaks: record.breaks.map((item) => item.id === activeBreak.id ? { ...item, end,
-      endedAt: minutes && item.startedAt ? new Date(new Date(item.startedAt).getTime() + minutes * 60_000).toISOString() : new Date().toISOString() } : item) });
+    updateRecord((current) => ({ breaks: current.breaks.map((item) => item.id === activeBreak.id ? { ...item, end,
+      endedAt: minutes && item.startedAt ? new Date(new Date(item.startedAt).getTime() + minutes * 60_000).toISOString() : new Date().toISOString() } : item) }));
     setToast(minutes ? `وقفه ${minutes.toLocaleString("fa-IR")} دقیقه‌ای ثبت شد` : "وقفه پایان یافت");
   }
   return { updateRecord, resetRecord, undoResetRecord, dismissResetUndo, resetUndoDate: resetUndo?.date, startWork, finishWork, startLunch, finishLunch, startBreak, finishBreak,

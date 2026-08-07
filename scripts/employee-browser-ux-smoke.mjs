@@ -197,6 +197,34 @@ async function setSectionTimeValue(client, sectionTitle, fieldTitle, value, occu
   await pressKey(client, "Enter", "Enter");
 }
 
+async function assertFirstBreakEditorContract(client) {
+  const contract = await evaluate(client, `(() => {
+    const norm = (value) => (value || "").replace(/\s+/g," ").trim();
+    const section = [...document.querySelectorAll("section")].find((node) =>
+      [...node.querySelectorAll("strong")].some((item) => norm(item.textContent) === "وقفه‌ها"));
+    if (!section) return { found: false };
+    const readTime = (label) => {
+      const owner = [...section.querySelectorAll("label")].find((node) =>
+        [...node.querySelectorAll("span")].some((span) => norm(span.textContent) === label));
+      return owner?.querySelector('input[aria-label="زمان"]')?.value || "";
+    };
+    const checkbox = section.querySelector('input[type="checkbox"][aria-label="وقفه 1 با حقوق"]');
+    return {
+      found: true,
+      start: readTime("شروع"),
+      end: readTime("پایان"),
+      paid: checkbox instanceof HTMLInputElement ? checkbox.checked : null,
+    };
+  })()`);
+  const latin = (value) => String(value || "")
+    .replace(/[۰-۹]/g, (digit) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)))
+    .replace(/[٠-٩]/g, (digit) => String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)));
+  const normalized = { ...contract, start: latin(contract?.start), end: latin(contract?.end) };
+  if (!normalized.found || normalized.start !== "15:00" || normalized.end !== "15:15" || normalized.paid !== false) {
+    throw new Error(`Break editor contract drifted before clock-out: ${JSON.stringify(normalized)}`);
+  }
+}
+
 async function ensureFirstBreakUnpaid(client) {
   const selector = 'input[type="checkbox"][aria-label="وقفه 1 با حقوق"]';
   const state = await evaluate(client, `(() => {
@@ -336,7 +364,8 @@ async function main() {
     await setSectionTimeValue(client, "وقفه‌ها", "شروع", "15:00");
     await setSectionTimeValue(client, "وقفه‌ها", "پایان", "15:15");
     await ensureFirstBreakUnpaid(client);
-    console.log("✓ Break flow records a separate 15-minute unpaid interruption and exposes its pay status");
+    await assertFirstBreakEditorContract(client);
+    console.log("✓ Break flow records a separate 15-minute unpaid interruption and preserves its edited contract");
 
     await setEmployeeNote(client, EMPLOYEE_NOTE);
     await clickButton(client, "پایان روز", true);
