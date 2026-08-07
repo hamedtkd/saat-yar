@@ -19,6 +19,7 @@ import { AppearanceSettingsCard } from "./appearance/appearance-settings-card";
 import { SettingsBehaviorCard } from "./settings-behavior-card";
 import { ProfileSettingsCard } from "./profile-settings-card";
 import { DataHealthCard } from "./data-health-card";
+import { DeviceTransferCard } from "./device-transfer-card";
 import type { MultiTabSyncStatus } from "@/lib/multi-tab-sync-status";
 import { RecordRecycleBinCard } from "./record-recycle-bin-card";
 import { SettingsSection } from "./settings-section";
@@ -66,6 +67,7 @@ export function SettingsPage({ data, setData, storage, exportBackup, previewImpo
           <RecoveryCard saveState={saveState} lastSavedAt={lastSavedAt} saveError={saveError} recoverySnapshot={recoverySnapshot} retrySave={retrySave} createRecovery={createRecovery} restoreRecovery={restoreRecovery} clearRecovery={clearRecovery} />
           <BackupCard exportBackup={exportBackup} />
           <RestoreCard previewImport={previewImport} importPreview={importPreview} applyImport={applyImport} />
+          <DeviceTransferCard data={data} setData={setData} setToast={setToast} />
         </SettingsSection>
 
         <span id="settings-work" className="block scroll-mt-24" aria-hidden="true" />

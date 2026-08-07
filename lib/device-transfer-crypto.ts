@@ -12,11 +12,12 @@ import {
   type EncryptedDeviceTransferEnvelope,
 } from "./device-transfer-types.ts";
 import { verifyDeviceTransferPayload } from "./device-transfer-payload.ts";
+import { toArrayBuffer } from "./device-transfer-buffer.ts";
 
 async function importSessionKey(secret: string): Promise<CryptoKey> {
   const bytes = base64UrlToBytes(secret);
   if (bytes.byteLength !== 32) throw new Error("کلید نشست انتقال معتبر نیست.");
-  return globalThis.crypto.subtle.importKey("raw", bytes, { name: "AES-GCM" }, false, ["encrypt", "decrypt"]);
+  return globalThis.crypto.subtle.importKey("raw", toArrayBuffer(bytes), { name: "AES-GCM" }, false, ["encrypt", "decrypt"]);
 }
 
 export function createDeviceTransferSessionKey(): DeviceTransferSessionKey {
@@ -31,9 +32,9 @@ export async function encryptDeviceTransferPayload(
   const key = await importSessionKey(session.secret);
   const iv = globalThis.crypto.getRandomValues(new Uint8Array(12));
   const encrypted = await globalThis.crypto.subtle.encrypt(
-    { name: "AES-GCM", iv },
+    { name: "AES-GCM", iv: toArrayBuffer(iv) },
     key,
-    textToBytes(JSON.stringify(payload)),
+    toArrayBuffer(textToBytes(JSON.stringify(payload))),
   );
   return {
     protocol: DEVICE_TRANSFER_PROTOCOL,
@@ -60,9 +61,9 @@ export async function decryptDeviceTransferEnvelope(
   let plaintext: ArrayBuffer;
   try {
     plaintext = await globalThis.crypto.subtle.decrypt(
-      { name: "AES-GCM", iv: base64UrlToBytes(envelope.iv) },
+      { name: "AES-GCM", iv: toArrayBuffer(base64UrlToBytes(envelope.iv)) },
       key,
-      base64UrlToBytes(envelope.ciphertext),
+      toArrayBuffer(base64UrlToBytes(envelope.ciphertext)),
     );
   } catch {
     throw new Error("رمزگشایی بسته انتقال ناموفق بود.");

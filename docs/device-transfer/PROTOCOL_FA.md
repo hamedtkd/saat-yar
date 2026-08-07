@@ -29,3 +29,16 @@
 `merge + use-incoming` برای انتقال کنترل از دستگاه دیگر مناسب است و تعارض‌های هم‌کلید را با نسخه ورودی جایگزین می‌کند.
 
 `replace` باید در UI با هشدار واضح نمایش داده شود چون کل AppData مقصد را با داده دریافتی جایگزین می‌کند.
+
+## Pairing Transport — Phase 114
+
+پروتکل انتقال به Transport وابسته نیست. فاز ۱۱۴ یک Transport مستقیم WebRTC اضافه می‌کند:
+
+- `RTCPeerConnection` بدون Signaling server دائمی
+- Offer/Answer نسخه‌دار با `saatyar-device-pair:v1`
+- Pairing Code یا لینک دارای Fragment برای تبادل دستی Signaling
+- Session key همان نشست داخل Offer و دارای عمر کوتاه
+- DataChannel ordered با Chunking و ACK
+- بهترین عملکرد در یک شبکه Wi-Fi مشترک
+
+QR صرفاً یک روش نمایش همین Pairing Code خواهد بود و در فاز بعد بدون API شخص ثالث اضافه می‌شود.

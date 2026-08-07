@@ -10,13 +10,14 @@ import {
   type DeviceTransferSource,
 } from "./device-transfer-types.ts";
 import type { AppData } from "./types.ts";
+import { toArrayBuffer } from "./device-transfer-buffer.ts";
 
 function randomId(): string {
   return globalThis.crypto.randomUUID();
 }
 
 async function sha256(value: string): Promise<string> {
-  const digest = await globalThis.crypto.subtle.digest("SHA-256", textToBytes(value));
+  const digest = await globalThis.crypto.subtle.digest("SHA-256", toArrayBuffer(textToBytes(value)));
   return bytesToBase64Url(new Uint8Array(digest));
 }
 
