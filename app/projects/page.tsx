@@ -18,6 +18,7 @@ export default function ProjectsRoute() {
       draft={controller.projectDraft}
       setDraft={controller.setProjectDraft}
       addProject={controller.addProject}
+      createClient={controller.createClient}
       activeEntry={controller.activeEntry}
       toggleProjectTimer={controller.toggleProjectTimer}
       financialsHidden={controller.financialsHidden}

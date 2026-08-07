@@ -5,13 +5,13 @@ import { PrivateMoney } from "@/components/common/private-money";
 import { SectionHeading } from "@/components/common/section-heading";
 import { Button } from "@/components/ui/button";
 import { duration, fa } from "@/lib/format";
-import type { AppData, ClientDraft, Tab } from "@/lib/types";
+import type { AppData, ClientDraft, ProjectDraft, Tab } from "@/lib/types";
 import { ClientForm } from "./client-form";
 import { ClientsTable } from "./clients-table";
 import { TopClients } from "./top-clients";
 import { useClientMetrics } from "./use-client-metrics";
 
-export function ClientsPage({ data, setData, showForm, setShowForm, draft, setDraft, addClient, setTab, financialsHidden }: {
+export function ClientsPage({ data, setData, showForm, setShowForm, draft, setDraft, addClient, createProject, setTab, financialsHidden }: {
   data: AppData;
   setData: React.Dispatch<React.SetStateAction<AppData>>;
   showForm: boolean;
@@ -19,6 +19,7 @@ export function ClientsPage({ data, setData, showForm, setShowForm, draft, setDr
   draft: ClientDraft;
   setDraft: React.Dispatch<React.SetStateAction<ClientDraft>>;
   addClient: () => void;
+  createProject: (draft: ProjectDraft) => string | undefined;
   setTab: (tab: Tab) => void;
   financialsHidden: boolean;
 }) {
@@ -45,7 +46,7 @@ export function ClientsPage({ data, setData, showForm, setShowForm, draft, setDr
       <section>
         <SectionHeading icon={<Users />} eyebrow="مدیریت ارتباط" title="فهرست و مشتری‌های برتر" description="وضعیت هر مشتری را مرور کن و سریع به پروژه‌های مرتبط برس." />
         <div className="grid grid-cols-[minmax(0,1fr)_365px] gap-[14px] max-[1180px]:grid-cols-[minmax(0,1fr)_280px] max-[900px]:grid-cols-1">
-          <ClientsTable data={data} setData={setData} financialsHidden={financialsHidden} />
+          <ClientsTable data={data} setData={setData} createProject={createProject} financialsHidden={financialsHidden} />
           <TopClients data={data} setTab={setTab} />
         </div>
       </section>

@@ -31,19 +31,45 @@ export function useBusinessActions(args: Args) {
       billable: timerDraft.billable, effectiveRate: project.rate }, ...previous.timeEntries] }));
     setToast("تایمر پروژه شروع شد");
   }
-  function addClient() {
-    if (!clientDraft.name.trim()) return setToast("نام مشتری را وارد کنید");
+  function createClient(draft: ClientDraft, selectForProject: "never" | "if-empty" | "always" = "never") {
+    if (!draft.name.trim()) { setToast("نام مشتری را وارد کنید"); return undefined; }
     const id = crypto.randomUUID();
-    setData((previous) => ({ ...previous, clients: [...previous.clients, { id, name: clientDraft.name.trim(), email: clientDraft.email.trim(), note: clientDraft.note.trim(), color: colors[previous.clients.length % colors.length], archived: false }] }));
-    setClientDraft(initialClientDraft); setProjectDraft((previous) => ({ ...previous, clientId: previous.clientId || id }));
-    setShowClientForm(false); setToast("مشتری جدید ذخیره شد");
+    setData((previous) => ({ ...previous, clients: [...previous.clients, {
+      id, name: draft.name.trim(), email: draft.email.trim(), note: draft.note.trim(),
+      color: colors[previous.clients.length % colors.length], archived: false,
+    }] }));
+    if (selectForProject !== "never") {
+      setProjectDraft((previous) => ({
+        ...previous,
+        clientId: selectForProject === "always" ? id : previous.clientId || id,
+      }));
+    }
+    setToast("مشتری جدید ذخیره شد");
+    return id;
+  }
+  function addClient() {
+    const id = createClient(clientDraft, "if-empty");
+    if (!id) return;
+    setClientDraft(initialClientDraft); setShowClientForm(false);
+  }
+  function createProject(draft: ProjectDraft, selectAfterCreate = false) {
+    if (!draft.name.trim() || !draft.clientId) { setToast("نام پروژه و مشتری الزامی است"); return undefined; }
+    const id = crypto.randomUUID();
+    setData((previous) => ({ ...previous, projects: [...previous.projects, {
+      id, clientId: draft.clientId, name: draft.name.trim(), rate: draft.rate, budgetHours: draft.budgetHours,
+      note: draft.note, color: colors[previous.projects.length % colors.length], status: "active", billable: true,
+    }] }));
+    if (selectAfterCreate) {
+      setSelectedProjectId(id);
+      setTimerDraft((previous) => ({ ...previous, projectId: id }));
+    }
+    setToast("پروژه ساخته شد");
+    return id;
   }
   function addProject() {
-    if (!projectDraft.name.trim() || !projectDraft.clientId) return setToast("نام پروژه و مشتری الزامی است");
-    const id = crypto.randomUUID();
-    setData((previous) => ({ ...previous, projects: [...previous.projects, { id, clientId: projectDraft.clientId, name: projectDraft.name.trim(), rate: projectDraft.rate, budgetHours: projectDraft.budgetHours, note: projectDraft.note, color: colors[previous.projects.length % colors.length], status: "active", billable: true }] }));
-    setSelectedProjectId(id); setTimerDraft((previous) => ({ ...previous, projectId: id }));
-    setProjectDraft({ ...initialProjectDraft, clientId: projectDraft.clientId }); setShowProjectForm(false); setToast("پروژه ساخته شد");
+    const id = createProject(projectDraft, true);
+    if (!id) return;
+    setProjectDraft({ ...initialProjectDraft, clientId: projectDraft.clientId }); setShowProjectForm(false);
   }
   function saveLeave() {
     if (leaveDraft.endDate < leaveDraft.startDate) return setToast("بازه تاریخ معتبر نیست");
@@ -57,5 +83,5 @@ export function useBusinessActions(args: Args) {
     setData((previous) => ({ ...previous, settings: { ...previous.settings, mode } }));
     setToast(`فضای کاری روی «${{ employee: "کارمند", freelancer: "فریلنسر", hybrid: "ترکیبی" }[mode]}» قرار گرفت`);
   }
-  return { toggleProjectTimer, addClient, addProject, saveLeave, changeMode };
+  return { toggleProjectTimer, createClient, addClient, createProject, addProject, saveLeave, changeMode };
 }
