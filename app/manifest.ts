@@ -9,7 +9,7 @@ const withBase = (path: string) => `${basePath}${path}`;
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: withBase("/"),
-    name: `${SITE_NAME} — مدیریت زمان و کارکرد`,
+    name: SITE_NAME,
     short_name: SITE_NAME,
     description: SITE_DESCRIPTION,
     lang: "fa",

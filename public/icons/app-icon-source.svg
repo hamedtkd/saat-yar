@@ -1,11 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
-<defs>
-  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07171c"/><stop offset=".55" stop-color="#0a2a33"/><stop offset="1" stop-color="#0e5668"/></linearGradient>
-  <radialGradient id="glow" cx="72%" cy="18%" r="75%"><stop stop-color="#22d3ee" stop-opacity=".42"/><stop offset="1" stop-color="#22d3ee" stop-opacity="0"/></radialGradient>
-  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="34" stdDeviation="30" flood-color="#000" flood-opacity=".32"/></filter>
-</defs>
-<rect width="1024" height="1024" rx="230" fill="url(#bg)"/>
-<rect width="1024" height="1024" rx="230" fill="url(#glow)"/>
-<circle cx="512" cy="512" r="344" fill="#07171c" fill-opacity=".34" stroke="#67e8f9" stroke-opacity=".22" stroke-width="4"/>
-<image href="../brand/saatyar-mark-accent.svg" x="182" y="182" width="660" height="660" filter="url(#shadow)"/>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#0891b2"/>
+      <stop offset="1" stop-color="#0e7490"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="20%" cy="12%" r="80%">
+      <stop stop-color="#67e8f9" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#67e8f9" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="shadow" x="-25%" y="-25%" width="150%" height="160%">
+      <feDropShadow dx="0" dy="20" stdDeviation="18" flood-color="#083344" flood-opacity=".55"/>
+    </filter>
+  </defs>
+  <rect width="1024" height="1024" rx="225" fill="url(#bg)"/>
+  <rect width="1024" height="1024" rx="225" fill="url(#glow)"/>
+  <image href="saatyar-app-mark.svg" x="154" y="154" width="716" height="716" filter="url(#shadow)"/>
 </svg>
