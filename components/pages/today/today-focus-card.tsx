@@ -77,7 +77,7 @@ export function TodayFocusCard(props: Props) {
               <i className="size-2 rounded-full bg-[var(--accent)] shadow-[0_0_0_4px_var(--accent-soft)]" />{timerLabel}
             </span>
             <TodayProgressArc value={progress}>
-              <strong className="block text-[clamp(2.25rem,4.4vw,3.45rem)] font-black leading-none tracking-[-.04em] text-[var(--accent-strong)]">{timerValue}</strong>
+              <strong className="block text-[clamp(2.1rem,4vw,3.15rem)] font-black leading-none tracking-[-.04em] text-[var(--accent-strong)]">{timerValue}</strong>
               <span className="mt-2 block text-[10px] font-bold text-[var(--text-muted)]">{hasTarget ? `${fa.format(progress)}٪ از هدف روزانه` : "این روز هدف کاری ندارد"}</span>
             </TodayProgressArc>
             <small className="-mt-1 min-h-5 text-[10px] text-[var(--text-muted)]">{timingCaption}</small>

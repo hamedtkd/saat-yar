@@ -31,6 +31,7 @@
 - [یادداشت فاز ۱۰۱: بازطراحی داشبورد امروز](./phases/PHASE_101_NOTES_FA.md)
 - [یادداشت فاز ۱۰۲: تثبیت App Shell و Responsive](./phases/PHASE_102_NOTES_FA.md)
 - [یادداشت فاز ۱۰۳: پالیش داشبورد و تثبیت هویت فیروزه‌ای](./phases/PHASE_103_NOTES_FA.md)
+- [یادداشت فاز ۱۰۴: رفع رگرسیون SVG داشبورد و بزرگ‌سازی FavIcon](./phases/PHASE_104_NOTES_FA.md)
 - [یادداشت‌های فازها](./phases/)
 
 فایل‌های قراردادی متداول مانند `README.md`، `SECURITY.md`، `CHANGELOG.md`، `LICENSE`، `CONTRIBUTING.md` و `AGENTS.md` عمداً در ریشه مخزن باقی می‌مانند.

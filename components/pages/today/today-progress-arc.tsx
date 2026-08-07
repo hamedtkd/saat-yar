@@ -9,8 +9,14 @@ export function TodayProgressArc({ value, children, className }: {
   const progress = Math.max(0, Math.min(100, value));
 
   return (
-    <div className={cn("relative mx-auto w-full max-w-[300px] pt-1", className)}>
-      <svg viewBox="0 0 280 158" className="block h-auto w-full overflow-visible" aria-hidden="true">
+    <div className={cn("relative mx-auto h-[170px] w-full max-w-[300px]", className)}>
+      <svg
+        viewBox="0 0 280 158"
+        className="dashboard-progress-arc absolute inset-x-0 top-0 block overflow-visible"
+        style={{ width: "100%", height: "auto" }}
+        data-dashboard-visual="progress-arc"
+        aria-hidden="true"
+      >
         <path
           d="M 30 132 A 110 110 0 0 1 250 132"
           pathLength="100"
