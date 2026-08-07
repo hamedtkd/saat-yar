@@ -35,6 +35,7 @@ test("release gate keeps quality audit and browser UX smokes in order", () => {
       "npm run check:release:audit",
       "npm run test:browser:production:built",
       "npm run test:browser:freelancer:built",
+      "npm run test:browser:employee:built",
     ],
   );
   assert.equal(

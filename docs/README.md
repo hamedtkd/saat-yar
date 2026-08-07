@@ -80,3 +80,5 @@
 - [فاز ۱۳۹: ایمن‌سازی Syntax مسیرهای Browser Smoke](./phases/PHASE_139_NOTES_FA.md)
 
 - [فاز ۱۴۰: قرارداد واقعی Persistence و Hard Reload](./phases/PHASE_140_NOTES_FA.md)
+
+- [فاز ۱۴۱: Browser UX Journey حالت کارمند](./phases/PHASE_141_NOTES_FA.md)

@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+- Release Gate اکنون Browser UX Journey حالت کارمند را نیز بعد از مسیر فریلنسر اجرا می‌کند؛ Start/Lunch/Break/End، یادداشت، محاسبه ۸:۱۵، Month/Reports، Snapshot IndexedDB، Hard Reload و viewport موبایل روی خروجی Production بررسی می‌شوند.
+
 - Freelancer Browser UX smoke اکنون snapshot envelope واقعی IndexedDB را باز می‌کند، قرارداد فعلی `Invoice.lines` را بررسی می‌کند و پس از تأیید persistence یک Hard Reload واقعی برای بازگشت Invoice اجرا می‌کند.
 - Browser route expressionهای Freelancer Smoke پیش از ارسال به CDP از سازنده‌های قابل‌تست تولید می‌شوند؛ نرمال‌سازی trailing slash دیگر از Regex شکننده داخل template string استفاده نمی‌کند و خطای `Unexpected token 'return'` رفع شد.
 - Freelancer Browser UX smoke اکنون Routeهای Static Export دارای `trailingSlash` را هنگام کشف Link و انتظار برای App Router navigation به‌صورت نرمال‌شده مقایسه می‌کند و در شکست، Inventory لینک‌های DOM را گزارش می‌دهد.

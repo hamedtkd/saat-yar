@@ -9,20 +9,23 @@ function releaseSteps() {
   return pkg.scripts["check:release"].split("&&").map((step) => step.trim());
 }
 
-test("release gate keeps quality audit production and freelancer browser checks in order", () => {
+test("release gate keeps quality audit production freelancer and employee browser checks in order", () => {
   assert.deepEqual(releaseSteps(), [
     "npm run check:quality",
     "npm run check:release:audit",
     "npm run test:browser:production:built",
     "npm run test:browser:freelancer:built",
+    "npm run test:browser:employee:built",
   ]);
 });
 
 test("browser release checks reuse the already-built static export", () => {
   assert.equal(pkg.scripts["test:browser:production:built"], "node scripts/production-browser-smoke.mjs");
   assert.equal(pkg.scripts["test:browser:freelancer:built"], "node --experimental-strip-types scripts/freelancer-browser-ux-smoke.mjs");
+  assert.equal(pkg.scripts["test:browser:employee:built"], "node --experimental-strip-types scripts/employee-browser-ux-smoke.mjs");
   assert.doesNotMatch(pkg.scripts["check:release"], /test:browser:production(?:\s|$)/);
   assert.doesNotMatch(pkg.scripts["check:release"], /test:browser:freelancer(?:\s|$)/);
+  assert.doesNotMatch(pkg.scripts["check:release"], /test:browser:employee(?:\s|$)/);
 });
 
 test("phase 99 and phase 135 agree on the current release gate contract", () => {
@@ -30,6 +33,7 @@ test("phase 99 and phase 135 agree on the current release gate contract", () => 
   const notes = read("docs/phases/PHASE_135_NOTES_FA.md");
   const roadmap = read("docs/roadmap/BACKLOG_FA.md");
   assert.match(phase99, /test:browser:freelancer:built/);
+  assert.match(phase99, /test:browser:employee:built/);
   assert.match(notes, /AppData Schema: v17/);
   assert.match(roadmap, /\[x\] فاز ۱۳۵:/);
   assert.match(pkg.scripts.test, /phase135-release-gate-contract\.test\.ts/);

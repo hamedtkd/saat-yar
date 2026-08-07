@@ -227,4 +227,6 @@
 - [x] فاز ۱۳۸: اصلاح Navigation Discovery در Static Export با پشتیبانی از `trailingSlash`، تشخیص Route نرمال‌شده و diagnostics لینک‌های واقعی DOM.
 - [x] فاز ۱۳۹: رفع SyntaxError در Browser Route Expression فاز ۱۳۸ با جداکردن سازنده Expression، حذف Regex شکننده از کد تزریق‌شده CDP و افزودن Compile Contract پیش از اجرای Browser Smoke.
 - [x] فاز ۱۴۰: همگام‌سازی Persistence Probe فریلنسر با snapshot envelope واقعی AppData و قرارداد `Invoice.lines`، همراه با diagnostics جزئی و تأیید Hard Reload از IndexedDB.
-- [ ] فاز ۱۴۱: ادامه Browser Journey فقط بر اساس اولین شکست واقعی بعد از تأیید persistence؛ تمرکز محتمل روی Mobile Dialog، Focus trap یا viewport.
+- [x] فاز ۱۴۱: Browser UX Journey کامل حالت کارمند؛ Start/Lunch/Break/End، یادداشت، محاسبه خالص، Month/Reports، دوام IndexedDB، Hard Reload و قرارداد viewport موبایل.
+- [ ] فاز ۱۴۲: آماده‌سازی Release Candidate نسخه 2.3.0؛ نسخه، Manifest، Changelog، Release Notes، رسانه‌ها و Gate evidence.
+- [ ] فاز ۱۴۳: نهایی‌سازی Release 2.3.0 و Tag نهایی پس از Gate سبز Candidate.
