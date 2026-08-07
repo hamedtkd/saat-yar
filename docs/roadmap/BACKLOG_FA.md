@@ -224,4 +224,5 @@
 - [x] فاز ۱۳۵: همگام‌سازی قرارداد Release Gate تاریخی با Freelancer Browser UX smoke؛ حفظ ترتیب Quality → Audit → Production/PWA → Freelancer UX و جلوگیری از شکست کاذب Phase 99.
 - [x] فاز ۱۳۶: مقاوم‌سازی Freelancer Browser UX smoke پس از اجرای واقعی Windows؛ تزریق React-compatible برای Controlled Input، Enter native-like، diagnostics دقیق و حذف noise مرورگر.
 - [x] فاز ۱۳۷: اصلاح وفاداری Freelancer Browser UX smoke به ناوبری واقعی App Router و جداسازی SPA navigation از Reload durability با تأیید صریح IndexedDB.
-- [ ] فاز ۱۳۸: ادامه پالیش Workflow فریلنسر فقط بر اساس اولین شکست واقعی بعدی در Timer، Expense، Invoice یا Mobile Dialog.
+- [x] فاز ۱۳۸: اصلاح Navigation Discovery در Static Export با پشتیبانی از `trailingSlash`، تشخیص Route نرمال‌شده و diagnostics لینک‌های واقعی DOM.
+- [ ] فاز ۱۳۹: ادامه پالیش Workflow فریلنسر فقط بر اساس اولین شکست واقعی بعدی در Project Detail، Timer، Expense، Invoice یا Mobile Dialog.

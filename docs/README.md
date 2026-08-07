@@ -75,3 +75,5 @@
 - [فاز ۱۳۴: Browser UX Smoke مسیر فریلنسر](./phases/PHASE_134_NOTES_FA.md)
 
 - [فاز ۱۳۷: ناوبری واقعی SPA و دوام Workflow فریلنسر](./phases/PHASE_137_NOTES_FA.md)
+
+- [فاز ۱۳۸: اصلاح Navigation Discovery در Static Export](./phases/PHASE_138_NOTES_FA.md)

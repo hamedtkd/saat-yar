@@ -1,5 +1,6 @@
 ## [Unreleased]
 
+- Freelancer Browser UX smoke اکنون Routeهای Static Export دارای `trailingSlash` را هنگام کشف Link و انتظار برای App Router navigation به‌صورت نرمال‌شده مقایسه می‌کند و در شکست، Inventory لینک‌های DOM را گزارش می‌دهد.
 - تست Browser مسیر فریلنسر اکنون بین صفحات کسب‌وکار از Linkهای واقعی App Router استفاده می‌کند و فقط پس از تأیید دوام Client/Project/Expense/Invoice در IndexedDB، Hard Reload را اجرا می‌کند.
 - فرم پروژه حالا ساخت سریع مشتری را داخل Dialog رسمی Radix انجام می‌دهد و مشتری جدید را خودکار انتخاب می‌کند؛ فهرست مشتری‌ها نیز ساخت پروژه مرتبط را بدون خروج از صفحه ممکن می‌کند.
 - Settings navigation now supports collapsible desktop groups and a two-level mobile section navigator while preserving scroll-spy state.

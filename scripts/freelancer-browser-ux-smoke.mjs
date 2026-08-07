@@ -124,17 +124,49 @@ async function navigate(client, url, text) {
 }
 
 async function navigateInApp(client, pathname, text) {
-  const clicked = await evaluate(client, `(() => {
+  const result = await evaluate(client, `(() => {
     const wanted = ${JSON.stringify(pathname)};
-    const anchor = [...document.querySelectorAll('a[href]')].find((item) => {
-      try { return new URL(item.href, location.href).pathname === wanted; } catch { return false; }
+    const normalize = (value) => {
+      try {
+        const candidate = new URL(value, location.href).pathname.replace(/\/+$/, "") || "/";
+        return candidate;
+      } catch { return ""; }
+    };
+    const wantedPath = normalize(wanted);
+    const anchors = [...document.querySelectorAll('a[href]')];
+    const labels = { "/projects": "پروژه‌ها", "/invoices": "فاکتورها", "/clients": "مشتری‌ها" };
+    const normalizeText = (value) => (value || "").replace(/\s+/g, " ").trim();
+    let anchor = anchors.find((item) => {
+      const candidate = normalize(item.href);
+      return candidate === wantedPath || (wantedPath !== "/" && candidate.endsWith(wantedPath));
     });
-    if (!anchor) return false;
+    if (!anchor && labels[wantedPath]) {
+      anchor = anchors.find((item) => normalizeText(item.textContent).includes(labels[wantedPath]));
+    }
+    if (!anchor) {
+      return {
+        clicked: false,
+        available: anchors.slice(0, 24).map((item) => ({
+          href: item.getAttribute("href") || "",
+          pathname: normalize(item.href),
+          text: (item.textContent || "").replace(/\s+/g, " ").trim().slice(0, 80),
+        })),
+      };
+    }
+    const href = anchor.getAttribute("href") || anchor.href;
+    const label = (anchor.textContent || "").replace(/\s+/g, " ").trim().slice(0, 80);
     anchor.click();
-    return true;
+    return { clicked: true, href, label };
   })()`);
-  if (!clicked) throw new Error(`App navigation link not found: ${pathname}`);
-  await waitFor(client, `location.pathname === ${JSON.stringify(pathname)}`, `in-app navigation ${pathname}`);
+  if (!result?.clicked) {
+    throw new Error(`App navigation link not found: ${pathname}. Available anchors: ${JSON.stringify(result?.available ?? [])}`);
+  }
+  await waitFor(client, `(() => {
+    const normalize = (value) => (value || "/").replace(/\/+$/, "") || "/";
+    const current = normalize(location.pathname);
+    const wanted = normalize(${JSON.stringify(pathname)});
+    return current === wanted || (wanted !== "/" && current.endsWith(wanted));
+  })()`, `in-app navigation ${pathname}`);
   if (text) await waitFor(client, `document.body?.innerText.includes(${JSON.stringify(text)})`, text);
   await settleUi(client);
 }
