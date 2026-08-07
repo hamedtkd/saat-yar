@@ -230,5 +230,6 @@
 - [x] فاز ۱۴۱: Browser UX Journey کامل حالت کارمند؛ Start/Lunch/Break/End، یادداشت، محاسبه خالص، Month/Reports، دوام IndexedDB، Hard Reload و قرارداد viewport موبایل.
 - [x] فاز ۱۴۲: رفع transition واقعی Active → Completed در Today؛ remount امن ویرایشگر روز پس از ثبت خروج، نمایش قطعی CTA «ویرایش این روز» و ادامه Employee Browser Journey روی UI واقعی.
 - [x] فاز ۱۴۳: تثبیت محاسبه وقفه بدون حقوق در Employee Browser Journey، جلوگیری از stale patch رکورد و افزودن کنترل صریح «با حقوق» برای وقفه‌ها.
-- [ ] فاز ۱۴۴: آماده‌سازی Release Candidate نسخه 2.3.0؛ نسخه، Manifest، Changelog، Release Notes، رسانه‌ها و Gate evidence.
-- [ ] فاز ۱۴۵: نهایی‌سازی Release 2.3.0 و Tag نهایی پس از Gate سبز Candidate.
+- [x] فاز ۱۴۴: مقاوم‌سازی startup مرورگر در Release Gate؛ Retry محدود و تمیز فقط برای failure زیرساختی CDP با Port/Profile تازه، بدون تکرار شکست‌های واقعی UX.
+- [ ] فاز ۱۴۵: آماده‌سازی Release Candidate نسخه 2.3.0؛ نسخه، Manifest، Changelog، Release Notes، رسانه‌ها و Gate evidence.
+- [ ] فاز ۱۴۶: نهایی‌سازی Release 2.3.0 و Tag نهایی پس از Gate سبز Candidate.

@@ -1,12 +1,8 @@
-import { spawn } from "node:child_process";
 import { existsSync } from "node:fs";
-import { mkdtemp } from "node:fs/promises";
-import { createServer } from "node:net";
-import { tmpdir } from "node:os";
-import { dirname, join, resolve } from "node:path";
+import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createMediaDemoData } from "./media/demo-data.ts";
-import { cleanupBrowserProfile } from "./browser-profile-cleanup.mjs";
+import { launchBrowserDebugTarget } from "./browser-debug-startup.mjs";
 import { findBrowserExecutable } from "./production-browser-smoke.mjs";
 import { buildAppNavigationExpression, buildRouteReadyExpression } from "./browser-route-expression.mjs";
 import { buildEmployeePersistenceProbeExpression } from "./employee-persistence-expression.mjs";
@@ -16,31 +12,6 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const TIMEOUT = 30_000;
 const EMPLOYEE_NOTE = "گزارش مرورگر کارمند؛ تحویل کارها و برنامه فردا";
 const NET_DURATION = "۸:۱۵";
-
-async function freePort() {
-  return new Promise((resolvePort, reject) => {
-    const server = createServer();
-    server.unref();
-    server.on("error", reject);
-    server.listen(0, "127.0.0.1", () => {
-      const address = server.address();
-      const port = typeof address === "object" && address ? address.port : 0;
-      server.close(() => resolvePort(port));
-    });
-  });
-}
-
-async function waitForJson(url, options = {}, timeout = TIMEOUT) {
-  const deadline = Date.now() + timeout;
-  while (Date.now() < deadline) {
-    try {
-      const response = await fetch(url, options);
-      if (response.ok) return response.json();
-    } catch {}
-    await new Promise((resolveWait) => setTimeout(resolveWait, 100));
-  }
-  throw new Error(`Browser debugging endpoint did not become ready: ${url}`);
-}
 
 class CdpClient {
   constructor(url) {
@@ -315,18 +286,6 @@ async function waitForEmployeePersistence(client, date) {
   throw new Error(`Timed out while waiting for employee workflow persistence. Probe: ${JSON.stringify(lastProbe)}`);
 }
 
-async function terminate(child) {
-  if (!child || child.exitCode !== null || child.signalCode !== null) return;
-  if (process.platform === "win32") {
-    await new Promise((resolveKill) => {
-      const killer = spawn("taskkill", ["/pid", String(child.pid), "/T", "/F"], { stdio: "ignore" });
-      killer.on("exit", resolveKill);
-      killer.on("error", resolveKill);
-    });
-  } else child.kill("SIGTERM");
-  await Promise.race([new Promise((resolveExit) => child.once("exit", resolveExit)), new Promise((resolveWait) => setTimeout(resolveWait, 5_000))]);
-}
-
 async function main() {
   const outputDirectory = resolve(ROOT, "out");
   if (!existsSync(resolve(outputDirectory, "index.html"))) throw new Error("Static production export is missing. Run npm run build:vercel first.");
@@ -334,30 +293,16 @@ async function main() {
   if (!browserExecutable) throw new Error("Chrome, Edge or Chromium was not found. Set SAATYAR_BROWSER_PATH.");
 
   const server = await startStaticExportServer({ outputDirectory });
-  const profileDir = await mkdtemp(join(tmpdir(), "saatyar-employee-ux-"));
-  const debugPort = await freePort();
-  const args = [
-    "--headless=new",
-    `--remote-debugging-port=${debugPort}`,
-    `--user-data-dir=${profileDir}`,
-    "--no-first-run",
-    "--no-default-browser-check",
-    "--disable-dev-shm-usage",
-    "--disable-background-networking",
-    "--disable-component-update",
-    "--disable-sync",
-    "about:blank",
-  ];
-  if (typeof process.getuid === "function" && process.getuid() === 0) args.push("--no-sandbox");
-  const browser = spawn(browserExecutable, args, { stdio: ["ignore", "ignore", "pipe"] });
-  let browserOutput = "";
-  browser.stderr.on("data", (chunk) => { browserOutput += chunk; });
+  let browserSession;
   let client;
 
   try {
-    await waitForJson(`http://127.0.0.1:${debugPort}/json/version`);
-    const target = await waitForJson(`http://127.0.0.1:${debugPort}/json/new?${encodeURIComponent("about:blank")}`, { method: "PUT" });
-    client = new CdpClient(target.webSocketDebuggerUrl);
+    browserSession = await launchBrowserDebugTarget({
+      executable: browserExecutable,
+      profilePrefix: "saatyar-employee-ux-",
+      extraArgs: ["--disable-background-networking", "--disable-component-update", "--disable-sync"],
+    });
+    client = new CdpClient(browserSession.target.webSocketDebuggerUrl);
     client.on("Runtime.exceptionThrown", ({ exceptionDetails }) => {
       const description = exceptionDetails?.exception?.description || exceptionDetails?.text || "Runtime exception";
       if (!/ResizeObserver loop|AbortError/i.test(description)) client.runtimeErrors.push(description);
@@ -435,7 +380,7 @@ async function main() {
     if (client.runtimeErrors.length) throw new Error(`Browser runtime errors:\n${client.runtimeErrors.join("\n")}`);
     console.log("Employee browser UX smoke passed.");
   } catch (error) {
-    const usefulOutput = browserOutput
+    const usefulOutput = (browserSession?.getBrowserOutput() ?? "")
       .split(/\r?\n/)
       .filter((line) => !/google_apis[\\/]gcm|DEPRECATED_ENDPOINT|Authentication Failed: wrong_secret|Failed to log in to GCM|TensorFlow Lite XNNPACK/i.test(line))
       .join("\n")
@@ -444,9 +389,8 @@ async function main() {
     throw error;
   } finally {
     client?.close();
-    await terminate(browser);
+    await browserSession?.close();
     await server.close();
-    await cleanupBrowserProfile(profileDir);
   }
 }
 
