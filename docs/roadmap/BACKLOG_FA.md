@@ -232,5 +232,6 @@
 - [x] فاز ۱۴۳: تثبیت محاسبه وقفه بدون حقوق در Employee Browser Journey، جلوگیری از stale patch رکورد و افزودن کنترل صریح «با حقوق» برای وقفه‌ها.
 - [x] فاز ۱۴۴: مقاوم‌سازی startup مرورگر در Release Gate؛ Retry محدود و تمیز فقط برای failure زیرساختی CDP با Port/Profile تازه، بدون تکرار شکست‌های واقعی UX.
 - [x] فاز ۱۴۵: رفع TypeScript contract در Browser Debug Startup؛ جلوگیری از استنتاج `never[]` برای `extraArgs` در مصرف‌کننده‌های strict بدون تغییر رفتار Runtime.
-- [ ] فاز ۱۴۶: آماده‌سازی Release Candidate نسخه 2.3.0؛ نسخه، Manifest، Changelog، Release Notes، رسانه‌ها و Gate evidence.
-- [ ] فاز ۱۴۷: نهایی‌سازی Release 2.3.0 و Tag نهایی پس از Gate سبز Candidate.
+- [x] فاز ۱۴۶: همگام‌سازی Employee Browser Smoke با Checkbox native واقعی؛ استفاده از `HTMLInputElement.checked` به‌جای قرارداد قدیمی Radix و حفظ Gate واقعی وقفه بدون حقوق.
+- [ ] فاز ۱۴۷: آماده‌سازی Release Candidate نسخه 2.3.0؛ نسخه، Manifest، Changelog، Release Notes، رسانه‌ها و Gate evidence.
+- [ ] فاز ۱۴۸: نهایی‌سازی Release 2.3.0 و Tag نهایی پس از Gate سبز Candidate.

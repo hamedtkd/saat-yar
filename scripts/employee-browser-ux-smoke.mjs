@@ -198,22 +198,20 @@ async function setSectionTimeValue(client, sectionTitle, fieldTitle, value, occu
 }
 
 async function ensureFirstBreakUnpaid(client) {
+  const selector = 'input[type="checkbox"][aria-label="وقفه 1 با حقوق"]';
   const state = await evaluate(client, `(() => {
-    const checkbox = document.querySelector('[role="checkbox"][aria-label="وقفه 1 با حقوق"]');
-    if (!checkbox) return { found: false, checked: null };
-    return {
-      found: true,
-      checked: checkbox.getAttribute("data-state") === "checked" || checkbox.getAttribute("aria-checked") === "true",
-    };
+    const checkbox = document.querySelector(${JSON.stringify(selector)});
+    if (!(checkbox instanceof HTMLInputElement)) return { found: false, checked: null };
+    return { found: true, checked: checkbox.checked };
   })()`);
-  if (!state?.found) throw new Error("Break paid/unpaid control not found.");
+  if (!state?.found) throw new Error("Break paid/unpaid native checkbox not found.");
   if (state.checked) {
-    await evaluate(client, `document.querySelector('[role="checkbox"][aria-label="وقفه 1 با حقوق"]')?.click()`);
+    await evaluate(client, `document.querySelector(${JSON.stringify(selector)})?.click()`);
     await settleUi(client);
   }
   await waitFor(client, `(() => {
-    const checkbox = document.querySelector('[role="checkbox"][aria-label="وقفه 1 با حقوق"]');
-    return checkbox && checkbox.getAttribute("data-state") !== "checked" && checkbox.getAttribute("aria-checked") !== "true";
+    const checkbox = document.querySelector(${JSON.stringify(selector)});
+    return checkbox instanceof HTMLInputElement && checkbox.checked === false;
   })()`, "unpaid break contract");
 }
 
