@@ -138,6 +138,20 @@ async function evaluate(client, expression) {
   return response.result?.value;
 }
 
+async function browserStateSnapshot(client) {
+  try {
+    return await evaluate(client, `(() => ({
+      url: location.href,
+      readyState: document.readyState,
+      body: (document.body?.innerText || "").replace(/\s+/g, " ").trim().slice(0, 500),
+      onboardingStep: document.querySelector("[data-onboarding-step]")?.getAttribute("data-onboarding-step-index") || null,
+      loading: document.body?.innerText.includes("\u062f\u0631 \u062d\u0627\u0644 \u0622\u0645\u0627\u062f\u0647") || false,
+    }))()`);
+  } catch {
+    return null;
+  }
+}
+
 async function waitFor(client, expression, label, timeout = WAIT_TIMEOUT_MS) {
   const deadline = Date.now() + timeout;
   while (Date.now() < deadline) {
@@ -149,7 +163,8 @@ async function waitFor(client, expression, label, timeout = WAIT_TIMEOUT_MS) {
     }
     await new Promise((resolveWait) => setTimeout(resolveWait, 100));
   }
-  throw new Error(`Timed out while waiting for ${label}.`);
+  const snapshot = await browserStateSnapshot(client);
+  throw new Error(`Timed out while waiting for ${label}.${snapshot ? ` Browser state: ${JSON.stringify(snapshot)}` : ""}`);
 }
 
 async function waitForEvent(client, method, label, timeout = WAIT_TIMEOUT_MS) {
@@ -243,24 +258,38 @@ export async function runProductionBrowserSmoke() {
 
     await waitForJson(`http://127.0.0.1:${debugPort}/json/version`);
     const target = await waitForJson(
-      `http://127.0.0.1:${debugPort}/json/new?${encodeURIComponent(origin)}`,
+      `http://127.0.0.1:${debugPort}/json/new?${encodeURIComponent("about:blank")}`,
       { method: "PUT" },
     );
     client = new CdpClient(target.webSocketDebuggerUrl);
     const runtimeErrors = [];
-    client.on("Runtime.exceptionThrown", ({ exceptionDetails }) => runtimeErrors.push(exceptionDetails?.text ?? "Runtime exception"));
+    client.on("Runtime.exceptionThrown", ({ exceptionDetails }) => {
+      const description = exceptionDetails?.exception?.description || exceptionDetails?.text || "Runtime exception";
+      runtimeErrors.push(description);
+    });
     await client.call("Page.enable");
     await client.call("Runtime.enable");
     await client.call("Log.enable");
 
+    // Keep the first application boot deterministic. Creating the CDP target on
+    // about:blank lets us clear every origin-scoped store before React, IndexedDB
+    // or the service worker can observe stale state from a previous browser run.
+    await client.call("Storage.clearDataForOrigin", { origin, storageTypes: "all" });
+    const initialLoad = waitForEvent(client, "Page.loadEventFired", "initial production load");
+    await client.call("Page.navigate", { url: origin });
+    await initialLoad;
     await waitFor(client, "document.readyState === 'complete'", "initial document load");
-    await waitFor(client, "document.body?.innerText.includes('ساعت‌یار را برای خودت تنظیم کن')", "onboarding mode step");
-    console.log("✓ Initial production load opened onboarding");
+    await waitFor(
+      client,
+      'document.querySelector(\'[data-onboarding-step-index="2"]\') && document.querySelectorAll(\'[data-onboarding-step-index="2"] button[aria-pressed]\').length >= 3',
+      "onboarding mode step",
+    );
+    console.log("\u2713 Initial production load opened onboarding");
 
     await clickButton(client, "ادامه");
-    await waitFor(client, "document.body?.innerText.includes('برنامه کاری تو')", "onboarding schedule step");
+    await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="3"]'))`, "onboarding schedule step");
     await clickButton(client, "ادامه");
-    await waitFor(client, "document.body?.innerText.includes('اطلاعات فقط روی دستگاه تو می‌ماند')", "onboarding privacy step");
+    await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="4"]'))`, "onboarding privacy step");
     await clickButton(client, "شروع ساعت‌یار");
     await waitFor(client, "['/today', '/today/'].includes(location.pathname) && !document.body?.innerText.includes('شروع ساعت‌یار')", "today route after onboarding");
     await new Promise((resolveWait) => setTimeout(resolveWait, 400));

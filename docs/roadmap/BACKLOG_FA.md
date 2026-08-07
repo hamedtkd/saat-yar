@@ -209,3 +209,4 @@
 - [x] فاز ۱۲۰: نهایی‌سازی Release 2.2.0؛ Gate نهایی ۴۲۹/۴۲۹، ثبت شواهد Candidate `f659456` و انتشار Tag `v2.2.0` روی Commit نهایی `d197b7d`.
 - [x] فاز ۱۲۱: پالیش UX پس از 2.2.0؛ Profile Menu محلی و Responsive، Header سبک‌تر، Save State موقت، جستجوی Settings و ناوبری سریع روز قبل/بعد در صفحه امروز.
 - [x] فاز ۱۲۲: Hotfix پس از فاز ۱۲۱؛ حذف setState مبتنی بر Effect از Settings Hash Navigation و هماهنگی تست‌های قدیمی Unsaved Guard با Deep Linkهای Profile.
+- [x] Phase 123: harden the production onboarding browser smoke with deterministic pre-boot storage reset, structural step markers, and actionable timeout diagnostics.

@@ -49,7 +49,7 @@ export function Onboarding({ data, setData, step, setStep }: OnboardingProps) {
 
       <form onSubmit={submitStep} onKeyDown={handleKeyDown} className={cn("mx-auto my-8 max-w-[1130px] px-6 max-[620px]:mt-[18px] max-[620px]:px-[14px]")}>
         <StepsProgress step={step} />
-        <div data-onboarding-step>
+        <div data-onboarding-step data-onboarding-step-index={step}>
           {step === 1 && <WelcomeStep settings={data.settings} setSetting={setSetting} />}
           {step === 2 && <ModeStep settings={data.settings} setSetting={setSetting} />}
           {step === 3 && <ScheduleStep settings={data.settings} setSetting={setSetting} />}

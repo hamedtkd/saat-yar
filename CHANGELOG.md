@@ -2,6 +2,7 @@
 
 ### اصلاح شد
 
+- Production browser smoke now starts from a clean `about:blank` target, clears origin storage before boot, and follows structural onboarding step markers with timeout diagnostics.
 - همگام‌سازی Anchorهای Settings بدون setState داخل Effect انجام می‌شود و Deep Linkهای Profile همچنان از Unsaved Navigation Guard عبور می‌کنند.
 - دو قرارداد تست قدیمی ناوبری با معماری Hash-based فاز ۱۲۱ هماهنگ شدند.
 

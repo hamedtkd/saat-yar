@@ -42,7 +42,9 @@ test("quality checks dependencies before TypeScript and release checks run the b
 
 test("production smoke exercises onboarding and real calendar date selection", async () => {
   const source = await read("scripts/production-browser-smoke.mjs");
-  assert.match(source, /ساعت‌یار را برای خودت تنظیم کن/);
+  assert.match(source, /data-onboarding-step-index/);
+  assert.match(source, /Storage\.clearDataForOrigin/);
+  assert.match(source, /json\/new\?\$\{encodeURIComponent\("about:blank"\)\}/);
   assert.match(source, /شروع ساعت‌یار/);
   assert.match(source, /\[aria-haspopup=\\?"dialog\\?"\]/);
   assert.match(source, /button\[aria-pressed=\\?"false\\?"\]/);
