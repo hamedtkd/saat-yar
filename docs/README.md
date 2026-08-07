@@ -64,3 +64,6 @@
 - [فاز ۱۲۷: دقت برنامه کاری، Reminder UI و صفحه درباره](./phases/PHASE_127_NOTES_FA.md)
 
 - [فاز ۱۲۸: گروه‌بندی باز/بسته‌شونده Settings و Scroll Spy](./phases/PHASE_128_NOTES_FA.md)
+- [فاز ۱۲۹: ساخت موجودیت وابسته در همان فرم](./phases/PHASE_129_NOTES_FA.md)
+- [فاز ۱۳۰: Toast خوانا و تقویم جلالی یکپارچه](./phases/PHASE_130_NOTES_FA.md)
+

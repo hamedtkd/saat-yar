@@ -1,7 +1,7 @@
 "use client";
 
-import { CheckCircle2 } from "lucide-react";
 import { BrandMark } from "@/components/common/brand-mark";
+import { AppToast } from "@/components/common/app-toast";
 import { usePathname } from "next/navigation";
 import { createContext, Suspense, useContext } from "react";
 import { SkipLink } from "@/components/common/skip-link";
@@ -65,17 +65,7 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
         )}
         dir="rtl"
       >
-        {controller.toast && (
-          <div
-            className={cn(
-              "fixed left-1/2 top-[22px] z-[1000] flex -translate-x-1/2 items-center gap-2 rounded-xl border border-[color-mix(in_srgb,var(--success)_30%,var(--border))] bg-[var(--success-soft)] px-[17px] py-[11px] text-xs font-bold text-[var(--success)] shadow-[0_8px_24px_rgba(17,45,55,.10)]",
-            )}
-            role="status"
-          >
-            <CheckCircle2 />
-            {controller.toast}
-          </div>
-        )}
+        {controller.toast && <AppToast message={controller.toast} />}
 
         {!data.settings.onboarded && (
           <Onboarding
