@@ -405,13 +405,22 @@ async function main() {
     console.log(`✓ Employee workflow is durable in IndexedDB (${completedPersistence.storageShape}, schema v${completedPersistence.schemaVersion ?? "legacy"})`);
 
     await client.call("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true, screenWidth: 390, screenHeight: 844 });
-    await navigate(client, `${server.origin}/today`, EMPLOYEE_NOTE);
-    await waitFor(client, `document.body?.innerText.includes("ثبت این روز کامل شده است") && document.body?.innerText.includes(${JSON.stringify(NET_DURATION)})`, "employee hard reload");
-    const mobileContract = await evaluate(client, `(() => ({
-      pageFits: document.documentElement.scrollWidth <= window.innerWidth + 2,
-      noteVisible: document.body?.innerText.includes(${JSON.stringify(EMPLOYEE_NOTE)}),
-      completed: document.body?.innerText.includes("ثبت این روز کامل شده است"),
-    }))()`);
+    await navigate(client, `${server.origin}/today`, "یادداشت روز کاری");
+    await waitFor(client, `(() => {
+      const note = document.querySelector('textarea[placeholder*="کارهای انجام‌شده"]');
+      return note instanceof HTMLTextAreaElement
+        && note.value === ${JSON.stringify(EMPLOYEE_NOTE)}
+        && document.body?.innerText.includes("ثبت این روز کامل شده است")
+        && document.body?.innerText.includes(${JSON.stringify(NET_DURATION)});
+    })()`, "employee hard reload state");
+    const mobileContract = await evaluate(client, `(() => {
+      const note = document.querySelector('textarea[placeholder*="کارهای انجام‌شده"]');
+      return {
+        pageFits: document.documentElement.scrollWidth <= window.innerWidth + 2,
+        noteVisible: note instanceof HTMLTextAreaElement && note.value === ${JSON.stringify(EMPLOYEE_NOTE)},
+        completed: document.body?.innerText.includes("ثبت این روز کامل شده است"),
+      };
+    })()`);
     if (!mobileContract?.pageFits || !mobileContract.noteVisible || !mobileContract.completed) {
       throw new Error(`Mobile employee UX contract failed: ${JSON.stringify(mobileContract)}`);
     }

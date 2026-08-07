@@ -93,3 +93,5 @@
 - [فاز ۱۴۹: Input/Persistence Fidelity مسیر کارمند](./phases/PHASE_149_NOTES_FA.md)
 
 - [فاز ۱۵۰: Scope دقیق Selectorهای زمان Employee Browser Journey](./phases/PHASE_150_NOTES_FA.md)
+
+- [فاز ۱۵۱: Hard Reload یادداشت کارمند با Form Value واقعی](./phases/PHASE_151_NOTES_FA.md)
