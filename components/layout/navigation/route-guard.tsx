@@ -6,6 +6,7 @@ import {
   getFirstAllowedTab,
   getPathTab,
   getTabHref,
+  isSupplementalRoute,
   isTabAllowed,
   LAST_ROUTE_STORAGE_KEY,
   normalizePathname,
@@ -27,6 +28,8 @@ export function RouteGuard({ mode, pathname, ready }: RouteGuardProps) {
     const normalized = normalizePathname(pathname);
     const currentTab = getPathTab(normalized);
     const fallback = getTabHref(getFirstAllowedTab(mode));
+
+    if (isSupplementalRoute(normalized)) return;
 
     if (currentTab) {
       if (!isTabAllowed(mode, currentTab)) {

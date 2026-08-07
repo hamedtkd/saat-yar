@@ -48,7 +48,13 @@ export const ROUTE_METADATA = {
   },
 } as const;
 
-type RouteMetadata = (typeof ROUTE_METADATA)[keyof typeof ROUTE_METADATA];
+export const ABOUT_METADATA = {
+  title: "درباره و راهنما",
+  description: "راهنمای استفاده، حریم خصوصی، کد منبع و راه‌های ارتباط با سازنده ساعت‌یار.",
+  path: "/about/",
+} as const;
+
+type RouteMetadata = (typeof ROUTE_METADATA)[keyof typeof ROUTE_METADATA] | typeof ABOUT_METADATA;
 
 export function absoluteUrl(path = "/") {
   return new URL(path, SITE_URL);

@@ -19,6 +19,12 @@ export const ALLOWED_TABS: Record<Mode, Tab[]> = {
 
 export const LAST_ROUTE_STORAGE_KEY = "saatyar:last-route";
 
+export const SUPPLEMENTAL_ROUTES = ["/about"] as const;
+
+export function isSupplementalRoute(pathname: string) {
+  return SUPPLEMENTAL_ROUTES.includes(normalizePathname(pathname) as (typeof SUPPLEMENTAL_ROUTES)[number]);
+}
+
 export function normalizePathname(pathname: string) {
   return pathname.split("?")[0].split("#")[0].replace(/\/+$/, "") || "/";
 }

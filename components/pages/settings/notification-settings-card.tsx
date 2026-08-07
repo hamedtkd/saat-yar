@@ -96,10 +96,16 @@ export function NotificationSettingsCard({ data, setData, requestPermission, set
           <label className="grid gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-3 text-[10px] font-bold text-[var(--text-muted)]">یادآوری تایمر باز پس از<div className="flex items-center gap-2"><NumberField className="h-10" value={settings.openTimerReminderMinutes} min={30} onValueChange={(value) => update("openTimerReminderMinutes", Math.max(30, value))} /><span>دقیقه</span></div></label>
           <div className="grid gap-2"><ToggleRow disabled={!canEdit} checked={settings.dailyTargetReminder} onChange={(checked) => update("dailyTargetReminder", checked)} title="اعلام تکمیل هدف روزانه" /><ToggleRow disabled={!canEdit} checked={settings.endOfDayReminder} onChange={(checked) => update("endOfDayReminder", checked)} title="یادآوری ثبت خروج" /></div>
         </div>
-        <div className="grid gap-3 rounded-2xl border border-[color-mix(in_srgb,var(--accent)_22%,var(--border))] bg-[var(--accent-soft)] p-4 lg:grid-cols-[1.25fr_1fr_1fr] lg:items-center">
-          <label className="flex cursor-pointer items-start gap-3"><Checkbox className="mt-0.5" checked={settings.breakReminder.enabled} onCheckedChange={(checked) => void setBreakReminderEnabled(checked)} /><Coffee className="mt-0.5 text-[var(--accent-strong)]" /><span className="grid gap-1"><strong className="text-[11px] text-[var(--text)]">یادآوری استراحت</strong><small className="text-[9px] leading-4 text-[var(--text-muted)]">بعد از کار فعال، زمان استراحت را یادآوری می‌کند.</small></span></label>
-          <label className="grid gap-2 text-[10px] font-bold text-[var(--text-muted)]">فاصله یادآوری<div className="flex items-center gap-2"><NumberField className="h-10" value={settings.breakReminder.intervalMinutes} min={15} max={240} onValueChange={(value) => updateBreak("intervalMinutes", Math.min(240, Math.max(15, value)))} /><span>دقیقه</span></div></label>
-          <ToggleRow disabled={!canEdit} checked={settings.breakReminder.onlyWhenTracking} onChange={(checked) => updateBreak("onlyWhenTracking", checked)} title="فقط هنگام ثبت کار" />
+        <div className="grid gap-3 rounded-2xl border border-[color-mix(in_srgb,var(--accent)_22%,var(--border))] bg-[var(--accent-soft)] p-4 lg:grid-cols-[1.25fr_1fr_1fr] lg:items-stretch">
+          <label className="flex min-h-24 cursor-pointer items-start justify-between gap-4 rounded-xl border border-[color-mix(in_srgb,var(--accent)_18%,var(--border))] bg-[var(--surface-1)] p-3">
+            <span className="flex min-w-0 items-start gap-3">
+              <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-[var(--accent-soft)] text-[var(--accent-strong)]"><Coffee /></span>
+              <span className="grid gap-1"><strong className="text-[11px] text-[var(--text)]">یادآوری استراحت</strong><small className="text-[9px] leading-4 text-[var(--text-muted)]">بعد از کار فعال، زمان استراحت را یادآوری می‌کند.</small></span>
+            </span>
+            <Checkbox className="mt-1" checked={settings.breakReminder.enabled} onCheckedChange={(checked) => void setBreakReminderEnabled(checked)} aria-label="فعال‌کردن یادآوری استراحت" />
+          </label>
+          <label className="grid content-center gap-2 rounded-xl border border-[color-mix(in_srgb,var(--accent)_18%,var(--border))] bg-[var(--surface-1)] p-3 text-[10px] font-bold text-[var(--text-muted)]">فاصله یادآوری<div className="flex items-center gap-2"><NumberField className="h-10" value={settings.breakReminder.intervalMinutes} min={15} max={240} onValueChange={(value) => updateBreak("intervalMinutes", Math.min(240, Math.max(15, value)))} /><span>دقیقه</span></div></label>
+          <ToggleRow disabled={!canEdit} checked={settings.breakReminder.onlyWhenTracking} onChange={(checked) => updateBreak("onlyWhenTracking", checked)} title="فقط هنگام ثبت کار" description="وقتی تایمر کاری فعال نیست، یادآوری استراحت ارسال نشود." />
         </div>
       </fieldset>
 

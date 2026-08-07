@@ -213,3 +213,6 @@
 - [x] فاز ۱۲۴: رفع Runtime crash ناشی از `SelectLabel` خارج از `SelectGroup` در Workspace Switcher و fail-fast کردن Browser Smoke روی خطاهای hydration/runtime.
 - [x] فاز ۱۲۵: یکدست‌سازی کنترل‌های Header و ارتقای هویت Profile و میانبر امن لوگوی Sidebar.
 - [x] فاز ۱۲۶: بازطراحی Active state ناوبری موبایل، نمایش همه مقصدهای Settings و دنبال‌کردن Section فعال هنگام Scroll.
+- [x] فاز ۱۲۷: همگام‌سازی دقیق هدف هفتگی با ساعت پایان قابل مشاهده، پالیش Reminder UI و افزودن صفحه درباره/راهنما و راه‌های ارتباط.
+- [ ] فاز ۱۲۸: گروه‌های Settings قابل باز/بسته‌شدن با Scroll Spy، حفظ Active section و رفتار مناسب موبایل/دسکتاپ.
+- [ ] فاز ۱۲۹: الگوی reusable ساخت موجودیت وابسته در همان فرم؛ شروع با ساخت سریع Client از Project و مسیر معکوس.

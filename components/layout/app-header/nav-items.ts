@@ -1,4 +1,4 @@
-import { BarChart3, CalendarDays, Folder, LayoutDashboard, ReceiptText, Settings, Umbrella, Users } from "lucide-react";
+import { BarChart3, CalendarDays, CircleHelp, Folder, LayoutDashboard, ReceiptText, Settings, Umbrella, Users } from "lucide-react";
 import type { Mode, Tab } from "@/lib/types";
 
 export const appNavItems = [
@@ -12,6 +12,7 @@ export const appNavItems = [
 ];
 
 export const settingsNavItem = { id: "settings", label: "تنظیمات", icon: Settings, href: "/settings" } as const;
+export const aboutNavItem = { id: "about", label: "درباره و راهنما", icon: CircleHelp, href: "/about" } as const;
 
 const mobilePrimaryIds: Record<Mode, string[]> = {
   employee: ["today", "month", "leave", "reports"],
@@ -36,5 +37,6 @@ export function getMobilePrimaryNavItems(mode: Mode) {
 export function getRouteNavItem(pathname: string) {
   const normalized = pathname.replace(/\/+$/, "") || "/";
   if (normalized === settingsNavItem.href) return settingsNavItem;
+  if (normalized === aboutNavItem.href) return aboutNavItem;
   return appNavItems.find((item) => item.href === normalized) ?? appNavItems[0];
 }

@@ -3,6 +3,7 @@ import { MinuteDurationField } from "@/components/common/minute-duration-field";
 import { NumberField } from "@/components/common/number-field";
 import { TimePicker } from "@/components/pickers";
 import { Checkbox } from "@/components/ui/checkbox";
+import { durationWords } from "@/lib/format";
 import type { WeekdayKey } from "@/lib/types";
 import {
   applyWeeklyTargetHours,
@@ -22,13 +23,17 @@ export function WorkScheduleEditor({ value, disabled, onChange }: {
     day: WeekdayKey,
     key: K,
     nextValue: WorkSettingsDraft["weeklySchedule"][WeekdayKey][K],
-  ) => onChange({
-    ...value,
-    weeklySchedule: {
+  ) => {
+    const weeklySchedule = {
       ...value.weeklySchedule,
       [day]: { ...value.weeklySchedule[day], [key]: nextValue },
-    },
-  });
+    };
+    onChange({
+      ...value,
+      weeklyMinutes: getWeeklyTargetMinutes({ ...value, weeklySchedule }),
+      weeklySchedule: weeklySchedule,
+    });
+  };
 
   return (
     <section className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface-2)]">
@@ -47,12 +52,14 @@ export function WorkScheduleEditor({ value, disabled, onChange }: {
         {weekdayOrder.map((day) => {
           const schedule = value.weeklySchedule[day];
           return (
-            <div key={day} className="grid grid-cols-[110px_repeat(3,minmax(130px,1fr))_90px] items-end gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-3 max-[980px]:grid-cols-2 max-[620px]:grid-cols-1">
+            <div key={day} className="grid grid-cols-[110px_repeat(3,minmax(130px,1fr))_128px] items-end gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-3 max-[980px]:grid-cols-2 max-[620px]:grid-cols-1">
               <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded-lg px-1"><Checkbox disabled={disabled} checked={schedule.enabled} onCheckedChange={(enabled) => setDay(day, "enabled", enabled)} /><strong className={schedule.enabled ? "text-[var(--text)]" : "text-[var(--text-muted)]"}>{weekdayLabels[day]}</strong></label>
               <label>شروع<TimePicker disabled={disabled} value={schedule.start} onChange={(next) => setDay(day, "start", next)} /></label>
               <label>پایان<TimePicker disabled={disabled} value={schedule.end} onChange={(next) => setDay(day, "end", next)} /></label>
               <label>ناهار<MinuteDurationField disabled={disabled} value={schedule.lunchMinutes} onValueChange={(next) => setDay(day, "lunchMinutes", next)} /></label>
-              <div className="flex h-11 items-center justify-center rounded-lg bg-[var(--surface-2)] px-2 text-[10px] font-bold text-[var(--text-muted)]">{schedule.enabled ? `${Math.round(getScheduleTargetMinutes(schedule) / 6) / 10} ساعت` : "تعطیل"}</div>
+              <div className="grid min-h-11 place-items-center rounded-lg bg-[var(--surface-2)] px-2 py-1 text-center text-[10px] font-bold leading-4 text-[var(--text-muted)]">
+                {schedule.enabled ? <><strong className="text-[var(--text)]">{durationWords(getScheduleTargetMinutes(schedule))}</strong><small className="text-[9px] font-medium">کار خالص روز</small></> : "تعطیل"}
+              </div>
             </div>
           );
         })}

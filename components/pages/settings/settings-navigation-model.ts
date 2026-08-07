@@ -3,7 +3,6 @@ import {
   CalendarClock,
   CalendarDays,
   Calculator,
-  DatabaseBackup,
   Download,
   HardDrive,
   HeartPulse,

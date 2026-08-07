@@ -40,6 +40,15 @@ export function duration(value: number, signed = false) {
   return `${sign}${fa.format(Math.floor(minutes / 60))}:${faDigits(String(minutes % 60).padStart(2, "0"))}`;
 }
 
+export function durationWords(value: number) {
+  const minutes = Math.max(0, Math.round(value));
+  const hours = Math.floor(minutes / 60);
+  const remainder = minutes % 60;
+  if (!hours) return `${fa.format(remainder)} دقیقه`;
+  if (!remainder) return `${fa.format(hours)} ساعت`;
+  return `${fa.format(hours)} ساعت و ${fa.format(remainder)} دقیقه`;
+}
+
 export function money(value: number) {
   return fa.format(Math.round(value));
 }

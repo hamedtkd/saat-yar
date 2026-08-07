@@ -5,7 +5,11 @@ import { TimePickerTrigger } from "./time-picker/time-picker-trigger";
 import type { TimePickerProps } from "./time-picker/types";
 import { useTimePicker } from "./time-picker/use-time-picker";
 
-export function TimePicker({ value, onChange, suggestions = [], disabled = false }: TimePickerProps) {
+export function TimePicker(props: TimePickerProps) {
+  return <TimePickerSession key={props.value} {...props} />;
+}
+
+function TimePickerSession({ value, onChange, suggestions = [], disabled = false }: TimePickerProps) {
   const picker = useTimePicker(value, onChange);
 
   return (
