@@ -6,7 +6,7 @@
 
 ### وب‌اپ فارسی و Local-first برای ثبت زمان، کارکرد، حقوق، پروژه و درآمد
 
-[![Quality](https://img.shields.io/badge/quality-300%2B%20tests%20passing-16a34a)](#کنترل-کیفیت)
+[![Quality](https://img.shields.io/badge/quality-400%2B%20tests%20passing-16a34a)](#کنترل-کیفیت)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/license-MIT-0f766e)](./LICENSE)
@@ -33,6 +33,33 @@
 **https://saat-yar.vercel.app**
 
 برای اطلاعات واقعی و بلندمدت، پس از ورود به برنامه حتماً از بخش «داده و پشتیبان» یک نسخه پشتیبان JSON بسازید.
+
+## نمای محصول
+
+تصاویر زیر از Build واقعی ساعت‌یار و Fixture نمایشی مستقل ساخته شده‌اند؛ Capture رسانه به داده واقعی کاربر دسترسی ندارد.
+
+<p align="center">
+  <img src="./docs/assets/screenshots/today-light-desktop.png" alt="صفحه امروز ساعت‌یار در تم روشن" width="920" />
+</p>
+
+<table>
+  <tr>
+    <td width="50%"><img src="./docs/assets/screenshots/today-dark-desktop.png" alt="صفحه امروز ساعت‌یار در تم تاریک" /></td>
+    <td width="50%"><img src="./docs/assets/screenshots/reports-light.png" alt="گزارش‌های ساعت‌یار در تم روشن" /></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="./docs/assets/screenshots/reports-dark.png" alt="گزارش‌های ساعت‌یار در تم تاریک" /></td>
+    <td width="50%"><img src="./docs/assets/screenshots/today-mobile.png" alt="صفحه امروز ساعت‌یار در موبایل" /></td>
+  </tr>
+</table>
+
+### دموی کوتاه Onboarding
+
+<p align="center">
+  <img src="./docs/assets/media/onboarding.gif" alt="دموی Onboarding ساعت‌یار" width="760" />
+</p>
+
+رسانه‌ها با `npm run media:capture` قابل بازتولید هستند. جزئیات در [docs/assets/README.md](./docs/assets/README.md) آمده است.
 
 ## ویژگی‌ها
 
@@ -147,6 +174,8 @@ http://localhost:3000
 | `npm run check:quality` | اجرای تمام کنترل‌های کیفیت و Build نهایی Next.js |
 | `npm run test:browser:production` | Build خروجی Static و اجرای Smoke Test واقعی در Chrome، Edge یا Chromium |
 | `npm run check:release` | Quality کامل و سپس Smoke Test مرورگر روی همان Build |
+| `npm run test:browser:pairing` | Smoke واقعی WebRTC برای انتقال چند chunk رمزنگاری‌شده و ACK |
+| `npm run media:capture` | بازتولید Screenshot/GIFهای محصول با دیتای نمایشی مستقل |
 | `npm run build:pages` | ساخت خروجی Static |
 | `npm run build:vercel` | Build مناسب Vercel |
 | `npm start` | اجرای خروجی Vinext |
@@ -229,7 +258,7 @@ tests/                         تست‌های دامنه، Regression و معم
 - Build نهایی Next.js و prerender تمام Routeها
 - Smoke Test مرورگر واقعی برای بارگذاری اولیه، تکمیل Onboarding و تغییر تاریخ
 
-کنترل کیفیت پروژه شامل بیش از **۳۰۰ تست منطق، Regression، معماری و قرارداد مخزن**، Audit قرارداد داده و Build کامل Next.js است.
+کنترل کیفیت پروژه شامل بیش از **۴۰۰ تست منطق، Regression، معماری و قرارداد مخزن**، Audit قرارداد داده، Build کامل Next.js، Smoke آفلاین PWA و تست اختیاری Browser Pairing واقعی است.
 
 ## سیاست رابط و Style
 
@@ -247,7 +276,8 @@ tests/                         تست‌های دامنه، Regression و معم
 
 - [عیب‌یابی Windows و خطاهای npm](./docs/TROUBLESHOOTING_FA.md)
 - [جدول سازگاری مرورگر و محدودیت‌های Notification/PWA](./docs/BROWSER_COMPATIBILITY.md)
-- [یادداشت انتشار ساعت‌یار ۲.۱.۰](./docs/releases/RELEASE_NOTES_2.1.0_FA.md)
+- [یادداشت انتشار ساعت‌یار ۲.۲.۰](./docs/releases/RELEASE_NOTES_2.2.0_FA.md)
+- [یادداشت انتشار تاریخی ۲.۱.۰](./docs/releases/RELEASE_NOTES_2.1.0_FA.md)
 
 ## مشارکت
 
@@ -265,13 +295,9 @@ npm run test:browser:production
 
 ## نقشه راه
 
-نسخه **۲.۱.۰** برای انتشار آماده شده است. جزئیات تغییرات در [یادداشت انتشار ۲.۱.۰](./docs/releases/RELEASE_NOTES_2.1.0_FA.md) و کنترل‌های نهایی در [چک‌لیست انتشار](./RELEASE_CHECKLIST_FA.md) ثبت شده‌اند.
+نسخه **۲.۲.۰** در وضعیت Release Candidate قرار دارد. جزئیات قابلیت‌های جدید در [یادداشت انتشار ۲.۲.۰](./docs/releases/RELEASE_NOTES_2.2.0_FA.md) و کنترل‌های نهایی در [چک‌لیست انتشار](./RELEASE_CHECKLIST_FA.md) ثبت شده‌اند.
 
-موارد باز بعد از این انتشار در [docs/roadmap/BACKLOG_FA.md](./docs/roadmap/BACKLOG_FA.md) نگهداری می‌شوند:
-
-- افزودن اسکرین‌شات‌های واقعی و به‌روز به README
-- تهیه دموی کوتاه Onboarding، ثبت روز و گزارش
-- کاهش تدریجی تست‌های شکننده Source-based و جایگزینی با تست رفتاری
+رسانه‌های نهایی محصول اکنون داخل README قرار گرفته‌اند. موارد باز بعدی در [docs/roadmap/BACKLOG_FA.md](./docs/roadmap/BACKLOG_FA.md) نگهداری می‌شوند؛ مهم‌ترین مورد کوتاه‌مدت، نهایی‌سازی Manifest پس از Gate نهایی و Tag نسخه ۲.۲.۰ است.
 
 ## حمایت مالی
 
@@ -299,14 +325,3 @@ npm run test:browser:production
 اگر ساعت‌یار برایتان مفید است، Star دادن به مخزن و معرفی آن به دیگران نیز کمک بزرگی است.
 
 </div>
-
-## رسانه‌های معرفی
-
-پس از Build می‌توان اسکرین‌شات‌ها و GIFهای استاندارد پروژه را با دیتای نمایشی و بدون استفاده از اطلاعات واقعی کاربر بازتولید کرد:
-
-```bash
-npm run media:capture
-```
-
-خروجی در `docs/assets/screenshots/` و `docs/assets/media/` قرار می‌گیرد.
-

@@ -61,8 +61,8 @@
 ## مستندات و معرفی پروژه
 
 - [x] بازنویسی README اصلی با معرفی محصول، قابلیت‌ها، حریم خصوصی، راه‌اندازی، معماری، کیفیت، نقشه راه و لینک حمایت مالی.
-- [ ] افزودن اسکرین‌شات‌های به‌روز از تم روشن، تاریک، موبایل و گزارش‌ها به README.
-- [ ] تهیه GIF یا ویدیوی کوتاه از جریان Onboarding، ثبت روز و گزارش.
+- [x] افزودن اسکرین‌شات‌های به‌روز از تم روشن، تاریک، موبایل و گزارش‌ها به README.
+- [x] افزودن GIF کوتاه Onboarding تولیدشده از Fixture نمایشی به README.
 - [x] ایجاد README انگلیسی مستقل و لینک‌دادن دوطرفه میان نسخه فارسی و انگلیسی.
 - [x] افزودن راهنمای عیب‌یابی نصب در Windows و خطاهای رایج `npm ci`.
 - [x] اضافه‌کردن جدول سازگاری مرورگر و محدودیت‌های Notification/PWA.
@@ -180,7 +180,19 @@
   - [x] ساخت Fixture نمایشی مستقل و Capture تکرارپذیر دسکتاپ/موبایل/لایت/دارک.
   - [x] افزودن تولید اختیاری GIF آنبوردینگ با ffmpeg.
   - [x] اجرای Capture نهایی و Commit کردن Assetهای خروجی در مخزن.
-  - [ ] افزودن انتخاب نهایی Screenshot/GIF به README فارسی و انگلیسی.
+  - [x] افزودن انتخاب نهایی Screenshot/GIF به README فارسی و انگلیسی.
+
+
+## آمادگی انتشار ۲.۲.۰
+
+- [x] افزایش نسخه `package.json` و `package-lock.json` به ۲.۲.۰.
+- [x] ایجاد Release Candidate Manifest برای Schema v17 با حفظ Manifest تاریخی ۲.۱.۰.
+- [x] ایجاد Release Notes فارسی و انگلیسی برای حقوق قابل‌سفارشی‌سازی، PWA و انتقال رمزنگاری‌شده دستگاه.
+- [x] انتقال تغییرات بعد از ۲.۱.۰ از Unreleased به Changelog نسخه ۲.۲.۰.
+- [x] بازنویسی چک‌لیست انتشار برای Migration v16→v17، Payroll Policy، Offline PWA و WebRTC/QR Sync.
+- [x] افزودن Screenshotهای Light/Dark/Mobile/Reports و GIF آنبوردینگ به README فارسی و انگلیسی.
+- [x] ثبت Browser Pairing واقعی به‌عنوان Gate دستی مکمل `check:release`.
+- [x] افزودن تست قراردادی Release Candidate و Audit تطبیق نسخه، Schema، رسانه و مستندات.
 
 ## قابلیت‌های پس از Design Freeze
 
@@ -193,4 +205,5 @@
 - [x] فاز ۱۱۶: تست End-to-End انتقال دستگاه؛ رفع Typecheck فاز ۱۱۵، تست کامل رمزنگاری/Chunk/ACK/Preview/Merge، Smoke اختیاری WebRTC در مرورگر و bounded fallback برای Offline PWA.
 - [x] فاز ۱۱۷: رفع Gate قرمز Lint در QR vendor و Scanner، افزودن وضعیت نشست و تاریخچه انتقال privacy-safe با مسیر روشن برای شروع دوباره Pairing.
 - [x] فاز ۱۱۸: Browser E2E انتقال رمزنگاری‌شده چندبخشی روی WebRTC واقعی و پالیش نهایی UX Sync؛ Stepper، پیشروی خودکار QR، وضعیت تکمیل و رد امن Preview.
-- [ ] فاز ۱۱۹: آماده‌سازی Release 2.2.0؛ همگام‌سازی README/Changelog/Release Manifest با Schema v17، حقوق سفارشی و Device Sync و افزودن رسانه‌های نهایی به README فارسی و انگلیسی.
+- [x] فاز ۱۱۹: آماده‌سازی Release Candidate 2.2.0؛ همگام‌سازی README/Changelog/Release Manifest با Schema v17، حقوق سفارشی و Device Sync و افزودن رسانه‌های نهایی به README فارسی و انگلیسی.
+- [ ] فاز ۱۲۰: نهایی‌سازی Release 2.2.0 پس از Gate Candidate؛ ثبت SHA نهایی در Manifest، تغییر status به released و ساخت Tag `v2.2.0`.

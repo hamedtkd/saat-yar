@@ -6,7 +6,7 @@
 
 ### A Persian-first, RTL, local-first web app for worklogs, attendance, payroll, projects, and income
 
-[![Quality](https://img.shields.io/badge/quality-300%2B%20tests%20passing-16a34a)](#quality-gates)
+[![Quality](https://img.shields.io/badge/quality-400%2B%20tests%20passing-16a34a)](#quality-gates)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/license-MIT-0f766e)](./LICENSE)
@@ -31,6 +31,33 @@ The public deployment is available at:
 **https://saat-yar.vercel.app**
 
 For real long-term data, create regular JSON backups from the data and backup section. Browser storage is not a substitute for an external backup.
+
+## Product media
+
+The screenshots below come from a real production build using isolated demo fixtures. The capture workflow does not read real user data.
+
+<p align="center">
+  <img src="./docs/assets/screenshots/today-light-desktop.png" alt="Saatyar Today dashboard in light mode" width="920" />
+</p>
+
+<table>
+  <tr>
+    <td width="50%"><img src="./docs/assets/screenshots/today-dark-desktop.png" alt="Saatyar Today dashboard in dark mode" /></td>
+    <td width="50%"><img src="./docs/assets/screenshots/reports-light.png" alt="Saatyar reports in light mode" /></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="./docs/assets/screenshots/reports-dark.png" alt="Saatyar reports in dark mode" /></td>
+    <td width="50%"><img src="./docs/assets/screenshots/today-mobile.png" alt="Saatyar Today dashboard on mobile" /></td>
+  </tr>
+</table>
+
+### Short onboarding demo
+
+<p align="center">
+  <img src="./docs/assets/media/onboarding.gif" alt="Saatyar onboarding demo" width="760" />
+</p>
+
+Regenerate the media with `npm run media:capture`. See [docs/assets/README.md](./docs/assets/README.md) for the privacy-safe capture contract.
 
 ## Product scope
 
@@ -150,6 +177,8 @@ Installation problems are documented in:
 | `npm run check:quality` | Run the complete quality pipeline and production Next.js build |
 | `npm run test:browser:production` | Build the static export and run the Chromium production smoke test |
 | `npm run check:release` | Run quality checks and the production browser smoke test on the same build |
+| `npm run test:browser:pairing` | Run the real WebRTC encrypted multi-chunk transfer/ACK smoke |
+| `npm run media:capture` | Regenerate product screenshots/GIF from isolated demo data |
 | `npm run build:pages` | Produce the static application build |
 | `npm run build:vercel` | Produce the Vercel-compatible build |
 | `npm start` | Start the Vinext production output |
@@ -236,7 +265,7 @@ The repository protects the product through several layers:
 - Next.js production build and static prerendering
 - A real Chromium smoke test covering initial load, onboarding, the Today route, and calendar navigation
 
-The current suite contains more than **300 tests**. The exact release evidence should always come from the current `npm run check:release` output rather than a hard-coded badge alone.
+The current suite contains more than **400 tests**. The exact release evidence should always come from the current `npm run check:release` output rather than a hard-coded badge alone.
 
 ## Browser support
 
@@ -257,7 +286,8 @@ The Persian deployment guide covers Windows, macOS, Linux, Docker, GitHub Pages,
 
 [Run and deployment guide](./RUN_AND_DEPLOY_FA.md)
 
-- [Saatyar 2.1.0 release notes](./docs/releases/RELEASE_NOTES_2.1.0_EN.md)
+- [Saatyar 2.2.0 release notes](./docs/releases/RELEASE_NOTES_2.2.0_EN.md)
+- [Historical Saatyar 2.1.0 release notes](./docs/releases/RELEASE_NOTES_2.1.0_EN.md)
 
 ## Contributing
 
@@ -267,13 +297,9 @@ Before opening a pull request, read [CONTRIBUTING.md](./CONTRIBUTING.md) and the
 
 ## Roadmap
 
-Version **2.1.0** is prepared for release. See the [2.1.0 release notes](./docs/releases/RELEASE_NOTES_2.1.0_EN.md) and the Persian [release checklist](./RELEASE_CHECKLIST_FA.md) for the final evidence and manual verification steps.
+Version **2.2.0** is now prepared as a release candidate. See the [2.2.0 release notes](./docs/releases/RELEASE_NOTES_2.2.0_EN.md) and the Persian [release checklist](./RELEASE_CHECKLIST_FA.md) for the final evidence and manual verification steps.
 
-The remaining follow-up work is tracked in [docs/roadmap/BACKLOG_FA.md](./docs/roadmap/BACKLOG_FA.md):
-
-- Add current real-product screenshots to the READMEs
-- Record a short onboarding, workday, and reporting demo
-- Gradually replace brittle source-based assertions with behavioral tests
+The final product screenshots and onboarding GIF are now embedded in both READMEs. Remaining follow-up work is tracked in [docs/roadmap/BACKLOG_FA.md](./docs/roadmap/BACKLOG_FA.md), including finalizing the release manifest and tagging v2.2.0 after the candidate gate is confirmed.
 
 ## Support development
 
@@ -293,14 +319,3 @@ Maintained by **Hamed Ahmadi — hamedtkd**
 
 - GitHub: [hamedtkd](https://github.com/hamedtkd)
 - Support: [daramet.com/hamedtkd](https://daramet.com/hamedtkd)
-
-## Product media
-
-After a production build, the repository can regenerate standard screenshots and the onboarding GIF from isolated demo data without reading real user data:
-
-```bash
-npm run media:capture
-```
-
-Outputs are written to `docs/assets/screenshots/` and `docs/assets/media/`.
-

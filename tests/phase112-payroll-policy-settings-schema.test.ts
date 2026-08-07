@@ -44,11 +44,14 @@ test("backup contract validates the migrated payroll policy", () => {
   assert.match(backup, /payrollPolicy: payrollPolicySchema/);
 });
 
-test("released 2.1.0 manifest remains historical while development schema can advance", () => {
+test("released 2.1.0 manifest remains historical while the active release advances to v17", () => {
   const audit = read("scripts/release-audit.mjs");
-  const manifest = JSON.parse(read("docs/releases/2.1.0.json"));
-  assert.equal(manifest.dataSchemaVersion, 16);
-  assert.match(audit, /APP_DATA_SCHEMA_VERSION >= manifest\.dataSchemaVersion/);
+  const historicalManifest = JSON.parse(read("docs/releases/2.1.0.json"));
+  const activeManifest = JSON.parse(read("docs/releases/2.2.0.json"));
+  assert.equal(historicalManifest.dataSchemaVersion, 16);
+  assert.equal(activeManifest.dataSchemaVersion, 17);
+  assert.match(audit, /docs\/releases\/2\.2\.0\.json/);
+  assert.match(audit, /APP_DATA_SCHEMA_VERSION === manifest\.dataSchemaVersion/);
 });
 
 test("stale roadmap tests no longer hard-code future phase numbering", () => {

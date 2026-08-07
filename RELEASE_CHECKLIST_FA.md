@@ -1,77 +1,105 @@
-# چک‌لیست انتشار ساعت‌یار 2.1.0
+# چک‌لیست انتشار ساعت‌یار 2.2.0
 
-این فایل آخرین کنترل انسانی پیش از ساخت Tag است. `npm run check:release` کنترل‌های ماشینی را اجرا می‌کند، اما جای بررسی دستی UI و Deploy نهایی را نمی‌گیرد.
+این فایل کنترل انسانی Release Candidate نسخه ۲.۲.۰ است. `npm run check:release` کنترل‌های اصلی ماشینی را اجرا می‌کند و `npm run test:browser:pairing` انتقال واقعی رمزنگاری‌شده WebRTC را جداگانه بررسی می‌کند. Tag فقط پس از سبزشدن همه Gateها و بررسی دستی ساخته شود.
 
 ## مشخصات Release Candidate
 
 ```text
-Package: saatyar-worklog@2.1.0
-AppData schema: v16
+Package: saatyar-worklog@2.2.0
+AppData schema: v17
+Migration baseline: v16 → v17
 Node.js: 22.x
-شواهد قبلی فاز ۹۸: 305 تست پاس
-Browser gate: Chrome / Edge / Chromium
+شواهد تأییدشده پیش از فاز ۱۱۹: 417 تست پاس
+تعداد مورد انتظار Candidate پس از فاز ۱۱۹: 423 تست
+Production browser gate: Chrome / Edge / Chromium
+Pairing browser gate: WebRTC encrypted multi-chunk transfer + ACK
+Manifest status: release-candidate
 ```
 
 ## کنترل خودکار
 
 - [ ] `npm ci`
 - [ ] `npm run check:release`
+- [ ] خروجی تست‌ها `423 pass / 0 fail` باشد.
+- [ ] `npm run test:browser:pairing`
+- [ ] Browser Pairing حداقل یک انتقال چندبخشی رمزنگاری‌شده و ACK را تأیید کند.
 - [ ] `git diff --check`
 - [ ] `git status` فقط تغییرات مورد انتظار Release را نشان دهد.
-- [ ] خروجی `check:release:audit` نسخه ۲.۱.۰، Schema v16 و وضعیت `release-candidate` را تأیید کند.
-- [ ] Smoke Test مرورگر پیام `Production browser smoke passed.` را نمایش دهد.
+- [ ] `check:release:audit` نسخه `2.2.0`، Schema v17 و وضعیت `release-candidate` را تأیید کند.
+- [ ] Production Smoke پیام `Installed shell reloads while offline` و `Production browser smoke passed.` را نمایش دهد.
 
-## داده و سازگاری
+## داده، Migration و Backup
 
-- [ ] Import یک Backup قدیمی و Migration آن تا Schema v16 بررسی شود.
-- [ ] Export و Import Backup جدید بدون ورود متادیتای Envelope به `AppData` بررسی شود.
-- [ ] بازیابی Snapshot اضطراری Local Storage بررسی شود.
+- [ ] یک Backup مربوط به v16 Import شود و Policy حقوق به Schema v17 Migration شود.
+- [ ] نتیجه Preset مهاجرت‌یافته با رفتار حقوق نسخه قبلی یکسان باشد.
+- [ ] Export و Import Backup v17 بدون ورود metadata انتقال/Envelope به `AppData` بررسی شود.
+- [ ] Backup با Schema جدیدتر از v17 توسط این نسخه رد شود.
 - [ ] سطل بازیابی، بازیابی گروهی و پاک‌سازی رکوردهای منقضی بررسی شود.
-- [ ] Merge دو Backup رکورد تکراری یا حذف ناخواسته ایجاد نکند.
-- [ ] پاک‌کردن کامل داده از Factory مرکزی و Collectionهای مستقل استفاده کند.
+- [ ] Merge Backup و Merge انتقال دستگاه داده تکراری یا حذف ناخواسته ایجاد نکند.
 
-## رابط، Responsive و RTL
+## حقوق قابل‌سفارشی‌سازی
 
+- [ ] روش ماهانه متناسب با داده قدیمی نتیجه سازگار بدهد.
+- [ ] ماهانه ثابت، ساعتی و روزکاری با Preview تنظیمات بررسی شوند.
+- [ ] اضافه‌کاری، تعطیل‌کاری و کسرکار در حالت ضریب، نرخ ثابت و غیرفعال بررسی شوند.
+- [ ] گردکردن مبلغ در حالت nearest/floor/ceil بررسی شود.
+- [ ] Breakdown گزارش با جمع نهایی حقوق یکسان باشد.
+- [ ] Draft، Save، Cancel و Unsaved Navigation Guard کارت Policy حقوق بررسی شوند.
+
+## انتقال موبایل و لپ‌تاپ
+
+- [ ] Pairing با QR محلی روی دو دستگاه واقعی ترجیحاً در یک Wi-Fi بررسی شود.
+- [ ] Pairing با Copy/Paste به‌عنوان fallback بررسی شود.
+- [ ] Offer منقضی‌شده رد شود.
+- [ ] Preview قبل از اعمال داده، additions و conflicts را درست نمایش دهد.
+- [ ] `Merge + Keep local` روی Conflict داده محلی را حفظ کند.
+- [ ] `Merge + Use incoming` مقدار ورودی را فقط با انتخاب صریح اعمال کند.
+- [ ] `Replace` فقط پس از انتخاب صریح کاربر انجام شود.
+- [ ] Reject Preview هیچ تغییری در AppData ایجاد نکند.
+- [ ] تاریخچه انتقال Payload یا Session Key را ذخیره نکند.
+- [ ] Retry/Cancel و تکمیل نشست روی موبایل و دسکتاپ واضح باشد.
+
+## PWA، رابط و Responsive
+
+- [ ] نصب PWA روی Chrome/Edge دسکتاپ بررسی شود.
+- [ ] Add to Home Screen در Safari iOS به‌صورت دستی بررسی شود.
+- [ ] Reload آفلاین پس از حداقل یک بار بارگذاری Online بررسی شود.
+- [ ] Update Prompt در حضور Draft ذخیره‌نشده بدون Reload ناگهانی عمل کند.
 - [ ] Routeهای `/today`، `/month`، `/reports`، `/leave`، `/projects`، `/clients`، `/invoices` و `/settings` مرور شوند.
-- [ ] تم روشن، تاریک و System بررسی شود.
-- [ ] پالت‌های Spotify، Emerald، Ocean، Violet، Sunset و Custom بررسی شوند.
+- [ ] تم روشن، تاریک، System و Accentهای قابل انتخاب بررسی شوند.
 - [ ] عرض‌های ۳۶۰، ۳۹۰، ۷۶۸، ۱۳۶۶، ۱۴۴۰ و ۱۹۲۰ پیکسل بررسی شوند.
-- [ ] RTL، اعداد فارسی، متن‌های طولانی و Scroll داخلی تنظیمات بررسی شوند.
-- [ ] Privacy Mode در کارت، جدول، نمودار، Tooltip، فیش و فاکتور بررسی شود.
-- [ ] چاپ گزارش و فاکتور در اندازه A4 بررسی شود.
+- [ ] RTL، متن‌های طولانی و Scroll داخلی تنظیمات بررسی شوند.
+- [ ] چاپ گزارش و فاکتور در A4 بررسی شود.
 
-## جریان‌های اصلی محصول
+## رسانه و مستندات
 
-- [ ] Onboarding کامل شود و Reload داده را حفظ کند.
-- [ ] شروع کار، ناهار، وقفه، پایان کار و ویرایش رکورد تاریخی بررسی شوند.
-- [ ] تغییر تاریخ با Draft ذخیره‌نشده هشدار صحیح نمایش دهد.
-- [ ] حذف رکورد، Undo، انتقال به سطل بازیابی و Restore بررسی شوند.
-- [ ] مالکیت تایمر میان دو Tab و انتقال کنترل بررسی شود.
-- [ ] تعارض Draft و تاریخچه همگام‌سازی چند Tab بررسی شوند.
-- [ ] Import، Export و Merge Backup از صفحه تنظیمات بررسی شوند.
+- [ ] Screenshotهای Light، Dark، Mobile و Reports در README فارسی و انگلیسی درست نمایش داده شوند.
+- [ ] `docs/assets/media/onboarding.gif` در GitHub README قابل نمایش باشد.
+- [ ] `npm run media:capture` بدون خواندن داده واقعی کاربر رسانه‌ها را بازتولید کند.
+- [ ] `CHANGELOG.md` و Release Notes فارسی و انگلیسی مرور شوند.
+- [ ] نسخه‌های `package.json`، `package-lock.json` و Manifest برابر `2.2.0` باشند.
+- [ ] Manifest فعلی Schema v17 را ثبت کند و Manifest تاریخی 2.1.0 دست‌نخورده باقی مانده باشد.
+- [ ] Deploy نهایی Vercel بررسی شود.
 
 ## دسترسی‌پذیری
 
 - [ ] حرکت کامل با Keyboard و Skip Link بررسی شود.
 - [ ] Focus trap و بازگشت Focus در Alert Dialogها بررسی شود.
-- [ ] Escape برای بستن Dialogها و جلوگیری از تعامل پشت Modal بررسی شود.
 - [ ] Reduced Motion بررسی شود.
 - [ ] کنتراست Accentهای روشن، تاریک و Custom بررسی شود.
-- [ ] کنترل‌های فرم دارای Label و نام قابل‌دسترسی باشند.
+- [ ] Scanner دوربین و دکمه‌های Sync نام قابل‌دسترسی داشته باشند.
 
-## مستندات و انتشار
+## نهایی‌سازی پس از تأیید Candidate
 
-- [ ] `CHANGELOG.md` و Release Notes فارسی و انگلیسی مرور شوند.
-- [ ] نسخه‌های `package.json`، `package-lock.json` و Manifest برابر `2.1.0` باشند.
-- [ ] لینک‌های README و مستندات Release سالم باشند.
-- [ ] Deploy نهایی Vercel بررسی شود.
-- [ ] Manifest از `release-candidate` به وضعیت انتشار مورد توافق تغییر کند، در صورت استفاده از این فیلد پس از Tag.
-- [ ] Tag امضاشده یا Annotated با نام `v2.1.0` ساخته شود.
-- [ ] GitHub Release با متن `docs/releases/RELEASE_NOTES_2.1.0_FA.md` یا نسخه انگلیسی منتشر شود.
+این بخش در فاز نهایی Release انجام می‌شود، نه قبل از Gate Candidate:
 
-## ساخت Tag پس از تکمیل همه کنترل‌ها
+- [ ] `docs/releases/2.2.0.json` از `release-candidate` به `released` تغییر کند.
+- [ ] `releaseCommit` برابر SHA دقیق Commit نهایی شود.
+- [ ] Quality Gate یک بار دیگر روی همان Commit اجرا شود.
+- [ ] Tag annotated `v2.2.0` روی همان Commit ساخته شود.
+- [ ] GitHub Release با Release Notes فارسی یا انگلیسی منتشر شود.
 
 ```bash
-git tag -a v2.1.0 -m "Saatyar 2.1.0"
-git push origin v2.1.0
+git tag -a v2.2.0 -m "Saatyar 2.2.0"
+git push origin v2.2.0
 ```

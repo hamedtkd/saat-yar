@@ -19,9 +19,11 @@
 
 ## انتشار ۲.۱.۰
 
-- [یادداشت انتشار فارسی](./releases/RELEASE_NOTES_2.1.0_FA.md)
-- [English release notes](./releases/RELEASE_NOTES_2.1.0_EN.md)
-- [Release manifest](./releases/2.1.0.json)
+- [یادداشت انتشار ۲.۲.۰ فارسی](./releases/RELEASE_NOTES_2.2.0_FA.md)
+- [Saatyar 2.2.0 release notes](./releases/RELEASE_NOTES_2.2.0_EN.md)
+- [Release candidate manifest 2.2.0](./releases/2.2.0.json)
+- [یادداشت انتشار تاریخی ۲.۱.۰](./releases/RELEASE_NOTES_2.1.0_FA.md)
+- [Historical release manifest 2.1.0](./releases/2.1.0.json)
 - [چک‌لیست انتشار](../RELEASE_CHECKLIST_FA.md)
 
 ## برنامه‌ریزی و تاریخچه

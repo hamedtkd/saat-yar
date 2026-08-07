@@ -16,7 +16,7 @@ test("Persian and English READMEs link to each other", () => {
   assert.match(readmeFa, /\[English\]\(\.\/README_EN\.md\)/);
   assert.match(readmeEn, /\[فارسی\]\(\.\/README\.md\)/);
   assert.match(readmeEn, /local-first/i);
-  assert.match(readmeEn, /more than \*\*300 tests\*\*/i);
+  assert.match(readmeEn, /more than \*\*400 tests\*\*/i);
 });
 
 test("release documentation exposes Windows and npm recovery paths", () => {
@@ -48,8 +48,10 @@ test("completed non-visual documentation backlog items are closed", () => {
   assert.doesNotMatch(backlog, /- \[ \] ایجاد README انگلیسی مستقل/);
   assert.doesNotMatch(backlog, /- \[ \] افزودن راهنمای عیب‌یابی نصب در Windows/);
   assert.doesNotMatch(backlog, /- \[ \] اضافه‌کردن جدول سازگاری مرورگر/);
-  assert.match(backlog, /- \[ \] افزودن اسکرین‌شات‌های به‌روز/);
-  assert.match(backlog, /- \[ \] تهیه GIF یا ویدیوی کوتاه/);
+  assert.doesNotMatch(backlog, /- \[ \] افزودن اسکرین‌شات‌های به‌روز/);
+  assert.doesNotMatch(backlog, /- \[ \] تهیه GIF یا ویدیوی کوتاه/);
+  assert.match(readmeFa, /docs\/assets\/screenshots\/today-light-desktop\.png/);
+  assert.match(readmeEn, /docs\/assets\/media\/onboarding\.gif/);
 });
 
 test("phase 98 documentation contract is part of npm test", () => {

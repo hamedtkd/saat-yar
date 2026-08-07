@@ -1,31 +1,31 @@
 ## [Unreleased]
 
-- افزودن Policy قابل‌سفارشی‌سازی حقوق به Settings و ارتقای AppData به Schema v17 با Migration سازگار از v16.
-- اتصال گزارش ماهانه و حقوق روز به موتور Rule-based و نمایش Breakdown شفاف محاسبه.
+- موردی پس از Release Candidate 2.2.0 ثبت نشده است.
 
-### Fixed
-
-- Hardened the offline PWA shell by precaching generated Next.js assets and testing a real CDP page reload while offline.
-- Made product media capture start from a clean browser origin and report actionable runtime exceptions instead of generic promise failures.
-
+## [2.2.0] - 2026-08-07
 
 ### افزوده شد
 
-- موتور Rule-based محاسبه حقوق با روش‌های ماهانه متناسب، ماهانه ثابت، ساعتی و روزکاری و Breakdown قابل توضیح.
-
-- هویت برند جدید، FavIcon هماهنگ با Accent، متادیتای Routeها و کارت اشتراک‌گذاری Open Graph.
-- Manifest رسمی App Router، آیکن‌های نصب PWA و Service Worker ثبت‌شده در Root Layout.
+- موتور Rule-based حقوق با روش‌های ماهانه متناسب، ماهانه ثابت، ساعتی و روزکاری، Preview زنده و Breakdown قابل توضیح.
+- Policy پایدار حقوق در AppData Schema v17 با Migration سازگار از v16.
+- انتقال مستقیم و رمزنگاری‌شده AppData میان دستگاه‌ها با AES-GCM، SHA-256، Preview تعارض و Merge/Replace صریح.
+- Pairing مستقیم WebRTC DataChannel و QR محلی چندفریمی بدون سرویس QR یا دیتابیس مرکزی.
+- تاریخچه محدود metadata-only برای انتقال دستگاه و Browser E2E انتقال چند chunk رمزنگاری‌شده همراه ACK.
+- Capture تکرارپذیر Screenshot/GIF با Fixture نمایشی مستقل از داده واقعی کاربر.
 
 ### تغییر کرد
 
-- لوگوی برنامه اکنون در تمام تم‌ها از Accent فعال استفاده می‌کند.
-- Cache strategy PWA برای ناوبری و Assetهای ثابت تفکیک و مقاوم‌تر شد.
+- زبان طراحی نهایی چندتمی به Today، Month، Reports، Settings، Leave، Clients، Projects و Invoices گسترش یافت.
+- هویت نصب PWA، آیکن‌های any/maskable، Install UX، Offline state و Update Prompt تکمیل شد.
+- گزارش‌ها و حقوق روز از Policy ذخیره‌شده حقوق استفاده می‌کنند و نتیجه محاسبه را شفاف‌تر نمایش می‌دهند.
+- README فارسی و انگلیسی با رسانه‌های واقعی محصول، قابلیت‌های حقوق و انتقال دستگاه و اسناد Release 2.2.0 به‌روزرسانی شدند.
 
-### برنامه‌ریزی‌شده
+### اصلاح شد
 
-- افزودن اسکرین‌شات‌های واقعی و به‌روز به README.
-- تهیه دموی کوتاه Onboarding، ثبت روز و گزارش.
-- جایگزینی تدریجی تست‌های Source-based شکننده با تست رفتاری.
+- Offline shell با precache دارایی‌های تولیدشده Next.js و fallback شبکه محدودشده مقاوم‌تر شد.
+- مشکلات TypeScript 5.9 در WebCrypto BufferSource و narrowing جریان Pairing رفع شدند.
+- QR scanner cleanup و lint فایل‌های vendored QR بدون تضعیف قوانین عمومی ESLint اصلاح شد.
+- Smoke آفلاین Production و Browser Pairing واقعی روی Windows/Chromium به مسیر قابل تکرار تبدیل شدند.
 
 ## [2.1.0] - 2026-08-07
 
