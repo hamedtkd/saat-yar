@@ -1,6 +1,6 @@
 import type React from "react";
 import type { ReturnTypeCalc } from "@/lib/type-helpers";
-import type { AppData, BreakItem, Tab, TimeEntry, TimerDraft, WorkRecord } from "@/lib/types";
+import type { AppData, BreakItem, ClientDraft, ProjectDraft, Tab, TimeEntry, TimerDraft, WorkRecord } from "@/lib/types";
 
 export type TodayPageProps = {
   data: AppData;
@@ -31,6 +31,8 @@ export type TodayPageProps = {
   startBreak: () => void;
   finishBreak: (minutes?: number) => void;
   toggleProjectTimer: (projectId?: string) => void;
+  createClient: (draft: ClientDraft) => string | undefined;
+  createProject: (draft: ProjectDraft) => string | undefined;
   editingEntry: string;
   setEditingEntry: (id: string) => void;
   setData: React.Dispatch<React.SetStateAction<AppData>>;

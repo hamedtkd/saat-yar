@@ -4,5 +4,13 @@ import { useSaatyarContext } from "@/components/saatyar-shell";
 export default function InvoicesRoute() {
   const controller = useSaatyarContext();
   if (!controller.ready) return null;
-  return <InvoicesPage data={controller.data} setData={controller.setData} financialsHidden={controller.financialsHidden} />;
+  return (
+    <InvoicesPage
+      data={controller.data}
+      setData={controller.setData}
+      financialsHidden={controller.financialsHidden}
+      createClient={controller.createClient}
+      createProject={controller.createProject}
+    />
+  );
 }

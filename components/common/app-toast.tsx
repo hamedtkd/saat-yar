@@ -6,19 +6,19 @@ type ToastTone = "success" | "warning" | "danger" | "info";
 const toneStyles: Record<ToastTone, { shell: string; icon: string }> = {
   success: {
     shell: "border-[color-mix(in_srgb,var(--success)_34%,var(--border))] bg-[color-mix(in_srgb,var(--success)_9%,var(--surface-1))]",
-    icon: "bg-[var(--success)] text-white",
+    icon: "bg-[color-mix(in_srgb,var(--success)_14%,var(--surface-raised))] text-[var(--success)]",
   },
   warning: {
     shell: "border-[color-mix(in_srgb,var(--warning)_38%,var(--border))] bg-[color-mix(in_srgb,var(--warning)_10%,var(--surface-1))]",
-    icon: "bg-[var(--warning)] text-white",
+    icon: "bg-[color-mix(in_srgb,var(--warning)_16%,var(--surface-raised))] text-[var(--warning)]",
   },
   danger: {
     shell: "border-[color-mix(in_srgb,var(--danger)_38%,var(--border))] bg-[color-mix(in_srgb,var(--danger)_10%,var(--surface-1))]",
-    icon: "bg-[var(--danger)] text-white",
+    icon: "bg-[color-mix(in_srgb,var(--danger)_14%,var(--surface-raised))] text-[var(--danger)]",
   },
   info: {
     shell: "border-[color-mix(in_srgb,var(--info)_34%,var(--border))] bg-[color-mix(in_srgb,var(--info)_8%,var(--surface-1))]",
-    icon: "bg-[var(--info)] text-white",
+    icon: "bg-[color-mix(in_srgb,var(--info)_14%,var(--surface-raised))] text-[var(--info)]",
   },
 };
 
@@ -45,7 +45,7 @@ export function AppToast({ message }: { message: string }) {
       aria-live={tone === "danger" ? "assertive" : "polite"}
       className={cn(
         "fixed left-1/2 top-4 z-[1000] flex w-[min(92vw,520px)] -translate-x-1/2 items-start gap-3 rounded-2xl border px-3.5 py-3 text-right text-xs font-bold text-[var(--text)]",
-        "shadow-[0_18px_55px_rgba(0,0,0,.28)] ring-1 ring-black/5 sm:top-5 sm:px-4",
+        "shadow-[0_18px_55px_rgba(0,0,0,.28)] ring-1 ring-[color-mix(in_srgb,var(--text)_6%,transparent)] sm:top-5 sm:px-4",
         toneStyles[tone].shell,
       )}
     >

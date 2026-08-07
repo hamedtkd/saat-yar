@@ -62,6 +62,6 @@ test("phase 130 is documented, wired into quality, and moves relation expansion 
   ]);
   assert.match(pkg, /tests\/phase130-toast-jalali-date-polish\.test\.ts/);
   assert.match(backlog, /\[x\] فاز ۱۳۰:/);
-  assert.match(backlog, /\[ \] فاز ۱۳۱:/);
+  assert.match(backlog, /فاز ۱۳۱:/);
   assert.match(docs, /AppData Schema: v17/);
 });

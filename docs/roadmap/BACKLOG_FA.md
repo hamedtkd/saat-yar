@@ -217,5 +217,6 @@
 - [x] فاز ۱۲۸: گروه‌های Settings قابل باز/بسته‌شدن با Scroll Spy، حفظ Active section و رفتار مناسب موبایل/دسکتاپ.
 - [x] فاز ۱۲۹: الگوی reusable ساخت موجودیت وابسته در همان فرم؛ ساخت سریع Client از Project با انتخاب خودکار و ساخت Project مرتبط از Client بدون خروج از صفحه.
 - [x] فاز ۱۳۰: افزایش خوانایی Toastهای سراسری با سطح opaque و Toneهای معنایی، و حذف `input[type=date]` خام از فرم‌های مالی با جایگزینی کامل تقویم جلالی/فارسی مشترک.
-- [ ] فاز ۱۳۱: تعمیم الگوی ساخت وابسته به رابطه‌های مالی/ثبت زمان، از جمله Invoice → Client/Project و Timer/Expense → Project، همراه با Empty State و انتخاب خودکار.
-- [ ] پس از فاز ۱۳۱: Audit کنترل‌های native باقی‌مانده مرورگر و جایگزینی موارد ناسازگار با Design System ساعت‌یار در صورت نیاز.
+- [x] فاز ۱۳۱: تعمیم ساخت وابسته به Invoice → Client/Project و Timer/Manual Time → Client/Project با Empty State و انتخاب خودکار؛ Expense داخل ProjectDetail از قبل Project-contextual است و selector تکراری به آن اضافه نمی‌شود.
+- [ ] فاز ۱۳۲: Audit کنترل‌های native باقی‌مانده مرورگر و جایگزینی موارد ناسازگار با Design System ساعت‌یار در صورت نیاز.
+- [ ] فاز ۱۳۳: تعمیم الگوی Quick Create به رابطه‌های بعدی فقط در جاهایی که واقعاً انتخاب موجودیت لازم است، بدون افزودن selector تکراری به جریان‌های context-bound.

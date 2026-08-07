@@ -42,6 +42,8 @@ export default function TodayRoute() {
       startBreak={controller.startBreak}
       finishBreak={controller.finishBreak}
       toggleProjectTimer={controller.toggleProjectTimer}
+      createClient={controller.createClient}
+      createProject={controller.createProject}
       editingEntry={controller.editingEntry}
       setEditingEntry={controller.setEditingEntry}
       setTab={(tab) => router.push(getTabHref(tab))}
