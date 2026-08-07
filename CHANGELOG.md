@@ -8,6 +8,8 @@
 
 ### افزوده شد
 
+- موتور Rule-based محاسبه حقوق با روش‌های ماهانه متناسب، ماهانه ثابت، ساعتی و روزکاری و Breakdown قابل توضیح.
+
 - هویت برند جدید، FavIcon هماهنگ با Accent، متادیتای Routeها و کارت اشتراک‌گذاری Open Graph.
 - Manifest رسمی App Router، آیکن‌های نصب PWA و Service Worker ثبت‌شده در Root Layout.
 

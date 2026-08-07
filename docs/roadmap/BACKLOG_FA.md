@@ -179,13 +179,14 @@
 - [ ] تولید اسکرین‌شات‌ها و GIFهای نهایی بعد از Design Freeze.
   - [x] ساخت Fixture نمایشی مستقل و Capture تکرارپذیر دسکتاپ/موبایل/لایت/دارک.
   - [x] افزودن تولید اختیاری GIF آنبوردینگ با ffmpeg.
-  - [ ] اجرای Capture نهایی و Commit کردن Assetهای خروجی در README.
+  - [x] اجرای Capture نهایی و Commit کردن Assetهای خروجی در مخزن.
+  - [ ] افزودن انتخاب نهایی Screenshot/GIF به README فارسی و انگلیسی.
 
 ## قابلیت‌های پس از Design Freeze
 
 - [x] فاز ۱۱۰: مقاوم‌سازی Offline PWA و Media Capture؛ precache دارایی‌های build، تست reload واقعی و پاک‌سازی امن Storage در Capture.
-- [ ] فاز ۱۱۱: طراحی قرارداد و Schema موتور محاسبه حقوق قابل‌سفارشی‌سازی با Presetهای ماهانه، ساعتی، روزکاری و ترکیبی.
-- [ ] فاز ۱۱۲: افزودن UI فرمول حقوق، Preview و Breakdown شفاف در گزارش‌ها با حفظ Backup/Migration.
+- [x] فاز ۱۱۱: طراحی و پیاده‌سازی موتور محاسبه حقوق Rule-based با Presetهای ماهانه متناسب، ماهانه ثابت، ساعتی و روزکاری؛ بدون تغییر نتیجه محاسبه فعلی.
+- [ ] فاز ۱۱۲: افزودن Policy حقوق به Settings، ارتقای Schema/Migration/Backup و ساخت UI، Preview و Breakdown شفاف در گزارش‌ها.
 - [ ] فاز ۱۱۳: طراحی پروتکل انتقال دستگاه‌به‌دستگاه با Payload نسخه‌دار، Merge/Replace، Conflict Preview و رمزنگاری session.
 - [ ] فاز ۱۱۴: Pairing سریع موبایل و لپ‌تاپ با QR و WebRTC DataChannel بدون دیتابیس دائمی؛ با fallback دوطرفه QR/کد دستی در نبود Signaling.
 

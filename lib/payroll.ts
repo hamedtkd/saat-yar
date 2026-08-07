@@ -1,3 +1,5 @@
+import { calculatePayrollWithPolicy } from "./payroll-engine.ts";
+import { createLegacyPayrollPolicy } from "./payroll-policy.ts";
 import type { PayrollComponent } from "./types.ts";
 
 export const STANDARD_MONTH_DAYS = 30;
@@ -23,13 +25,22 @@ export function calculateEmployeeDayPay({
 }) {
   const target = Math.max(1, dailyTargetMinutes);
   const credited = Math.max(0, creditedMinutes);
-  const minuteRate = dailyBaseSalary(monthlySalary) / target;
-
-  if (holiday) return Math.round(credited * minuteRate * Math.max(0, holidayMultiplier));
-
-  const regularMinutes = Math.min(credited, target);
-  const overtimeMinutes = Math.max(0, credited - target);
-  return Math.round(regularMinutes * minuteRate + overtimeMinutes * minuteRate * Math.max(0, overtimeMultiplier));
+  const overtimeMinutes = holiday ? 0 : Math.max(0, credited - target);
+  const holidayMinutes = holiday ? credited : 0;
+  const policy = createLegacyPayrollPolicy({
+    monthlySalary: dailyBaseSalary(monthlySalary),
+    overtimeMultiplier,
+    holidayMultiplier,
+  });
+  const result = calculatePayrollWithPolicy(policy, {
+    workedMinutes: credited,
+    targetMinutes: target,
+    overtimeMinutes,
+    deficitMinutes: 0,
+    holidayMinutes,
+    components: [],
+  });
+  return result.net;
 }
 
 export type MonthlyPayrollInput = {
@@ -45,28 +56,16 @@ export type MonthlyPayrollInput = {
 };
 
 export function calculateMonthlyPayroll(input: MonthlyPayrollInput) {
-  const target = Math.max(1, input.targetMinutes);
-  const baseMinuteRate = Math.max(0, input.monthlySalary) / target;
-  const regularRatio = Math.min(1, Math.max(0, input.workedMinutes - input.overtimeMinutes - input.holidayMinutes) / target);
-  const regularPay = Math.round(Math.max(0, input.monthlySalary) * regularRatio);
-  const overtimePay = Math.round(Math.max(0, input.overtimeMinutes) * baseMinuteRate * Math.max(0, input.overtimeMultiplier));
-  const holidayPay = Math.round(Math.max(0, input.holidayMinutes) * baseMinuteRate * Math.max(0, input.holidayMultiplier));
-  const deficitDeduction = Math.round(Math.max(0, input.deficitMinutes) * baseMinuteRate);
-  const recurring = input.components.filter((item) => item.enabled !== false);
-  const earnings = recurring.filter((item) => item.type === "earning").reduce((sum, item) => sum + Math.max(0, item.amount), 0);
-  const deductions = recurring.filter((item) => item.type === "deduction").reduce((sum, item) => sum + Math.max(0, item.amount), 0);
-  const gross = regularPay + overtimePay + holidayPay + earnings;
-  const totalDeductions = deductions + deficitDeduction;
-
-  return {
-    regularPay,
-    overtimePay,
-    holidayPay,
-    deficitDeduction,
-    earnings,
-    deductions,
-    gross,
-    totalDeductions,
-    net: Math.max(0, gross - totalDeductions),
-  };
+  return calculatePayrollWithPolicy(createLegacyPayrollPolicy({
+    monthlySalary: input.monthlySalary,
+    overtimeMultiplier: input.overtimeMultiplier,
+    holidayMultiplier: input.holidayMultiplier,
+  }), {
+    workedMinutes: input.workedMinutes,
+    targetMinutes: input.targetMinutes,
+    overtimeMinutes: input.overtimeMinutes,
+    deficitMinutes: input.deficitMinutes,
+    holidayMinutes: input.holidayMinutes,
+    components: input.components,
+  });
 }

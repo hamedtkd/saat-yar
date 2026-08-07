@@ -37,6 +37,9 @@
 - [یادداشت فاز ۱۰۷: Design Freeze صفحات کسب‌وکار](./phases/PHASE_107_NOTES_FA.md)
 - [یادداشت فاز ۱۰۸: تجربه کامل PWA](./phases/PHASE_108_NOTES_FA.md)
 - [یادداشت فاز ۱۰۹: رفع Lint PWA و Capture رسانه](./phases/PHASE_109_NOTES_FA.md)
+- [یادداشت فاز ۱۱۰: مقاوم‌سازی Offline PWA و Media Capture](./phases/PHASE_110_NOTES_FA.md)
+- [یادداشت فاز ۱۱۱: موتور حقوق قابل سفارشی‌سازی](./phases/PHASE_111_NOTES_FA.md)
+- [قرارداد موتور حقوق سفارشی](./payroll/CUSTOM_PAYROLL_ENGINE_FA.md)
 - [یادداشت‌های فازها](./phases/)
 
 فایل‌های قراردادی متداول مانند `README.md`، `SECURITY.md`، `CHANGELOG.md`، `LICENSE`، `CONTRIBUTING.md` و `AGENTS.md` عمداً در ریشه مخزن باقی می‌مانند.
