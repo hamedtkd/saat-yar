@@ -1,4 +1,5 @@
-import { Save } from "lucide-react";
+import { Save, UserPlus } from "lucide-react";
+import { SectionHeading } from "@/components/common/section-heading";
 import { SurfaceCard } from "@/components/common/surface-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,7 @@ export function ClientForm({ draft, setDraft, onSave, onCancel }: {
 }) {
   return (
     <SurfaceCard as="section" className="mb-5 p-5">
+      <SectionHeading icon={<UserPlus />} eyebrow="مشتری جدید" title="اطلاعات پایه" description="اطلاعات ضروری را ثبت کن؛ ایمیل و توضیح اختیاری هستند." />
       <div className="mb-4 grid grid-cols-3 gap-4 max-[620px]:grid-cols-1">
         <label className="grid gap-2 text-xs font-semibold text-[var(--text-muted)]">نام مشتری<Input autoFocus value={draft.name} onChange={(event) => setDraft({ ...draft, name: event.target.value })} /></label>
         <label className="grid gap-2 text-xs font-semibold text-[var(--text-muted)]">ایمیل اختیاری<Input type="email" value={draft.email} onChange={(event) => setDraft({ ...draft, email: event.target.value })} /></label>

@@ -31,5 +31,5 @@ test("printed reports hide interactive charts and use A4-safe layout", async () 
   assert.match(css, /@page \{ size: A4/);
   assert.match(css, /\.report-charts/);
   assert.match(css, /break-inside: avoid/);
-  assert.match(reports, /report-charts print:hidden/);
+  assert.match(reports, /<section className="[^"]*print:hidden[^"]*">[\s\S]*?<div className="report-charts">/);
 });

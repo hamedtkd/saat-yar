@@ -2,6 +2,7 @@ import { CalendarRange, Umbrella } from "lucide-react";
 
 import { EmptyState } from "@/components/common/empty-state";
 import { PanelHead } from "@/components/common/panel-head";
+import { SurfaceCard } from "@/components/common/surface-card";
 import { cn } from "@/lib/cn";
 import { fa } from "@/lib/format";
 import type { AppData, LeaveEntry } from "@/lib/types";
@@ -23,7 +24,7 @@ export function LeaveTable({ data, setData, setDraft }: LeaveTableProps) {
   };
 
   return (
-    <article className={cn("min-w-0 overflow-hidden rounded-2xl", "border border-[var(--border)]", "bg-[var(--surface-glass)]", "shadow-[0_12px_38px_rgba(17,45,55,0.055)]")}>
+    <SurfaceCard as="article" className="min-w-0 overflow-hidden">
       <div className="flex flex-wrap items-start justify-between gap-3 px-4 pt-4 sm:px-5 sm:pt-5">
         <PanelHead icon={<Umbrella />} title="تاریخچه مرخصی‌ها" />
         {data.leaves.length > 0 && (
@@ -41,6 +42,6 @@ export function LeaveTable({ data, setData, setDraft }: LeaveTableProps) {
       ) : (
         <div className="p-4 sm:p-5"><EmptyState icon={<Umbrella />} title="مرخصی‌ای ثبت نشده" description="اولین مرخصی را از فرم کناری ثبت کن." /></div>
       )}
-    </article>
+    </SurfaceCard>
   );
 }

@@ -1,7 +1,7 @@
 import { ChevronRight, Pause, Play, Square } from "lucide-react";
+import { SurfaceCard } from "@/components/common/surface-card";
 import { Button } from "@/components/ui/button";
 import type { Client, Project, TimeEntry } from "@/lib/types";
-import { cn } from "@/lib/cn";
 
 export function ProjectHeader({ project, client, activeEntry, onBack, onToggleTimer, onToggleStatus }: {
   project: Project;
@@ -12,22 +12,22 @@ export function ProjectHeader({ project, client, activeEntry, onBack, onToggleTi
   onToggleStatus: () => void;
 }) {
   const isRunning = activeEntry?.projectId === project.id;
+
   return (
-    <section className={cn(
-      "mb-[22px] flex min-h-24 items-start justify-between gap-6 max-[620px]:mb-[17px] max-[620px]:min-h-0 max-[620px]:flex-col",
-      "[&_h1]:mt-2 [&_h1]:flex [&_h1]:items-center [&_h1]:gap-2.5 [&_h1]:text-[clamp(26px,2.4vw,36px)] [&_p]:text-[13px] [&_p]:text-[var(--text-muted)]",
-    )}>
+    <SurfaceCard as="section" className="mb-5 flex min-h-[118px] items-center justify-between gap-6 p-5 max-[720px]:flex-col max-[720px]:items-stretch">
       <div className="min-w-0">
-        <button type="button" className="flex items-center gap-1 bg-transparent p-0 text-[var(--accent-strong)]" onClick={onBack}>
-          <ChevronRight /> همه پروژه‌ها
+        <button type="button" className="inline-flex items-center gap-1 rounded-full bg-[var(--accent-soft)] px-3 py-1.5 text-[10px] font-bold text-[var(--accent-strong)]" onClick={onBack}>
+          <ChevronRight className="size-3.5" /> همه پروژه‌ها
         </button>
-        <h1><i className="h-[35px] w-3 rounded-[7px]" style={{ background: project.color }} />{project.name}</h1>
-        <p>کارفرما: {client?.name ?? "—"}</p>
+        <div className="mt-3 flex items-center gap-3">
+          <i className="h-10 w-2.5 shrink-0 rounded-full" style={{ background: project.color }} />
+          <div className="min-w-0"><h1 className="truncate text-[clamp(1.35rem,2.4vw,2rem)] font-black text-[var(--text)]">{project.name}</h1><p className="mt-1 text-xs text-[var(--text-muted)]">کارفرما: {client?.name ?? "—"}</p></div>
+        </div>
       </div>
-      <div className="flex items-center gap-2 max-[620px]:w-full max-[620px]:flex-wrap">
+      <div className="flex items-center gap-2 max-[720px]:w-full max-[720px]:flex-wrap">
         <Button onClick={onToggleTimer}>{isRunning ? <><Square /> پایان تایمر</> : <><Play /> شروع تایمر</>}</Button>
         <Button variant="outline" onClick={onToggleStatus}><Pause /> {project.status === "active" ? "توقف پروژه" : "فعال‌سازی"}</Button>
       </div>
-    </section>
+    </SurfaceCard>
   );
 }

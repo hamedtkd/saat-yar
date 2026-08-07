@@ -1,5 +1,6 @@
-import { Plus } from "lucide-react";
+import { FolderKanban, Plus } from "lucide-react";
 import { PageHeading } from "@/components/common/page-heading";
+import { SectionHeading } from "@/components/common/section-heading";
 import { Button } from "@/components/ui/button";
 import type { AppData, Project, ProjectDraft, TimeEntry } from "@/lib/types";
 import { ProjectDetail } from "./project-detail";
@@ -20,6 +21,18 @@ export function ProjectsPage({ data, setData, selectedProject, setSelectedProjec
   toggleProjectTimer: (id?: string) => void;
   financialsHidden: boolean;
 }) {
-  if (selectedProject) return <ProjectDetail data={data} setData={setData} project={selectedProject} activeEntry={activeEntry} onBack={() => setSelectedProjectId("")} onToggleTimer={toggleProjectTimer} financialsHidden={financialsHidden} />;
-  return <><PageHeading title="پروژه‌ها" description="بودجه، نرخ و زمان هر پروژه را یک‌جا ببین."><Button onClick={() => setShowForm(!showForm)}><Plus /> پروژه جدید</Button></PageHeading>{showForm && <ProjectForm data={data} draft={draft} setDraft={setDraft} onSave={addProject} onCancel={() => setShowForm(false)} />}<ProjectList data={data} financialsHidden={financialsHidden} onSelect={setSelectedProjectId} onCreate={() => setShowForm(true)} /></>;
+  if (selectedProject) {
+    return <ProjectDetail data={data} setData={setData} project={selectedProject} activeEntry={activeEntry} onBack={() => setSelectedProjectId("")} onToggleTimer={toggleProjectTimer} financialsHidden={financialsHidden} />;
+  }
+
+  return (
+    <>
+      <PageHeading title="پروژه‌ها" description="بودجه، نرخ، زمان و وضعیت هر پروژه را بدون از دست دادن جزئیات دنبال کن.">
+        <Button onClick={() => setShowForm(!showForm)}><Plus /> پروژه جدید</Button>
+      </PageHeading>
+      {showForm && <ProjectForm data={data} draft={draft} setDraft={setDraft} onSave={addProject} onCancel={() => setShowForm(false)} />}
+      <SectionHeading icon={<FolderKanban />} eyebrow="پرتفوی پروژه" title="پروژه‌های شما" description="وضعیت، مصرف بودجه و سود هر پروژه را در کارت‌های یکپارچه مرور کن." />
+      <ProjectList data={data} financialsHidden={financialsHidden} onSelect={setSelectedProjectId} onCreate={() => setShowForm(true)} />
+    </>
+  );
 }

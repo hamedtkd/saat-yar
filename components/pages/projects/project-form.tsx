@@ -1,5 +1,6 @@
-import { Save } from "lucide-react";
+import { FolderPlus, Save } from "lucide-react";
 import { NumberField } from "@/components/common/number-field";
+import { SectionHeading } from "@/components/common/section-heading";
 import { SurfaceCard } from "@/components/common/surface-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +16,7 @@ export function ProjectForm({ data, draft, setDraft, onSave, onCancel }: {
 }) {
   return (
     <SurfaceCard as="section" className="mb-5 p-5">
+      <SectionHeading icon={<FolderPlus />} eyebrow="پروژه جدید" title="مشخصات پروژه" description="مشتری، نرخ و بودجه را از ابتدا مشخص کن تا گزارش‌ها دقیق بمانند." />
       <div className="mb-4 grid grid-cols-3 gap-4 max-[620px]:grid-cols-1">
         <label className="grid gap-2 text-xs font-semibold text-[var(--text-muted)]">نام پروژه<Input value={draft.name} onChange={(event) => setDraft({ ...draft, name: event.target.value })} /></label>
         <label className="grid gap-2 text-xs font-semibold text-[var(--text-muted)]">مشتری<Select value={draft.clientId} onValueChange={(clientId) => setDraft({ ...draft, clientId })}><SelectTrigger><SelectValue placeholder="انتخاب مشتری" /></SelectTrigger><SelectContent>{data.clients.filter((client) => !client.archived).map((client) => <SelectItem value={client.id} key={client.id}>{client.name}</SelectItem>)}</SelectContent></Select></label>

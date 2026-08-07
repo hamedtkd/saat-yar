@@ -2,6 +2,7 @@ import type { Dispatch, SetStateAction } from "react";
 import { Info, Plus, Save } from "lucide-react";
 
 import { NumberField } from "@/components/common/number-field";
+import { SurfaceCard } from "@/components/common/surface-card";
 import { PanelHead } from "@/components/common/panel-head";
 import { JalaliDatePicker } from "@/components/pickers";
 import { Button } from "@/components/ui/button";
@@ -43,19 +44,7 @@ export function LeaveForm({ draft, setDraft, onSave }: LeaveFormProps) {
     (!isHourly || draft.minutes > 0);
 
   return (
-    <article
-      className="
-        self-start
-        min-w-0
-        overflow-hidden
-        rounded-2xl
-        border border-[var(--border)]
-        bg-[var(--surface-glass)]
-        p-4
-        shadow-[0_10px_35px_rgba(17,45,55,0.055)]
-        sm:p-5
-      "
-    >
+    <SurfaceCard as="article" className="self-start min-w-0 overflow-hidden p-4 sm:p-5">
       <PanelHead
         icon={<Plus aria-hidden="true" />}
         title={isEditing ? "ویرایش مرخصی" : "ثبت مرخصی جدید"}
@@ -226,6 +215,6 @@ export function LeaveForm({ draft, setDraft, onSave }: LeaveFormProps) {
 
         <span>این اپ شخصی است و فرایند تأیید سازمانی ندارد.</span>
       </p>
-    </article>
+    </SurfaceCard>
   );
 }

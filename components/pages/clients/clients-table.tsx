@@ -10,8 +10,8 @@ import type { AppData } from "@/lib/types";
 
 export function ClientsTable({ data, setData, financialsHidden }: { data: AppData; setData: React.Dispatch<React.SetStateAction<AppData>>; financialsHidden: boolean }) {
   return (
-    <TableShell className="p-4">
-      <caption className="mb-4 caption-top text-right"><div className="flex items-center justify-between gap-3 max-[620px]:items-stretch max-[620px]:flex-col"><div><strong className="text-base text-[var(--text)]">فهرست مشتری‌ها</strong><p className="mt-1 text-[11px] text-[var(--text-muted)]">درآمد، زمان و وضعیت مشتری‌ها در یک نگاه</p></div><div className="flex min-w-[230px] items-center gap-2 rounded-[var(--control-radius)] border border-[var(--border)] bg-[var(--surface-2)] px-3 text-[var(--text-muted)] focus-within:border-[var(--accent)] focus-within:ring-2 focus-within:ring-[var(--accent-soft)]"><Search className="size-4 shrink-0" /><Input className="border-0 bg-transparent px-0 focus-visible:ring-0" placeholder="جست‌وجوی مشتری" /></div></div></caption>
+    <TableShell className="p-4 shadow-[0_8px_24px_rgba(0,0,0,.035)]">
+      <caption className="mb-4 caption-top text-right"><div className="flex items-center justify-between gap-3 max-[620px]:items-stretch max-[620px]:flex-col"><div><strong className="text-base text-[var(--text)]">فهرست مشتری‌ها</strong><p className="mt-1 text-[11px] text-[var(--text-muted)]">درآمد، زمان و وضعیت مشتری‌ها در یک نگاه</p></div><div className="flex min-w-[230px] items-center gap-2 rounded-[var(--control-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-3 text-[var(--text-muted)] focus-within:border-[var(--accent)] focus-within:ring-2 focus-within:ring-[var(--accent-soft)]"><Search className="size-4 shrink-0" /><Input className="border-0 bg-transparent px-0 focus-visible:ring-0" placeholder="جست‌وجوی مشتری" /></div></div></caption>
       <TableHead><tr><th>مشتری</th><th>پروژه‌ها</th><th>زمان کل</th><th>مبلغ</th><th>آخرین فعالیت</th><th>وضعیت</th><th>عملیات</th></tr></TableHead>
       <TableBody>{data.clients.map((client) => {
         const projects = data.projects.filter((project) => project.clientId === client.id);

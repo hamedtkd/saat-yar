@@ -11,7 +11,7 @@ export function InvoicesTable({ invoices, clients, financialsHidden, onStatusCha
   onStatusChange: (id: string, status: InvoiceStatus) => void;
   onRemove: (id: string) => void;
 }) {
-  return <TableShell className="p-3"><TableHead><tr><th>شماره</th><th>مشتری</th><th>صدور / سررسید</th><th>مبلغ</th><th>وضعیت</th><th>عملیات</th></tr></TableHead><TableBody>
+  return <TableShell className="p-3 shadow-[0_8px_24px_rgba(0,0,0,.035)]"><TableHead><tr><th>شماره</th><th>مشتری</th><th>صدور / سررسید</th><th>مبلغ</th><th>وضعیت</th><th>عملیات</th></tr></TableHead><TableBody>
     {invoices.map((invoice) => <InvoiceRow key={invoice.id} invoice={invoice} clients={clients} financialsHidden={financialsHidden} onStatusChange={(status) => onStatusChange(invoice.id, status)} onRemove={() => onRemove(invoice.id)} />)}
     {invoices.length === 0 && <tr><td colSpan={6}><EmptyState compact icon={<ReceiptText />} description="هنوز فاکتوری ثبت نشده است." /></td></tr>}
   </TableBody></TableShell>;
