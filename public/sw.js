@@ -1,5 +1,11 @@
-const CACHE_NAME = "saatyar-shell-v6";
-const STATIC_CACHE = "saatyar-static-v6";
+try {
+  importScripts("pwa-precache-manifest.js");
+} catch {
+  self.__SAATYAR_PRECACHE = [];
+}
+
+const CACHE_NAME = "saatyar-shell-v7";
+const STATIC_CACHE = "saatyar-static-v7";
 const APP_ROUTES = ["", "today/", "month/", "leave/", "reports/", "clients/", "projects/", "invoices/", "settings/"];
 const STATIC_ASSETS = [
   "manifest.webmanifest",
@@ -10,7 +16,9 @@ const STATIC_ASSETS = [
   "icons/icon-512.png",
   "icons/maskable-512.png",
   "og/saatyar-social-card.png",
+  "pwa-precache-manifest.js",
 ];
+const BUILD_ASSETS = Array.isArray(self.__SAATYAR_PRECACHE) ? self.__SAATYAR_PRECACHE : [];
 
 const scopedUrl = (path) => new URL(path, self.registration.scope).toString();
 
@@ -26,7 +34,10 @@ async function warmCache(cacheName, paths) {
 }
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(Promise.all([warmCache(CACHE_NAME, APP_ROUTES), warmCache(STATIC_CACHE, STATIC_ASSETS)]));
+  event.waitUntil(Promise.all([
+    warmCache(CACHE_NAME, APP_ROUTES),
+    warmCache(STATIC_CACHE, [...STATIC_ASSETS, ...BUILD_ASSETS]),
+  ]));
 });
 
 self.addEventListener("message", (event) => {

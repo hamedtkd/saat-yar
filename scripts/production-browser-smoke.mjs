@@ -141,10 +141,32 @@ async function evaluate(client, expression) {
 async function waitFor(client, expression, label, timeout = WAIT_TIMEOUT_MS) {
   const deadline = Date.now() + timeout;
   while (Date.now() < deadline) {
-    if (await evaluate(client, expression)) return;
+    try {
+      if (await evaluate(client, expression)) return;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      if (!/execution context|Cannot find context|Inspected target navigated or closed/i.test(message)) throw error;
+    }
     await new Promise((resolveWait) => setTimeout(resolveWait, 100));
   }
   throw new Error(`Timed out while waiting for ${label}.`);
+}
+
+async function waitForEvent(client, method, label, timeout = WAIT_TIMEOUT_MS) {
+  return new Promise((resolveEvent, reject) => {
+    let settled = false;
+    const timer = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      reject(new Error(`Timed out while waiting for ${label}.`));
+    }, timeout);
+    client.on(method, (params) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolveEvent(params);
+    });
+  });
 }
 
 async function clickButton(client, text) {
@@ -258,9 +280,13 @@ export async function runProductionBrowserSmoke() {
         iconCount: Array.isArray(manifest.icons) ? manifest.icons.length : 0,
         active: Boolean(registration?.active),
         controlled: Boolean(navigator.serviceWorker.controller),
+        precachedBuildAssets: (await Promise.all((await caches.keys()).map(async (key) => {
+          const cache = await caches.open(key);
+          return (await cache.keys()).filter((request) => request.url.includes("/_next/static/")).length;
+        }))).reduce((sum, count) => sum + count, 0),
       };
     })()`);
-    if (!pwaContract?.active || !pwaContract.controlled || pwaContract.name !== "ساعت‌یار" || pwaContract.shortName !== "ساعت‌یار" || pwaContract.display !== "standalone" || pwaContract.iconCount < 3) {
+    if (!pwaContract?.active || !pwaContract.controlled || pwaContract.name !== "ساعت‌یار" || pwaContract.shortName !== "ساعت‌یار" || pwaContract.display !== "standalone" || pwaContract.iconCount < 3 || pwaContract.precachedBuildAssets < 1) {
       throw new Error(`PWA installability contract failed: ${JSON.stringify(pwaContract)}`);
     }
     console.log("✓ PWA manifest and service worker are install-ready");
@@ -284,8 +310,10 @@ export async function runProductionBrowserSmoke() {
 
     await client.call("Network.enable");
     await client.call("Network.emulateNetworkConditions", { offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0 });
-    await evaluate(client, `location.reload()`);
-    await waitFor(client, "document.readyState === 'complete' && document.body?.innerText.includes('ساعت‌یار')", "offline PWA reload");
+    const offlineLoad = waitForEvent(client, "Page.loadEventFired", "offline PWA load event", 45_000);
+    await client.call("Page.reload", { ignoreCache: true });
+    await offlineLoad;
+    await waitFor(client, "document.readyState === 'complete' && document.body?.innerText.includes('ساعت‌یار')", "offline PWA reload", 45_000);
     console.log("✓ Installed shell reloads while offline");
     await client.call("Network.emulateNetworkConditions", { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
 

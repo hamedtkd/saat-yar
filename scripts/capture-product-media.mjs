@@ -80,7 +80,11 @@ class CdpClient {
 
 async function evaluate(client, expression) {
   const response = await client.call("Runtime.evaluate", { expression, awaitPromise: true, returnByValue: true });
-  if (response.exceptionDetails) throw new Error(response.exceptionDetails.text || "Browser evaluation failed.");
+  if (response.exceptionDetails) {
+    const description = response.exceptionDetails.exception?.description;
+    const text = response.exceptionDetails.text;
+    throw new Error(description || text || "Browser evaluation failed.");
+  }
   return response.result?.value;
 }
 
@@ -136,16 +140,6 @@ async function screenshot(client, filename) {
 }
 
 async function captureOnboardingFrames(client, origin) {
-  await evaluate(client, `(async () => {
-    await new Promise((resolve) => {
-      const request = indexedDB.deleteDatabase("saatyar-db");
-      request.onsuccess = resolve;
-      request.onerror = resolve;
-      request.onblocked = resolve;
-    });
-    localStorage.clear();
-    return true;
-  })()`);
   await navigate(client, origin, "ساعت‌یار را برای خودت تنظیم کن");
   await screenshot(client, "onboarding.png");
   const frames = [];
@@ -205,20 +199,33 @@ async function main() {
   const profileDir = await mkdtemp(join(tmpdir(), "saatyar-media-"));
   const debugPort = await freePort();
   const server = await startStaticExportServer({ outputDirectory });
-  const browser = spawn(browserExecutable, ["--headless=new", `--remote-debugging-port=${debugPort}`, `--user-data-dir=${profileDir}`, "--no-first-run", "--no-default-browser-check", "--disable-dev-shm-usage", "about:blank"], { stdio: "ignore" });
+  const browserArgs = ["--headless=new", `--remote-debugging-port=${debugPort}`, `--user-data-dir=${profileDir}`, "--no-first-run", "--no-default-browser-check", "--disable-dev-shm-usage", "about:blank"];
+  if (typeof process.getuid === "function" && process.getuid() === 0) browserArgs.push("--no-sandbox");
+  const browser = spawn(browserExecutable, browserArgs, { stdio: ["ignore", "ignore", "pipe"] });
+  let browserOutput = "";
+  browser.stderr.on("data", (chunk) => { browserOutput += chunk; });
   let client;
   let gifCreated = false;
   try {
     await waitForJson(`http://127.0.0.1:${debugPort}/json/version`);
-    const target = await waitForJson(`http://127.0.0.1:${debugPort}/json/new?${encodeURIComponent(server.origin)}`, { method: "PUT" });
+    const target = await waitForJson(`http://127.0.0.1:${debugPort}/json/new?${encodeURIComponent("about:blank")}`, { method: "PUT" });
     client = new CdpClient(target.webSocketDebuggerUrl);
+    const runtimeErrors = [];
+    client.on("Runtime.exceptionThrown", ({ exceptionDetails }) => {
+      const description = exceptionDetails?.exception?.description || exceptionDetails?.text || "Runtime exception";
+      runtimeErrors.push(description);
+    });
     await client.call("Page.enable");
     await client.call("Runtime.enable");
+    await client.call("Storage.clearDataForOrigin", { origin: server.origin, storageTypes: "all" });
     await client.call("Page.addScriptToEvaluateOnNewDocument", { source: `(() => { const RealDate=Date; const fixed=${JSON.stringify(ANCHOR_ISO)}; class FixedDate extends RealDate { constructor(...args){ super(...(args.length?args:[fixed])); } static now(){ return new RealDate(fixed).getTime(); } } FixedDate.parse=RealDate.parse; FixedDate.UTC=RealDate.UTC; window.Date=FixedDate; })();` });
 
     await viewport(client, 1440, 960);
     await captureOnboardingFrames(client, server.origin);
 
+    await navigate(client, "about:blank");
+    await client.call("Storage.clearDataForOrigin", { origin: server.origin, storageTypes: "all" });
+    await navigate(client, server.origin, "ساعت‌یار را برای خودت تنظیم کن");
     const data = createMediaDemoData(ANCHOR_ISO);
     await seedAppData(client, data);
     await setTheme(client, "light");
@@ -244,8 +251,16 @@ async function main() {
     await navigate(client, `${server.origin}/settings`, "تنظیمات");
     await screenshot(client, "settings.png");
 
+    const actionableRuntimeErrors = runtimeErrors.filter((message) => !/AbortError|ResizeObserver loop/i.test(message));
+    if (actionableRuntimeErrors.length > 0) {
+      throw new Error(`Browser runtime errors during media capture:\n${actionableRuntimeErrors.join("\n")}`);
+    }
+
     gifCreated = buildGif();
     console.log(`Media captured in ${resolve(ROOT, "docs/assets")}`);
+  } catch (error) {
+    if (browserOutput.trim()) console.error(`\nBrowser output:\n${browserOutput.trim()}`);
+    throw error;
   } finally {
     client?.close();
     await terminateBrowser(browser);

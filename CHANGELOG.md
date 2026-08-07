@@ -1,8 +1,10 @@
-# تغییرات
-
-این پروژه از قالب Keep a Changelog و نسخه‌گذاری معنایی پیروی می‌کند.
-
 ## [Unreleased]
+
+### Fixed
+
+- Hardened the offline PWA shell by precaching generated Next.js assets and testing a real CDP page reload while offline.
+- Made product media capture start from a clean browser origin and report actionable runtime exceptions instead of generic promise failures.
+
 
 ### افزوده شد
 
