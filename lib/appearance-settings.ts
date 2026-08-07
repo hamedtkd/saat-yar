@@ -36,19 +36,19 @@ const radiusTokens: Record<RadiusScale, { card: string; control: string }> = {
 
 const baseColors: Record<ResolvedThemeMode, PreviewColors> = {
   light: {
-    page: "#f5f8f6",
+    page: "#f6f8fb",
     surface1: "#ffffff",
-    surface2: "#f9fbfa",
-    text: "#10221a",
-    muted: "#65746c",
-    border: "#dce5df",
+    surface2: "#f8fafc",
+    text: "#111827",
+    muted: "#64748b",
+    border: "#dbe3ec",
   },
   dark: {
-    page: "#0a0f0d",
-    surface1: "#101713",
-    surface2: "#151d19",
-    text: "#f7faf8",
-    muted: "#9aa9a0",
+    page: "#081016",
+    surface1: "#0d161d",
+    surface2: "#121d25",
+    text: "#f8fafc",
+    muted: "#94a3b8",
     border: "rgb(255 255 255 / 10%)",
   },
 };
@@ -58,12 +58,12 @@ const surfaceOverrides: Record<
   Partial<Record<SurfaceStyle, Partial<PreviewColors>>>
 > = {
   light: {
-    neutral: { page: "#f6f7f6", surface2: "#f3f5f4" },
-    contrast: { page: "#eef4f0", surface1: "#ffffff", surface2: "#e9f1ec", border: "#cbd9d0" },
+    neutral: { page: "#f7f8fa", surface2: "#f3f5f8" },
+    contrast: { page: "#eef3f8", surface1: "#ffffff", surface2: "#e9eff6", border: "#cbd6e2" },
   },
   dark: {
-    neutral: { page: "#0b0d0c", surface1: "#121514", surface2: "#171a18" },
-    contrast: { page: "#050806", surface1: "#0d130f", surface2: "#17211b", border: "rgb(255 255 255 / 15%)" },
+    neutral: { page: "#090d11", surface1: "#10161b", surface2: "#151c22" },
+    contrast: { page: "#05090d", surface1: "#0b1218", surface2: "#121f29", border: "rgb(255 255 255 / 15%)" },
   },
 };
 
@@ -77,7 +77,7 @@ export function validateAppearanceSettings(value: AppearanceSettings): string | 
   if (!radiusScales.includes(value.radius)) return "گردی گوشه‌های انتخاب‌شده معتبر نیست.";
   if (!surfaceStyles.includes(value.surface)) return "سطح کارت‌های انتخاب‌شده معتبر نیست.";
   if (value.preset === "custom" && !isHexColor(value.accent)) {
-    return "رنگ سفارشی باید یک کد شش‌رقمی مانند #1ed760 باشد.";
+    return "رنگ سفارشی باید یک کد شش‌رقمی مانند #06b6d4 باشد.";
   }
   return null;
 }

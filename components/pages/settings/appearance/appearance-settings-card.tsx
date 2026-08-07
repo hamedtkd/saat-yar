@@ -30,9 +30,9 @@ const modeLabels: Record<ThemeMode, string> = {
   system: "سیستم",
 };
 const presetLabels: Record<ThemePreset, string> = {
-  spotify: "Spotify",
-  emerald: "زمردی",
-  ocean: "اقیانوسی",
+  spotify: "فیروزه‌ای",
+  emerald: "سبز",
+  ocean: "آبی",
   violet: "بنفش",
   sunset: "غروب",
   custom: "سفارشی",

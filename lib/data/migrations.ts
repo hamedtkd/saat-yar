@@ -194,7 +194,7 @@ function migrateV11ToV12(value: unknown): unknown {
       appearance: {
         mode: "system",
         preset: "spotify",
-        accent: "#1ed760",
+        accent: "#06b6d4",
         radius: "rounded",
         ...(isObject(settings.appearance) ? settings.appearance : {}),
       },

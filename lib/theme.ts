@@ -2,7 +2,7 @@ import type { AppearanceSettings, ThemePreset } from "./types.ts";
 
 export const THEME_STORAGE_KEY = "saatyar-appearance";
 export const themePresets: Record<Exclude<ThemePreset, "custom">, string> = {
-  spotify: "#1ed760",
+  spotify: "#06b6d4",
   emerald: "#10b981",
   ocean: "#0ea5e9",
   violet: "#8b5cf6",
@@ -36,7 +36,7 @@ function channelLuminance(channel: number) {
 export function readableAccentForeground(accent: string) {
   const { r, g, b } = hexToRgb(accent);
   const luminance = 0.2126 * channelLuminance(r) + 0.7152 * channelLuminance(g) + 0.0722 * channelLuminance(b);
-  return luminance > 0.24 ? "#07130c" : "#ffffff";
+  return luminance > 0.24 ? "#061316" : "#ffffff";
 }
 
 function mixChannel(source: number, target: number, amount: number) {

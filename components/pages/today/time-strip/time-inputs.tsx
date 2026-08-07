@@ -26,7 +26,7 @@ export function TimeInputs({ record, data, suggestedExit, updateRecord, startWor
       icon={<LogIn className="size-4" />}
       tone="bg-[var(--success-soft)] text-[var(--success)]"
       picker={<TimePicker value={record.start} onChange={(start) => updateRecord({ start, startedAt: undefined })} suggestions={[{ label: "شروع معمول", value: data.settings.defaultStart }]} />}
-      action={<Button type="button" size="sm" className="w-full" onClick={startWork} disabled={Boolean(record.start && !record.end)}>ثبت ورود</Button>}
+      action={<Button type="button" size="sm" className="w-full" onClick={startWork} disabled={Boolean(record.start)}>ثبت ورود</Button>}
     />
     <TimeCard
       title="خروج"

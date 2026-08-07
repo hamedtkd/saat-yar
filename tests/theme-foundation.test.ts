@@ -13,7 +13,7 @@ test("appearance defaults are preserved in the current schema", () => {
 
 test("schema v11 data receives appearance settings", () => {
   const data = migrateAppData({ schemaVersion: 11, data: { settings: { ...defaultSettings, appearance: undefined }, records: {}, leaves: [], clients: [], projects: [], timeEntries: [], expenses: [], invoices: [], holidayOverrides: [] } }).data;
-  assert.equal(data.settings.appearance.accent, "#1ed760");
+  assert.equal(data.settings.appearance.accent, "#06b6d4");
 });
 
 test("theme foundation uses runtime and design tokens", () => {

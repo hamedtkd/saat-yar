@@ -6,8 +6,8 @@ import { accentStrong, readableAccentForeground } from "../lib/theme.ts";
 const read = (path: string) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
 test("accent foreground keeps light and dark custom colors readable", () => {
-  assert.equal(readableAccentForeground("#1ed760"), "#07130c");
-  assert.equal(readableAccentForeground("#0ea5e9"), "#07130c");
+  assert.equal(readableAccentForeground("#1ed760"), "#061316");
+  assert.equal(readableAccentForeground("#0ea5e9"), "#061316");
   assert.equal(readableAccentForeground("#8b5cf6"), "#ffffff");
   assert.notEqual(accentStrong("#0ea5e9", "light"), "#087f45");
   assert.notEqual(accentStrong("#f97316", "dark"), "#51e884");

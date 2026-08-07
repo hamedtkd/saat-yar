@@ -53,7 +53,7 @@ test("scoped preview tokens reflect mode, surface, radius and readable accent", 
   );
   assert.equal(tokens["--accent"], "#101010");
   assert.equal(tokens["--accent-foreground"], "#ffffff");
-  assert.equal(tokens["--page"], "#050806");
+  assert.equal(tokens["--page"], "#05090d");
   assert.equal(tokens["--card-radius"], "14px");
   assert.equal(tokens.colorScheme, "dark");
 });

@@ -28,7 +28,7 @@ export const defaultSettings: Settings = {
     endOfDayReminder: true,
     breakReminder: { enabled: false, intervalMinutes: 60, onlyWhenTracking: true },
   },
-  appearance: { mode: "system", preset: "spotify", accent: "#1ed760", radius: "rounded", surface: "tinted" },
+  appearance: { mode: "system", preset: "spotify", accent: "#06b6d4", radius: "rounded", surface: "tinted" },
   mode: "employee",
 };
 

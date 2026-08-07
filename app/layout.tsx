@@ -45,7 +45,7 @@ export const viewport: Viewport = {
   colorScheme: "light dark",
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#f4f8f7" },
-    { media: "(prefers-color-scheme: dark)", color: "#061713" },
+    { media: "(prefers-color-scheme: dark)", color: "#07171c" },
   ],
 };
 
@@ -54,7 +54,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="fa" dir="rtl" suppressHydrationWarning className="scroll-smooth">
       <head>
         <meta name="saatyar-base" content={basePath} />
-        <meta name="theme-color" content="#10b981" data-saatyar-theme-color />
+        <meta name="theme-color" content="#06b6d4" data-saatyar-theme-color />
         <ThemeBootstrap />
       </head>
       <body className="m-0 min-h-screen bg-[var(--page)] font-[Vazirmatn_Variable,Tahoma,sans-serif] font-normal text-[var(--text)] antialiased [font-feature-settings:'ss01'] transition-colors">

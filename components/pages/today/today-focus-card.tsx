@@ -1,4 +1,4 @@
-import { Check, Play, Square } from "lucide-react";
+import { Check, CheckCircle2, Play, Square } from "lucide-react";
 import { LiveDuration } from "@/components/common/live-duration";
 import { SurfaceCard } from "@/components/common/surface-card";
 import { Button } from "@/components/ui/button";
@@ -15,13 +15,30 @@ type Props = Pick<TodayPageProps, "data" | "record" | "timerDraft" | "setTimerDr
 export function TodayFocusCard(props: Props) {
   const mode = props.data.settings.mode;
   const isEmployee = mode === "employee";
-  const timerLabel = props.activeEntry ? "تایمر پروژه در حال اجرا" : props.record.start && !props.record.end ? "در حال کار" : props.record.end ? "روز کاری تمام شده" : "آماده شروع";
-  const progress = props.dailyTarget === 0 ? 100 : Math.min(100, Math.round(props.todayCalc.credited / Math.max(1, props.dailyTarget) * 100));
+  const hasTarget = props.dailyTarget > 0;
+  const progress = hasTarget ? Math.min(100, Math.round(props.todayCalc.credited / props.dailyTarget * 100)) : 0;
+  const timerLabel = props.activeEntry
+    ? "تایمر پروژه در حال اجرا"
+    : props.record.start && !props.record.end
+      ? "در حال کار"
+      : props.record.end
+        ? "روز کاری ثبت شده"
+        : "آماده شروع";
+  const timerValue = props.activeEntry
+    ? <LiveDuration startedAt={props.activeEntry.startedAt} />
+    : props.record.start
+      ? duration(props.todayCalc.worked)
+      : "۰:۰۰";
+  const timingCaption = props.record.end
+    ? `شروع ${faDigits(props.record.start)} · پایان ${faDigits(props.record.end)}`
+    : props.record.start
+      ? `شروع ${faDigits(props.record.start)} · خروج پیشنهادی ${faDigits(props.suggestedExit)}`
+      : `خروج پیشنهادی ${faDigits(props.suggestedExit)}`;
 
   return (
     <SurfaceCard className="dashboard-card mb-4 overflow-hidden shadow-[0_6px_18px_rgba(0,0,0,.035)] dark:shadow-[0_10px_26px_rgba(0,0,0,.18)]">
-      <div className={cn("grid grid-cols-[minmax(0,1.18fr)_minmax(350px,.82fr)] max-[1050px]:grid-cols-1", !isEmployee && "grid-cols-[minmax(0,1.2fr)_minmax(360px,.8fr)]")}>
-        <div className={cn(isEmployee ? "grid content-center gap-3" : "grid grid-cols-12 content-center gap-4", "min-h-[258px] p-5 sm:p-6")}>
+      <div className={cn("grid grid-cols-[minmax(0,1.18fr)_minmax(340px,.82fr)] max-[1050px]:grid-cols-1", !isEmployee && "grid-cols-[minmax(0,1.2fr)_minmax(360px,.8fr)]")}>
+        <div className={cn(isEmployee ? "grid content-center gap-3" : "grid grid-cols-12 content-center gap-4", "min-h-[290px] p-5 sm:p-6")}>
           {isEmployee && (
             <div className="grid gap-1">
               <strong className="flex items-center gap-2 text-[15px] font-black text-[var(--text)]">
@@ -53,20 +70,28 @@ export function TodayFocusCard(props: Props) {
           )}
         </div>
 
-        <div className="relative grid min-h-[258px] place-items-center content-center overflow-hidden border-r border-[var(--dashboard-border)] bg-[linear-gradient(160deg,var(--surface-1),var(--surface-accent))] p-4 text-center max-[1050px]:border-r-0 max-[1050px]:border-t">
-          <div className="absolute inset-x-12 top-4 h-28 rounded-full bg-[var(--accent-soft)] blur-3xl" aria-hidden="true" />
-          <span className="relative mb-1 inline-flex items-center gap-2 rounded-full border border-[color-mix(in_srgb,var(--accent)_22%,var(--border))] bg-[var(--surface-glass)] px-3 py-1.5 text-[10px] font-black text-[var(--accent-strong)]">
-            <i className="size-2 rounded-full bg-[var(--accent)] shadow-[0_0_0_4px_var(--accent-soft)]" />{timerLabel}
-          </span>
-          <TodayProgressArc value={progress} className="dashboard-glow">
-            <strong className="block text-[clamp(2.35rem,5vw,3.65rem)] font-black leading-none tracking-[-.04em] text-[var(--accent-strong)]">{props.activeEntry ? <LiveDuration startedAt={props.activeEntry.startedAt} /> : props.record.start && !props.record.end ? duration(props.todayCalc.worked) : props.record.end ? duration(props.todayCalc.worked) : "۰:۰۰"}</strong>
-            <span className="mt-2 block text-[10px] font-bold text-[var(--text-muted)]">{fa.format(progress)}٪ از هدف روزانه</span>
-          </TodayProgressArc>
-          <small className="relative -mt-1 text-[10px] text-[var(--text-muted)]">{props.record.start ? `شروع ${faDigits(props.record.start)} · خروج پیشنهادی ${faDigits(props.suggestedExit)}` : `خروج پیشنهادی ${faDigits(props.suggestedExit)}`}</small>
-          <div className="relative mt-4 grid w-full max-w-[285px] grid-cols-2 gap-2 max-[520px]:grid-cols-1">
-            {!isEmployee ? <Button onClick={() => props.toggleProjectTimer()} className="w-full">{props.activeEntry ? <><Square /> پایان تایمر</> : <><Play /> شروع تایمر</>}</Button> : null}
-            {!props.record.start ? <Button onClick={props.startWork} className={cn("w-full", isEmployee && "col-span-2")}><Play /> شروع روز</Button> : !props.record.end ? <Button variant="outline" onClick={props.finishWork} className="w-full"><Square /> پایان روز</Button> : <Button variant="secondary" onClick={props.startWork} className={cn("w-full", isEmployee && "col-span-2")}><Play /> شروع دوباره</Button>}
-            {isEmployee && props.record.start && !props.record.end && <Button variant="secondary" className="w-full" disabled>در حال ثبت</Button>}
+        <div className="relative grid min-h-[290px] place-items-center overflow-hidden border-r border-[var(--dashboard-border)] bg-[linear-gradient(160deg,var(--surface-1),var(--surface-accent))] px-5 py-6 text-center max-[1050px]:border-r-0 max-[1050px]:border-t">
+          <div className="pointer-events-none absolute inset-x-10 top-2 h-32 rounded-full bg-[var(--accent-soft)] opacity-70 blur-3xl" aria-hidden="true" />
+          <div className="relative grid w-full max-w-[340px] place-items-center gap-2">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[color-mix(in_srgb,var(--accent)_22%,var(--border))] bg-[var(--surface-glass)] px-3 py-1.5 text-[10px] font-black text-[var(--accent-strong)] shadow-[0_4px_14px_rgba(0,0,0,.04)]">
+              <i className="size-2 rounded-full bg-[var(--accent)] shadow-[0_0_0_4px_var(--accent-soft)]" />{timerLabel}
+            </span>
+            <TodayProgressArc value={progress}>
+              <strong className="block text-[clamp(2.25rem,4.4vw,3.45rem)] font-black leading-none tracking-[-.04em] text-[var(--accent-strong)]">{timerValue}</strong>
+              <span className="mt-2 block text-[10px] font-bold text-[var(--text-muted)]">{hasTarget ? `${fa.format(progress)}٪ از هدف روزانه` : "این روز هدف کاری ندارد"}</span>
+            </TodayProgressArc>
+            <small className="-mt-1 min-h-5 text-[10px] text-[var(--text-muted)]">{timingCaption}</small>
+            <div className="mt-2 grid w-full max-w-[290px] grid-cols-2 gap-2 max-[520px]:grid-cols-1">
+              {!isEmployee && <Button onClick={() => props.toggleProjectTimer()} className="w-full">{props.activeEntry ? <><Square /> پایان تایمر</> : <><Play /> شروع تایمر</>}</Button>}
+              {!props.record.start ? (
+                <Button onClick={props.startWork} className={cn("w-full", isEmployee && "col-span-2")}><Play /> شروع روز</Button>
+              ) : !props.record.end ? (
+                <Button variant="outline" onClick={props.finishWork} className="w-full"><Square /> پایان روز</Button>
+              ) : (
+                <div className={cn("flex min-h-11 items-center justify-center gap-2 rounded-[var(--control-radius)] border border-[color-mix(in_srgb,var(--accent)_22%,var(--border))] bg-[var(--accent-soft)] px-4 text-xs font-black text-[var(--accent-strong)]", isEmployee && "col-span-2")}><CheckCircle2 className="size-4" /> روز ثبت شده</div>
+              )}
+              {isEmployee && props.record.start && !props.record.end && <Button variant="secondary" className="w-full" disabled>در حال ثبت</Button>}
+            </div>
           </div>
         </div>
       </div>

@@ -25,13 +25,13 @@ export function PageHeading({ title, description, children, autosave = true, var
   }
 
   return (
-    <section className={cn("mb-6 flex min-h-24 items-start justify-between gap-6 max-[620px]:min-h-0 max-[620px]:flex-col")}>
+    <section className={cn("dashboard-card mb-5 flex min-h-[112px] items-center justify-between gap-6 rounded-[var(--card-radius)] border border-[var(--dashboard-border)] px-5 py-4 shadow-[0_5px_16px_rgba(0,0,0,.03)] max-[720px]:min-h-0 max-[720px]:flex-col max-[720px]:items-stretch sm:px-6") }>
       <div className="min-w-0">
-        {autosave && <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--accent-strong)]"><CheckCircle2 className="size-4" /> ذخیره خودکار</span>}
-        <h1 className="mt-2 text-[clamp(1.75rem,3vw,2.6rem)] font-black leading-tight tracking-[-.04em] text-[var(--text)]">{title}</h1>
-        {description && <p className="mt-2 max-w-2xl text-sm leading-7 text-[var(--text-muted)]">{description}</p>}
+        {autosave && <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--accent-soft)] px-2.5 py-1 text-[10px] font-bold text-[var(--accent-strong)]"><CheckCircle2 className="size-3.5" /> ذخیره خودکار</span>}
+        <h1 className="mt-2 text-[clamp(1.4rem,2.5vw,2.15rem)] font-black leading-tight tracking-[-.035em] text-[var(--text)]">{title}</h1>
+        {description && <p className="mt-1.5 max-w-2xl text-[12px] leading-6 text-[var(--text-muted)]">{description}</p>}
       </div>
-      {children && <div className="row-actions flex flex-wrap items-center gap-2 max-[620px]:w-full">{children}</div>}
+      {children && <div className="row-actions flex flex-wrap items-center gap-2 max-[720px]:w-full">{children}</div>}
     </section>
   );
 }

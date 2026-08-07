@@ -16,7 +16,8 @@ export function TodayMetrics({ data, record, selectedDate, result, dailyTarget, 
   dailyTarget: number;
   financialsHidden: boolean;
 }) {
-  const progress = dailyTarget === 0 ? 100 : Math.min(100, Math.round(result.credited / dailyTarget * 100));
+  const hasTarget = dailyTarget > 0;
+  const progress = hasTarget ? Math.min(100, Math.round(result.credited / dailyTarget * 100)) : 0;
   const todayEntries = data.timeEntries.filter((entry) => localDateKey(new Date(entry.startedAt)) === selectedDate);
   const projectMinutes = todayEntries.reduce((sum, entry) => sum + entryMinutes(entry), 0);
   const billableMinutes = todayEntries.reduce((sum, entry) => sum + (entry.billable ? entryMinutes(entry) : 0), 0);
@@ -32,8 +33,8 @@ export function TodayMetrics({ data, record, selectedDate, result, dailyTarget, 
       <MetricCard icon={<Tag />} label={isEmployee ? "زمان قابل محاسبه" : "قابل صورتحساب"} value={duration(isEmployee ? result.credited : billableMinutes)} suffix="ساعت" tone="amber" />
       <MetricCard icon={<WalletCards />} label={isEmployee ? "حقوق امروز" : isHybrid ? "درآمد ترکیبی امروز" : "درآمد پروژه امروز"} value={<PrivateMoney value={income} hidden={financialsHidden} />} suffix="تومان" tone="green" />
       <SurfaceCard as="article" className="dashboard-card flex min-h-[104px] items-center justify-center gap-4 p-4">
-        <ProgressRing value={progress} size="sm"><strong className="text-sm font-black">{fa.format(progress)}٪</strong></ProgressRing>
-        <div><small className="block text-[10px] text-[var(--text-muted)]">هدف روزانه</small><strong className="mt-1 block text-lg font-black">{duration(result.credited)}</strong><span className="text-[10px] text-[var(--text-muted)]">از {duration(dailyTarget)}{!isEmployee ? ` · پروژه ${duration(projectMinutes)}` : ""}</span></div>
+        <ProgressRing value={progress} size="sm"><strong className="text-sm font-black">{hasTarget ? `${fa.format(progress)}٪` : "—"}</strong></ProgressRing>
+        <div><small className="block text-[10px] text-[var(--text-muted)]">{hasTarget ? "هدف روزانه" : "روز بدون هدف"}</small><strong className="mt-1 block text-lg font-black">{duration(result.credited)}</strong><span className="text-[10px] text-[var(--text-muted)]">{hasTarget ? `از ${duration(dailyTarget)}` : "بدون ساعت موظفی"}{!isEmployee ? ` · پروژه ${duration(projectMinutes)}` : ""}</span></div>
       </SurfaceCard>
     </section>
   );
