@@ -295,9 +295,9 @@ npm run test:browser:production
 
 ## نقشه راه
 
-نسخه **۲.۲.۰** در وضعیت Release Candidate قرار دارد. جزئیات قابلیت‌های جدید در [یادداشت انتشار ۲.۲.۰](./docs/releases/RELEASE_NOTES_2.2.0_FA.md) و کنترل‌های نهایی در [چک‌لیست انتشار](./RELEASE_CHECKLIST_FA.md) ثبت شده‌اند.
+نسخه **۲.۲.۰** به‌عنوان Release نهایی آماده شده است. Candidate تأییدشده روی commit prefix `f659456` همه ۴۲۳ تست، Production/Offline PWA Smoke و Browser Pairing رمزنگاری‌شده را پاس کرده است. جزئیات در [یادداشت انتشار ۲.۲.۰](./docs/releases/RELEASE_NOTES_2.2.0_FA.md) و [چک‌لیست انتشار](./RELEASE_CHECKLIST_FA.md) ثبت شده‌اند.
 
-رسانه‌های نهایی محصول اکنون داخل README قرار گرفته‌اند. موارد باز بعدی در [docs/roadmap/BACKLOG_FA.md](./docs/roadmap/BACKLOG_FA.md) نگهداری می‌شوند؛ مهم‌ترین مورد کوتاه‌مدت، نهایی‌سازی Manifest پس از Gate نهایی و Tag نسخه ۲.۲.۰ است.
+رسانه‌های نهایی محصول اکنون داخل README قرار گرفته‌اند. پس از اجرای Gate نهایی فاز ۱۲۰ و Commit کردن سورس Release، Tag annotated `v2.2.0` باید روی همان Commit ساخته شود؛ سایر کارهای بعدی در [docs/roadmap/BACKLOG_FA.md](./docs/roadmap/BACKLOG_FA.md) نگهداری می‌شوند.
 
 ## حمایت مالی
 

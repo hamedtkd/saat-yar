@@ -1,8 +1,8 @@
 # چک‌لیست انتشار ساعت‌یار 2.2.0
 
-این فایل کنترل انسانی Release Candidate نسخه ۲.۲.۰ است. `npm run check:release` کنترل‌های اصلی ماشینی را اجرا می‌کند و `npm run test:browser:pairing` انتقال واقعی رمزنگاری‌شده WebRTC را جداگانه بررسی می‌کند. Tag فقط پس از سبزشدن همه Gateها و بررسی دستی ساخته شود.
+این فایل کنترل نهایی انتشار نسخه ۲.۲.۰ است. Candidate روی commit prefix `f659456` با ۴۲۳ تست، Production/Offline PWA Smoke و انتقال واقعی WebRTC شامل ۴ chunk رمزنگاری‌شده + ACK تأیید شده است. فاز ۱۲۰ سورس Release نهایی را آماده می‌کند؛ Tag فقط پس از سبزشدن Gate نهایی و Commit شدن همین سورس ساخته شود.
 
-## مشخصات Release Candidate
+## مشخصات Release 2.2.0
 
 ```text
 Package: saatyar-worklog@2.2.0
@@ -10,22 +10,24 @@ AppData schema: v17
 Migration baseline: v16 → v17
 Node.js: 22.x
 شواهد تأییدشده پیش از فاز ۱۱۹: 417 تست پاس
-تعداد مورد انتظار Candidate پس از فاز ۱۱۹: 423 تست
+تعداد تست Candidate تأییدشده فاز ۱۱۹: 423 تست
+تعداد مورد انتظار Gate نهایی فاز ۱۲۰: 429 تست
+Candidate commit prefix: f659456
 Production browser gate: Chrome / Edge / Chromium
 Pairing browser gate: WebRTC encrypted multi-chunk transfer + ACK
-Manifest status: release-candidate
+Manifest status: released
 ```
 
 ## کنترل خودکار
 
 - [ ] `npm ci`
 - [ ] `npm run check:release`
-- [ ] خروجی تست‌ها `423 pass / 0 fail` باشد.
+- [ ] خروجی تست‌ها `429 pass / 0 fail` باشد.
 - [ ] `npm run test:browser:pairing`
 - [ ] Browser Pairing حداقل یک انتقال چندبخشی رمزنگاری‌شده و ACK را تأیید کند.
 - [ ] `git diff --check`
 - [ ] `git status` فقط تغییرات مورد انتظار Release را نشان دهد.
-- [ ] `check:release:audit` نسخه `2.2.0`، Schema v17 و وضعیت `release-candidate` را تأیید کند.
+- [ ] `check:release:audit` نسخه `2.2.0`، Schema v17، وضعیت `released` و شواهد Candidate `f659456` را تأیید کند.
 - [ ] Production Smoke پیام `Installed shell reloads while offline` و `Production browser smoke passed.` را نمایش دهد.
 
 ## داده، Migration و Backup
@@ -89,15 +91,19 @@ Manifest status: release-candidate
 - [ ] کنتراست Accentهای روشن، تاریک و Custom بررسی شود.
 - [ ] Scanner دوربین و دکمه‌های Sync نام قابل‌دسترسی داشته باشند.
 
-## نهایی‌سازی پس از تأیید Candidate
+## نهایی‌سازی Release و Tag
 
-این بخش در فاز نهایی Release انجام می‌شود، نه قبل از Gate Candidate:
+سورس فاز ۱۲۰ Manifest را به `released` تبدیل کرده و شواهد Candidate تأییدشده را ثبت می‌کند. `releaseCommit` عمداً در Manifest وجود ندارد؛ SHA نهایی Commit نمی‌تواند به‌طور پایدار داخل همان Commit ذخیره شود. Tag annotated منبع حقیقت Commit انتشار است.
 
-- [ ] `docs/releases/2.2.0.json` از `release-candidate` به `released` تغییر کند.
-- [ ] `releaseCommit` برابر SHA دقیق Commit نهایی شود.
-- [ ] Quality Gate یک بار دیگر روی همان Commit اجرا شود.
-- [ ] Tag annotated `v2.2.0` روی همان Commit ساخته شود.
-- [ ] GitHub Release با Release Notes فارسی یا انگلیسی منتشر شود.
+- [x] Candidate `f659456` با ۴۲۳ تست و هر دو Browser Gate تأیید شده است.
+- [x] `docs/releases/2.2.0.json` از `release-candidate` به `released` تغییر کرده است.
+- [x] شواهد Candidate شامل commit prefix، ۴۲۳ تست و WebRTC چهار-chunk در Manifest ثبت شده است.
+- [x] قرارداد self-referential `releaseCommit` از Manifest فعال حذف شده است.
+- [ ] `npm run check:release` روی سورس فاز ۱۲۰ با ۴۲۹/۴۲۹ تست پاس شود.
+- [ ] `npm run test:browser:pairing` دوباره پاس شود.
+- [ ] سورس نهایی Release Commit و Push شود.
+- [ ] Tag annotated `v2.2.0` دقیقاً روی همان Commit نهایی ساخته و Push شود.
+- [ ] در صورت استفاده از GitHub Releases، Release با Release Notes نسخه ۲.۲.۰ منتشر شود.
 
 ```bash
 git tag -a v2.2.0 -m "Saatyar 2.2.0"

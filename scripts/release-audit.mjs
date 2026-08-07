@@ -53,10 +53,21 @@ export function collectReleaseAuditFailures() {
   requireCondition(ALLOWED_STATUSES.has(manifest.status), "Release manifest status must be release-candidate or released.", failures);
   requireCondition(manifest.tag === `v${manifest.version}`, "Release manifest tag is missing or does not match the version.", failures);
 
+  const hasReleaseCommit = Object.prototype.hasOwnProperty.call(manifest, "releaseCommit");
   if (manifest.status === "released") {
-    requireCondition(Boolean(manifest.releaseCommit), "Released manifest must include the exact release commit.", failures);
+    requireCondition(
+      /^[0-9a-f]{7,40}$/.test(manifest.verifiedCandidateCommitPrefix ?? ""),
+      "Released manifest must preserve the verified candidate commit prefix.",
+      failures,
+    );
+    requireCondition(manifest.verifiedCandidateTestCount === 423, "Released manifest must record the verified 423-test candidate gate.", failures);
+    requireCondition(manifest.expectedFinalTestCount === 429, "Released manifest must declare the 429-test final gate for Phase 120.", failures);
+    requireCondition(manifest.releaseEvidence?.productionBrowserSmoke === "passed", "Released manifest must preserve the passing production browser evidence.", failures);
+    requireCondition(manifest.releaseEvidence?.pairingBrowserSmoke === "passed", "Released manifest must preserve the passing pairing browser evidence.", failures);
+    requireCondition(manifest.releaseEvidence?.pairingEncryptedChunks === 4, "Released manifest must preserve the four-chunk encrypted pairing evidence.", failures);
+    requireCondition(!hasReleaseCommit, "Released manifest must not contain a self-referential releaseCommit field; the annotated Git tag is the source of truth for the final release commit.", failures);
   } else {
-    requireCondition(!manifest.releaseCommit, "Release-candidate manifest must not claim a release commit before finalization.", failures);
+    requireCondition(!hasReleaseCommit || !manifest.releaseCommit, "Release-candidate manifest must not claim a release commit before finalization.", failures);
   }
 
   const requiredFiles = [
@@ -129,8 +140,14 @@ export function runReleaseAudit() {
   console.log(`Saatyar ${manifest.version} release audit passed.`);
   console.log(`Current AppData schema: v${APP_DATA_SCHEMA_VERSION}`);
   console.log(`Release status: ${manifest.status}`);
-  console.log(`Verified pre-candidate test baseline: ${manifest.verifiedTestCount}`);
-  console.log(`Expected candidate test count: ${manifest.expectedCandidateTestCount}`);
+  if (manifest.status === "released") {
+    console.log(`Verified candidate commit prefix: ${manifest.verifiedCandidateCommitPrefix}`);
+    console.log(`Verified candidate test count: ${manifest.verifiedCandidateTestCount}`);
+    console.log(`Expected final test count: ${manifest.expectedFinalTestCount}`);
+  } else {
+    console.log(`Verified pre-candidate test baseline: ${manifest.verifiedTestCount}`);
+    console.log(`Expected candidate test count: ${manifest.expectedCandidateTestCount}`);
+  }
   return true;
 }
 

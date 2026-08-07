@@ -35,7 +35,7 @@
 ## سازگاری داده
 
 ```text
-Package candidate: 2.2.0
+Package release: 2.2.0
 Released baseline schema: v16
 Current schema: v17
 Migration: v16 → v17
@@ -44,23 +44,24 @@ Node.js: 22.x
 
 Backupهای قدیمی از مسیر Migration فعلی به v17 می‌رسند. Backup مربوط به Schema جدیدتر همچنان توسط نسخه قدیمی‌تر رد می‌شود.
 
-## شواهد Quality پیش از Release Candidate
+## شواهد Quality تأییدشده
 
-آخرین Gate کامل پیش از آماده‌سازی این Release Candidate:
+Candidate تأییدشده در commit prefix `f659456` این Gate را کامل پاس کرده است:
 
 ```text
-417 tests passed
+423 tests passed
+TypeScript + ESLint passed
 Next.js production build passed
 Static export: 19/19 routes
 PWA offline reload smoke passed
 Encrypted WebRTC browser pairing smoke passed (4 chunks + ACK)
 ```
 
-فاز آماده‌سازی Release شش تست قراردادی جدید اضافه می‌کند؛ بنابراین Gate نهایی Candidate باید ۴۲۳ تست را پاس کند.
+فاز ۱۲۰ شش تست Final Release Contract اضافه می‌کند؛ بنابراین Gate نهایی سورس Release باید ۴۲۹ تست را پاس کند.
 
 ## وضعیت انتشار
 
-Manifest این نسخه در فاز ۱۱۹ با وضعیت `release-candidate` ساخته می‌شود. پس از اجرای Gate نهایی، بررسی دستی و ثبت Commit نهایی، وضعیت Manifest باید به `released` تغییر کند و Tag زیر روی همان Commit ساخته شود:
+Manifest نسخه ۲.۲.۰ اکنون `released` است و شواهد Candidate تأییدشده را نگه می‌دارد. Manifest عمداً SHA Commit نهایی خودش را ذخیره نمی‌کند، چون قرار دادن SHA یک Commit داخل همان Commit یک قرارداد self-referential و ناپایدار می‌سازد. منبع حقیقت Commit نهایی، Tag annotated `v2.2.0` است که پس از Green شدن Gate فاز ۱۲۰ باید روی همان Commit نهایی Release ساخته شود:
 
 ```bash
 git tag -a v2.2.0 -m "Saatyar 2.2.0"

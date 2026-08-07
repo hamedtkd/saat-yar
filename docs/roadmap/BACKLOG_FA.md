@@ -206,4 +206,4 @@
 - [x] فاز ۱۱۷: رفع Gate قرمز Lint در QR vendor و Scanner، افزودن وضعیت نشست و تاریخچه انتقال privacy-safe با مسیر روشن برای شروع دوباره Pairing.
 - [x] فاز ۱۱۸: Browser E2E انتقال رمزنگاری‌شده چندبخشی روی WebRTC واقعی و پالیش نهایی UX Sync؛ Stepper، پیشروی خودکار QR، وضعیت تکمیل و رد امن Preview.
 - [x] فاز ۱۱۹: آماده‌سازی Release Candidate 2.2.0؛ همگام‌سازی README/Changelog/Release Manifest با Schema v17، حقوق سفارشی و Device Sync و افزودن رسانه‌های نهایی به README فارسی و انگلیسی.
-- [ ] فاز ۱۲۰: نهایی‌سازی Release 2.2.0 پس از Gate Candidate؛ ثبت SHA نهایی در Manifest، تغییر status به released و ساخت Tag `v2.2.0`.
+- [x] فاز ۱۲۰: نهایی‌سازی سورس Release 2.2.0 پس از Gate Candidate؛ ثبت شواهد Candidate `f659456`، تغییر status به `released` و حذف قرارداد self-referential `releaseCommit`. Tag `v2.2.0` پس از Gate نهایی باید روی Commit نهایی Release ساخته شود.

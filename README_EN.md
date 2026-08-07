@@ -297,9 +297,9 @@ Before opening a pull request, read [CONTRIBUTING.md](./CONTRIBUTING.md) and the
 
 ## Roadmap
 
-Version **2.2.0** is now prepared as a release candidate. See the [2.2.0 release notes](./docs/releases/RELEASE_NOTES_2.2.0_EN.md) and the Persian [release checklist](./RELEASE_CHECKLIST_FA.md) for the final evidence and manual verification steps.
+Version **2.2.0** is finalized in the release source. The verified candidate at commit prefix `f659456` passed all 423 tests, the production/offline PWA smoke, and the encrypted browser-pairing smoke. See the [2.2.0 release notes](./docs/releases/RELEASE_NOTES_2.2.0_EN.md) and the Persian [release checklist](./RELEASE_CHECKLIST_FA.md) for the final tag procedure.
 
-The final product screenshots and onboarding GIF are now embedded in both READMEs. Remaining follow-up work is tracked in [docs/roadmap/BACKLOG_FA.md](./docs/roadmap/BACKLOG_FA.md), including finalizing the release manifest and tagging v2.2.0 after the candidate gate is confirmed.
+The final product screenshots and onboarding GIF are embedded in both READMEs. After the Phase 120 final gate and release-source commit are complete, create the annotated `v2.2.0` tag on that exact commit. Remaining follow-up work is tracked in [docs/roadmap/BACKLOG_FA.md](./docs/roadmap/BACKLOG_FA.md).
 
 ## Support development
 

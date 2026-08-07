@@ -35,7 +35,7 @@ Saatyar remains local-first. Device transfer does not add a permanent backend or
 ## Data compatibility
 
 ```text
-Package candidate: 2.2.0
+Package release: 2.2.0
 Released baseline schema: v16
 Current schema: v17
 Migration: v16 → v17
@@ -44,21 +44,24 @@ Node.js: 22.x
 
 Older supported backups are migrated to v17. Backups created by a newer unsupported schema are still rejected by older clients.
 
-## Quality evidence before the release-candidate phase
+## Verified quality evidence
+
+The verified candidate at commit prefix `f659456` passed the complete gate:
 
 ```text
-417 tests passed
+423 tests passed
+TypeScript + ESLint passed
 Next.js production build passed
 Static export: 19/19 routes
 PWA offline reload smoke passed
 Encrypted WebRTC browser pairing smoke passed (4 chunks + ACK)
 ```
 
-The release-candidate preparation adds six release-contract tests, so the final candidate gate is expected to pass 423 tests.
+Phase 120 adds six final-release contract tests, so the final release-source gate is expected to pass 429 tests.
 
 ## Release status
 
-The v2.2.0 manifest is prepared with `release-candidate` status in Phase 119. After the final gate, manual release review, and final commit are confirmed, the manifest should be finalized as `released` and the tag should point at that exact commit:
+The v2.2.0 manifest is now `released` and preserves the verified candidate evidence. It intentionally does not embed the final commit SHA inside its own commit because that would create an unstable self-referential contract. The annotated `v2.2.0` Git tag is the source of truth for the final release commit and must be created on the final release-source commit after the Phase 120 gate is green:
 
 ```bash
 git tag -a v2.2.0 -m "Saatyar 2.2.0"

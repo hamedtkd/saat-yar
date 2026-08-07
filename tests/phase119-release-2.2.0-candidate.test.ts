@@ -20,16 +20,16 @@ const manifest = JSON.parse(read("docs/releases/2.2.0.json")) as {
   status: string;
   dataSchemaVersion: number;
   nodeEngine: string;
-  verifiedTestCount: number;
-  expectedCandidateTestCount: number;
+  verifiedCandidateCommitPrefix?: string;
+  verifiedCandidateTestCount?: number;
+  expectedFinalTestCount?: number;
   pairingCommand: string;
   pairingBrowserGate: string;
   releaseNotes: { fa: string; en: string };
-  releaseCommit: string | null;
   tag: string;
 };
 
-test("2.2.0 release candidate aligns package lockfile Node and schema v17", () => {
+test("2.2.0 candidate version and schema evidence remain valid after finalization", () => {
   assert.equal(packageJson.version, "2.2.0");
   assert.equal(packageLock.version, "2.2.0");
   assert.equal(packageLock.packages[""]?.version, "2.2.0");
@@ -37,14 +37,14 @@ test("2.2.0 release candidate aligns package lockfile Node and schema v17", () =
   assert.equal(manifest.nodeEngine, packageJson.engines.node);
   assert.equal(manifest.dataSchemaVersion, 17);
   assert.equal(APP_DATA_SCHEMA_VERSION, 17);
-  assert.equal(manifest.status, "release-candidate");
-  assert.equal(manifest.releaseCommit, null);
+  assert.ok(["release-candidate", "released"].includes(manifest.status));
   assert.equal(manifest.tag, "v2.2.0");
 });
 
-test("candidate documents the verified baseline and expected final test count", () => {
-  assert.equal(manifest.verifiedTestCount, 417);
-  assert.equal(manifest.expectedCandidateTestCount, 423);
+test("candidate gate evidence is preserved when the release is finalized", () => {
+  assert.equal(manifest.verifiedCandidateCommitPrefix, "f659456");
+  assert.equal(manifest.verifiedCandidateTestCount, 423);
+  assert.equal(manifest.expectedFinalTestCount, 429);
   assert.equal(manifest.pairingCommand, "npm run test:browser:pairing");
   assert.equal(manifest.pairingBrowserGate, "scripts/device-pairing-browser-smoke.mjs");
 });
@@ -74,7 +74,7 @@ test("both readmes embed the final screenshot and onboarding media paths", () =>
   }
 });
 
-test("2.2.0 preparation backlog is closed while final tag remains a separate phase", () => {
+test("2.2.0 preparation and final source phases are closed in the roadmap", () => {
   const backlog = read("docs/roadmap/BACKLOG_FA.md");
   const start = backlog.indexOf("## آمادگی انتشار ۲.۲.۰");
   const end = backlog.indexOf("## قابلیت‌های پس از Design Freeze", start);
@@ -82,10 +82,10 @@ test("2.2.0 preparation backlog is closed while final tag remains a separate pha
   const section = backlog.slice(start, end);
   assert.doesNotMatch(section, /- \[ \]/);
   assert.match(backlog, /- \[x\] فاز ۱۱۹:/);
-  assert.match(backlog, /- \[ \] فاز ۱۲۰:/);
+  assert.match(backlog, /- \[x\] فاز ۱۲۰:/);
 });
 
-test("active 2.2.0 release audit passes and phase 119 is wired into npm test", () => {
+test("active 2.2.0 release audit passes and phase 119 stays in npm test", () => {
   assert.deepEqual(collectReleaseAuditFailures(), []);
   assert.match(packageJson.scripts.test, /tests\/phase119-release-2\.2\.0-candidate\.test\.ts/);
 });

@@ -17,11 +17,11 @@
 - [Windows and npm troubleshooting — English](./TROUBLESHOOTING_EN.md)
 - [سازگاری مرورگر / Browser compatibility](./BROWSER_COMPATIBILITY.md)
 
-## انتشار ۲.۱.۰
+## انتشار ۲.۲.۰
 
 - [یادداشت انتشار ۲.۲.۰ فارسی](./releases/RELEASE_NOTES_2.2.0_FA.md)
 - [Saatyar 2.2.0 release notes](./releases/RELEASE_NOTES_2.2.0_EN.md)
-- [Release candidate manifest 2.2.0](./releases/2.2.0.json)
+- [Release manifest 2.2.0](./releases/2.2.0.json)
 - [یادداشت انتشار تاریخی ۲.۱.۰](./releases/RELEASE_NOTES_2.1.0_FA.md)
 - [Historical release manifest 2.1.0](./releases/2.1.0.json)
 - [چک‌لیست انتشار](../RELEASE_CHECKLIST_FA.md)
@@ -53,3 +53,5 @@
 - [یادداشت فاز ۱۱۵: QR محلی Pairing](phases/PHASE_115_NOTES_FA.md)
 
 - [یادداشت فاز ۱۱۶: End-to-End انتقال دستگاه و PWA fallback](phases/PHASE_116_NOTES_FA.md)
+
+- [یادداشت فاز ۱۲۰: نهایی‌سازی Release 2.2.0](./phases/PHASE_120_NOTES_FA.md)

@@ -3,11 +3,9 @@
   "package": "saatyar-worklog",
   "version": "2.2.0",
   "releaseDate": "2026-08-07",
-  "status": "release-candidate",
+  "status": "released",
   "dataSchemaVersion": 17,
   "nodeEngine": "22.x",
-  "verifiedTestCount": 417,
-  "expectedCandidateTestCount": 423,
   "qualityCommand": "npm run check:release",
   "browserGate": "scripts/production-browser-smoke.mjs",
   "pairingBrowserGate": "scripts/device-pairing-browser-smoke.mjs",
@@ -17,6 +15,13 @@
     "fa": "docs/releases/RELEASE_NOTES_2.2.0_FA.md",
     "en": "docs/releases/RELEASE_NOTES_2.2.0_EN.md"
   },
-  "releaseCommit": null,
-  "tag": "v2.2.0"
+  "tag": "v2.2.0",
+  "verifiedCandidateCommitPrefix": "f659456",
+  "verifiedCandidateTestCount": 423,
+  "expectedFinalTestCount": 429,
+  "releaseEvidence": {
+    "productionBrowserSmoke": "passed",
+    "pairingBrowserSmoke": "passed",
+    "pairingEncryptedChunks": 4
+  }
 }
