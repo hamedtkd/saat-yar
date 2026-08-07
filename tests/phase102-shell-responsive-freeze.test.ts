@@ -29,7 +29,7 @@ test("header keeps route context, profile identity and theme-aware workspace con
   assert.match(header, /<ProfileMenu/);
   assert.match(profile, /پروفایل محلی/);
   assert.match(actions, /<WorkspaceSwitcher/);
-  assert.match(switcher, /max-\[520px\]:min-w-\[76px\]/);
+  assert.match(switcher, /max-\[520px\]:min-w-\[108px\]/);
 });
 
 test("mobile navigation chooses stable primary destinations per work mode", async () => {

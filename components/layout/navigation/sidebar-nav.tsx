@@ -17,7 +17,13 @@ export function SidebarNav({ mode, currentPath, name }: Props) {
   return (
     <aside className="fixed inset-y-2 right-2 z-40 hidden w-[var(--shell-sidebar-width)] flex-col overflow-hidden rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[linear-gradient(180deg,var(--surface-1),var(--surface-raised))] p-3 shadow-[0_10px_32px_rgba(0,0,0,.055)] xl:flex dark:shadow-[0_14px_38px_rgba(0,0,0,.24)]">
       <div className="border-b border-[var(--dashboard-border)] px-2 pb-4 pt-2">
-        <Brand subtitle={name ? `فضای شخصی ${name}` : "حساب کار، بدون حساب‌وکتاب"} />
+        <GuardedLink
+          href="/today"
+          aria-label="رفتن به صفحه امروز"
+          className="inline-flex rounded-[14px] outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]"
+        >
+          <Brand subtitle={name ? `فضای شخصی ${name}` : "حساب کار، بدون حساب‌وکتاب"} />
+        </GuardedLink>
       </div>
 
       <p className="mb-2 mt-4 px-3 text-[9px] font-black tracking-[.08em] text-[var(--text-muted)]">منوی اصلی</p>
