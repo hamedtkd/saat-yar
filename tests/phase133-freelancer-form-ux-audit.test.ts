@@ -65,6 +65,6 @@ test("phase 133 is documented, wired into quality, and does not invent redundant
   const notes = read("docs/phases/PHASE_133_NOTES_FA.md");
   assert.match(pkg, /phase133-freelancer-form-ux-audit\.test\.ts/);
   assert.match(roadmap, /\[x\] فاز ۱۳۳:/);
-  assert.match(notes, /Expense.*ProjectDetail/s);
+  assert.match(notes, /Expense[\s\S]*ProjectDetail/);
   assert.match(notes, /AppData Schema: v17/);
 });

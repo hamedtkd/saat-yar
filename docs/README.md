@@ -71,3 +71,5 @@
 
 - [فاز ۱۳۲: Audit کنترل‌های Native و ورودی عددی فارسی](./phases/PHASE_132_NOTES_FA.md)
 - [یادداشت فاز ۱۳۳](./phases/PHASE_133_NOTES_FA.md)
+
+- [فاز ۱۳۴: Browser UX Smoke مسیر فریلنسر](./phases/PHASE_134_NOTES_FA.md)
