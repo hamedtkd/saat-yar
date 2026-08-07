@@ -16,7 +16,7 @@ test("historical record drafts register with the global unsaved navigation regis
 test("date changes pass through the global unsaved navigation guard", async () => {
   const source = await read("components/pages/today/today-page.tsx");
   assert.match(source, /useUnsavedNavigation/);
-  assert.match(source, /onChange=\{\(date\) => requestNavigation\(\(\) => props\.setSelectedDate\(date\)\)\}/);
+  assert.match(source, /onDateChange=\{\(date\) => requestNavigation\(\(\) => props\.setSelectedDate\(date\)\)\}/);
 });
 
 test("unsaved dialog wording covers section and date navigation", async () => {

@@ -23,6 +23,7 @@ import { DeviceTransferCard } from "./device-transfer-card";
 import type { MultiTabSyncStatus } from "@/lib/multi-tab-sync-status";
 import { RecordRecycleBinCard } from "./record-recycle-bin-card";
 import { SettingsSection } from "./settings-section";
+import { SettingsSearch } from "./settings-search";
 
 export function SettingsPage({ data, setData, storage, exportBackup, previewImport, importPreview, applyImport, requestPersistence, requestNotificationPermission, setToast, financialsHidden, saveState, lastSavedAt, saveError, recoverySnapshot, retrySave, createRecovery, restoreRecovery, clearRecovery, multiTabSyncStatus, clearMultiTabSyncHistory }: {
   data: AppData;
@@ -49,6 +50,7 @@ export function SettingsPage({ data, setData, storage, exportBackup, previewImpo
 }) {
   return <>
     <PageHeading autosave={false} title="تنظیمات و داده‌ها" description="ظاهر، برنامه کاری، رفتار ذخیره و داده‌های محلی ساعت‌یار را از یک مرکز منظم مدیریت کن." />
+    <SettingsSearch />
     <section className={cn("grid grid-cols-[250px_minmax(0,1fr)] gap-5 max-[900px]:grid-cols-1") }>
       <SettingsNav />
       <div className="grid min-w-0 gap-5">

@@ -9,12 +9,12 @@ export function SettingsSection({ icon, eyebrow, title, description, children }:
   children: ReactNode;
 }) {
   return (
-    <section>
-      <div className="dashboard-card rounded-[var(--card-radius)] border border-[var(--dashboard-border)] p-3 shadow-[0_5px_16px_rgba(0,0,0,.025)] sm:p-4">
+    <section className="rounded-[var(--card-radius)] bg-[var(--surface-2)] p-2.5 sm:p-3">
+      <div className="px-1 pb-1 sm:px-2">
         <SectionHeading icon={icon} eyebrow={eyebrow} title={title} description={description} />
-        <div className="grid grid-cols-2 items-start gap-3.5 max-[720px]:grid-cols-1 [&>section]:min-w-0 [&>section]:shadow-none">
-          {children}
-        </div>
+      </div>
+      <div className="grid grid-cols-2 items-start gap-3.5 max-[720px]:grid-cols-1 [&>section]:min-w-0 [&>section]:shadow-none">
+        {children}
       </div>
     </section>
   );

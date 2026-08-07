@@ -69,7 +69,7 @@ export function PayrollSettingsCard({ data, setData, setToast, financialsHidden 
   };
 
   return (
-    <section className="col-span-full overflow-hidden dashboard-card rounded-[var(--card-radius)] border border-[var(--dashboard-border)] shadow-[0_5px_16px_rgba(0,0,0,.03)]">
+    <section id="settings-payroll-components" className="col-span-full scroll-mt-24 overflow-hidden dashboard-card rounded-[var(--card-radius)] border border-[var(--dashboard-border)] shadow-[0_5px_16px_rgba(0,0,0,.03)]">
       <div className="border-b border-[var(--border)] p-5">
         <PanelHead icon={<ReceiptText />} title="مزایا و کسورات حقوق">
           <EditableCardActions

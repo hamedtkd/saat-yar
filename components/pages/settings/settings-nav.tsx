@@ -1,15 +1,15 @@
 "use client";
 
-import { CalendarDays, Database, Info, UserRound } from "lucide-react";
+import { CalendarDays, Database, ShieldCheck, UserRound } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/cn";
 import { useUnsavedNavigation } from "@/components/layout/navigation/unsaved-navigation-provider";
 
 const items = [
+  { id: "settings-general", label: "عمومی و ظاهر", icon: UserRound },
   { id: "settings-data", label: "داده و پشتیبان", icon: Database },
-  { id: "settings-general", label: "عمومی", icon: UserRound },
-  { id: "settings-work", label: "برنامه کاری", icon: CalendarDays },
-  { id: "settings-about", label: "درباره برنامه", icon: Info },
+  { id: "settings-work", label: "برنامه کاری و حقوق", icon: CalendarDays },
+  { id: "settings-about", label: "ایمنی", icon: ShieldCheck },
 ] as const;
 
 type SettingsSectionId = (typeof items)[number]["id"];
@@ -18,10 +18,35 @@ function isSettingsSectionId(value: string): value is SettingsSectionId {
   return items.some((item) => item.id === value);
 }
 
+
+const anchorParents: Record<string, SettingsSectionId> = {
+  "settings-profile": "settings-general",
+  "settings-appearance": "settings-general",
+  "settings-behavior": "settings-general",
+  "settings-health": "settings-data",
+  "settings-recycle": "settings-data",
+  "settings-storage": "settings-data",
+  "settings-recovery": "settings-data",
+  "settings-backup": "settings-data",
+  "settings-restore": "settings-data",
+  "settings-device-transfer": "settings-data",
+  "settings-work-schedule": "settings-work",
+  "settings-holidays": "settings-work",
+  "settings-payroll": "settings-work",
+  "settings-payroll-components": "settings-work",
+  "settings-notifications": "settings-work",
+  "settings-danger": "settings-about",
+};
+
+function resolveSettingsSection(value: string): SettingsSectionId | null {
+  if (isSettingsSectionId(value)) return value;
+  return anchorParents[value] ?? null;
+}
+
 function getInitialSection(): SettingsSectionId {
   if (typeof window === "undefined") return items[0].id;
   const hash = window.location.hash.slice(1);
-  return isSettingsSectionId(hash) ? hash : items[0].id;
+  return resolveSettingsSection(hash) ?? items[0].id;
 }
 
 export function SettingsNav() {
@@ -29,12 +54,21 @@ export function SettingsNav() {
   const { requestNavigation } = useUnsavedNavigation();
 
   useEffect(() => {
-    const hash = window.location.hash.slice(1);
-    if (!isSettingsSectionId(hash)) return;
+    const syncFromHash = () => {
+      const hash = window.location.hash.slice(1);
+      const section = resolveSettingsSection(hash);
+      if (!section) return;
+      setActive(section);
+    };
     const frame = requestAnimationFrame(() => {
-      document.getElementById(hash)?.scrollIntoView({ block: "start" });
+      const hash = window.location.hash.slice(1);
+      if (resolveSettingsSection(hash)) document.getElementById(hash)?.scrollIntoView({ block: "start" });
     });
-    return () => cancelAnimationFrame(frame);
+    window.addEventListener("hashchange", syncFromHash);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("hashchange", syncFromHash);
+    };
   }, []);
 
   const navigateTo = (id: SettingsSectionId) => {

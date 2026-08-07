@@ -1,6 +1,6 @@
 "use client";
 
-import { UserRound } from "lucide-react";
+import { ShieldCheck, UserRound } from "lucide-react";
 import { PanelHead } from "@/components/common/panel-head";
 import { Input } from "@/components/ui/input";
 import { EditableCardActions } from "./editing/editable-card-actions";
@@ -33,10 +33,12 @@ export function ProfileSettingsCard({
   });
 
   const name = profile.draft.name;
-  const valid = name.trim().length > 0 && name.trim().length <= MAX_NAME_LENGTH;
+  const normalizedName = name.trim();
+  const valid = normalizedName.length > 0 && normalizedName.length <= MAX_NAME_LENGTH;
+  const displayName = normalizedName || "کاربر ساعت‌یار";
 
   return (
-    <section className="col-span-full dashboard-card rounded-[var(--card-radius)] border border-[var(--dashboard-border)] p-5">
+    <section id="settings-profile" className="col-span-full scroll-mt-24 dashboard-card rounded-[var(--card-radius)] border border-[var(--dashboard-border)] p-5">
       <PanelHead icon={<UserRound />} title="پروفایل و نام نمایشی">
         <EditableCardActions
           editing={profile.manualEditing}
@@ -48,24 +50,40 @@ export function ProfileSettingsCard({
         />
       </PanelHead>
 
-      <div className="grid gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-4 sm:grid-cols-[minmax(0,1fr)_220px] sm:items-end">
-        <label className="grid min-w-0 gap-2 text-xs font-semibold text-[var(--text-muted)]">
-          نامی که در ساعت‌یار نمایش داده می‌شود
-          <Input
-            value={name}
-            disabled={!profile.editing}
-            maxLength={MAX_NAME_LENGTH}
-            placeholder="مثلاً حامد"
-            autoComplete="name"
-            aria-invalid={profile.editing && !valid}
-            onChange={(event) => profile.update({ name: event.target.value })}
-          />
-        </label>
-        <div className="grid gap-1 rounded-lg border border-[var(--border)] bg-[var(--surface-1)] px-3 py-2.5 text-xs">
-          <span className="text-[var(--text-muted)]">نمونه خوشامدگویی</span>
-          <strong className="truncate text-[var(--text)]">
-            {name.trim() ? `صبح بخیر، ${name.trim()}` : "صبح بخیر"}
-          </strong>
+      <div className="grid gap-4 md:grid-cols-[240px_minmax(0,1fr)] md:items-stretch">
+        <div className="flex flex-col justify-between gap-4 rounded-[16px] bg-[var(--surface-2)] p-4">
+          <div className="flex items-center gap-3">
+            <span className="grid size-12 shrink-0 place-items-center rounded-[15px] bg-[var(--accent-soft)] text-lg font-black text-[var(--accent-strong)]">
+              {displayName.slice(0, 1)}
+            </span>
+            <div className="min-w-0">
+              <strong className="block truncate text-sm text-[var(--text)]">{displayName}</strong>
+              <span className="text-[10px] font-semibold text-[var(--text-muted)]">پروفایل محلی</span>
+            </div>
+          </div>
+          <div className="flex items-start gap-2 text-[9px] leading-5 text-[var(--text-muted)]">
+            <ShieldCheck aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-[var(--success)]" />
+            نام و تنظیمات این پروفایل روی همین دستگاه نگه‌داری می‌شوند.
+          </div>
+        </div>
+
+        <div className="grid content-center gap-3 rounded-[16px] bg-[var(--surface-2)] p-4">
+          <label className="grid min-w-0 gap-2 text-xs font-semibold text-[var(--text-muted)]">
+            نامی که در ساعت‌یار نمایش داده می‌شود
+            <Input
+              value={name}
+              disabled={!profile.editing}
+              maxLength={MAX_NAME_LENGTH}
+              placeholder="مثلاً حامد"
+              autoComplete="name"
+              aria-invalid={profile.editing && !valid}
+              onChange={(event) => profile.update({ name: event.target.value })}
+            />
+          </label>
+          <div className="flex flex-wrap items-center justify-between gap-2 text-[10px]">
+            <span className="text-[var(--text-muted)]">نمونه خوشامدگویی</span>
+            <strong className="text-[var(--text)]">{normalizedName ? `صبح بخیر، ${normalizedName}` : "صبح بخیر"}</strong>
+          </div>
         </div>
       </div>
 

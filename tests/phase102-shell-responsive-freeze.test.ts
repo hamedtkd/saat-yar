@@ -19,13 +19,15 @@ test("shell uses one responsive desktop offset contract", async () => {
 });
 
 test("header keeps route context, profile identity and theme-aware workspace controls", async () => {
-  const [header, actions, switcher] = await Promise.all([
+  const [header, actions, switcher, profile] = await Promise.all([
     read("components/layout/app-header.tsx"),
     read("components/layout/app-header/header-actions.tsx"),
     read("components/layout/app-header/workspace-switcher.tsx"),
+    read("components/layout/app-header/profile-menu.tsx"),
   ]);
   assert.match(header, /getRouteNavItem/);
-  assert.match(header, /حساب شخصی/);
+  assert.match(header, /<ProfileMenu/);
+  assert.match(profile, /پروفایل محلی/);
   assert.match(actions, /<WorkspaceSwitcher/);
   assert.match(switcher, /max-\[520px\]:min-w-\[76px\]/);
 });

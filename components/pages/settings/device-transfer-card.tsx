@@ -49,7 +49,7 @@ export function DeviceTransferCard({ data, setData, setToast }: {
   }, [pairing, setToast]);
 
   return (
-    <section className="dashboard-card rounded-[var(--card-radius)] border border-[var(--dashboard-border)] p-5 shadow-[0_5px_16px_rgba(0,0,0,.03)]">
+    <section id="settings-device-transfer" className="scroll-mt-24 dashboard-card rounded-[var(--card-radius)] border border-[var(--dashboard-border)] p-5 shadow-[0_5px_16px_rgba(0,0,0,.03)]">
       <PanelHead icon={<ArrowRightLeft />} title="انتقال بین موبایل و لپ‌تاپ" />
       <p className="mb-3 text-[11px] leading-7 text-[var(--text-muted)]">بدون حساب کاربری و دیتابیس مرکزی، دو دستگاه را مستقیم WebRTC وصل کن و AppData رمزنگاری‌شده را انتقال بده.</p>
       <div className="mb-4 flex items-center justify-between gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2" data-device-transfer-session-status>

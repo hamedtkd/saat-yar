@@ -27,9 +27,16 @@ export function usePersistedAppData() {
   const [saveError, setSaveError] = useState("");
   const [recoverySnapshot, setRecoverySnapshot] = useState<RecoverySnapshot | null>(null);
   const latestDataRef = useRef(data);
+  const saveIndicatorTimerRef = useRef<number | null>(null);
   useEffect(() => {
     latestDataRef.current = data;
   }, [data]);
+  useEffect(() => {
+    const timerRef = saveIndicatorTimerRef;
+    return () => {
+      if (timerRef.current !== null) window.clearTimeout(timerRef.current);
+    };
+  }, []);
   const {
     externalSyncPending, multiTabSyncStatus, publishSaved, consumeSkipNextPersist,
     reloadExternalData, dismissExternalSync, clearMultiTabSyncHistory,
@@ -70,6 +77,10 @@ export function usePersistedAppData() {
   }, [storage]);
 
   const persistData = useCallback(async (value: AppData) => {
+    if (saveIndicatorTimerRef.current !== null) {
+      window.clearTimeout(saveIndicatorTimerRef.current);
+      saveIndicatorTimerRef.current = null;
+    }
     setSaveState("saving");
     setSaveError("");
     const recovery = storage.saveRecovery(value, "autosave");
@@ -80,6 +91,10 @@ export function usePersistedAppData() {
       setLastSavedAt(savedAt.toISOString());
       publishSaved(savedAt);
       setSaveState("saved");
+      saveIndicatorTimerRef.current = window.setTimeout(() => {
+        setSaveState("idle");
+        saveIndicatorTimerRef.current = null;
+      }, 2600);
       setStorageInfo(await storage.estimate());
       return true;
     } catch {

@@ -1,15 +1,13 @@
 "use client";
 
 import { AlertTriangle } from "lucide-react";
-import { PageHeading } from "@/components/common/page-heading";
-import { JalaliDatePicker } from "@/components/pickers";
 import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { jalali } from "@/lib/format";
 import { getHolidayInfo } from "@/lib/holidays";
-import { buildGreeting } from "@/lib/greeting";
 import { ManualEntryForm } from "./manual-entry-form";
 import { TodayMetrics } from "./today-metrics";
+import { TodayHero } from "./today-hero";
 import { TodaySmartSummary } from "./today-smart-summary";
 import { TodayTimeline } from "./today-timeline";
 import { TodayAttendanceLog } from "./today-attendance-log";
@@ -50,28 +48,11 @@ export function TodayPage(props: TodayPageProps) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      <PageHeading
-        variant="dashboard"
-        title={`${buildGreeting(props.data.settings.name)}؛ امروز روی چه چیزی کار می‌کنی؟`}
-        description={jalali(props.selectedDate, {
-          weekday: "long",
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        })}
-      >
-        <div>
-          <JalaliDatePicker
-            value={props.selectedDate}
-            onChange={(date) => requestNavigation(() => props.setSelectedDate(date))}
-            recordedDates={Object.keys(props.data.records)}
-            mode={props.data.settings.mode}
-            includeOfficialHolidays={props.data.settings.autoOfficialHolidays}
-            includeWeeklyHoliday={props.data.settings.autoWeeklyHoliday}
-            holidayOverrides={props.data.holidayOverrides}
-          />
-        </div>
-      </PageHeading>
+      <TodayHero
+        data={props.data}
+        selectedDate={props.selectedDate}
+        onDateChange={(date) => requestNavigation(() => props.setSelectedDate(date))}
+      />
       {holiday.isHoliday && (
         <div className="mb-5 flex items-center justify-between gap-3 rounded-[var(--card-radius)] border border-red-500/20 bg-red-500/10 px-4 py-3 text-red-500">
           <div className="grid gap-0.5">

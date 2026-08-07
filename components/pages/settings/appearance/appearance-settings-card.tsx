@@ -95,8 +95,9 @@ export function AppearanceSettingsCard({ data, setData, setToast }: Props) {
 
   return (
     <SurfaceCard
+      id="settings-appearance"
       as="section"
-      className="col-span-full grid gap-5 p-5 md:grid-cols-[minmax(0,1fr)_320px] md:p-6"
+      className="col-span-full scroll-mt-24 grid gap-5 p-5 md:grid-cols-[minmax(0,1fr)_320px] md:p-6"
     >
       <div className="grid gap-5">
         <header className="flex flex-wrap items-start justify-between gap-3">

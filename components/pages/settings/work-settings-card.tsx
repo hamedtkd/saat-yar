@@ -26,7 +26,7 @@ export function WorkSettingsCard({ data, setData, setToast }: {
   const setSetting = <K extends keyof WorkSettingsDraft>(key: K, next: WorkSettingsDraft[K]) => editor.update((previous) => ({ ...previous, [key]: next }));
 
   return (
-    <section className="col-span-full scroll-mt-24 overflow-hidden dashboard-card rounded-[var(--card-radius)] border border-[var(--dashboard-border)] shadow-[0_5px_16px_rgba(0,0,0,.03)] max-[620px]:col-auto">
+    <section id="settings-work-schedule" className="col-span-full scroll-mt-24 overflow-hidden dashboard-card rounded-[var(--card-radius)] border border-[var(--dashboard-border)] shadow-[0_5px_16px_rgba(0,0,0,.03)] max-[620px]:col-auto">
       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-[var(--border)] p-5">
         <div className="grid gap-2"><PanelHead icon={<Settings />} title="تنظیمات کاری" /><p className="text-[10px] leading-5 text-[var(--text-muted)]">برنامه، نوع استفاده و تعطیلات کاری را ویرایش کن؛ محاسبه حقوق در کارت مستقل پایین تنظیم می‌شود.</p></div>
         <EditableCardActions editing={editor.manualEditing} dirty={editor.dirty} autoSave={data.settings.autoSaveSettings} onEdit={editor.beginEdit} onSave={() => { editor.save(); setToast("تنظیمات کاری ذخیره شد"); }} onCancel={editor.cancel} />
