@@ -1,4 +1,4 @@
-import { MoreVertical, Search, Users } from "lucide-react";
+import { MoreVertical, Plus, Search, Users } from "lucide-react";
 import { EmptyState } from "@/components/common/empty-state";
 import { PrivateMoney } from "@/components/common/private-money";
 import { StatusBadge } from "@/components/common/status-badge";
@@ -9,10 +9,11 @@ import { duration, entryMinutes, fa, jalali, localDateKey } from "@/lib/format";
 import type { AppData, ProjectDraft } from "@/lib/types";
 import { QuickProjectDialog } from "../projects/quick-project-dialog";
 
-export function ClientsTable({ data, setData, createProject, financialsHidden }: {
+export function ClientsTable({ data, setData, createProject, onCreate, financialsHidden }: {
   data: AppData;
   setData: React.Dispatch<React.SetStateAction<AppData>>;
   createProject: (draft: ProjectDraft) => string | undefined;
+  onCreate: () => void;
   financialsHidden: boolean;
 }) {
   return (
@@ -25,7 +26,7 @@ export function ClientsTable({ data, setData, createProject, financialsHidden }:
         const minutes = entries.reduce((sum, entry) => sum + entryMinutes(entry), 0);
         const income = entries.reduce((sum, entry) => sum + (entry.billable ? entryMinutes(entry) / 60 * entry.effectiveRate : 0), 0);
         return <tr key={client.id}><td><div className="flex items-center gap-3"><span className="grid size-10 place-items-center rounded-full text-base font-black text-[var(--accent-foreground)]" style={{ background: client.color }}>{client.name.slice(0, 1)}</span><div><strong className="block text-[var(--text)]">{client.name}</strong><small className="text-[var(--text-muted)]">{client.note || "بدون توضیح"}</small></div></div></td><td>{fa.format(projects.length)}<small className="block text-[var(--text-muted)]">پروژه</small></td><td>{duration(minutes)}<small className="block text-[var(--text-muted)]">ساعت</small></td><td><PrivateMoney value={income} hidden={financialsHidden} /><small className="block text-[var(--text-muted)]">تومان</small></td><td>{entries[0] ? jalali(localDateKey(new Date(entries[0].startedAt))) : "—"}</td><td><StatusBadge success={!client.archived}>{client.archived ? "غیرفعال" : "فعال"}</StatusBadge></td><td><div className="flex items-center gap-1">{!client.archived && <QuickProjectDialog client={client} onCreate={createProject} />}<Button variant="ghost" size="icon" title={client.archived ? "فعال کردن مشتری" : "بایگانی مشتری"} onClick={() => setData((previous) => ({ ...previous, clients: previous.clients.map((item) => item.id === client.id ? { ...item, archived: !item.archived } : item) }))}><MoreVertical /></Button></div></td></tr>;
-      })}{data.clients.length === 0 && <tr><td colSpan={7}><EmptyState icon={<Users />} title="هنوز مشتری‌ای ثبت نشده" description="با دکمه «مشتری جدید» شروع کن؛ بعد پروژه را همان‌جا به او وصل کن." /></td></tr>}</TableBody>
+      })}{data.clients.length === 0 && <tr><td colSpan={7}><EmptyState icon={<Users />} title="هنوز مشتری‌ای ثبت نشده" description="اولین مشتری را بساز؛ بعد پروژه را بدون ترک همان جریان به او وصل کن."><Button onClick={onCreate}><Plus /> مشتری جدید</Button></EmptyState></td></tr>}</TableBody>
     </TableShell>
   );
 }

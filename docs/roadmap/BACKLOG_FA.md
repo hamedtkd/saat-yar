@@ -219,4 +219,5 @@
 - [x] فاز ۱۳۰: افزایش خوانایی Toastهای سراسری با سطح opaque و Toneهای معنایی، و حذف `input[type=date]` خام از فرم‌های مالی با جایگزینی کامل تقویم جلالی/فارسی مشترک.
 - [x] فاز ۱۳۱: تعمیم ساخت وابسته به Invoice → Client/Project و Timer/Manual Time → Client/Project با Empty State و انتخاب خودکار؛ Expense داخل ProjectDetail از قبل Project-contextual است و selector تکراری به آن اضافه نمی‌شود.
 - [x] فاز ۱۳۲: Audit کنترل‌های native باقی‌مانده مرورگر؛ حذف Number spinnerهای مرورگر با ورودی عددی فارسی/کیبوردی، پنهان‌سازی trigger خام Color/File پشت کنترل‌های Design System و تثبیت Audit برای date/time/range/selectهای خام.
-- [ ] فاز ۱۳۳: Audit فرم‌های مالی/فریلنسر از نظر empty state، validation feedback و keyboard flow؛ سپس تعمیم Quick Create فقط به رابطه‌هایی که هنوز اصطکاک واقعی دارند.
+- [x] فاز ۱۳۳: Audit فرم‌های مالی/فریلنسر؛ Validation درون‌فرمی، submit کیبوردی، Empty Stateهای دارای CTA و حذف alert مرورگر از ثبت زمان دستی؛ بدون افزودن relation تکراری به Expense پروژه.
+- [ ] فاز ۱۳۴: Browser UX smoke برای مسیرهای واقعی فریلنسر؛ ساخت Client → Project → Time Entry → Expense → Invoice فقط با کیبورد/دیالوگ و بررسی Focus/Validation در viewport موبایل.

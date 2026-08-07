@@ -18,7 +18,7 @@ export function ProjectDetail(props: ProjectDetailProps) {
     <ProjectSummary project={props.project} summary={view.summary} financialsHidden={props.financialsHidden} />
     <ExpensesPanel expenses={view.expenses} showForm={view.showExpenseForm} setShowForm={view.setShowExpenseForm} draft={view.expenseDraft} setDraft={view.setExpenseDraft} onSave={view.addExpense} onRemove={view.removeExpense} financialsHidden={props.financialsHidden} />
     <section className="grid grid-cols-[minmax(0,1fr)_250px] gap-[14px] max-[900px]:grid-cols-1">
-      <TimeEntriesPanel entries={view.entries} now={view.now} />
+      <TimeEntriesPanel entries={view.entries} now={view.now} onStart={() => props.onToggleTimer(props.project.id)} />
       <ProjectInfo project={props.project} financialsHidden={props.financialsHidden} />
     </section>
   </>;

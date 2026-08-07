@@ -46,7 +46,7 @@ export function ClientsPage({ data, setData, showForm, setShowForm, draft, setDr
       <section>
         <SectionHeading icon={<Users />} eyebrow="مدیریت ارتباط" title="فهرست و مشتری‌های برتر" description="وضعیت هر مشتری را مرور کن و سریع به پروژه‌های مرتبط برس." />
         <div className="grid grid-cols-[minmax(0,1fr)_365px] gap-[14px] max-[1180px]:grid-cols-[minmax(0,1fr)_280px] max-[900px]:grid-cols-1">
-          <ClientsTable data={data} setData={setData} createProject={createProject} financialsHidden={financialsHidden} />
+          <ClientsTable data={data} setData={setData} createProject={createProject} onCreate={() => setShowForm(true)} financialsHidden={financialsHidden} />
           <TopClients data={data} setTab={setTab} />
         </div>
       </section>

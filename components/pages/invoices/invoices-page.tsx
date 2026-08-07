@@ -36,7 +36,7 @@ export function InvoicesPage({ data, setData, financialsHidden, createClient, cr
         />
       )}
       <SectionHeading icon={<ReceiptText />} eyebrow="صورتحساب‌ها" title="فهرست فاکتورها" description="وضعیت پرداخت، سررسید و مبلغ فاکتورها را یک‌جا مرور کن." />
-      <InvoicesTable invoices={invoices.invoices} clients={data.clients} financialsHidden={financialsHidden} onStatusChange={invoices.updateStatus} onRemove={invoices.removeInvoice} />
+      <InvoicesTable invoices={invoices.invoices} clients={data.clients} financialsHidden={financialsHidden} onStatusChange={invoices.updateStatus} onRemove={invoices.removeInvoice} onCreate={() => invoices.setShowForm(true)} />
     </>
   );
 }
