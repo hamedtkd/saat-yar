@@ -10,6 +10,7 @@ import type { AppData } from "@/lib/types";
 import { DevicePairingQrDisplay } from "./device-pairing-qr-display";
 import { DevicePairingQrScanner } from "./device-pairing-qr-scanner";
 import { DeviceTransferPreviewPanel } from "./device-transfer-preview";
+import { DeviceTransferHistory } from "./device-transfer-history";
 
 async function copyText(value: string) {
   await navigator.clipboard.writeText(value);
@@ -23,6 +24,17 @@ export function DeviceTransferCard({ data, setData, setToast }: {
   const pairing = useDeviceTransferPairing({ data, setData, setToast });
   const [scannerOpen, setScannerOpen] = React.useState(false);
   const connected = pairing.state === "connected" || pairing.state === "received";
+  const sessionLabel = pairing.state === "preparing"
+    ? "در حال آماده‌سازی اتصال"
+    : pairing.state === "waiting"
+      ? "منتظر دستگاه مقابل"
+      : pairing.state === "received"
+        ? "داده دریافت شد؛ منتظر تأیید ادغام"
+        : pairing.state === "connected"
+          ? "اتصال مستقیم برقرار است"
+          : pairing.state === "error"
+            ? "اتصال نیاز به بررسی دارد"
+            : "آماده Pairing";
 
   const shareLocalLink = async () => {
     if (!pairing.pairingLink) return;
@@ -45,7 +57,11 @@ export function DeviceTransferCard({ data, setData, setToast }: {
   return (
     <section className="dashboard-card rounded-[var(--card-radius)] border border-[var(--dashboard-border)] p-5 shadow-[0_5px_16px_rgba(0,0,0,.03)]">
       <PanelHead icon={<ArrowRightLeft />} title="انتقال بین موبایل و لپ‌تاپ" />
-      <p className="mb-4 text-[11px] leading-7 text-[var(--text-muted)]">بدون حساب کاربری و دیتابیس مرکزی، دو دستگاه را مستقیم WebRTC وصل کن و AppData رمزنگاری‌شده را انتقال بده.</p>
+      <p className="mb-3 text-[11px] leading-7 text-[var(--text-muted)]">بدون حساب کاربری و دیتابیس مرکزی، دو دستگاه را مستقیم WebRTC وصل کن و AppData رمزنگاری‌شده را انتقال بده.</p>
+      <div className="mb-4 flex items-center justify-between gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2" data-device-transfer-session-status>
+        <span className="text-[10px] font-bold">وضعیت نشست</span>
+        <span className="text-[10px] text-[var(--accent-strong)]">{sessionLabel}</span>
+      </div>
 
       {pairing.role === "idle" && (
         <div className="grid grid-cols-2 gap-3 max-[620px]:grid-cols-1">
@@ -98,6 +114,7 @@ export function DeviceTransferCard({ data, setData, setToast }: {
       )}
 
       {pairing.preview && pairing.incoming && <DeviceTransferPreviewPanel preview={pairing.preview} sourceName={pairing.incoming.source.deviceName} onApply={pairing.applyIncoming} />}
+      <DeviceTransferHistory entries={pairing.history} onClear={pairing.clearHistory} />
       {pairing.error && <p role="alert" className="mt-3 rounded-xl border border-[var(--danger)] bg-[var(--danger-soft)] p-3 text-[10px] font-semibold text-[var(--danger)]">{pairing.error}</p>}
       {pairing.role !== "idle" && <Button variant="ghost" size="sm" className="mt-3 w-full" onClick={pairing.reset}><RefreshCcw /> پایان نشست و شروع دوباره</Button>}
       <p className="mt-3 text-[9px] leading-6 text-[var(--text-muted)]">برای اتصال بدون سرور Signaling، هر دو دستگاه بهتر است روی یک Wi-Fi باشند. اگر اسکن دوربین در مرورگر موجود نبود، Copy/Paste کد همچنان قابل استفاده است.</p>

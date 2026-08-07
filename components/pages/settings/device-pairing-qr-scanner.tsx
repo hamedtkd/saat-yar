@@ -33,6 +33,7 @@ export function DevicePairingQrScanner({ onCode, onClose }: {
   React.useEffect(() => {
     let active = true;
     let stream: MediaStream | null = null;
+    let videoElement: HTMLVideoElement | null = null;
     let timer = 0;
 
     async function start() {
@@ -48,7 +49,8 @@ export function DevicePairingQrScanner({ onCode, onClose }: {
       }
       try {
         stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" } }, audio: false });
-        const video = videoRef.current;
+        videoElement = videoRef.current;
+        const video = videoElement;
         if (!video || !active) return;
         video.srcObject = stream;
         await video.play();
@@ -89,7 +91,7 @@ export function DevicePairingQrScanner({ onCode, onClose }: {
       active = false;
       window.clearTimeout(timer);
       stream?.getTracks().forEach((track) => track.stop());
-      if (videoRef.current) videoRef.current.srcObject = null;
+      if (videoElement) videoElement.srcObject = null;
     };
   }, []);
 

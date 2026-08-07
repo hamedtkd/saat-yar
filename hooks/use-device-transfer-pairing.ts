@@ -29,6 +29,14 @@ import type {
   DeviceTransferSessionKey,
 } from "@/lib/device-transfer-types";
 import type { DevicePairingOffer } from "@/lib/device-pairing-types";
+import {
+  appendDeviceTransferHistory,
+  clearDeviceTransferHistory,
+  getDeviceTransferHistorySnapshot,
+  parseDeviceTransferHistory,
+  subscribeDeviceTransferHistory,
+} from "@/lib/device-transfer-history";
+import type { DeviceTransferSource } from "@/lib/device-transfer-types";
 import type { AppData } from "@/lib/types";
 
 type Role = "idle" | "sender" | "receiver";
@@ -47,10 +55,17 @@ export function useDeviceTransferPairing({ data, setData, setToast }: {
   const [incoming, setIncoming] = React.useState<DeviceTransferPayload | null>(null);
   const [preview, setPreview] = React.useState<DeviceTransferPreview | null>(null);
   const [acknowledged, setAcknowledged] = React.useState(false);
+  const historySnapshot = React.useSyncExternalStore(
+    subscribeDeviceTransferHistory,
+    getDeviceTransferHistorySnapshot,
+    () => "[]",
+  );
+  const history = React.useMemo(() => parseDeviceTransferHistory(historySnapshot), [historySnapshot]);
   const peerRef = React.useRef<RTCPeerConnection | null>(null);
   const channelRef = React.useRef<RTCDataChannel | null>(null);
   const sessionKeyRef = React.useRef<DeviceTransferSessionKey | null>(null);
   const offerRef = React.useRef<DevicePairingOffer | null>(null);
+  const remoteSourceRef = React.useRef<DeviceTransferSource | null>(null);
   const stopListenerRef = React.useRef<(() => void) | null>(null);
 
   const fail = React.useCallback((value: unknown) => {
@@ -75,7 +90,17 @@ export function useDeviceTransferPairing({ data, setData, setToast }: {
           setState("received");
         })
         .catch(fail);
-    }, () => setAcknowledged(true));
+    }, () => {
+      setAcknowledged(true);
+      const remote = remoteSourceRef.current;
+      appendDeviceTransferHistory({
+        id: `sent:${globalThis.crypto.randomUUID()}`,
+        at: new Date().toISOString(),
+        direction: "sent",
+        deviceName: remote?.deviceName ?? "دستگاه مقابل",
+        status: "acknowledged",
+      });
+    });
     stopListenerRef.current = () => {
       stopEnvelope();
       channel.removeEventListener("open", onOpen);
@@ -92,6 +117,7 @@ export function useDeviceTransferPairing({ data, setData, setToast }: {
     peerRef.current = null;
     sessionKeyRef.current = null;
     offerRef.current = null;
+    remoteSourceRef.current = null;
   }, []);
 
   const reset = React.useCallback(() => {
@@ -137,6 +163,7 @@ export function useDeviceTransferPairing({ data, setData, setToast }: {
       setError("");
       const signal = decodeDevicePairingSignal(remoteCode);
       if (signal.kind !== "offer") throw new Error("برای دستگاه دریافت‌کننده باید Offer وارد شود.");
+      remoteSourceRef.current = signal.source;
       const result = await createDevicePairingAnswer(signal, createLocalDeviceSource());
       peerRef.current = result.peer;
       sessionKeyRef.current = result.sessionKey;
@@ -153,6 +180,7 @@ export function useDeviceTransferPairing({ data, setData, setToast }: {
       if (!peer || !offer) throw new Error("ابتدا Offer این دستگاه را بساز.");
       const signal = decodeDevicePairingSignal(remoteCode);
       if (signal.kind !== "answer") throw new Error("کد واردشده Answer نیست.");
+      remoteSourceRef.current = signal.source;
       await acceptDevicePairingAnswer(peer, offer.pairingId, signal);
       setState("waiting");
       setError("");
@@ -174,12 +202,32 @@ export function useDeviceTransferPairing({ data, setData, setToast }: {
 
   const applyIncoming = React.useCallback((mode: DeviceTransferApplyMode, conflicts: DeviceTransferConflictResolution) => {
     if (!incoming) return;
+    const currentPreview = preview;
+    const additions = currentPreview
+      ? Object.values(currentPreview.collections).reduce((sum, item) => sum + item.additions, 0)
+      : 0;
     setData((current) => applyDeviceTransfer(current, incoming.data, { mode, conflicts }));
+    appendDeviceTransferHistory({
+      id: `received:${incoming.transferId}`,
+      at: new Date().toISOString(),
+      direction: "received",
+      deviceName: incoming.source.deviceName,
+      status: "applied",
+      additions,
+      conflicts: currentPreview?.conflictCount ?? 0,
+      mode,
+      conflictResolution: conflicts,
+    });
     setToast(mode === "replace" ? "داده این دستگاه با انتقال جدید جایگزین شد." : "داده دستگاه مقابل با اطلاعات محلی ادغام شد.");
     setIncoming(null);
     setPreview(null);
     setState("connected");
-  }, [incoming, setData, setToast]);
+  }, [incoming, preview, setData, setToast]);
+
+  const clearHistory = React.useCallback(() => {
+    clearDeviceTransferHistory();
+    setToast("تاریخچه انتقال پاک شد.");
+  }, [setToast]);
 
   const pairingLink = React.useMemo(() => {
     if (!localCode || typeof window === "undefined") return "";
@@ -187,7 +235,7 @@ export function useDeviceTransferPairing({ data, setData, setToast }: {
   }, [localCode]);
 
   return {
-    role, state, localCode, remoteCode, setRemoteCode, error, incoming, preview, acknowledged, pairingLink,
-    startSender, prepareReceiver, startReceiver, acceptAnswer, sendCurrentData, applyIncoming, reset,
+    role, state, localCode, remoteCode, setRemoteCode, error, incoming, preview, acknowledged, pairingLink, history,
+    startSender, prepareReceiver, startReceiver, acceptAnswer, sendCurrentData, applyIncoming, clearHistory, reset,
   };
 }

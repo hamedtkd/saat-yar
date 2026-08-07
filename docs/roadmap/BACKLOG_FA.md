@@ -191,3 +191,5 @@
 - [x] فاز ۱۱۴: Pairing مستقیم موبایل و لپ‌تاپ با WebRTC DataChannel و لینک/کد دوطرفه بدون دیتابیس یا Signaling دائمی؛ همراه با انتقال رمزنگاری‌شده و Preview قبل از اعمال.
 - [x] فاز ۱۱۵: افزودن QR محلی و اسکن دوربین روی Pairing Code فاز ۱۱۴؛ شامل QR چندفریمی برای Offer/Answerهای بزرگ و fallback امن Copy/Paste، بدون سرویس QR شخص ثالث.
 - [x] فاز ۱۱۶: تست End-to-End انتقال دستگاه؛ رفع Typecheck فاز ۱۱۵، تست کامل رمزنگاری/Chunk/ACK/Preview/Merge، Smoke اختیاری WebRTC در مرورگر و bounded fallback برای Offline PWA.
+- [x] فاز ۱۱۷: رفع Gate قرمز Lint در QR vendor و Scanner، افزودن وضعیت نشست و تاریخچه انتقال privacy-safe با مسیر روشن برای شروع دوباره Pairing.
+- [ ] فاز ۱۱۸: اجرای Browser E2E دوطرفه Pairing/QR روی محیط واقعی و پالیش نهایی تجربه Sync بر اساس نتیجه تست دستگاه‌ها.

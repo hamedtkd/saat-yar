@@ -1,6 +1,18 @@
 import QRCode from "./vendor/qrcode/index.cjs";
 import QRErrorCorrectLevel from "./vendor/qrcode/QRErrorCorrectLevel.cjs";
 
+type LocalQrInstance = {
+  addData(value: string): void;
+  make(): void;
+  getModuleCount(): number;
+  isDark(row: number, column: number): boolean;
+};
+
+type LocalQrConstructor = new (typeNumber: number, errorCorrectLevel: number) => LocalQrInstance;
+
+const LocalQrCode = QRCode as LocalQrConstructor;
+const LocalQrErrorCorrectLevel = QRErrorCorrectLevel as { L: number };
+
 export type QrMatrix = {
   size: number;
   cells: boolean[][];
@@ -8,7 +20,7 @@ export type QrMatrix = {
 
 export function createLocalQrMatrix(value: string): QrMatrix {
   if (!value) throw new Error("متن QR خالی است.");
-  const qr = new QRCode(-1, QRErrorCorrectLevel.L);
+  const qr = new LocalQrCode(-1, LocalQrErrorCorrectLevel.L);
   qr.addData(value);
   qr.make();
   const size = qr.getModuleCount() as number;
