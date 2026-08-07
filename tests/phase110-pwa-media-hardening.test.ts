@@ -48,5 +48,6 @@ test("phase 110 is wired into quality and roadmap advances payroll after hardeni
   const backlog = read("docs/roadmap/BACKLOG_FA.md");
   assert.match(backlog, /فاز ۱۱۰: مقاوم‌سازی Offline PWA و Media Capture/);
   assert.match(backlog, /فاز ۱۱۱: طراحی و پیاده‌سازی موتور محاسبه حقوق Rule-based/);
-  assert.match(backlog, /فاز ۱۱۴: Pairing سریع موبایل و لپ‌تاپ با QR/);
+  assert.match(backlog, /فاز ۱۱۴:.*WebRTC DataChannel/);
+  assert.match(backlog, /فاز ۱۱۵:.*QR/);
 });

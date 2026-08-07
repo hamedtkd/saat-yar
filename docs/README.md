@@ -48,3 +48,4 @@
 فایل‌های قراردادی متداول مانند `README.md`، `SECURITY.md`، `CHANGELOG.md`، `LICENSE`، `CONTRIBUTING.md` و `AGENTS.md` عمداً در ریشه مخزن باقی می‌مانند.
 
 - [یادداشت فاز ۱۱۴: WebRTC Pairing و رفع BufferSource](phases/PHASE_114_NOTES_FA.md)
+- [یادداشت فاز ۱۱۵: QR محلی Pairing](phases/PHASE_115_NOTES_FA.md)

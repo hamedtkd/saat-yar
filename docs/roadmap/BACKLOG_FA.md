@@ -189,5 +189,5 @@
 - [x] فاز ۱۱۲: افزودن Policy حقوق به Settings، ارتقای Schema v17/Migration/Backup و ساخت UI، Preview و Breakdown شفاف در گزارش‌ها.
 - [x] فاز ۱۱۳: طراحی پروتکل انتقال دستگاه‌به‌دستگاه با Payload نسخه‌دار، Checksum، Merge/Replace، Conflict Preview و رمزنگاری AES-GCM session.
 - [x] فاز ۱۱۴: Pairing مستقیم موبایل و لپ‌تاپ با WebRTC DataChannel و لینک/کد دوطرفه بدون دیتابیس یا Signaling دائمی؛ همراه با انتقال رمزنگاری‌شده و Preview قبل از اعمال.
-- [ ] فاز ۱۱۵: افزودن QR محلی و اسکن دوربین روی Pairing Code فاز ۱۱۴، بدون ارسال Offer/کلید نشست به سرویس QR شخص ثالث.
+- [x] فاز ۱۱۵: افزودن QR محلی و اسکن دوربین روی Pairing Code فاز ۱۱۴؛ شامل QR چندفریمی برای Offer/Answerهای بزرگ و fallback امن Copy/Paste، بدون سرویس QR شخص ثالث.
 

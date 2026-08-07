@@ -91,5 +91,5 @@ test("phase 114 is wired into quality and QR camera UX stays explicit in the roa
   const roadmap = read("docs/roadmap/BACKLOG_FA.md");
   assert.match(packageJson.scripts.test, /phase114-device-pairing-webrtc/);
   assert.match(roadmap, /\[x\] فاز ۱۱۴:/);
-  assert.match(roadmap, /\[ \] فاز ۱۱۵:.*QR/);
+  assert.match(roadmap, /فاز ۱۱۵:.*QR/);
 });

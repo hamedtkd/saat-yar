@@ -55,10 +55,10 @@ For real long-term data, create regular JSON backups from the data and backup se
 
 - Independent schedule for each weekday
 - Configurable weekly target distributed over enabled days
-- Overtime and holiday multipliers
+- Selectable payroll basis: prorated monthly, fixed monthly, hourly, or daily
+- Independent overtime, holiday-work, deficit, and rounding policies
 - Official holidays and manual date overrides
-- Daily base salary calculated from `monthly salary / 30`
-- Estimated earnings, benefits, deductions, and net pay
+- Live payroll preview and explainable breakdown of earnings, benefits, deductions, and net pay
 
 ### Reports and data safety
 
@@ -69,6 +69,7 @@ For real long-term data, create regular JSON backups from the data and backup se
 - Versioned backup and restore
 - Automatic migration of older local data
 - Local recovery snapshots and a 30-day recycle bin
+- Direct encrypted mobile/desktop transfer over WebRTC with locally generated pairing QR codes
 
 ### User experience
 
