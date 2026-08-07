@@ -5,7 +5,7 @@ import { createMediaDemoData } from "./media/demo-data.ts";
 import { launchBrowserDebugTarget } from "./browser-debug-startup.mjs";
 import { findBrowserExecutable } from "./production-browser-smoke.mjs";
 import { buildAppNavigationExpression, buildRouteReadyExpression } from "./browser-route-expression.mjs";
-import { buildEmployeePersistenceProbeExpression } from "./employee-persistence-expression.mjs";
+import { buildEmployeeBreakPersistenceProbeExpression, buildEmployeePersistenceProbeExpression } from "./employee-persistence-expression.mjs";
 import { startStaticExportServer } from "./static-export-server.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -152,7 +152,7 @@ async function replaceFocusedText(client, value) {
     const setter = Object.getOwnPropertyDescriptor(prototype, "value")?.set;
     if (!setter) return false;
     setter.call(field, ${JSON.stringify(value)});
-    field.dispatchEvent(new Event("input", { bubbles: true }));
+    field.dispatchEvent(new InputEvent("input", { bubbles: true, inputType: "insertText", data: ${JSON.stringify(value)} }));
     field.dispatchEvent(new Event("change", { bubbles: true }));
     return true;
   })()`);
@@ -241,6 +241,17 @@ async function ensureFirstBreakUnpaid(client) {
     const checkbox = document.querySelector(${JSON.stringify(selector)});
     return checkbox instanceof HTMLInputElement && checkbox.checked === false;
   })()`, "unpaid break contract");
+}
+
+async function waitForEmployeeBreakPersistence(client, date, timeout = TIMEOUT) {
+  const deadline = Date.now() + timeout;
+  let last;
+  while (Date.now() < deadline) {
+    last = await evaluate(client, buildEmployeeBreakPersistenceProbeExpression({ date }));
+    if (last?.ready) return last;
+    await new Promise((resolveWait) => setTimeout(resolveWait, 120));
+  }
+  throw new Error(`Employee break edits did not reach IndexedDB before clock-out: ${JSON.stringify(last)}`);
 }
 
 async function setEmployeeNote(client, value) {
@@ -365,7 +376,8 @@ async function main() {
     await setSectionTimeValue(client, "وقفه‌ها", "پایان", "15:15");
     await ensureFirstBreakUnpaid(client);
     await assertFirstBreakEditorContract(client);
-    console.log("✓ Break flow records a separate 15-minute unpaid interruption and preserves its edited contract");
+    const breakPersistence = await waitForEmployeeBreakPersistence(client, date);
+    console.log(`✓ Break flow records a separate 15-minute unpaid interruption and reaches IndexedDB (${breakPersistence.storageShape})`);
 
     await setEmployeeNote(client, EMPLOYEE_NOTE);
     await clickButton(client, "پایان روز", true);
@@ -377,8 +389,9 @@ async function main() {
     await clickButton(client, "ویرایش این روز", true);
     await setTimeCardValue(client, "خروج", "17:00");
     await clickButton(client, "ذخیره تغییرات", true);
+    const completedPersistence = await waitForEmployeePersistence(client, date);
     await waitFor(client, `document.body?.innerText.includes("ثبت این روز کامل شده است") && document.body?.innerText.includes(${JSON.stringify(NET_DURATION)})`, "employee net duration");
-    console.log("✓ Completed-day draft saves 08:00–17:00 with 30m lunch + 15m break as 8:15 net work");
+    console.log(`✓ Completed-day draft persists the full 08:00–17:00 / lunch / unpaid-break contract before verifying 8:15 (${completedPersistence.storageShape})`);
 
     await navigateInApp(client, "/month", "ماه من");
     await waitFor(client, `document.body?.innerText.includes("جزئیات روز انتخاب‌شده") && document.body?.innerText.includes(${JSON.stringify(NET_DURATION)})`, "employee month details");
@@ -388,8 +401,7 @@ async function main() {
     await waitFor(client, `document.body?.innerText.includes("فیش حقوقی تخمینی ماه") && document.body?.innerText.includes("کارکرد این ماه")`, "employee payroll report");
     console.log("✓ Reports expose employee work totals and the saved payroll policy summary");
 
-    const persistenceProbe = await waitForEmployeePersistence(client, date);
-    console.log(`✓ Employee workflow is durable in IndexedDB (${persistenceProbe.storageShape}, schema v${persistenceProbe.schemaVersion ?? "legacy"})`);
+    console.log(`✓ Employee workflow is durable in IndexedDB (${completedPersistence.storageShape}, schema v${completedPersistence.schemaVersion ?? "legacy"})`);
 
     await client.call("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true, screenWidth: 390, screenHeight: 844 });
     await navigate(client, `${server.origin}/today`, EMPLOYEE_NOTE);

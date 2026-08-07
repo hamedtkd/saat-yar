@@ -89,3 +89,5 @@
 - [فاز ۱۴۵: رفع TypeScript contract در Browser Debug Startup](./phases/PHASE_145_NOTES_FA.md)
 
 - [فاز ۱۴۷: Atomic Break Edit Contract](./phases/PHASE_147_NOTES_FA.md)
+
+- [فاز ۱۴۹: Input/Persistence Fidelity مسیر کارمند](./phases/PHASE_149_NOTES_FA.md)

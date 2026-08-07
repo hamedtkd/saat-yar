@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+- Employee Browser Smoke اکنون همان `InputEvent` اثبات‌شده‌ی مسیر Freelancer را برای Controlled Inputها استفاده می‌کند و قبل از Clock-out، رسیدن `08:00`، ناهار `12:00–12:30` و وقفه بدون حقوق `15:00–15:15` به IndexedDB را صریحاً تأیید می‌کند.
+
 - Fixed a lint-only regression in the employee Time Strip action hook by removing the now-unused `record` dependency after functional WorkRecord patches.
 
 - مسیر کارمند اکنون وضعیت Paid/Unpaid هر وقفه را صریحاً در ویرایشگر نمایش می‌دهد و Browser Journey قرارداد وقفه ۱۵ دقیقه‌ای بدون حقوق را تا محاسبه خالص `۸:۱۵` بررسی می‌کند.
