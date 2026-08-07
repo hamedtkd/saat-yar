@@ -60,7 +60,7 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
       <SkipLink />
       <main
         className={cn(
-          "dashboard-shell min-h-screen w-full bg-[var(--page)] p-3 pb-28 xl:pb-3 [&_label]:grid [&_label]:gap-[7px] [&_label]:text-[11px] [&_label]:font-semibold [&_label]:text-[var(--text-muted)] [&_button]:cursor-pointer [&_svg]:h-[18px] [&_svg]:w-[18px] [&_svg]:stroke-[1.85]",
+          "dashboard-shell min-h-screen w-full bg-[var(--page)] p-2 pb-28 sm:p-3 sm:pb-28 xl:pb-3 [&_label]:grid [&_label]:gap-[7px] [&_label]:text-[11px] [&_label]:font-semibold [&_label]:text-[var(--text-muted)] [&_button]:cursor-pointer [&_svg]:h-[18px] [&_svg]:w-[18px] [&_svg]:stroke-[1.85]",
         )}
         dir="rtl"
       >
@@ -113,13 +113,13 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
           role="main"
           tabIndex={-1}
           className={cn(
-            "mx-auto max-w-[1510px] px-3 pb-6 pt-5 sm:px-5 xl:mr-[264px] xl:px-6",
+            "shell-main-offset mx-auto max-w-[1510px] px-1 pb-6 pt-4 sm:px-3 sm:pt-5 lg:px-5",
           )}
         >
           {children}
         </div>
 
-        <div className="xl:mr-[264px]"><AppFooter online={controller.online} /></div>
+        <div className="shell-main-offset"><AppFooter online={controller.online} /></div>
         <MobileBottomNav mode={data.settings.mode} currentPath={pathname} />
       </main>
       </UnsavedNavigationProvider>

@@ -1,4 +1,4 @@
-import { BarChart3, CalendarDays, Folder, LayoutDashboard, ReceiptText, Umbrella, Users } from "lucide-react";
+import { BarChart3, CalendarDays, Folder, LayoutDashboard, ReceiptText, Settings, Umbrella, Users } from "lucide-react";
 import type { Mode, Tab } from "@/lib/types";
 
 export const appNavItems = [
@@ -11,10 +11,30 @@ export const appNavItems = [
   { id: "reports" as Tab, label: "گزارش‌ها", icon: BarChart3, href: "/reports" },
 ];
 
+export const settingsNavItem = { id: "settings", label: "تنظیمات", icon: Settings, href: "/settings" } as const;
+
+const mobilePrimaryIds: Record<Mode, string[]> = {
+  employee: ["today", "month", "leave", "reports"],
+  freelancer: ["today", "clients", "projects", "reports"],
+  hybrid: ["today", "month", "projects", "reports"],
+};
+
 export function getVisibleNavItems(mode: Mode) {
   return appNavItems.filter((item) => {
     if (mode === "employee") return !["clients", "projects", "invoices"].includes(item.id);
     if (mode === "freelancer") return !["month", "leave"].includes(item.id);
     return true;
   });
+}
+
+export function getMobilePrimaryNavItems(mode: Mode) {
+  const visible = getVisibleNavItems(mode);
+  const wanted = mobilePrimaryIds[mode];
+  return wanted.flatMap((id) => visible.filter((item) => item.id === id));
+}
+
+export function getRouteNavItem(pathname: string) {
+  const normalized = pathname.replace(/\/+$/, "") || "/";
+  if (normalized === settingsNavItem.href) return settingsNavItem;
+  return appNavItems.find((item) => item.href === normalized) ?? appNavItems[0];
 }

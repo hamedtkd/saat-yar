@@ -35,6 +35,9 @@
   --info-soft: color-mix(in srgb, var(--info) 12%, transparent);
   --card-radius: 22px;
   --control-radius: 14px;
+  --shell-sidebar-width: 248px;
+  --shell-gutter: 12px;
+  --shell-content-offset: 264px;
 }
 
 :root[data-theme="dark"] {
@@ -74,6 +77,18 @@
     radial-gradient(circle at 18% 12%, color-mix(in srgb, var(--accent) 5%, transparent), transparent 30%),
     linear-gradient(180deg, color-mix(in srgb, var(--accent) 1.5%, transparent), transparent 38%);
 }
+
+.shell-main-offset {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+@media (min-width: 1280px) {
+  .shell-main-offset {
+    margin-right: var(--shell-content-offset);
+  }
+}
+
 
 .dashboard-card {
   border-color: var(--dashboard-border);
