@@ -17,11 +17,13 @@
 - [Windows and npm troubleshooting — English](./TROUBLESHOOTING_EN.md)
 - [سازگاری مرورگر / Browser compatibility](./BROWSER_COMPATIBILITY.md)
 
-## انتشار ۲.۲.۰
+## انتشار ۲.۳.۰
 
-- [یادداشت انتشار ۲.۲.۰ فارسی](./releases/RELEASE_NOTES_2.2.0_FA.md)
-- [Saatyar 2.2.0 release notes](./releases/RELEASE_NOTES_2.2.0_EN.md)
-- [Release manifest 2.2.0](./releases/2.2.0.json)
+- [یادداشت Release Candidate ۲.۳.۰ فارسی](./releases/RELEASE_NOTES_2.3.0_FA.md)
+- [Saatyar 2.3.0 release candidate notes](./releases/RELEASE_NOTES_2.3.0_EN.md)
+- [Release manifest 2.3.0](./releases/2.3.0.json)
+- [یادداشت انتشار تاریخی ۲.۲.۰](./releases/RELEASE_NOTES_2.2.0_FA.md)
+- [Historical release manifest 2.2.0](./releases/2.2.0.json)
 - [یادداشت انتشار تاریخی ۲.۱.۰](./releases/RELEASE_NOTES_2.1.0_FA.md)
 - [Historical release manifest 2.1.0](./releases/2.1.0.json)
 - [چک‌لیست انتشار](../RELEASE_CHECKLIST_FA.md)
@@ -95,3 +97,5 @@
 - [فاز ۱۵۰: Scope دقیق Selectorهای زمان Employee Browser Journey](./phases/PHASE_150_NOTES_FA.md)
 
 - [فاز ۱۵۱: Hard Reload یادداشت کارمند با Form Value واقعی](./phases/PHASE_151_NOTES_FA.md)
+
+- [فاز ۱۵۲: Release Candidate 2.3.0](./phases/PHASE_152_NOTES_FA.md)

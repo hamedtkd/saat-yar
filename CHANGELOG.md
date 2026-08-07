@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [2.3.0] - 2026-08-08
+
 - Employee Browser Smoke در Hard Reload یادداشت کارمند را از `textarea.value` می‌خواند، نه `body.innerText`؛ بنابراین Restore واقعی Form Control پس از IndexedDB hydration بدون false timeout تأیید می‌شود.
 
 - Employee Browser Smoke اکنون فیلدهای ناهار و وقفه را از Heading دقیق و `closest("section")` scope می‌کند؛ بنابراین ویرایش Break دیگر به‌اشتباه TimePickerهای Lunch را هدف نمی‌گیرد و Probe قبل از Clock-out جدایی واقعی آن‌ها را در IndexedDB اثبات می‌کند.

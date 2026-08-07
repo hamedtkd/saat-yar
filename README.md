@@ -258,7 +258,7 @@ tests/                         تست‌های دامنه، Regression و معم
 - Build نهایی Next.js و prerender تمام Routeها
 - Smoke Test مرورگر واقعی برای بارگذاری اولیه، تکمیل Onboarding و تغییر تاریخ
 
-کنترل کیفیت پروژه شامل بیش از **۴۰۰ تست منطق، Regression، معماری و قرارداد مخزن**، Audit قرارداد داده، Build کامل Next.js، Smoke آفلاین PWA و تست اختیاری Browser Pairing واقعی است.
+کنترل کیفیت پروژه شامل بیش از **۵۰۰ تست منطق، Regression، معماری و قرارداد مخزن**، Audit قرارداد داده، Build کامل Next.js، Smoke آفلاین PWA و Browser Journeyهای واقعی فریلنسر و کارمند است.
 
 ## سیاست رابط و Style
 
@@ -276,7 +276,8 @@ tests/                         تست‌های دامنه، Regression و معم
 
 - [عیب‌یابی Windows و خطاهای npm](./docs/TROUBLESHOOTING_FA.md)
 - [جدول سازگاری مرورگر و محدودیت‌های Notification/PWA](./docs/BROWSER_COMPATIBILITY.md)
-- [یادداشت انتشار ساعت‌یار ۲.۲.۰](./docs/releases/RELEASE_NOTES_2.2.0_FA.md)
+- [یادداشت Release Candidate ساعت‌یار ۲.۳.۰](./docs/releases/RELEASE_NOTES_2.3.0_FA.md)
+- [یادداشت انتشار تاریخی ۲.۲.۰](./docs/releases/RELEASE_NOTES_2.2.0_FA.md)
 - [یادداشت انتشار تاریخی ۲.۱.۰](./docs/releases/RELEASE_NOTES_2.1.0_FA.md)
 
 ## مشارکت
@@ -295,9 +296,9 @@ npm run test:browser:production
 
 ## نقشه راه
 
-نسخه **۲.۲.۰** به‌عنوان Release نهایی آماده شده است. Candidate تأییدشده روی commit prefix `f659456` همه ۴۲۳ تست، Production/Offline PWA Smoke و Browser Pairing رمزنگاری‌شده را پاس کرده است. جزئیات در [یادداشت انتشار ۲.۲.۰](./docs/releases/RELEASE_NOTES_2.2.0_FA.md) و [چک‌لیست انتشار](./RELEASE_CHECKLIST_FA.md) ثبت شده‌اند.
+نسخه **۲.۳.۰** اکنون در وضعیت Release Candidate است. خط مبنای تأییدشده روی commit prefix `ff0177f` با **۵۶۹/۵۶۹ تست، Build کامل و Browser Smokeهای Production، Freelancer و Employee** سبز شده است؛ فاز ۱۵۲ شش تست Release Contract اضافه می‌کند و Candidate باید به ۵۷۵/۵۷۵ برسد. جزئیات در [یادداشت Release Candidate ۲.۳.۰](./docs/releases/RELEASE_NOTES_2.3.0_FA.md) و [چک‌لیست انتشار](./RELEASE_CHECKLIST_FA.md) ثبت شده‌اند.
 
-رسانه‌های نهایی محصول اکنون داخل README قرار گرفته‌اند. پس از اجرای Gate نهایی فاز ۱۲۰ و Commit کردن سورس Release، Tag annotated `v2.2.0` باید روی همان Commit ساخته شود؛ سایر کارهای بعدی در [docs/roadmap/BACKLOG_FA.md](./docs/roadmap/BACKLOG_FA.md) نگهداری می‌شوند.
+رسانه‌های محصول از Fixture نمایشی تولید می‌شوند و در Audit Candidate بررسی می‌شوند. Tag `v2.3.0` تا پایان فاز ۱۵۳ ساخته نمی‌شود؛ وضعیت مرحله‌های نهایی در [docs/roadmap/BACKLOG_FA.md](./docs/roadmap/BACKLOG_FA.md) نگهداری می‌شود.
 
 ## حمایت مالی
 

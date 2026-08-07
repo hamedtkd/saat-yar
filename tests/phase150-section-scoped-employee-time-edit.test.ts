@@ -37,7 +37,7 @@ test("phase 150 records the selector-scope hotfix while release candidate stays 
   const notes = await read("docs/phases/PHASE_150_NOTES_FA.md");
   assert.match(pkg.scripts.test, /phase150-section-scoped-employee-time-edit\.test\.ts/);
   assert.match(roadmap, /\[x\] فاز ۱۵۰:/);
-  assert.match(roadmap, /\[ \] فاز [۰-۹]+: آماده‌سازی Release Candidate نسخه 2\.3\.0/);
+  assert.match(roadmap, /\[x\] فاز [۰-۹]+: آماده‌سازی Release Candidate نسخه 2\.3\.0/);
   assert.match(roadmap, /\[ \] فاز [۰-۹]+: نهایی‌سازی Release 2\.3\.0/);
   assert.match(notes, /closest\("section"\)/);
   assert.match(notes, /Schema.*v17/);

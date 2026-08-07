@@ -4,8 +4,16 @@ import { fileURLToPath } from "node:url";
 import { APP_DATA_SCHEMA_VERSION } from "../lib/data/version.ts";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const RELEASE_MANIFEST_PATH = "docs/releases/2.2.0.json";
+const RELEASE_MANIFEST_PATH = "docs/releases/2.3.0.json";
 const ALLOWED_STATUSES = new Set(["release-candidate", "released"]);
+const REQUIRED_MEDIA = [
+  "docs/assets/screenshots/today-light-desktop.png",
+  "docs/assets/screenshots/today-dark-desktop.png",
+  "docs/assets/screenshots/today-mobile.png",
+  "docs/assets/screenshots/reports-light.png",
+  "docs/assets/screenshots/reports-dark.png",
+  "docs/assets/media/onboarding.gif",
+];
 
 function readText(path) {
   return readFileSync(resolve(ROOT, path), "utf8");
@@ -54,31 +62,39 @@ export function collectReleaseAuditFailures() {
   requireCondition(manifest.tag === `v${manifest.version}`, "Release manifest tag is missing or does not match the version.", failures);
 
   const hasReleaseCommit = Object.prototype.hasOwnProperty.call(manifest, "releaseCommit");
-  if (manifest.status === "released") {
-    requireCondition(
-      /^[0-9a-f]{7,40}$/.test(manifest.verifiedCandidateCommitPrefix ?? ""),
-      "Released manifest must preserve the verified candidate commit prefix.",
-      failures,
-    );
-    requireCondition(manifest.verifiedCandidateTestCount === 423, "Released manifest must record the verified 423-test candidate gate.", failures);
-    requireCondition(manifest.expectedFinalTestCount === 429, "Released manifest must declare the 429-test final gate for Phase 120.", failures);
-    requireCondition(manifest.releaseEvidence?.productionBrowserSmoke === "passed", "Released manifest must preserve the passing production browser evidence.", failures);
-    requireCondition(manifest.releaseEvidence?.pairingBrowserSmoke === "passed", "Released manifest must preserve the passing pairing browser evidence.", failures);
-    requireCondition(manifest.releaseEvidence?.pairingEncryptedChunks === 4, "Released manifest must preserve the four-chunk encrypted pairing evidence.", failures);
-    requireCondition(!hasReleaseCommit, "Released manifest must not contain a self-referential releaseCommit field; the annotated Git tag is the source of truth for the final release commit.", failures);
+  if (manifest.status === "release-candidate") {
+    requireCondition(/^[0-9a-f]{7,40}$/.test(manifest.verifiedBaselineCommitPrefix ?? ""), "Release candidate must record the verified baseline commit prefix.", failures);
+    requireCondition(manifest.verifiedTestCount === 569, "Release candidate must record the verified 569-test Phase 151 baseline.", failures);
+    requireCondition(manifest.expectedCandidateTestCount === 575, "Release candidate must declare the 575-test Phase 152 gate.", failures);
+    requireCondition(manifest.baselineEvidence?.productionBrowserSmoke === "passed", "Release candidate must preserve passing production browser baseline evidence.", failures);
+    requireCondition(manifest.baselineEvidence?.freelancerBrowserSmoke === "passed", "Release candidate must preserve passing freelancer browser baseline evidence.", failures);
+    requireCondition(manifest.baselineEvidence?.employeeBrowserSmoke === "passed", "Release candidate must preserve passing employee browser baseline evidence.", failures);
+    requireCondition(manifest.baselineEvidence?.employeeNetMinutes === 495, "Release candidate must preserve the 495-minute employee reference-day evidence.", failures);
+    requireCondition(!manifest.releaseCommit, "Release-candidate manifest must not claim a release commit before finalization.", failures);
   } else {
-    requireCondition(!hasReleaseCommit || !manifest.releaseCommit, "Release-candidate manifest must not claim a release commit before finalization.", failures);
+    requireCondition(/^[0-9a-f]{7,40}$/.test(manifest.verifiedCandidateCommitPrefix ?? ""), "Released manifest must preserve the verified candidate commit prefix.", failures);
+    requireCondition(manifest.verifiedCandidateTestCount === 575, "Released manifest must record the verified 575-test candidate gate.", failures);
+    requireCondition(Number.isInteger(manifest.expectedFinalTestCount) && manifest.expectedFinalTestCount >= 575, "Released manifest must declare a final test count at or above the candidate gate.", failures);
+    requireCondition(manifest.releaseEvidence?.productionBrowserSmoke === "passed", "Released manifest must preserve passing production browser evidence.", failures);
+    requireCondition(manifest.releaseEvidence?.freelancerBrowserSmoke === "passed", "Released manifest must preserve passing freelancer browser evidence.", failures);
+    requireCondition(manifest.releaseEvidence?.employeeBrowserSmoke === "passed", "Released manifest must preserve passing employee browser evidence.", failures);
+    requireCondition(manifest.releaseEvidence?.pairingBrowserSmoke === "passed", "Released manifest must preserve passing pairing browser evidence.", failures);
+    requireCondition(!hasReleaseCommit, "Released manifest must not contain a self-referential releaseCommit field; the annotated Git tag is the source of truth for the final release commit.", failures);
   }
 
   const requiredFiles = [
     RELEASE_MANIFEST_PATH,
     manifest.releaseNotes?.fa,
     manifest.releaseNotes?.en,
+    "docs/releases/2.2.0.json",
     "docs/releases/2.1.0.json",
     "RELEASE_CHECKLIST_FA.md",
     "CHANGELOG.md",
     "README.md",
     "README_EN.md",
+    "docs/README.md",
+    "docs/phases/PHASE_152_NOTES_FA.md",
+    "docs/assets/README.md",
   ].filter(Boolean);
   for (const path of requiredFiles) {
     requireCondition(existsSync(resolve(ROOT, path)), `Required release file is missing: ${path}`, failures);
@@ -89,26 +105,39 @@ export function collectReleaseAuditFailures() {
   requireCondition(includesLine("RELEASE_CHECKLIST_FA.md", `# چک‌لیست انتشار ساعت‌یار ${manifest.version}`), "Release checklist version is stale.", failures);
   requireCondition(readText("README.md").includes(manifest.releaseNotes.fa), "Persian README does not link to Persian release notes.", failures);
   requireCondition(readText("README_EN.md").includes(manifest.releaseNotes.en), "English README does not link to English release notes.", failures);
+  requireCondition(readText("docs/README.md").includes("./releases/2.3.0.json"), "Docs index does not link to the active 2.3.0 release manifest.", failures);
 
   const readmeFa = readText("README.md");
   const readmeEn = readText("README_EN.md");
-  for (const mediaPath of [
-    "docs/assets/screenshots/today-light-desktop.png",
-    "docs/assets/screenshots/today-dark-desktop.png",
-    "docs/assets/screenshots/today-mobile.png",
-    "docs/assets/screenshots/reports-light.png",
-    "docs/assets/media/onboarding.gif",
-  ]) {
+  for (const mediaPath of REQUIRED_MEDIA) {
     requireCondition(readmeFa.includes(mediaPath), `Persian README is missing product media reference: ${mediaPath}`, failures);
     requireCondition(readmeEn.includes(mediaPath), `English README is missing product media reference: ${mediaPath}`, failures);
   }
+  const mediaContract = readText("docs/assets/README.md");
+  requireCondition(mediaContract.includes("npm run media:capture"), "Media contract must document the reproducible capture command.", failures);
+  requireCondition(mediaContract.includes("Fixture"), "Media contract must state that capture uses demo fixture data.", failures);
 
   const releaseSteps = packageJson.scripts?.["check:release"]?.split("&&").map((step) => step.trim()) ?? [];
-  requireCondition(releaseSteps[0] === "npm run check:quality", "check:release must start with check:quality.", failures);
-  requireCondition(releaseSteps[1] === "npm run check:release:audit", "check:release must run the release audit after quality checks.", failures);
-  requireCondition(releaseSteps[2] === "npm run test:browser:production:built", "check:release must finish with the built production browser smoke.", failures);
+  const expectedReleaseSteps = [
+    "npm run check:quality",
+    "npm run check:release:audit",
+    "npm run test:browser:production:built",
+    "npm run test:browser:freelancer:built",
+    "npm run test:browser:employee:built",
+  ];
+  requireCondition(releaseSteps.length === expectedReleaseSteps.length, "check:release must contain exactly the five current release-gate steps.", failures);
+  for (const [index, expected] of expectedReleaseSteps.entries()) {
+    requireCondition(releaseSteps[index] === expected, `check:release step ${index + 1} must be ${expected}.`, failures);
+  }
+
   requireCondition(packageJson.scripts?.["check:release:audit"] === "node --experimental-strip-types scripts/release-audit.mjs", "Release audit script command is missing or stale.", failures);
+  requireCondition(packageJson.scripts?.["test:browser:production:built"] === "node scripts/production-browser-smoke.mjs", "Production browser gate command is missing or stale.", failures);
+  requireCondition(packageJson.scripts?.["test:browser:freelancer:built"] === "node --experimental-strip-types scripts/freelancer-browser-ux-smoke.mjs", "Freelancer browser gate command is missing or stale.", failures);
+  requireCondition(packageJson.scripts?.["test:browser:employee:built"] === "node --experimental-strip-types scripts/employee-browser-ux-smoke.mjs", "Employee browser gate command is missing or stale.", failures);
   requireCondition(packageJson.scripts?.["test:browser:pairing"] === "node scripts/device-pairing-browser-smoke.mjs", "Encrypted device-pairing browser smoke command is missing or stale.", failures);
+  requireCondition(manifest.browserGate === "scripts/production-browser-smoke.mjs", "Release manifest production browser gate path is stale.", failures);
+  requireCondition(manifest.freelancerBrowserGate === "scripts/freelancer-browser-ux-smoke.mjs", "Release manifest freelancer browser gate path is stale.", failures);
+  requireCondition(manifest.employeeBrowserGate === "scripts/employee-browser-ux-smoke.mjs", "Release manifest employee browser gate path is stale.", failures);
   requireCondition(manifest.pairingCommand === "npm run test:browser:pairing", "Release manifest must expose the pairing browser gate command.", failures);
   requireCondition(manifest.pairingBrowserGate === "scripts/device-pairing-browser-smoke.mjs", "Release manifest pairing browser gate path is stale.", failures);
 
@@ -120,9 +149,15 @@ export function collectReleaseAuditFailures() {
     requireCondition(declaredTests.has(testPath), `Test file is not included in npm test: ${testPath}`, failures);
   }
 
-  const releaseBacklog = sectionLines("docs/roadmap/BACKLOG_FA.md", "## آمادگی انتشار ۲.۲.۰");
-  requireCondition(releaseBacklog.length > 0, "2.2.0 release-readiness backlog section is missing.", failures);
-  requireCondition(!releaseBacklog.some((line) => line.includes("- [ ]")), "2.2.0 release-readiness backlog still contains open preparation items.", failures);
+  const releaseBacklog = sectionLines("docs/roadmap/BACKLOG_FA.md", "## آمادگی انتشار ۲.۳.۰");
+  requireCondition(releaseBacklog.length > 0, "2.3.0 release-readiness backlog section is missing.", failures);
+  const backlogText = releaseBacklog.join("\n");
+  requireCondition(backlogText.includes("- [x] فاز ۱۵۲:"), "Phase 152 must be marked complete in the 2.3.0 release-readiness backlog.", failures);
+  if (manifest.status === "release-candidate") {
+    requireCondition(backlogText.includes("- [ ] فاز ۱۵۳:"), "Phase 153 must remain open while 2.3.0 is a release candidate.", failures);
+  } else {
+    requireCondition(backlogText.includes("- [x] فاز ۱۵۳:"), "Phase 153 must be complete once 2.3.0 is released.", failures);
+  }
 
   return failures;
 }
@@ -140,13 +175,14 @@ export function runReleaseAudit() {
   console.log(`Saatyar ${manifest.version} release audit passed.`);
   console.log(`Current AppData schema: v${APP_DATA_SCHEMA_VERSION}`);
   console.log(`Release status: ${manifest.status}`);
-  if (manifest.status === "released") {
+  if (manifest.status === "release-candidate") {
+    console.log(`Verified baseline commit prefix: ${manifest.verifiedBaselineCommitPrefix}`);
+    console.log(`Verified pre-candidate test baseline: ${manifest.verifiedTestCount}`);
+    console.log(`Expected candidate test count: ${manifest.expectedCandidateTestCount}`);
+  } else {
     console.log(`Verified candidate commit prefix: ${manifest.verifiedCandidateCommitPrefix}`);
     console.log(`Verified candidate test count: ${manifest.verifiedCandidateTestCount}`);
     console.log(`Expected final test count: ${manifest.expectedFinalTestCount}`);
-  } else {
-    console.log(`Verified pre-candidate test baseline: ${manifest.verifiedTestCount}`);
-    console.log(`Expected candidate test count: ${manifest.expectedCandidateTestCount}`);
   }
   return true;
 }

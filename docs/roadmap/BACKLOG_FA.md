@@ -238,5 +238,10 @@
 - [x] فاز ۱۴۹: همگام‌سازی Employee Browser Smoke با InputEvent اثبات‌شده و افزودن Persistence Probe قبل از Clock-out/محاسبه برای جداسازی دقیق input fidelity از calculation.
 - [x] فاز ۱۵۰: اصلاح Scope Selectorهای زمان در Employee Browser Smoke؛ اتصال Heading دقیق به `closest("section")` تا Break editor دیگر فیلدهای Lunch را تغییر/تأیید نکند و Persistence Probe قبل از Clock-out مرجع نهایی بماند.
 - [x] فاز ۱۵۱: اصلاح Hard Reload Employee Browser Smoke برای خواندن مقدار واقعی `textarea.value` یادداشت؛ چون مقدار Form Control در `body.innerText` نمایش داده نمی‌شود، بدون تضعیف قرارداد IndexedDB/8:15/Mobile.
-- [ ] فاز ۱۵۲: آماده‌سازی Release Candidate نسخه 2.3.0؛ نسخه، Manifest، Changelog، Release Notes، رسانه‌ها و Gate evidence.
+- [x] فاز ۱۵۲: آماده‌سازی Release Candidate نسخه 2.3.0؛ نسخه، Manifest، Changelog، Release Notes، رسانه‌ها و Gate evidence.
 - [ ] فاز ۱۵۳: نهایی‌سازی Release 2.3.0 و Tag نهایی پس از Gate سبز Candidate.
+
+## آمادگی انتشار ۲.۳.۰
+
+- [x] فاز ۱۵۲: Release Candidate 2.3.0؛ افزایش نسخه Package/Lockfile، Manifest فعال Schema v17، Release Notes فارسی/انگلیسی، Changelog، Checklist، Audit رسانه و ثبت baseline سبز `ff0177f` با ۵۶۹ تست و سه Browser Smoke.
+- [ ] فاز ۱۵۳: Final Release 2.3.0؛ ثبت SHA Candidate تأییدشده و نتیجه Pairing Gate، تبدیل Manifest به `released`، Gate نهایی، Commit/Push و Tag annotated `v2.3.0`.
