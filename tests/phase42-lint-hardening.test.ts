@@ -6,12 +6,13 @@ const settingsNavPath = new URL("../components/pages/settings/settings-nav.tsx",
 const shellPath = new URL("../components/saatyar-shell.tsx", import.meta.url);
 const routeGuardPath = new URL("../components/layout/navigation/route-guard.tsx", import.meta.url);
 
-test("settings navigation derives initial hash state without setState in an effect", async () => {
+test("settings navigation derives hash state without effect-driven setState", async () => {
   const source = await readFile(settingsNavPath, "utf8");
-  assert.match(source, /useState<SettingsSectionId>\(getInitialSection\)/);
+  assert.match(source, /useSyncExternalStore\(subscribeToHashSection, getHashSectionSnapshot/);
   const effectBody = source.match(/useEffect\(\(\) => \{([\s\S]*?)\n  \}, \[\]\);/)?.[1] ?? "";
-  assert.doesNotMatch(effectBody, /setActive\(/);
+  assert.doesNotMatch(effectBody, /set[A-Z][A-Za-z0-9_]*\(/);
   assert.match(source, /cancelAnimationFrame\(frame\)/);
+  assert.match(source, /window\.addEventListener\("hashchange", onStoreChange\)/);
 });
 
 test("route effects depend on stable fields instead of the controller object", async () => {

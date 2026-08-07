@@ -56,3 +56,4 @@
 
 - [یادداشت فاز ۱۲۰: نهایی‌سازی Release 2.2.0](./phases/PHASE_120_NOTES_FA.md)
 - [یادداشت فاز ۱۲۱: پالیش Header، Profile، Settings و Today](./phases/PHASE_121_NOTES_FA.md)
+- [یادداشت فاز ۱۲۲: Hotfix ناوبری Settings و Profile](./phases/PHASE_122_NOTES_FA.md)

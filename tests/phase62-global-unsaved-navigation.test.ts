@@ -29,7 +29,8 @@ test("desktop and mobile routes use guarded links", async () => {
 test("header route pushes wait for the unsaved guard", async () => {
   const header = await read("components/layout/app-header.tsx");
 
-  assert.match(header, /requestNavigation\(\(\) => router\.push\("\/settings"\)\)/);
+  assert.match(header, /const navigateToSettings = \(hash: string\) => \{/);
+  assert.match(header, /requestNavigation\(\(\) => router\.push\(`\/settings#\$\{hash\}`\)\)/);
   assert.match(header, /requestNavigation\(\(\) => \{/);
   assert.match(header, /props\.onModeChange\(mode\);[\s\S]*router\.push\("\/today"\)/);
 });

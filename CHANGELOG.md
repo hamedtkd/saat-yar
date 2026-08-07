@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+### اصلاح شد
+
+- همگام‌سازی Anchorهای Settings بدون setState داخل Effect انجام می‌شود و Deep Linkهای Profile همچنان از Unsaved Navigation Guard عبور می‌کنند.
+- دو قرارداد تست قدیمی ناوبری با معماری Hash-based فاز ۱۲۱ هماهنگ شدند.
+
 ### تغییر کرد
 
 - Header با منوی پروفایل محلی واقعی، وضعیت ذخیره موقت و Workspace Switcher توضیح‌دار ساده‌تر شد.

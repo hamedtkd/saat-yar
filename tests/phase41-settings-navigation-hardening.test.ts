@@ -7,7 +7,7 @@ const read = (path: string) => readFile(new URL(`../${path}`, import.meta.url), 
 test("settings navigation uses a typed section id", async () => {
   const source = await read("components/pages/settings/settings-nav.tsx");
   assert.match(source, /type SettingsSectionId = \(typeof items\)\[number\]\["id"\]/);
-  assert.match(source, /useState<SettingsSectionId>/);
+  assert.match(source, /useSyncExternalStore\(subscribeToHashSection, getHashSectionSnapshot/);
   assert.match(source, /navigateTo = \(id: SettingsSectionId\)/);
 });
 
