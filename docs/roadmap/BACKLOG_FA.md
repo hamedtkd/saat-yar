@@ -190,4 +190,4 @@
 - [x] فاز ۱۱۳: طراحی پروتکل انتقال دستگاه‌به‌دستگاه با Payload نسخه‌دار، Checksum، Merge/Replace، Conflict Preview و رمزنگاری AES-GCM session.
 - [x] فاز ۱۱۴: Pairing مستقیم موبایل و لپ‌تاپ با WebRTC DataChannel و لینک/کد دوطرفه بدون دیتابیس یا Signaling دائمی؛ همراه با انتقال رمزنگاری‌شده و Preview قبل از اعمال.
 - [x] فاز ۱۱۵: افزودن QR محلی و اسکن دوربین روی Pairing Code فاز ۱۱۴؛ شامل QR چندفریمی برای Offer/Answerهای بزرگ و fallback امن Copy/Paste، بدون سرویس QR شخص ثالث.
-
+- [x] فاز ۱۱۶: تست End-to-End انتقال دستگاه؛ رفع Typecheck فاز ۱۱۵، تست کامل رمزنگاری/Chunk/ACK/Preview/Merge، Smoke اختیاری WebRTC در مرورگر و bounded fallback برای Offline PWA.

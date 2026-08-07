@@ -49,3 +49,5 @@
 
 - [یادداشت فاز ۱۱۴: WebRTC Pairing و رفع BufferSource](phases/PHASE_114_NOTES_FA.md)
 - [یادداشت فاز ۱۱۵: QR محلی Pairing](phases/PHASE_115_NOTES_FA.md)
+
+- [یادداشت فاز ۱۱۶: End-to-End انتقال دستگاه و PWA fallback](phases/PHASE_116_NOTES_FA.md)

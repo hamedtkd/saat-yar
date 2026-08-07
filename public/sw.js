@@ -19,6 +19,7 @@ const STATIC_ASSETS = [
   "pwa-precache-manifest.js",
 ];
 const BUILD_ASSETS = Array.isArray(self.__SAATYAR_PRECACHE) ? self.__SAATYAR_PRECACHE : [];
+const NAVIGATION_NETWORK_TIMEOUT_MS = 2_500;
 
 const scopedUrl = (path) => new URL(path, self.registration.scope).toString();
 
@@ -55,8 +56,10 @@ self.addEventListener("activate", (event) => {
 
 async function networkFirst(request) {
   const cache = await caches.open(CACHE_NAME);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), NAVIGATION_NETWORK_TIMEOUT_MS);
   try {
-    const response = await fetch(request);
+    const response = await fetch(request, { signal: controller.signal });
     if (response.ok) await cache.put(request, response.clone());
     return response;
   } catch {
@@ -67,6 +70,8 @@ async function networkFirst(request) {
         status: 503,
         headers: { "Content-Type": "text/plain; charset=utf-8" },
       });
+  } finally {
+    clearTimeout(timeout);
   }
 }
 

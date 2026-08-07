@@ -12,7 +12,7 @@ const read = (path: string) => readFileSync(path, "utf8");
 
 test("phase 114 TypeScript narrowing regression is removed", () => {
   const card = read("components/pages/settings/device-transfer-card.tsx");
-  assert.doesNotMatch(card, /\(pairing\.role === "idle" \|\| pairing\.role === "receiver"\).*pairing\.role !== "sender"/s);
+  assert.equal(/\(pairing\.role === "idle" \|\| pairing\.role === "receiver"\)[\s\S]*pairing\.role !== "sender"/.test(card), false);
   assert.match(card, /pairing\.role === "idle" \|\| pairing\.role === "receiver"/);
 });
 
