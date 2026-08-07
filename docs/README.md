@@ -73,3 +73,5 @@
 - [یادداشت فاز ۱۳۳](./phases/PHASE_133_NOTES_FA.md)
 
 - [فاز ۱۳۴: Browser UX Smoke مسیر فریلنسر](./phases/PHASE_134_NOTES_FA.md)
+
+- [فاز ۱۳۷: ناوبری واقعی SPA و دوام Workflow فریلنسر](./phases/PHASE_137_NOTES_FA.md)

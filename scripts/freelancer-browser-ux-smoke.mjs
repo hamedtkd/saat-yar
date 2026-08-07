@@ -123,6 +123,48 @@ async function navigate(client, url, text) {
   await new Promise((resolveWait) => setTimeout(resolveWait, 250));
 }
 
+async function navigateInApp(client, pathname, text) {
+  const clicked = await evaluate(client, `(() => {
+    const wanted = ${JSON.stringify(pathname)};
+    const anchor = [...document.querySelectorAll('a[href]')].find((item) => {
+      try { return new URL(item.href, location.href).pathname === wanted; } catch { return false; }
+    });
+    if (!anchor) return false;
+    anchor.click();
+    return true;
+  })()`);
+  if (!clicked) throw new Error(`App navigation link not found: ${pathname}`);
+  await waitFor(client, `location.pathname === ${JSON.stringify(pathname)}`, `in-app navigation ${pathname}`);
+  if (text) await waitFor(client, `document.body?.innerText.includes(${JSON.stringify(text)})`, text);
+  await settleUi(client);
+}
+
+async function waitForFreelancerFlowPersistence(client) {
+  const expression = `(async () => {
+    const db = await new Promise((resolve, reject) => {
+      const request = indexedDB.open("saatyar-db", 1);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    const data = await new Promise((resolve, reject) => {
+      const tx = db.transaction("app-data", "readonly");
+      const request = tx.objectStore("app-data").get("current");
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+      tx.oncomplete = () => db.close();
+    });
+    const project = data?.projects?.find((item) => item.name === ${JSON.stringify(PROJECT_NAME)});
+    return Boolean(
+      data?.clients?.some((item) => item.name === ${JSON.stringify(CLIENT_NAME)}) &&
+      project &&
+      data?.timeEntries?.some((item) => item.projectId === project.id && item.endedAt) &&
+      data?.expenses?.some((item) => item.projectId === project.id && item.title === ${JSON.stringify(EXPENSE_NAME)}) &&
+      data?.invoices?.some((item) => item.projectId === project.id && item.items?.some((line) => line.description === ${JSON.stringify(INVOICE_DESCRIPTION)}))
+    );
+  })()`;
+  await waitFor(client, expression, "freelancer workflow persistence");
+}
+
 async function seedFreelancerData(client) {
   const data = createMediaDemoData();
   data.settings.mode = "freelancer";
@@ -322,7 +364,7 @@ async function main() {
     await waitFor(client, `!document.querySelector('[role="dialog"]')`, "quick project dialog close");
     console.log("✓ Project dialog traps focus and creates a linked project");
 
-    await navigate(client, `${server.origin}/projects`, PROJECT_NAME);
+    await navigateInApp(client, "/projects", PROJECT_NAME);
     const selectedProject = await evaluate(client, `(() => {
       const wanted = ${JSON.stringify(PROJECT_NAME)};
       const article = [...document.querySelectorAll("article")].find((item) => (item.textContent || "").includes(wanted));
@@ -348,7 +390,7 @@ async function main() {
     await waitFor(client, `document.body?.innerText.includes(${JSON.stringify(EXPENSE_NAME)}) && !document.body?.innerText.includes("ذخیره هزینه")`, "expense keyboard save");
     console.log("✓ Expense form saves from the keyboard inside project context");
 
-    await navigate(client, `${server.origin}/invoices`, "فاکتورها");
+    await navigateInApp(client, "/invoices", "فاکتورها");
     await clickButton(client, "فاکتور جدید");
     await waitFor(client, `document.body?.innerText.includes("مشخصات صورتحساب")`, "invoice form");
     await chooseSelect(client, "مشتری", CLIENT_NAME);
@@ -361,8 +403,11 @@ async function main() {
     await waitFor(client, `document.body?.innerText.includes(${JSON.stringify(CLIENT_NAME)}) && !document.body?.innerText.includes("مشخصات صورتحساب")`, "invoice save");
     console.log("✓ Invoice creation keeps the client/project relation and validates the real form");
 
+    await waitForFreelancerFlowPersistence(client);
+    console.log("✓ Freelancer workflow is durable in IndexedDB before hard reload");
+
     await client.call("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true, screenWidth: 390, screenHeight: 844 });
-    await navigate(client, `${server.origin}/invoices`, "فاکتورها");
+    await navigate(client, `${server.origin}/invoices`, CLIENT_NAME);
     await clickButton(client, "فاکتور جدید");
     await waitFor(client, `document.body?.innerText.includes("مشخصات صورتحساب")`, "mobile invoice form");
     await clickButton(client, "مشتری جدید");

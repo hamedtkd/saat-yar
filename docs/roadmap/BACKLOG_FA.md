@@ -223,4 +223,5 @@
 - [x] فاز ۱۳۴: Browser UX smoke برای مسیر واقعی Client → Project → Time Entry → Expense → Invoice؛ شامل Validation، Enter submit، Focus trap دیالوگ و قرارداد viewport موبایل روی خروجی Production.
 - [x] فاز ۱۳۵: همگام‌سازی قرارداد Release Gate تاریخی با Freelancer Browser UX smoke؛ حفظ ترتیب Quality → Audit → Production/PWA → Freelancer UX و جلوگیری از شکست کاذب Phase 99.
 - [x] فاز ۱۳۶: مقاوم‌سازی Freelancer Browser UX smoke پس از اجرای واقعی Windows؛ تزریق React-compatible برای Controlled Input، Enter native-like، diagnostics دقیق و حذف noise مرورگر.
-- [ ] فاز ۱۳۷: پالیش Workflow فریلنسر بر اساس اولین شکست واقعی بعد از عبور smoke؛ Loading/Success/Focus فقط در نقاطی که Gate یا تست دستی نیاز واقعی نشان دهد.
+- [x] فاز ۱۳۷: اصلاح وفاداری Freelancer Browser UX smoke به ناوبری واقعی App Router و جداسازی SPA navigation از Reload durability با تأیید صریح IndexedDB.
+- [ ] فاز ۱۳۸: ادامه پالیش Workflow فریلنسر فقط بر اساس اولین شکست واقعی بعدی در Timer، Expense، Invoice یا Mobile Dialog.
