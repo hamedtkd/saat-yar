@@ -58,7 +58,7 @@ export function SettingsBehaviorCard({
 
   const enabled = editor.draft.autoSaveSettings;
   return (
-    <section className="col-span-full rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-5">
+    <section className="col-span-full dashboard-card rounded-[var(--card-radius)] border border-[var(--dashboard-border)] p-5">
       <PanelHead icon={<Save />} title={CARD_LABEL}>
         <div className="flex flex-wrap items-center justify-end gap-2">
           <StatusBadge tone={data.settings.autoSaveSettings ? "success" : "neutral"}>

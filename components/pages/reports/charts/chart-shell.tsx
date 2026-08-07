@@ -4,8 +4,8 @@ import { cn } from "@/lib/cn";
 export function ChartShell({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <article className={cn(
-      "min-w-0 rounded-2xl border border-[var(--border)]",
-      "bg-[var(--surface-glass)] p-4 shadow-[0_12px_38px_rgba(17,45,55,0.055)] sm:p-5 print:break-inside-avoid print:bg-[var(--surface-1)] print:p-3 print:shadow-none",
+      "dashboard-card min-w-0 rounded-[var(--card-radius)] border border-[var(--dashboard-border)]",
+      "bg-[var(--surface-1)] p-4 shadow-[0_6px_20px_rgba(0,0,0,.035)] sm:p-5 print:break-inside-avoid print:bg-[var(--surface-1)] print:p-3 print:shadow-none",
       className,
     )}>
       {children}

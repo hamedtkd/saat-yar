@@ -1,4 +1,6 @@
+import { BarChart3, FileBarChart2, SlidersHorizontal, TableProperties } from "lucide-react";
 import { PageHeading } from "@/components/common/page-heading";
+import { SectionHeading } from "@/components/common/section-heading";
 
 import { ReportCharts } from "./report-charts";
 import { ReportFilters } from "./report-filters";
@@ -45,43 +47,55 @@ export function ReportsPage({
         <ReportActions onExport={exportReport} />
       </PageHeading>
 
-      <ReportFilters mode={mode} data={data} filters={filters} setFilters={setFilters} />
+      <section className="mb-5">
+        <SectionHeading icon={<SlidersHorizontal />} eyebrow="کنترل گزارش" title="فیلترها" description="بازه و وضعیت موردنظر را انتخاب کن؛ خروجی‌ها هم با همین فیلترها ساخته می‌شوند." />
+        <ReportFilters mode={mode} data={data} filters={filters} setFilters={setFilters} />
+      </section>
 
-      {summary.isEmployee ? (
-        <EmployeeSummary
-          stats={summary.effectiveMonthStats}
-          records={monthRecords}
-          overtimeMinutes={summary.overtimeMinutes}
-          deficitMinutes={summary.deficitMinutes}
-          payroll={summary.payroll}
-          financialsHidden={financialsHidden}
-        />
-      ) : (
-        <FreelancerSummary
-          stats={summary.effectiveMonthStats}
-          totalProjectTime={summary.totalProjectTime}
-          reportBillable={reportBillable}
-          nonBillableMinutes={summary.nonBillableMinutes}
-          reportIncome={reportIncome}
-          financialsHidden={financialsHidden}
-        />
-      )}
+      <section className="mb-5">
+        <SectionHeading icon={<FileBarChart2 />} eyebrow="خلاصه ماه" title={summary.isEmployee ? "کارکرد و پرداخت" : "زمان و درآمد"} description="شاخص‌های مهم ماه را بدون ورود به جزئیات مقایسه کن." />
+        {summary.isEmployee ? (
+          <EmployeeSummary
+            stats={summary.effectiveMonthStats}
+            records={monthRecords}
+            overtimeMinutes={summary.overtimeMinutes}
+            deficitMinutes={summary.deficitMinutes}
+            payroll={summary.payroll}
+            financialsHidden={financialsHidden}
+          />
+        ) : (
+          <FreelancerSummary
+            stats={summary.effectiveMonthStats}
+            totalProjectTime={summary.totalProjectTime}
+            reportBillable={reportBillable}
+            nonBillableMinutes={summary.nonBillableMinutes}
+            reportIncome={reportIncome}
+            financialsHidden={financialsHidden}
+          />
+        )}
+      </section>
 
       <FinancialChartsGuard hidden={financialsHidden && mode !== "employee"}>
-        <div className="report-charts print:hidden">
-          <ReportCharts
-          mode={mode}
-          entries={entries}
-          reportBillable={reportBillable}
-          monthRecords={monthRecords}
-          monthStats={summary.effectiveMonthStats}
-          settings={data.settings}
-          />
-        </div>
+        <section className="mb-5 print:hidden">
+          <SectionHeading icon={<BarChart3 />} eyebrow="روندها" title="نمودارهای تحلیلی" description="الگوی کارکرد و توزیع زمان را در طول ماه ببین." />
+          <div className="report-charts">
+            <ReportCharts
+              mode={mode}
+              entries={entries}
+              reportBillable={reportBillable}
+              monthRecords={monthRecords}
+              monthStats={summary.effectiveMonthStats}
+              settings={data.settings}
+            />
+          </div>
+        </section>
       </FinancialChartsGuard>
 
-      <ReportTable mode={mode} data={data} entries={entries} monthRecords={monthRecords} financialsHidden={financialsHidden} />
-      <MonthSummary isEmployee={summary.isEmployee} recordCount={monthRecords.length} stats={summary.effectiveMonthStats} />
+      <section className="mb-5">
+        <SectionHeading icon={<TableProperties />} eyebrow="جزئیات" title="رکوردهای گزارش" description="داده‌های فیلترشده را به‌صورت جدول یا کارت‌های موبایل مرور کن." />
+        <ReportTable mode={mode} data={data} entries={entries} monthRecords={monthRecords} financialsHidden={financialsHidden} />
+        <MonthSummary isEmployee={summary.isEmployee} recordCount={monthRecords.length} stats={summary.effectiveMonthStats} />
+      </section>
     </>
   );
 }

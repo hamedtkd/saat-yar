@@ -30,7 +30,7 @@ export function WorkSettingsCard({ data, setData, setToast, financialsHidden }: 
   const setSetting = <K extends keyof WorkSettingsDraft>(key: K, next: WorkSettingsDraft[K]) => editor.update((previous) => ({ ...previous, [key]: next }));
 
   return (
-    <section className="col-span-full scroll-mt-24 overflow-hidden rounded-[15px] border border-[var(--border)] bg-[var(--surface-1)] shadow-[0_6px_20px_rgba(17,45,55,.04)] max-[620px]:col-auto">
+    <section className="col-span-full scroll-mt-24 overflow-hidden dashboard-card rounded-[var(--card-radius)] border border-[var(--dashboard-border)] shadow-[0_5px_16px_rgba(0,0,0,.03)] max-[620px]:col-auto">
       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-[var(--border)] p-5">
         <div className="grid gap-2"><PanelHead icon={<Settings />} title="تنظیمات کاری و حقوق" /><p className="text-[10px] leading-5 text-[var(--text-muted)]">برای تغییر برنامه کاری از مداد استفاده کن؛ تا زمان ذخیره، داده اصلی تغییر نمی‌کند.</p></div>
         <EditableCardActions editing={editor.manualEditing} dirty={editor.dirty} autoSave={data.settings.autoSaveSettings} onEdit={editor.beginEdit} onSave={() => { editor.save(); setToast("تنظیمات کاری ذخیره شد"); }} onCancel={editor.cancel} />

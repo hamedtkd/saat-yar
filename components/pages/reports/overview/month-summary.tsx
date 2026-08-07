@@ -12,7 +12,7 @@ type MonthSummaryProps = {
 
 export function MonthSummary({ isEmployee, recordCount, stats }: MonthSummaryProps) {
   return (
-    <SurfaceCard as="section" className="mt-4 flex items-center justify-between gap-4 p-4 max-[620px]:items-start">
+    <SurfaceCard as="section" className="mt-3 flex items-center justify-between gap-4 p-4 max-[620px]:items-start max-[620px]:flex-col">
       <div className="grid gap-1">
         <strong className="text-sm font-extrabold text-[var(--text)]">
           {isEmployee ? "جمع‌بندی کارمندی این ماه" : "جمع‌بندی عملکرد این ماه"}

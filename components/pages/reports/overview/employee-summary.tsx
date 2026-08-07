@@ -66,7 +66,7 @@ export function EmployeeSummary({
         <MetricCard icon={<WalletCards />} label="روزهای ثبت‌شده" value={fa.format(records.length)} suffix="روز" />
       </section>
 
-      <SurfaceCard as="section" className="mb-4 p-5">
+      <SurfaceCard as="section" className="mb-4 overflow-hidden p-4 sm:p-5">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div>
             <strong className="block text-sm font-extrabold text-[var(--text)]">فیش حقوقی تخمینی ماه</strong>
@@ -111,7 +111,7 @@ function PayrollStat({
   tone?: keyof typeof statTone;
 }) {
   return (
-    <div className={cn("rounded-xl p-3", statTone[tone])}>
+    <div className={cn("rounded-[15px] border border-[var(--dashboard-border)] p-3.5", statTone[tone])}>
       <span className="block text-[10px] opacity-75">{label}</span>
       <PayrollValue value={value} hidden={hidden} />
     </div>

@@ -44,7 +44,7 @@ export function SettingsNav() {
   };
 
   return <>
-    <aside className="sticky top-[84px] self-start rounded-[15px] border border-[var(--border)] bg-[var(--surface-1)] p-2 shadow-[0_6px_20px_rgba(17,45,55,.04)] max-[900px]:static max-[900px]:flex max-[900px]:overflow-x-auto">
+    <aside className="dashboard-card sticky top-[84px] self-start rounded-[var(--card-radius)] border border-[var(--dashboard-border)] p-2.5 shadow-[0_6px_20px_rgba(0,0,0,.035)] max-[900px]:static max-[900px]:flex max-[900px]:overflow-x-auto">
       {items.map(({ id, label, icon: Icon }) => (
         <button
           key={id}
@@ -52,9 +52,9 @@ export function SettingsNav() {
           aria-current={active === id ? "location" : undefined}
           onClick={() => requestNavigation(() => navigateTo(id))}
           className={cn(
-            "flex min-h-11 w-full items-center gap-3 rounded-[10px] px-3 text-right text-sm font-semibold text-[var(--text)] transition-colors max-[900px]:min-w-max",
+            "group relative flex min-h-11 w-full items-center gap-3 rounded-[12px] px-3 text-right text-[12px] font-bold text-[var(--text)] transition-colors max-[900px]:min-w-max",
             "hover:bg-[var(--accent-soft)]",
-            active === id && "bg-[var(--accent-soft)] text-[var(--accent-strong)]",
+            active === id && "bg-[var(--accent-soft)] text-[var(--accent-strong)] shadow-[inset_-3px_0_0_var(--accent)] max-[900px]:shadow-[inset_0_-3px_0_var(--accent)]",
           )}
         >
           <Icon aria-hidden="true" />

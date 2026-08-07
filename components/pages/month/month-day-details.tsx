@@ -28,7 +28,7 @@ export function MonthDayDetails({ data, selectedDate }: { data: AppData; selecte
   const health = record ? getRecordStatus(record) : null;
 
   return (
-    <article className="rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-1)] p-5 shadow-[0_10px_35px_rgba(17,45,55,.055)]">
+    <article className="dashboard-card rounded-[var(--card-radius)] border border-[var(--dashboard-border)] p-4 shadow-[0_6px_20px_rgba(0,0,0,.035)] sm:p-5">
       <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
         <div>
           <div className="mb-1 flex items-center gap-2 text-sm font-extrabold text-[var(--text)]">
@@ -60,7 +60,7 @@ export function MonthDayDetails({ data, selectedDate }: { data: AppData; selecte
           />
         </div>
       ) : (
-        <div className="flex min-h-28 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-[var(--border)] bg-[var(--surface-2)] text-center">
+        <div className="flex min-h-28 flex-col items-center justify-center gap-2 rounded-[16px] border border-dashed border-[var(--dashboard-border)] bg-[var(--surface-2)] text-center">
           {leave ? <Palmtree className="size-5 text-[var(--info)]" /> : <Clock3 className="size-5 text-[var(--text-muted)]" />}
           <strong className="text-xs text-[var(--text)]">برای این روز هنوز رکورد کاری ثبت نشده است.</strong>
           <span className="text-[10px] text-[var(--text-muted)]">از دکمه ویرایش، ساعت‌ها یا مرخصی روز را ثبت کن.</span>
@@ -78,7 +78,7 @@ export function MonthDayDetails({ data, selectedDate }: { data: AppData; selecte
 
 function Detail({ icon, label, value, tone = "default" }: { icon: ReactNode; label: string; value: string; tone?: "default" | "green" | "red" }) {
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-3">
+    <div className="rounded-[15px] border border-[var(--dashboard-border)] bg-[var(--surface-2)] p-3.5">
       <div className="mb-2 flex items-center gap-2 text-[10px] text-[var(--text-muted)]">{icon}{label}</div>
       <strong dir="ltr" className={cn("block text-right text-sm font-black text-[var(--text)]", tone === "green" && "text-[var(--accent-strong)]", tone === "red" && "text-[var(--danger)]")}>{value}</strong>
     </div>
