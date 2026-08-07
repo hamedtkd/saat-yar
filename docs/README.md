@@ -39,9 +39,10 @@
 - [یادداشت فاز ۱۰۹: رفع Lint PWA و Capture رسانه](./phases/PHASE_109_NOTES_FA.md)
 - [یادداشت فاز ۱۱۰: مقاوم‌سازی Offline PWA و Media Capture](./phases/PHASE_110_NOTES_FA.md)
 - [یادداشت فاز ۱۱۱: موتور حقوق قابل سفارشی‌سازی](./phases/PHASE_111_NOTES_FA.md)
+- [فاز ۱۱۲: Policy حقوق و Schema v17](./phases/PHASE_112_NOTES_FA.md)
+- [فاز ۱۱۳: پروتکل امن انتقال دستگاه‌به‌دستگاه](./phases/PHASE_113_NOTES_FA.md)
 - [قرارداد موتور حقوق سفارشی](./payroll/CUSTOM_PAYROLL_ENGINE_FA.md)
+- [قرارداد انتقال دستگاه‌به‌دستگاه](./device-transfer/PROTOCOL_FA.md)
 - [یادداشت‌های فازها](./phases/)
 
 فایل‌های قراردادی متداول مانند `README.md`، `SECURITY.md`، `CHANGELOG.md`، `LICENSE`، `CONTRIBUTING.md` و `AGENTS.md` عمداً در ریشه مخزن باقی می‌مانند.
-
-- [فاز ۱۱۲ — Policy حقوق و Schema v17](phases/PHASE_112_NOTES_FA.md)

@@ -29,6 +29,8 @@ test("production smoke waits for a real offline page reload and validates build 
   assert.match(source, /Page\.reload/);
   assert.match(source, /Page\.loadEventFired/);
   assert.doesNotMatch(source, /evaluate\(client, `location\.reload\(\)`\)/);
+  assert.match(source, /staticServer\.close\(\)/);
+  assert.doesNotMatch(source, /offline: true/);
 });
 
 test("media capture starts clean before app boot and reports browser exceptions", () => {

@@ -187,6 +187,6 @@
 - [x] فاز ۱۱۰: مقاوم‌سازی Offline PWA و Media Capture؛ precache دارایی‌های build، تست reload واقعی و پاک‌سازی امن Storage در Capture.
 - [x] فاز ۱۱۱: طراحی و پیاده‌سازی موتور محاسبه حقوق Rule-based با Presetهای ماهانه متناسب، ماهانه ثابت، ساعتی و روزکاری؛ بدون تغییر نتیجه محاسبه فعلی.
 - [x] فاز ۱۱۲: افزودن Policy حقوق به Settings، ارتقای Schema v17/Migration/Backup و ساخت UI، Preview و Breakdown شفاف در گزارش‌ها.
-- [ ] فاز ۱۱۳: طراحی پروتکل انتقال دستگاه‌به‌دستگاه با Payload نسخه‌دار، Merge/Replace، Conflict Preview و رمزنگاری session.
+- [x] فاز ۱۱۳: طراحی پروتکل انتقال دستگاه‌به‌دستگاه با Payload نسخه‌دار، Checksum، Merge/Replace، Conflict Preview و رمزنگاری AES-GCM session.
 - [ ] فاز ۱۱۴: Pairing سریع موبایل و لپ‌تاپ با QR و WebRTC DataChannel بدون دیتابیس دائمی؛ با fallback دوطرفه QR/کد دستی در نبود Signaling.
 

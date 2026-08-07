@@ -308,14 +308,16 @@ export async function runProductionBrowserSmoke() {
     if (!secondLabel || secondLabel === firstLabel) throw new Error("Date navigation did not update the selected date.");
     console.log(`✓ Date navigation changed “${firstLabel}” to “${secondLabel}”`);
 
-    await client.call("Network.enable");
-    await client.call("Network.emulateNetworkConditions", { offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0 });
+    // Simulate an unreachable origin instead of disabling Chrome networking globally.
+    // This keeps CDP/runtime communication stable while proving that the service worker
+    // can boot the installed shell with the production server unavailable.
+    await staticServer.close();
+    staticServer = null;
     const offlineLoad = waitForEvent(client, "Page.loadEventFired", "offline PWA load event", 45_000);
-    await client.call("Page.reload", { ignoreCache: true });
+    await client.call("Page.reload", { ignoreCache: false });
     await offlineLoad;
     await waitFor(client, "document.readyState === 'complete' && document.body?.innerText.includes('ساعت‌یار')", "offline PWA reload", 45_000);
     console.log("✓ Installed shell reloads while offline");
-    await client.call("Network.emulateNetworkConditions", { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
 
     if (runtimeErrors.length > 0) throw new Error(`Browser runtime errors:\n${runtimeErrors.join("\n")}`);
     console.log("Production browser smoke passed.");

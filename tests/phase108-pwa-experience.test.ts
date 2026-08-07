@@ -45,7 +45,8 @@ test("production browser smoke verifies installability and offline reload", () =
   const source = read("scripts/production-browser-smoke.mjs");
   assert.match(source, /PWA manifest and service worker are install-ready/);
   assert.match(source, /Installed shell reloads while offline/);
-  assert.match(source, /Network\.emulateNetworkConditions/);
+  assert.match(source, /staticServer\.close\(\)/);
+  assert.doesNotMatch(source, /Network\.emulateNetworkConditions/);
 });
 
 test("phase 108 closes the PWA UX backlog and runs in the main quality command", () => {
