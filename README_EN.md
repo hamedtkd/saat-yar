@@ -292,3 +292,14 @@ Maintained by **Hamed Ahmadi — hamedtkd**
 
 - GitHub: [hamedtkd](https://github.com/hamedtkd)
 - Support: [daramet.com/hamedtkd](https://daramet.com/hamedtkd)
+
+## Product media
+
+After a production build, the repository can regenerate standard screenshots and the onboarding GIF from isolated demo data without reading real user data:
+
+```bash
+npm run media:capture
+```
+
+Outputs are written to `docs/assets/screenshots/` and `docs/assets/media/`.
+

@@ -1,7 +1,7 @@
 "use client";
 
 import { Download, RefreshCw, Share2, WifiOff, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { AlertBanner } from "@/components/common/alert-banner";
 import { useUnsavedNavigation } from "@/components/layout/navigation/unsaved-navigation-provider";
 import { Button } from "@/components/ui/button";
@@ -13,37 +13,58 @@ import {
   setDeferredInstallPrompt,
 } from "@/lib/pwa-client";
 
+const noopSubscribe = () => () => {};
+
+function subscribeOnline(onStoreChange: () => void) {
+  window.addEventListener("online", onStoreChange);
+  window.addEventListener("offline", onStoreChange);
+  return () => {
+    window.removeEventListener("online", onStoreChange);
+    window.removeEventListener("offline", onStoreChange);
+  };
+}
+
+function subscribeStandalone(onStoreChange: () => void) {
+  const media = window.matchMedia("(display-mode: standalone)");
+  media.addEventListener("change", onStoreChange);
+  window.addEventListener(PWA_EVENT.installed, onStoreChange);
+  return () => {
+    media.removeEventListener("change", onStoreChange);
+    window.removeEventListener(PWA_EVENT.installed, onStoreChange);
+  };
+}
+
+function subscribeInstallPrompt(onStoreChange: () => void) {
+  window.addEventListener(PWA_EVENT.installAvailable, onStoreChange);
+  window.addEventListener(PWA_EVENT.installed, onStoreChange);
+  return () => {
+    window.removeEventListener(PWA_EVENT.installAvailable, onStoreChange);
+    window.removeEventListener(PWA_EVENT.installed, onStoreChange);
+  };
+}
+
 export function PwaExperience() {
   const { requestNavigation } = useUnsavedNavigation();
-  const [online, setOnline] = useState(true);
-  const [installed, setInstalled] = useState(false);
-  const [installAvailable, setInstallAvailable] = useState(false);
+  const online = useSyncExternalStore(subscribeOnline, () => navigator.onLine, () => true);
+  const standalone = useSyncExternalStore(subscribeStandalone, isStandalonePwa, () => false);
+  const installAvailable = useSyncExternalStore(
+    subscribeInstallPrompt,
+    () => Boolean(getDeferredInstallPrompt()),
+    () => false,
+  );
+  const iosLike = useSyncExternalStore(noopSubscribe, isIosLike, () => false);
+  const [installedByEvent, setInstalledByEvent] = useState(false);
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const [installDismissed, setInstallDismissed] = useState(false);
   const [updating, setUpdating] = useState(false);
+  const installed = standalone || installedByEvent;
 
   useEffect(() => {
-    const syncConnection = () => setOnline(navigator.onLine);
-    const syncInstall = () => setInstallAvailable(Boolean(getDeferredInstallPrompt()));
-    const markInstalled = () => {
-      setInstalled(true);
-      setInstallAvailable(false);
-    };
+    const markInstalled = () => setInstalledByEvent(true);
     const markUpdate = () => setUpdateAvailable(true);
-
-    syncConnection();
-    setInstalled(isStandalonePwa());
-    syncInstall();
-
-    window.addEventListener("online", syncConnection);
-    window.addEventListener("offline", syncConnection);
-    window.addEventListener(PWA_EVENT.installAvailable, syncInstall);
     window.addEventListener(PWA_EVENT.installed, markInstalled);
     window.addEventListener(PWA_EVENT.updateAvailable, markUpdate);
     return () => {
-      window.removeEventListener("online", syncConnection);
-      window.removeEventListener("offline", syncConnection);
-      window.removeEventListener(PWA_EVENT.installAvailable, syncInstall);
       window.removeEventListener(PWA_EVENT.installed, markInstalled);
       window.removeEventListener(PWA_EVENT.updateAvailable, markUpdate);
     };
@@ -55,7 +76,6 @@ export function PwaExperience() {
     await prompt.prompt();
     const choice = await prompt.userChoice;
     if (choice.outcome === "accepted") {
-      setInstallAvailable(false);
       setDeferredInstallPrompt(undefined);
     }
   };
@@ -125,7 +145,7 @@ export function PwaExperience() {
     );
   }
 
-  if (!installed && isIosLike() && !installDismissed) {
+  if (!installed && iosLike && !installDismissed) {
     return (
       <PwaBanner>
         <AlertBanner

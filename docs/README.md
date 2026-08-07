@@ -36,6 +36,7 @@
 - [یادداشت فاز ۱۰۶: یکپارچه‌سازی طراحی صفحات اصلی](./phases/PHASE_106_NOTES_FA.md)
 - [یادداشت فاز ۱۰۷: Design Freeze صفحات کسب‌وکار](./phases/PHASE_107_NOTES_FA.md)
 - [یادداشت فاز ۱۰۸: تجربه کامل PWA](./phases/PHASE_108_NOTES_FA.md)
+- [یادداشت فاز ۱۰۹: رفع Lint PWA و Capture رسانه](./phases/PHASE_109_NOTES_FA.md)
 - [یادداشت‌های فازها](./phases/)
 
 فایل‌های قراردادی متداول مانند `README.md`، `SECURITY.md`، `CHANGELOG.md`، `LICENSE`، `CONTRIBUTING.md` و `AGENTS.md` عمداً در ریشه مخزن باقی می‌مانند.
