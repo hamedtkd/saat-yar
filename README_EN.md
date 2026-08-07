@@ -79,7 +79,7 @@ For real long-term data, create regular JSON backups from the data and backup se
 - Locally bundled Vazirmatn font
 - Responsive desktop and mobile layouts
 - Keyboard access, focus management, and reduced-motion support
-- PWA manifest and installable web-app behavior where the browser supports it
+- PWA install UX, offline shell, and user-approved update prompts where the browser supports them
 
 ## Privacy and the local-first model
 

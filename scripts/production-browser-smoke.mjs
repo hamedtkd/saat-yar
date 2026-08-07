@@ -244,6 +244,27 @@ export async function runProductionBrowserSmoke() {
     await new Promise((resolveWait) => setTimeout(resolveWait, 400));
     console.log("✓ Onboarding completed and today route rendered");
 
+    await waitFor(client, `navigator.serviceWorker?.ready.then(() => true).catch(() => false)`, "PWA service worker readiness");
+    await waitFor(client, `Boolean(navigator.serviceWorker?.controller)`, "PWA service worker control");
+    const pwaContract = await evaluate(client, `(async () => {
+      const link = document.querySelector('link[rel="manifest"]');
+      if (!link) return null;
+      const manifest = await fetch(link.href).then((response) => response.json());
+      const registration = await navigator.serviceWorker.getRegistration();
+      return {
+        name: manifest.name,
+        shortName: manifest.short_name,
+        display: manifest.display,
+        iconCount: Array.isArray(manifest.icons) ? manifest.icons.length : 0,
+        active: Boolean(registration?.active),
+        controlled: Boolean(navigator.serviceWorker.controller),
+      };
+    })()`);
+    if (!pwaContract?.active || !pwaContract.controlled || pwaContract.name !== "ساعت‌یار" || pwaContract.shortName !== "ساعت‌یار" || pwaContract.display !== "standalone" || pwaContract.iconCount < 3) {
+      throw new Error(`PWA installability contract failed: ${JSON.stringify(pwaContract)}`);
+    }
+    console.log("✓ PWA manifest and service worker are install-ready");
+
     const firstLabel = await evaluate(client, `document.querySelector('[aria-haspopup="dialog"] strong')?.textContent?.trim() || ""`);
     await evaluate(client, `document.querySelector('[aria-haspopup="dialog"]')?.click()`);
     await waitFor(client, "Boolean(document.querySelector('[role=dialog]'))", "date picker dialog");
@@ -260,6 +281,13 @@ export async function runProductionBrowserSmoke() {
     const secondLabel = await evaluate(client, `document.querySelector('[aria-haspopup="dialog"] strong')?.textContent?.trim() || ""`);
     if (!secondLabel || secondLabel === firstLabel) throw new Error("Date navigation did not update the selected date.");
     console.log(`✓ Date navigation changed “${firstLabel}” to “${secondLabel}”`);
+
+    await client.call("Network.enable");
+    await client.call("Network.emulateNetworkConditions", { offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0 });
+    await evaluate(client, `location.reload()`);
+    await waitFor(client, "document.readyState === 'complete' && document.body?.innerText.includes('ساعت‌یار')", "offline PWA reload");
+    console.log("✓ Installed shell reloads while offline");
+    await client.call("Network.emulateNetworkConditions", { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
 
     if (runtimeErrors.length > 0) throw new Error(`Browser runtime errors:\n${runtimeErrors.join("\n")}`);
     console.log("Production browser smoke passed.");

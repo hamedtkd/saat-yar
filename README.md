@@ -81,7 +81,7 @@
 - فونت Vazirmatn به‌صورت محلی
 - طراحی Responsive برای موبایل و دسکتاپ
 - دسترسی‌پذیری کیبورد، Focus management و Reduced motion
-- PWA و امکان نصب روی دستگاه
+- PWA با نصب داخل برنامه، Offline shell و اعلان امن نسخه جدید
 
 ## حریم خصوصی و مدل Local-first
 

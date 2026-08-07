@@ -12,6 +12,7 @@ import { MultiTabSyncBanner } from "@/components/layout/multi-tab-sync-banner";
 import { LiveTimerOwnershipBanner } from "@/components/layout/live-timer-ownership-banner";
 import { SidebarNav } from "@/components/layout/navigation/sidebar-nav";
 import { MobileBottomNav } from "@/components/layout/navigation/mobile-bottom-nav";
+import { PwaExperience } from "@/components/pwa/pwa-experience";
 import { UnsavedNavigationProvider } from "@/components/layout/navigation/unsaved-navigation-provider";
 import { RouteGuard } from "@/components/layout/navigation/route-guard";
 import { RouteSync } from "@/components/layout/route-sync";
@@ -99,6 +100,8 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
           appearance={data.settings.appearance}
           onThemeModeChange={(mode) => setData((previous) => ({ ...previous, settings: { ...previous.settings, appearance: { ...previous.settings.appearance, mode } } }))}
         />
+
+        <PwaExperience />
 
         <LiveTimerOwnershipBanner blocked={controller.liveTimerOwnership.blocked} owner={controller.liveTimerOwnership.owner} onTakeOver={controller.liveTimerOwnership.takeOver} />
 

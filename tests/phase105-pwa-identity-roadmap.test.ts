@@ -28,8 +28,11 @@ test("install icons keep dedicated any and maskable assets at production sizes",
 
 test("service worker cache version invalidates stale PWA icon assets", () => {
   const sw = read("public/sw.js");
-  assert.match(sw, /saatyar-shell-v5/);
-  assert.match(sw, /saatyar-static-v5/);
+  const shellVersion = sw.match(/saatyar-shell-v(\d+)/)?.[1];
+  const staticVersion = sw.match(/saatyar-static-v(\d+)/)?.[1];
+  assert.ok(shellVersion);
+  assert.equal(shellVersion, staticVersion);
+  assert.ok(Number(shellVersion) >= 5);
   assert.match(sw, /icons\/icon-192\.png/);
   assert.match(sw, /icons\/maskable-512\.png/);
 });

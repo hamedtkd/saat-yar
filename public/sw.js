@@ -1,5 +1,5 @@
-const CACHE_NAME = "saatyar-shell-v5";
-const STATIC_CACHE = "saatyar-static-v5";
+const CACHE_NAME = "saatyar-shell-v6";
+const STATIC_CACHE = "saatyar-static-v6";
 const APP_ROUTES = ["", "today/", "month/", "leave/", "reports/", "clients/", "projects/", "invoices/", "settings/"];
 const STATIC_ASSETS = [
   "manifest.webmanifest",
@@ -27,7 +27,10 @@ async function warmCache(cacheName, paths) {
 
 self.addEventListener("install", (event) => {
   event.waitUntil(Promise.all([warmCache(CACHE_NAME, APP_ROUTES), warmCache(STATIC_CACHE, STATIC_ASSETS)]));
-  self.skipWaiting();
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data?.type === "SKIP_WAITING") self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
