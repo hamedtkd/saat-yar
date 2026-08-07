@@ -25,22 +25,23 @@ test("settings navigation exposes every important card including device transfer
   }
 });
 
-test("settings active item follows scroll position and hash without component state", async () => {
+test("settings active item follows scroll position and hash without effect-driven active state", async () => {
   const nav = await read("components/pages/settings/settings-nav.tsx");
   assert.match(nav, /getBoundingClientRect\(\)\.top/);
   assert.match(nav, /window\.addEventListener\("scroll", schedule/);
   assert.match(nav, /window\.addEventListener\("resize", schedule\)/);
   assert.match(nav, /window\.addEventListener\("hashchange", schedule\)/);
   assert.match(nav, /aria-current=\{isActive \? "location"/);
-  assert.doesNotMatch(nav, /useState/);
+  assert.match(nav, /useSyncExternalStore\(subscribeToSettingsPosition/);
+  assert.doesNotMatch(nav, /setActive/);
 });
 
-test("settings navigation stays visible and horizontally reachable on mobile", async () => {
+test("settings navigation stays visible and grouped on mobile", async () => {
   const nav = await read("components/pages/settings/settings-nav.tsx");
   assert.match(nav, /max-\[900px\]:top-\[72px\]/);
-  assert.match(nav, /max-\[900px\]:overflow-x-auto/);
-  assert.match(nav, /max-\[900px\]:min-w-max/);
-  assert.match(nav, /max-\[900px\]:contents/);
+  assert.match(nav, /overflow-x-auto/);
+  assert.match(nav, /data-settings-group-id/);
+  assert.match(nav, /getSettingsGroupItems\(activeGroup\)/);
 });
 
 test("settings search and navigation share one destination model and phase 126 is in quality", async () => {

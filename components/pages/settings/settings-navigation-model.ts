@@ -18,11 +18,13 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
+export type SettingsNavGroupId = "settings-general" | "settings-data" | "settings-work" | "settings-about";
+
 export type SettingsNavItem = {
   id: string;
   label: string;
   group: string;
-  groupId: "settings-general" | "settings-data" | "settings-work" | "settings-about";
+  groupId: SettingsNavGroupId;
   icon: LucideIcon;
   keywords: string;
 };
@@ -54,13 +56,21 @@ export const settingsNavGroups = [
   { id: "settings-data", label: "داده و پشتیبان" },
   { id: "settings-work", label: "برنامه کاری و حقوق" },
   { id: "settings-about", label: "ایمنی" },
-] as const;
+] as const satisfies readonly { id: SettingsNavGroupId; label: string }[];
 
 const groupFallbacks = Object.fromEntries(
   settingsNavGroups.map((group) => [group.id, settingsNavItems.find((item) => item.groupId === group.id)?.id]),
-) as Record<string, string | undefined>;
+) as Record<SettingsNavGroupId, string | undefined>;
 
 export function resolveSettingsNavItem(value: string) {
   if (settingsNavItems.some((item) => item.id === value)) return value;
-  return groupFallbacks[value] ?? null;
+  return groupFallbacks[value as SettingsNavGroupId] ?? null;
+}
+
+export function getSettingsGroupId(itemId: string): SettingsNavGroupId {
+  return settingsNavItems.find((item) => item.id === itemId)?.groupId ?? settingsNavGroups[0].id;
+}
+
+export function getSettingsGroupItems(groupId: SettingsNavGroupId) {
+  return settingsNavItems.filter((item) => item.groupId === groupId);
 }

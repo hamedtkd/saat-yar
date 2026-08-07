@@ -1,4 +1,5 @@
 ## [Unreleased]
+- Settings navigation now supports collapsible desktop groups and a two-level mobile section navigator while preserving scroll-spy state.
 
 ### Fixed
 

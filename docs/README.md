@@ -62,3 +62,5 @@
 - [فاز ۱۲۶: پالیش Navigation موبایل و Settings](./phases/PHASE_126_NOTES_FA.md)
 
 - [فاز ۱۲۷: دقت برنامه کاری، Reminder UI و صفحه درباره](./phases/PHASE_127_NOTES_FA.md)
+
+- [فاز ۱۲۸: گروه‌بندی باز/بسته‌شونده Settings و Scroll Spy](./phases/PHASE_128_NOTES_FA.md)

@@ -1,8 +1,7 @@
 import {
   BookOpenCheck,
-  Github,
   HeartHandshake,
-  Linkedin,
+  UserRound,
   Send,
   ShieldCheck,
   Smartphone,
@@ -11,9 +10,9 @@ import {
 import { PageHeading } from "@/components/common/page-heading";
 
 const externalLinks = [
-  { label: "کد منبع در GitHub", href: "https://github.com/hamedtkd/saat-yar", icon: Github },
+  { label: "کد منبع در GitHub", href: "https://github.com/hamedtkd/saat-yar", icon: BookOpenCheck },
   { label: "حمایت مالی اختیاری", href: "https://daramet.com/hamedtkd", icon: HeartHandshake },
-  { label: "LinkedIn حامد احمدی", href: "https://www.linkedin.com/in/hamed-ahmadi1/", icon: Linkedin },
+  { label: "LinkedIn حامد احمدی", href: "https://www.linkedin.com/in/hamed-ahmadi1/", icon: UserRound },
   { label: "Telegram @hamed_tkd", href: "https://t.me/hamed_tkd", icon: Send },
 ] as const;
 
