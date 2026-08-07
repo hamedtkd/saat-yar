@@ -221,4 +221,5 @@
 - [x] فاز ۱۳۲: Audit کنترل‌های native باقی‌مانده مرورگر؛ حذف Number spinnerهای مرورگر با ورودی عددی فارسی/کیبوردی، پنهان‌سازی trigger خام Color/File پشت کنترل‌های Design System و تثبیت Audit برای date/time/range/selectهای خام.
 - [x] فاز ۱۳۳: Audit فرم‌های مالی/فریلنسر؛ Validation درون‌فرمی، submit کیبوردی، Empty Stateهای دارای CTA و حذف alert مرورگر از ثبت زمان دستی؛ بدون افزودن relation تکراری به Expense پروژه.
 - [x] فاز ۱۳۴: Browser UX smoke برای مسیر واقعی Client → Project → Time Entry → Expense → Invoice؛ شامل Validation، Enter submit، Focus trap دیالوگ و قرارداد viewport موبایل روی خروجی Production.
-- [ ] فاز ۱۳۵: پالیش پس از Browser UX audit؛ رفع هر اصطکاکی که Smoke یا تست دستی در جریان فریلنسر نشان دهد و افزودن stateهای Loading/Success فقط در نقاط لازم.
+- [x] فاز ۱۳۵: همگام‌سازی قرارداد Release Gate تاریخی با Freelancer Browser UX smoke؛ حفظ ترتیب Quality → Audit → Production/PWA → Freelancer UX و جلوگیری از شکست کاذب Phase 99.
+- [ ] فاز ۱۳۶: پالیش پس از اجرای واقعی Freelancer Browser UX smoke؛ رفع هر اصطکاک Runtime/Focus/Keyboard/Mobile که Gate یا تست دستی نشان دهد و افزودن Loading/Success فقط در نقاط لازم.

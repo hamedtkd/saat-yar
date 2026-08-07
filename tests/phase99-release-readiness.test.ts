@@ -27,13 +27,14 @@ test("historical 2.1.0 release manifest remains immutable", () => {
   assert.equal(historicalManifest.releaseCommit, "0901b67");
 });
 
-test("release gate keeps quality audit and production browser smoke in order", () => {
+test("release gate keeps quality audit and browser UX smokes in order", () => {
   assert.deepEqual(
     packageJson.scripts["check:release"].split("&&").map((step) => step.trim()),
     [
       "npm run check:quality",
       "npm run check:release:audit",
       "npm run test:browser:production:built",
+      "npm run test:browser:freelancer:built",
     ],
   );
   assert.equal(
