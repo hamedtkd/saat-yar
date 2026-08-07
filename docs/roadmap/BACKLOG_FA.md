@@ -222,4 +222,5 @@
 - [x] فاز ۱۳۳: Audit فرم‌های مالی/فریلنسر؛ Validation درون‌فرمی، submit کیبوردی، Empty Stateهای دارای CTA و حذف alert مرورگر از ثبت زمان دستی؛ بدون افزودن relation تکراری به Expense پروژه.
 - [x] فاز ۱۳۴: Browser UX smoke برای مسیر واقعی Client → Project → Time Entry → Expense → Invoice؛ شامل Validation، Enter submit، Focus trap دیالوگ و قرارداد viewport موبایل روی خروجی Production.
 - [x] فاز ۱۳۵: همگام‌سازی قرارداد Release Gate تاریخی با Freelancer Browser UX smoke؛ حفظ ترتیب Quality → Audit → Production/PWA → Freelancer UX و جلوگیری از شکست کاذب Phase 99.
-- [ ] فاز ۱۳۶: پالیش پس از اجرای واقعی Freelancer Browser UX smoke؛ رفع هر اصطکاک Runtime/Focus/Keyboard/Mobile که Gate یا تست دستی نشان دهد و افزودن Loading/Success فقط در نقاط لازم.
+- [x] فاز ۱۳۶: مقاوم‌سازی Freelancer Browser UX smoke پس از اجرای واقعی Windows؛ تزریق React-compatible برای Controlled Input، Enter native-like، diagnostics دقیق و حذف noise مرورگر.
+- [ ] فاز ۱۳۷: پالیش Workflow فریلنسر بر اساس اولین شکست واقعی بعد از عبور smoke؛ Loading/Success/Focus فقط در نقاطی که Gate یا تست دستی نیاز واقعی نشان دهد.

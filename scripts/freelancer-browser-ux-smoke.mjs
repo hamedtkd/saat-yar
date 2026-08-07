@@ -101,8 +101,19 @@ async function waitFor(client, expression, label, timeout = TIMEOUT) {
     }
     await new Promise((resolveWait) => setTimeout(resolveWait, 100));
   }
-  const body = await evaluate(client, `(document.body?.innerText || "").replace(/\\s+/g," ").slice(0,700)`).catch(() => "");
-  throw new Error(`Timed out while waiting for ${label}. Body: ${body}`);
+  const diagnostics = await evaluate(client, `(() => ({
+    href: location.href,
+    body: (document.body?.innerText || "").replace(/\\s+/g," ").slice(0,700),
+    active: document.activeElement ? {
+      tag: document.activeElement.tagName,
+      type: document.activeElement.getAttribute?.("type") || "",
+      value: "value" in document.activeElement ? String(document.activeElement.value).slice(0,120) : "",
+      text: (document.activeElement.textContent || "").replace(/\\s+/g," ").trim().slice(0,120),
+    } : null,
+    alerts: [...document.querySelectorAll('[role="alert"]')].map((node) => (node.textContent || "").replace(/\\s+/g," ").trim()).filter(Boolean).slice(0,4),
+    dialog: (document.querySelector('[role="dialog"]')?.textContent || "").replace(/\\s+/g," ").trim().slice(0,220),
+  }))()`).catch(() => null);
+  throw new Error(`Timed out while waiting for ${label}. State: ${JSON.stringify(diagnostics)}`);
 }
 
 async function navigate(client, url, text) {
@@ -168,16 +179,37 @@ async function focusField(client, label) {
   if (!focused) throw new Error(`Field not found: ${label}`);
 }
 
+async function settleUi(client) {
+  await evaluate(client, `new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))`);
+}
+
 async function replaceFocusedText(client, value) {
-  await client.call("Input.dispatchKeyEvent", { type: "keyDown", key: "a", code: "KeyA", modifiers: 2 });
-  await client.call("Input.dispatchKeyEvent", { type: "keyUp", key: "a", code: "KeyA", modifiers: 2 });
-  await client.call("Input.insertText", { text: value });
+  const updated = await evaluate(client, `(() => {
+    const field = document.activeElement;
+    if (!(field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement)) return false;
+    const prototype = field instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+    const setter = Object.getOwnPropertyDescriptor(prototype, "value")?.set;
+    if (!setter) return false;
+    setter.call(field, ${JSON.stringify(value)});
+    field.dispatchEvent(new InputEvent("input", { bubbles: true, inputType: "insertText", data: ${JSON.stringify(value)} }));
+    field.dispatchEvent(new Event("change", { bubbles: true }));
+    return field.value === ${JSON.stringify(value)};
+  })()`);
+  if (!updated) throw new Error("Focused field could not receive React-compatible text input.");
+  await settleUi(client);
+  const reflected = await evaluate(client, `document.activeElement?.value === ${JSON.stringify(value)}`);
+  if (!reflected) throw new Error(`Controlled field did not retain the expected value: ${value}`);
 }
 
 async function pressKey(client, key, code = key) {
   const windowsVirtualKeyCode = key === "Enter" ? 13 : key === "Tab" ? 9 : 0;
-  await client.call("Input.dispatchKeyEvent", { type: "keyDown", key, code, windowsVirtualKeyCode });
-  await client.call("Input.dispatchKeyEvent", { type: "keyUp", key, code, windowsVirtualKeyCode });
+  const text = key === "Enter" ? "\r" : undefined;
+  await client.call("Input.dispatchKeyEvent", {
+    type: "keyDown", key, code, windowsVirtualKeyCode, nativeVirtualKeyCode: windowsVirtualKeyCode,
+    ...(text ? { text, unmodifiedText: text } : {}),
+  });
+  await client.call("Input.dispatchKeyEvent", { type: "keyUp", key, code, windowsVirtualKeyCode, nativeVirtualKeyCode: windowsVirtualKeyCode });
+  await settleUi(client);
 }
 
 async function chooseSelect(client, label, option) {
@@ -226,7 +258,18 @@ async function main() {
   const server = await startStaticExportServer({ outputDirectory });
   const profileDir = await mkdtemp(join(tmpdir(), "saatyar-freelancer-ux-"));
   const debugPort = await freePort();
-  const args = ["--headless=new", `--remote-debugging-port=${debugPort}`, `--user-data-dir=${profileDir}`, "--no-first-run", "--no-default-browser-check", "--disable-dev-shm-usage", "about:blank"];
+  const args = [
+    "--headless=new",
+    `--remote-debugging-port=${debugPort}`,
+    `--user-data-dir=${profileDir}`,
+    "--no-first-run",
+    "--no-default-browser-check",
+    "--disable-dev-shm-usage",
+    "--disable-background-networking",
+    "--disable-component-update",
+    "--disable-sync",
+    "about:blank",
+  ];
   if (typeof process.getuid === "function" && process.getuid() === 0) args.push("--no-sandbox");
   const browser = spawn(browserExecutable, args, { stdio: ["ignore", "ignore", "pipe"] });
   let browserOutput = "";
@@ -342,7 +385,12 @@ async function main() {
     if (client.runtimeErrors.length) throw new Error(`Browser runtime errors:\n${client.runtimeErrors.join("\n")}`);
     console.log("Freelancer browser UX smoke passed.");
   } catch (error) {
-    if (browserOutput.trim()) console.error(`\nBrowser output:\n${browserOutput.trim()}`);
+    const usefulOutput = browserOutput
+      .split(/\r?\n/)
+      .filter((line) => !/google_apis[\\/]gcm|DEPRECATED_ENDPOINT|Authentication Failed: wrong_secret|Failed to log in to GCM|TensorFlow Lite XNNPACK/i.test(line))
+      .join("\n")
+      .trim();
+    if (usefulOutput) console.error(`\nBrowser output:\n${usefulOutput}`);
     throw error;
   } finally {
     client?.close();
