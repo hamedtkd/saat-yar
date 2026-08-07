@@ -86,3 +86,4 @@
 - [فاز ۱۴۲: تکمیل Transition روز کارمند و Browser Journey](./phases/PHASE_142_NOTES_FA.md)
 - [فاز ۱۴۳: تثبیت محاسبه وقفه کارمند و Patchهای رکورد](./phases/PHASE_143_NOTES_FA.md)
 - [فاز ۱۴۴: مقاوم‌سازی Startup مرورگر در Release Gate](./phases/PHASE_144_NOTES_FA.md)
+- [فاز ۱۴۵: رفع TypeScript contract در Browser Debug Startup](./phases/PHASE_145_NOTES_FA.md)

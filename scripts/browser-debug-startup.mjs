@@ -96,6 +96,25 @@ export function summarizeBrowserStartupFailure(error, output = "") {
   return devtoolsLine ? `${message} (${devtoolsLine.trim()})` : message;
 }
 
+/**
+ * @typedef {Object} BrowserDebugLaunchOptions
+ * @property {string} executable
+ * @property {string} profilePrefix
+ * @property {string[]} [extraArgs]
+ * @property {number} [timeout]
+ * @property {number} [attempts]
+ * @property {(details: { attempt: number, nextAttempt: number, attempts: number, failure: string }) => void} [onRetry]
+ */
+
+/**
+ * Launch a browser debugging target with a bounded startup retry.
+ * The explicit JSDoc contract is intentional: TypeScript consumes this `.mjs`
+ * helper from strict `.ts` release-contract tests, and an untyped `[]` default
+ * can otherwise narrow `extraArgs` to `never[]`.
+ *
+ * @param {BrowserDebugLaunchOptions} options
+ * @param {ReturnType<typeof defaultRuntime>} [runtime]
+ */
 export async function launchBrowserDebugTarget({
   executable,
   profilePrefix,

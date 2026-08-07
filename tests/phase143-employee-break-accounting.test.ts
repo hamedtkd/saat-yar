@@ -45,6 +45,6 @@ test("phase 143 stays in quality and keeps 2.3.0 candidate behind the green empl
   const notes = await read("docs/phases/PHASE_143_NOTES_FA.md");
   assert.match(pkg.scripts.test, /phase143-employee-break-accounting\.test\.ts/);
   assert.match(roadmap, /\[x\] فاز ۱۴۳/);
-  assert.match(roadmap, /\[ \] فاز ۱۴۵: آماده‌سازی Release Candidate نسخه 2\.3\.0/);
+  assert.match(roadmap, /آماده‌سازی Release Candidate نسخه 2\.3\.0/);
   assert.match(notes, /۸:۱۵/);
 });

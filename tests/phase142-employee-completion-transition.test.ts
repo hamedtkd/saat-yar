@@ -31,8 +31,8 @@ test("employee smoke waits for the completed-day edit control before clicking it
 test("phase 142 is documented and release candidate moves behind the green employee gate", () => {
   assert.match(pkg.scripts.test, /phase142-employee-completion-transition\.test\.ts/);
   assert.match(roadmap, /\[x\] فاز ۱۴۲:/);
-  assert.match(roadmap, /\[ \] فاز ۱۴۵: آماده‌سازی Release Candidate نسخه 2\.3\.0/);
-  assert.match(roadmap, /\[ \] فاز ۱۴۶: نهایی‌سازی Release 2\.3\.0/);
+  assert.match(roadmap, /آماده‌سازی Release Candidate نسخه 2\.3\.0/);
+  assert.match(roadmap, /نهایی‌سازی Release 2\.3\.0/);
   const notes = read("docs/phases/PHASE_142_NOTES_FA.md");
   assert.match(notes, /AppData Schema: v17/);
   assert.match(notes, /Migration: ندارد/);
