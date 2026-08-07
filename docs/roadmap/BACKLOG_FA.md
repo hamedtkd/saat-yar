@@ -236,5 +236,6 @@
 - [x] فاز ۱۴۷: اتمیک‌کردن ویرایش nested رکورد کارمند؛ اعمال Lunch/Break روی آخرین WorkRecord، تثبیت Paid/Unpaid و اضافه‌کردن Browser contract برای 15:00–15:15 قبل از Clock-out.
 - [x] فاز ۱۴۸: رفع Regression صرفاً Lint در Time Strip پس از اتمیک‌کردن Break؛ کوچک‌سازی dependency contract هوک و بازگرداندن `--max-warnings=0` به Gate سبز.
 - [x] فاز ۱۴۹: همگام‌سازی Employee Browser Smoke با InputEvent اثبات‌شده و افزودن Persistence Probe قبل از Clock-out/محاسبه برای جداسازی دقیق input fidelity از calculation.
-- [ ] فاز ۱۵۰: آماده‌سازی Release Candidate نسخه 2.3.0؛ نسخه، Manifest، Changelog، Release Notes، رسانه‌ها و Gate evidence.
-- [ ] فاز ۱۵۱: نهایی‌سازی Release 2.3.0 و Tag نهایی پس از Gate سبز Candidate.
+- [x] فاز ۱۵۰: اصلاح Scope Selectorهای زمان در Employee Browser Smoke؛ اتصال Heading دقیق به `closest("section")` تا Break editor دیگر فیلدهای Lunch را تغییر/تأیید نکند و Persistence Probe قبل از Clock-out مرجع نهایی بماند.
+- [ ] فاز ۱۵۱: آماده‌سازی Release Candidate نسخه 2.3.0؛ نسخه، Manifest، Changelog، Release Notes، رسانه‌ها و Gate evidence.
+- [ ] فاز ۱۵۲: نهایی‌سازی Release 2.3.0 و Tag نهایی پس از Gate سبز Candidate.

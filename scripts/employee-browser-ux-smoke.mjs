@@ -188,7 +188,8 @@ async function setTimeCardValue(client, title, value) {
 async function setSectionTimeValue(client, sectionTitle, fieldTitle, value, occurrence = 0) {
   await focusBySelector(client, `(() => {
     const norm = (value) => (value || "").replace(/\\s+/g," ").trim();
-    const section = [...document.querySelectorAll("section")].find((node) => [...node.querySelectorAll("strong")].some((item) => norm(item.textContent) === ${JSON.stringify(sectionTitle)}));
+    const heading = [...document.querySelectorAll("strong")].find((item) => norm(item.textContent) === ${JSON.stringify(sectionTitle)});
+    const section = heading?.closest("section") || null;
     if (!section) return null;
     const labels = [...section.querySelectorAll("label")].filter((label) => [...label.querySelectorAll("span")].some((span) => norm(span.textContent) === ${JSON.stringify(fieldTitle)}));
     return labels[${occurrence}]?.querySelector('input[aria-label="زمان"]') || null;
@@ -200,8 +201,8 @@ async function setSectionTimeValue(client, sectionTitle, fieldTitle, value, occu
 async function assertFirstBreakEditorContract(client) {
   const contract = await evaluate(client, `(() => {
     const norm = (value) => (value || "").replace(/\s+/g," ").trim();
-    const section = [...document.querySelectorAll("section")].find((node) =>
-      [...node.querySelectorAll("strong")].some((item) => norm(item.textContent) === "وقفه‌ها"));
+    const heading = [...document.querySelectorAll("strong")].find((item) => norm(item.textContent) === "وقفه‌ها");
+    const section = heading?.closest("section") || null;
     if (!section) return { found: false };
     const readTime = (label) => {
       const owner = [...section.querySelectorAll("label")].find((node) =>

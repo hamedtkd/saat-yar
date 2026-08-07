@@ -37,8 +37,8 @@ test("phase 149 remains a gate-hardening phase and keeps the 2.3.0 candidate beh
   const notes = await read("docs/phases/PHASE_149_NOTES_FA.md");
   assert.match(pkg.scripts.test, /phase149-employee-input-persistence-fidelity\.test\.ts/);
   assert.match(roadmap, /\[x\] فاز ۱۴۹:/);
-  assert.match(roadmap, /\[ \] فاز ۱۵۰: آماده‌سازی Release Candidate نسخه 2\.3\.0/);
-  assert.match(roadmap, /\[ \] فاز ۱۵۱: نهایی‌سازی Release 2\.3\.0/);
+  assert.match(roadmap, /\[ \] فاز [۰-۹]+: آماده‌سازی Release Candidate نسخه 2\.3\.0/);
+  assert.match(roadmap, /\[ \] فاز [۰-۹]+: نهایی‌سازی Release 2\.3\.0/);
   assert.match(notes, /Schema.*v17/);
   assert.match(notes, /Dependency جدید: ندارد/);
 });

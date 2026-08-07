@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+- Employee Browser Smoke اکنون فیلدهای ناهار و وقفه را از Heading دقیق و `closest("section")` scope می‌کند؛ بنابراین ویرایش Break دیگر به‌اشتباه TimePickerهای Lunch را هدف نمی‌گیرد و Probe قبل از Clock-out جدایی واقعی آن‌ها را در IndexedDB اثبات می‌کند.
+
 - Employee Browser Smoke اکنون همان `InputEvent` اثبات‌شده‌ی مسیر Freelancer را برای Controlled Inputها استفاده می‌کند و قبل از Clock-out، رسیدن `08:00`، ناهار `12:00–12:30` و وقفه بدون حقوق `15:00–15:15` به IndexedDB را صریحاً تأیید می‌کند.
 
 - Fixed a lint-only regression in the employee Time Strip action hook by removing the now-unused `record` dependency after functional WorkRecord patches.

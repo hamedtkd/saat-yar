@@ -91,3 +91,5 @@
 - [فاز ۱۴۷: Atomic Break Edit Contract](./phases/PHASE_147_NOTES_FA.md)
 
 - [فاز ۱۴۹: Input/Persistence Fidelity مسیر کارمند](./phases/PHASE_149_NOTES_FA.md)
+
+- [فاز ۱۵۰: Scope دقیق Selectorهای زمان Employee Browser Journey](./phases/PHASE_150_NOTES_FA.md)
