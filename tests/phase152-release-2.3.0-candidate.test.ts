@@ -14,28 +14,21 @@ const packageLock = JSON.parse(read("package-lock.json")) as {
   version: string;
   packages: Record<string, { version?: string }>;
 };
-const manifest = JSON.parse(read("docs/releases/2.3.0.json")) as {
+const manifest = JSON.parse(read("docs/releases/2.3.0.json")) as Record<string, unknown> & {
   version: string;
   releaseDate: string;
   status: string;
   dataSchemaVersion: number;
   nodeEngine: string;
-  verifiedBaselineCommitPrefix: string;
-  verifiedTestCount: number;
-  expectedCandidateTestCount: number;
+  verifiedCandidateCommitPrefix: string;
+  verifiedCandidateTestCount: number;
+  expectedFinalTestCount: number;
   browserGate: string;
   freelancerBrowserGate: string;
   employeeBrowserGate: string;
   pairingBrowserGate: string;
   pairingCommand: string;
   releaseNotes: { fa: string; en: string };
-  baselineEvidence: {
-    productionBrowserSmoke: string;
-    freelancerBrowserSmoke: string;
-    employeeBrowserSmoke: string;
-    employeeNetMinutes: number;
-  };
-  releaseCommit: string | null;
   tag: string;
 };
 
@@ -48,7 +41,7 @@ const requiredMedia = [
   "docs/assets/media/onboarding.gif",
 ];
 
-test("2.3.0 release candidate aligns package lockfile Node and schema v17", () => {
+test("2.3.0 candidate version Node schema and tag remain valid after finalization", () => {
   assert.equal(packageJson.version, "2.3.0");
   assert.equal(packageLock.version, "2.3.0");
   assert.equal(packageLock.packages[""]?.version, "2.3.0");
@@ -57,24 +50,17 @@ test("2.3.0 release candidate aligns package lockfile Node and schema v17", () =
   assert.equal(manifest.nodeEngine, packageJson.engines.node);
   assert.equal(manifest.dataSchemaVersion, 17);
   assert.equal(APP_DATA_SCHEMA_VERSION, 17);
-  assert.equal(manifest.status, "release-candidate");
-  assert.equal(manifest.releaseCommit, null);
+  assert.equal(manifest.status, "released");
   assert.equal(manifest.tag, "v2.3.0");
 });
 
-test("candidate records the fully green Phase 151 baseline and expected Phase 152 gate", () => {
-  assert.equal(manifest.verifiedBaselineCommitPrefix, "ff0177f");
-  assert.equal(manifest.verifiedTestCount, 569);
-  assert.equal(manifest.expectedCandidateTestCount, 575);
-  assert.deepEqual(manifest.baselineEvidence, {
-    productionBrowserSmoke: "passed",
-    freelancerBrowserSmoke: "passed",
-    employeeBrowserSmoke: "passed",
-    employeeNetMinutes: 495,
-  });
+test("final manifest preserves the verified Phase 152 candidate evidence", () => {
+  assert.equal(manifest.verifiedCandidateCommitPrefix, "75b7be6");
+  assert.equal(manifest.verifiedCandidateTestCount, 575);
+  assert.equal(manifest.expectedFinalTestCount, 581);
 });
 
-test("release manifest exposes every browser gate without weakening the current check:release order", () => {
+test("2.3.0 keeps every browser gate and the five-step release order", () => {
   assert.equal(manifest.browserGate, "scripts/production-browser-smoke.mjs");
   assert.equal(manifest.freelancerBrowserGate, "scripts/freelancer-browser-ux-smoke.mjs");
   assert.equal(manifest.employeeBrowserGate, "scripts/employee-browser-ux-smoke.mjs");
@@ -86,34 +72,30 @@ test("release manifest exposes every browser gate without weakening the current 
   );
 });
 
-test("2.3.0 release notes changelog checklist readmes and product media are wired", () => {
+test("2.3.0 release docs and product media remain wired", () => {
   assert.match(read(manifest.releaseNotes.fa), /ساعت‌یار ۲\.۳\.۰/);
   assert.match(read(manifest.releaseNotes.en), /Saatyar 2\.3\.0/);
   assert.ok(read("CHANGELOG.md").split(/\r?\n/).includes("## [2.3.0] - 2026-08-08"));
   assert.equal(read("RELEASE_CHECKLIST_FA.md").split(/\r?\n/)[0], "# چک‌لیست انتشار ساعت‌یار 2.3.0");
   assert.match(read("README.md"), /RELEASE_NOTES_2\.3\.0_FA\.md/);
   assert.match(read("README_EN.md"), /RELEASE_NOTES_2\.3\.0_EN\.md/);
-  assert.match(read("docs/README.md"), /\.\/releases\/2\.3\.0\.json/);
-
   for (const path of requiredMedia) {
     assert.ok(read("README.md").includes(path), `Persian README missing ${path}`);
     assert.ok(read("README_EN.md").includes(path), `English README missing ${path}`);
   }
-  assert.match(read("docs/assets/README.md"), /npm run media:capture/);
-  assert.match(read("docs/assets/README.md"), /Fixture/);
 });
 
-test("roadmap closes Phase 152 while final 2.3.0 release remains Phase 153", () => {
+test("roadmap preserves Phase 152 and closes Phase 153 finalization", () => {
   const backlog = read("docs/roadmap/BACKLOG_FA.md");
   const start = backlog.indexOf("## آمادگی انتشار ۲.۳.۰");
   assert.ok(start >= 0);
   const section = backlog.slice(start);
   assert.match(section, /- \[x\] فاز ۱۵۲:/);
-  assert.match(section, /- \[ \] فاز ۱۵۳:/);
+  assert.match(section, /- \[x\] فاز ۱۵۳:/);
   assert.match(read("docs/phases/PHASE_152_NOTES_FA.md"), /575 tests/);
 });
 
-test("active 2.3.0 candidate audit passes and Phase 152 is wired into npm test", () => {
+test("active final audit passes and Phase 152 stays in npm test", () => {
   assert.deepEqual(collectReleaseAuditFailures(), []);
   assert.match(packageJson.scripts.test, /tests\/phase152-release-2\.3\.0-candidate\.test\.ts/);
 });

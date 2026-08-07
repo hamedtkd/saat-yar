@@ -37,7 +37,7 @@ test("phase 145 closes the type-only startup regression before the 2.3.0 candida
   assert.match(pkg.scripts.test, /phase145-browser-debug-types\.test\.ts/);
   assert.match(roadmap, /\[x\] فاز ۱۴۵: رفع TypeScript contract/);
   assert.match(roadmap, /\[x\].*آماده‌سازی Release Candidate نسخه 2\.3\.0/);
-  assert.match(roadmap, /\[ \].*نهایی‌سازی Release 2\.3\.0/);
+  assert.match(roadmap, /\[x\] فاز ۱۵۳: نهایی‌سازی Release 2\.3\.0/);
   assert.match(notes, /Schema.*v17/);
   assert.match(notes, /Dependency جدید: ندارد/);
 });

@@ -73,12 +73,15 @@ export function collectReleaseAuditFailures() {
     requireCondition(!manifest.releaseCommit, "Release-candidate manifest must not claim a release commit before finalization.", failures);
   } else {
     requireCondition(/^[0-9a-f]{7,40}$/.test(manifest.verifiedCandidateCommitPrefix ?? ""), "Released manifest must preserve the verified candidate commit prefix.", failures);
+    requireCondition(manifest.verifiedCandidateCommitPrefix === "75b7be6", "Released manifest must preserve the verified Phase 152 candidate commit prefix 75b7be6.", failures);
     requireCondition(manifest.verifiedCandidateTestCount === 575, "Released manifest must record the verified 575-test candidate gate.", failures);
-    requireCondition(Number.isInteger(manifest.expectedFinalTestCount) && manifest.expectedFinalTestCount >= 575, "Released manifest must declare a final test count at or above the candidate gate.", failures);
+    requireCondition(manifest.expectedFinalTestCount === 581, "Released manifest must declare the 581-test Phase 153 final gate.", failures);
     requireCondition(manifest.releaseEvidence?.productionBrowserSmoke === "passed", "Released manifest must preserve passing production browser evidence.", failures);
     requireCondition(manifest.releaseEvidence?.freelancerBrowserSmoke === "passed", "Released manifest must preserve passing freelancer browser evidence.", failures);
     requireCondition(manifest.releaseEvidence?.employeeBrowserSmoke === "passed", "Released manifest must preserve passing employee browser evidence.", failures);
     requireCondition(manifest.releaseEvidence?.pairingBrowserSmoke === "passed", "Released manifest must preserve passing pairing browser evidence.", failures);
+    requireCondition(manifest.releaseEvidence?.pairingEncryptedChunks === 4, "Released manifest must preserve the four encrypted pairing chunks verified on the candidate.", failures);
+    requireCondition(manifest.releaseEvidence?.employeeNetMinutes === 495, "Released manifest must preserve the 495-minute employee reference-day evidence.", failures);
     requireCondition(!hasReleaseCommit, "Released manifest must not contain a self-referential releaseCommit field; the annotated Git tag is the source of truth for the final release commit.", failures);
   }
 
@@ -94,6 +97,7 @@ export function collectReleaseAuditFailures() {
     "README_EN.md",
     "docs/README.md",
     "docs/phases/PHASE_152_NOTES_FA.md",
+    "docs/phases/PHASE_153_NOTES_FA.md",
     "docs/assets/README.md",
   ].filter(Boolean);
   for (const path of requiredFiles) {

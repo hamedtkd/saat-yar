@@ -1,4 +1,4 @@
-# یادداشت انتشار ساعت‌یار ۲.۳.۰ — Release Candidate
+# ساعت‌یار ۲.۳.۰ — یادداشت انتشار
 
 نسخه ۲.۳.۰ ادامه‌ی مستقیم Release پایدار ۲.۲.۰ است و تمرکز آن روی پالیش تجربه کاربر، تکمیل Workflowهای فریلنسر و کارمند، کنترل‌های فارسی/جلالی و سخت‌گیری بیشتر Release Gate بوده است.
 
@@ -64,4 +64,6 @@ Freelancer browser UX smoke passed.
 Employee browser UX smoke passed.
 ```
 
-پس از ثبت commit Candidate و شواهد Gate، فاز ۱۵۳ Manifest را به `released` تبدیل می‌کند و Tag annotated `v2.3.0` روی Commit نهایی Release ساخته می‌شود.
+Release Candidate روی commit prefix `75b7be6` با ۵۷۵/۵۷۵ تست، Build کامل و Browser Smokeهای Production، Freelancer و Employee تأیید شد. Pairing Browser Smoke نیز انتقال مستقیم WebRTC شامل ۴ chunk رمزنگاری‌شده و ACK را پاس کرد. Manifest نسخه ۲.۳.۰ اکنون `released` است.
+
+فاز ۱۵۳ شش تست قرارداد نهایی اضافه می‌کند و Gate سورس نهایی ۵۸۱ تست خواهد داشت. Manifest عمداً `releaseCommit` ندارد؛ Tag annotated `v2.3.0` که پس از Commit نهایی ساخته می‌شود، منبع حقیقت Commit نهایی انتشار است.

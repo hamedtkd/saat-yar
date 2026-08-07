@@ -25,7 +25,7 @@ test("phase 148 closes the lint-only regression before the 2.3.0 candidate", asy
   assert.match(pkg.scripts.test, /phase148-lint-contract-hotfix\.test\.ts/);
   assert.match(roadmap, /\[x\] فاز ۱۴۸:/);
   assert.match(roadmap, /\[x\] فاز [۰-۹]+: آماده‌سازی Release Candidate نسخه 2\.3\.0/);
-  assert.match(roadmap, /\[ \] فاز [۰-۹]+: نهایی‌سازی Release 2\.3\.0/);
+  assert.match(roadmap, /\[x\] فاز ۱۵۳: نهایی‌سازی Release 2\.3\.0/);
   assert.match(notes, /Schema.*v17/);
   assert.match(notes, /Dependency جدید: ندارد/);
 });

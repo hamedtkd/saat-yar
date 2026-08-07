@@ -1,8 +1,8 @@
-# Saatyar 2.3.0 — Release Candidate Notes
+# Saatyar 2.3.0 — Release Notes
 
 Saatyar 2.3.0 follows the stable 2.2.0 release and focuses on product UX polish, complete freelancer and employee workflows, Persian/Jalali form controls, and a stricter release gate.
 
-This source is currently a `release-candidate`. The verified baseline is commit prefix `ff0177f`, with **569 passing tests, a full production build, and passing production, freelancer, and employee browser smokes**. Phase 152 adds six release-contract tests, so the candidate gate is expected to reach **575/575**.
+This version is now `released`. The verified release candidate at commit prefix `75b7be6` passed **575/575 tests, the full production build, and the production, freelancer, and employee browser smokes**. The direct WebRTC pairing smoke also transferred **four encrypted chunks with an ACK**. Phase 153 adds six final-release contract tests, so the final source gate is expected to reach **581/581**.
 
 ## Highlights since 2.2.0
 
@@ -45,7 +45,7 @@ This source is currently a `release-candidate`. The verified baseline is commit 
 
 The README media continues to be produced from deterministic demo fixtures. `npm run media:capture` remains the reproducible capture command and must not read real user data.
 
-## Candidate gate
+## Final release gate
 
 Run on the release workstation:
 
@@ -56,7 +56,7 @@ git diff --check
 git status
 ```
 
-Phase 152 expects **575 passing tests and zero failures**, plus:
+Phase 153 expects **581 passing tests and zero failures**, plus:
 
 ```text
 Production browser smoke passed.
@@ -64,4 +64,6 @@ Freelancer browser UX smoke passed.
 Employee browser UX smoke passed.
 ```
 
-After the candidate commit and gate evidence are recorded, Phase 153 will finalize the manifest as `released` and the annotated `v2.3.0` Git tag will become the source of truth for the final release commit.
+The release candidate at commit prefix `75b7be6` passed 575/575 tests, the full build, and the production, freelancer, and employee browser smokes. The direct WebRTC pairing smoke also passed four encrypted chunks with an ACK. The 2.3.0 manifest is now `released`.
+
+Phase 153 adds six final-release contract tests for an expected 581-test final source gate. The manifest intentionally contains no `releaseCommit`; the annotated `v2.3.0` Git tag created after the final commit is the source of truth for the final release commit.

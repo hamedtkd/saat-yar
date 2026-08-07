@@ -48,7 +48,7 @@ test("readmes retain 2.2.0 as historical release documentation while 2.3.0 advan
   assert.match(read("README.md"), /RELEASE_NOTES_2\.2\.0_FA\.md/);
   assert.match(read("README_EN.md"), /RELEASE_NOTES_2\.2\.0_EN\.md/);
   assert.match(read("docs/releases/RELEASE_NOTES_2.2.0_FA.md"), /Manifest نسخه ۲\.۲\.۰ اکنون `released` است/);
-  assert.match(read("README.md"), /نسخه \*\*۲\.۳\.۰\*\* اکنون در وضعیت Release Candidate است/);
+  assert.match(read("README.md"), /نسخه \*\*۲\.۳\.۰\*\* اکنون منتشر شده است/);
 });
 
 test("phase 120 stays closed and the published 2.2.0 tag remains recorded", () => {

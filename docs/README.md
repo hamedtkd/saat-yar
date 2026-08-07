@@ -19,8 +19,8 @@
 
 ## انتشار ۲.۳.۰
 
-- [یادداشت Release Candidate ۲.۳.۰ فارسی](./releases/RELEASE_NOTES_2.3.0_FA.md)
-- [Saatyar 2.3.0 release candidate notes](./releases/RELEASE_NOTES_2.3.0_EN.md)
+- [یادداشت انتشار ۲.۳.۰ فارسی](./releases/RELEASE_NOTES_2.3.0_FA.md)
+- [Saatyar 2.3.0 release notes](./releases/RELEASE_NOTES_2.3.0_EN.md)
 - [Release manifest 2.3.0](./releases/2.3.0.json)
 - [یادداشت انتشار تاریخی ۲.۲.۰](./releases/RELEASE_NOTES_2.2.0_FA.md)
 - [Historical release manifest 2.2.0](./releases/2.2.0.json)
@@ -99,3 +99,5 @@
 - [فاز ۱۵۱: Hard Reload یادداشت کارمند با Form Value واقعی](./phases/PHASE_151_NOTES_FA.md)
 
 - [فاز ۱۵۲: Release Candidate 2.3.0](./phases/PHASE_152_NOTES_FA.md)
+
+- [فاز ۱۵۳: Final Release 2.3.0](./phases/PHASE_153_NOTES_FA.md)

@@ -276,7 +276,7 @@ tests/                         تست‌های دامنه، Regression و معم
 
 - [عیب‌یابی Windows و خطاهای npm](./docs/TROUBLESHOOTING_FA.md)
 - [جدول سازگاری مرورگر و محدودیت‌های Notification/PWA](./docs/BROWSER_COMPATIBILITY.md)
-- [یادداشت Release Candidate ساعت‌یار ۲.۳.۰](./docs/releases/RELEASE_NOTES_2.3.0_FA.md)
+- [یادداشت انتشار ساعت‌یار ۲.۳.۰](./docs/releases/RELEASE_NOTES_2.3.0_FA.md)
 - [یادداشت انتشار تاریخی ۲.۲.۰](./docs/releases/RELEASE_NOTES_2.2.0_FA.md)
 - [یادداشت انتشار تاریخی ۲.۱.۰](./docs/releases/RELEASE_NOTES_2.1.0_FA.md)
 
@@ -296,9 +296,9 @@ npm run test:browser:production
 
 ## نقشه راه
 
-نسخه **۲.۳.۰** اکنون در وضعیت Release Candidate است. خط مبنای تأییدشده روی commit prefix `ff0177f` با **۵۶۹/۵۶۹ تست، Build کامل و Browser Smokeهای Production، Freelancer و Employee** سبز شده است؛ فاز ۱۵۲ شش تست Release Contract اضافه می‌کند و Candidate باید به ۵۷۵/۵۷۵ برسد. جزئیات در [یادداشت Release Candidate ۲.۳.۰](./docs/releases/RELEASE_NOTES_2.3.0_FA.md) و [چک‌لیست انتشار](./RELEASE_CHECKLIST_FA.md) ثبت شده‌اند.
+نسخه **۲.۳.۰** اکنون منتشر شده است. Release Candidate روی commit prefix `75b7be6` با **۵۷۵/۵۷۵ تست، Build کامل و Browser Smokeهای Production، Freelancer و Employee** تأیید شد و Pairing Browser Smoke نیز انتقال مستقیم WebRTC شامل **۴ chunk رمزنگاری‌شده و ACK** را پاس کرد. فاز ۱۵۳ شش تست قرارداد Release نهایی اضافه می‌کند و Gate نهایی باید به **۵۸۱/۵۸۱** برسد. جزئیات در [یادداشت انتشار ۲.۳.۰](./docs/releases/RELEASE_NOTES_2.3.0_FA.md) و [چک‌لیست انتشار](./RELEASE_CHECKLIST_FA.md) ثبت شده‌اند.
 
-رسانه‌های محصول از Fixture نمایشی تولید می‌شوند و در Audit Candidate بررسی می‌شوند. Tag `v2.3.0` تا پایان فاز ۱۵۳ ساخته نمی‌شود؛ وضعیت مرحله‌های نهایی در [docs/roadmap/BACKLOG_FA.md](./docs/roadmap/BACKLOG_FA.md) نگهداری می‌شود.
+Manifest نهایی عمداً Commit نهایی را داخل خودش ذخیره نمی‌کند تا قرارداد self-referential ایجاد نشود؛ پس از Commit/Push فاز ۱۵۳، Tag annotated `v2.3.0` روی همان Commit منبع حقیقت Release خواهد بود. توسعه قابلیت‌های جدید از این نقطه وارد نسخه‌های بعدی می‌شود.
 
 ## حمایت مالی
 

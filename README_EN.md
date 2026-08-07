@@ -286,7 +286,7 @@ The Persian deployment guide covers Windows, macOS, Linux, Docker, GitHub Pages,
 
 [Run and deployment guide](./RUN_AND_DEPLOY_FA.md)
 
-- [Saatyar 2.3.0 release candidate notes](./docs/releases/RELEASE_NOTES_2.3.0_EN.md)
+- [Saatyar 2.3.0 release notes](./docs/releases/RELEASE_NOTES_2.3.0_EN.md)
 - [Historical Saatyar 2.2.0 release notes](./docs/releases/RELEASE_NOTES_2.2.0_EN.md)
 - [Historical Saatyar 2.1.0 release notes](./docs/releases/RELEASE_NOTES_2.1.0_EN.md)
 
@@ -298,9 +298,9 @@ Before opening a pull request, read [CONTRIBUTING.md](./CONTRIBUTING.md) and the
 
 ## Roadmap
 
-Version **2.3.0** is now a release candidate. The verified baseline at commit prefix `ff0177f` passed **569/569 tests, the full production build, and the production, freelancer, and employee browser smokes**. Phase 152 adds six release-contract tests, so the candidate gate is expected to reach 575/575. See the [2.3.0 candidate notes](./docs/releases/RELEASE_NOTES_2.3.0_EN.md) and the Persian [release checklist](./RELEASE_CHECKLIST_FA.md).
+Version **2.3.0** is now released. The verified release candidate at commit prefix `75b7be6` passed **575/575 tests, the full production build, and the production, freelancer, and employee browser smokes**. The direct WebRTC pairing smoke also passed with **four encrypted chunks and an ACK**. Phase 153 adds six final-release contract tests, so the final source gate is expected to reach **581/581**. See the [2.3.0 release notes](./docs/releases/RELEASE_NOTES_2.3.0_EN.md) and the Persian [release checklist](./RELEASE_CHECKLIST_FA.md).
 
-Product screenshots and the onboarding GIF are generated from deterministic demo fixtures and are audited as part of the candidate contract. The annotated `v2.3.0` tag is intentionally deferred until Phase 153 finalizes the release. Remaining release work is tracked in [docs/roadmap/BACKLOG_FA.md](./docs/roadmap/BACKLOG_FA.md).
+The final manifest intentionally does not embed its own release commit. After the Phase 153 finalization commit is pushed, the annotated `v2.3.0` Git tag on that commit is the source of truth for the final release commit. New feature work continues in later versions.
 
 ## Support development
 

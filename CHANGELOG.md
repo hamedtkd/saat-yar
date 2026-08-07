@@ -39,6 +39,8 @@
 
 ### تغییر کرد
 
+- Release 2.3.0 با Candidate تأییدشده `75b7be6`، Gate کامل Production/Freelancer/Employee و Pairing چهار-chunk رمزنگاری‌شده نهایی شد.
+
 - نمایش هدف خالص روز از عدد اعشاری به ساعت و دقیقه دقیق تغییر کرد و چیدمان یادآوری استراحت خواناتر شد.
 - Footer به صفحه جدید «درباره و راهنما» با GitHub، حمایت مالی، LinkedIn، Telegram و راهنمای سریع متصل شد.
 - Bottom Navigation موبایل Active state خواناتر و هم‌اندازه دریافت کرد و underline کم‌کنتراست حذف شد.
