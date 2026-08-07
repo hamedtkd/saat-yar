@@ -1,4 +1,4 @@
-import { AlertTriangle, ArrowDownToLine, GitMerge, ShieldCheck } from "lucide-react";
+import { AlertTriangle, ArrowDownToLine, GitMerge, ShieldCheck, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { DeviceTransferConflictResolution, DeviceTransferPreview } from "@/lib/device-transfer-types";
 
@@ -14,10 +14,11 @@ const labels: Record<string, string> = {
   deletedRecords: "سطل بازیابی",
 };
 
-export function DeviceTransferPreviewPanel({ preview, sourceName, onApply }: {
+export function DeviceTransferPreviewPanel({ preview, sourceName, onApply, onCancel }: {
   preview: DeviceTransferPreview;
   sourceName: string;
   onApply: (mode: "merge" | "replace", conflicts: DeviceTransferConflictResolution) => void;
+  onCancel: () => void;
 }) {
   const additions = Object.values(preview.collections).reduce((sum, item) => sum + item.additions, 0);
   return (
@@ -47,6 +48,7 @@ export function DeviceTransferPreviewPanel({ preview, sourceName, onApply }: {
         <Button size="sm" variant="secondary" onClick={() => onApply("merge", "use-incoming")}><ArrowDownToLine /> ورودی اولویت دارد</Button>
         <Button size="sm" variant="destructive" onClick={() => onApply("replace", "use-incoming")}><AlertTriangle /> جایگزینی کامل</Button>
       </div>
+      <Button size="sm" variant="ghost" className="mt-2 w-full" onClick={onCancel}><XCircle /> رد انتقال و پایان نشست</Button>
     </div>
   );
 }

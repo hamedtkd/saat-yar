@@ -6,11 +6,13 @@ import { PanelHead } from "@/components/common/panel-head";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useDeviceTransferPairing } from "@/hooks/use-device-transfer-pairing";
+import { getDeviceTransferSessionView } from "@/lib/device-transfer-session-ui";
 import type { AppData } from "@/lib/types";
 import { DevicePairingQrDisplay } from "./device-pairing-qr-display";
 import { DevicePairingQrScanner } from "./device-pairing-qr-scanner";
 import { DeviceTransferPreviewPanel } from "./device-transfer-preview";
 import { DeviceTransferHistory } from "./device-transfer-history";
+import { DeviceTransferSteps } from "./device-transfer-steps";
 
 async function copyText(value: string) {
   await navigator.clipboard.writeText(value);
@@ -23,18 +25,8 @@ export function DeviceTransferCard({ data, setData, setToast }: {
 }) {
   const pairing = useDeviceTransferPairing({ data, setData, setToast });
   const [scannerOpen, setScannerOpen] = React.useState(false);
-  const connected = pairing.state === "connected" || pairing.state === "received";
-  const sessionLabel = pairing.state === "preparing"
-    ? "در حال آماده‌سازی اتصال"
-    : pairing.state === "waiting"
-      ? "منتظر دستگاه مقابل"
-      : pairing.state === "received"
-        ? "داده دریافت شد؛ منتظر تأیید ادغام"
-        : pairing.state === "connected"
-          ? "اتصال مستقیم برقرار است"
-          : pairing.state === "error"
-            ? "اتصال نیاز به بررسی دارد"
-            : "آماده Pairing";
+  const connected = pairing.state === "connected" || pairing.state === "received" || pairing.state === "completed";
+  const sessionView = getDeviceTransferSessionView(pairing.role, pairing.state);
 
   const shareLocalLink = async () => {
     if (!pairing.pairingLink) return;
@@ -51,7 +43,9 @@ export function DeviceTransferCard({ data, setData, setToast }: {
   const handleScannedCode = React.useCallback((code: string) => {
     pairing.setRemoteCode(code);
     setScannerOpen(false);
-    setToast("QR اتصال کامل دریافت شد.");
+    setToast("QR اتصال کامل دریافت شد؛ مرحله بعد خودکار اجرا می‌شود.");
+    if (pairing.role === "sender") void pairing.acceptAnswer(code);
+    else void pairing.startReceiver(code);
   }, [pairing, setToast]);
 
   return (
@@ -60,8 +54,9 @@ export function DeviceTransferCard({ data, setData, setToast }: {
       <p className="mb-3 text-[11px] leading-7 text-[var(--text-muted)]">بدون حساب کاربری و دیتابیس مرکزی، دو دستگاه را مستقیم WebRTC وصل کن و AppData رمزنگاری‌شده را انتقال بده.</p>
       <div className="mb-4 flex items-center justify-between gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2" data-device-transfer-session-status>
         <span className="text-[10px] font-bold">وضعیت نشست</span>
-        <span className="text-[10px] text-[var(--accent-strong)]">{sessionLabel}</span>
+        <span className="text-[10px] text-[var(--accent-strong)]">{sessionView.label}</span>
       </div>
+      <DeviceTransferSteps role={pairing.role} state={pairing.state} />
 
       {pairing.role === "idle" && (
         <div className="grid grid-cols-2 gap-3 max-[620px]:grid-cols-1">
@@ -107,13 +102,14 @@ export function DeviceTransferCard({ data, setData, setToast }: {
 
       {connected && (
         <div className="mt-4 rounded-2xl border border-[color-mix(in_srgb,var(--accent)_40%,var(--border))] bg-[var(--accent-soft)] p-4">
-          <div className="flex items-center gap-2 text-sm font-bold text-[var(--accent-strong)]"><CheckCircle2 className="size-5" /> اتصال مستقیم برقرار است</div>
-          {pairing.role === "sender" && <Button className="mt-3 w-full" onClick={() => void pairing.sendCurrentData()}><Send /> ارسال داده رمزنگاری‌شده</Button>}
+          <div className="flex items-center gap-2 text-sm font-bold text-[var(--accent-strong)]"><CheckCircle2 className="size-5" /> {pairing.state === "completed" ? "انتقال این نشست تکمیل شد" : "اتصال مستقیم برقرار است"}</div>
+          {pairing.role === "sender" && pairing.state !== "completed" && <Button className="mt-3 w-full" onClick={() => void pairing.sendCurrentData()}><Send /> ارسال داده رمزنگاری‌شده</Button>}
+          {pairing.role === "receiver" && pairing.state === "connected" && <p className="mt-2 text-[10px] text-[var(--text-muted)]">اتصال آماده است؛ منتظر بسته رمزنگاری‌شده دستگاه فرستنده بمان.</p>}
           {pairing.acknowledged && <p className="mt-2 text-[10px] text-[var(--accent-strong)]">✓ دستگاه مقابل دریافت بسته را تأیید کرد.</p>}
         </div>
       )}
 
-      {pairing.preview && pairing.incoming && <DeviceTransferPreviewPanel preview={pairing.preview} sourceName={pairing.incoming.source.deviceName} onApply={pairing.applyIncoming} />}
+      {pairing.preview && pairing.incoming && <DeviceTransferPreviewPanel preview={pairing.preview} sourceName={pairing.incoming.source.deviceName} onApply={pairing.applyIncoming} onCancel={pairing.reset} />}
       <DeviceTransferHistory entries={pairing.history} onClear={pairing.clearHistory} />
       {pairing.error && <p role="alert" className="mt-3 rounded-xl border border-[var(--danger)] bg-[var(--danger-soft)] p-3 text-[10px] font-semibold text-[var(--danger)]">{pairing.error}</p>}
       {pairing.role !== "idle" && <Button variant="ghost" size="sm" className="mt-3 w-full" onClick={pairing.reset}><RefreshCcw /> پایان نشست و شروع دوباره</Button>}

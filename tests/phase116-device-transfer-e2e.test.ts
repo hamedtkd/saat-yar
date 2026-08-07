@@ -115,7 +115,9 @@ test("repository exposes an opt-in real browser WebRTC data-channel smoke", () =
   assert.equal(packageJson.scripts["check:release"].includes("test:browser:pairing"), false);
   assert.match(browserSmoke, /new RTCPeerConnection/);
   assert.match(browserSmoke, /saatyar-transfer/);
-  assert.match(browserSmoke, /ack:saatyar-device-transfer-e2e/);
+  assert.match(browserSmoke, /kind: "ack"/);
+  assert.match(browserSmoke, /AES-GCM/);
+  assert.match(browserSmoke, /encrypted Saatyar chunks/);
 });
 
 test("phase 116 is wired into quality and documented as transfer hardening", () => {

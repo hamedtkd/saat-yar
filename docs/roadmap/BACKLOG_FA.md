@@ -192,4 +192,5 @@
 - [x] فاز ۱۱۵: افزودن QR محلی و اسکن دوربین روی Pairing Code فاز ۱۱۴؛ شامل QR چندفریمی برای Offer/Answerهای بزرگ و fallback امن Copy/Paste، بدون سرویس QR شخص ثالث.
 - [x] فاز ۱۱۶: تست End-to-End انتقال دستگاه؛ رفع Typecheck فاز ۱۱۵، تست کامل رمزنگاری/Chunk/ACK/Preview/Merge، Smoke اختیاری WebRTC در مرورگر و bounded fallback برای Offline PWA.
 - [x] فاز ۱۱۷: رفع Gate قرمز Lint در QR vendor و Scanner، افزودن وضعیت نشست و تاریخچه انتقال privacy-safe با مسیر روشن برای شروع دوباره Pairing.
-- [ ] فاز ۱۱۸: اجرای Browser E2E دوطرفه Pairing/QR روی محیط واقعی و پالیش نهایی تجربه Sync بر اساس نتیجه تست دستگاه‌ها.
+- [x] فاز ۱۱۸: Browser E2E انتقال رمزنگاری‌شده چندبخشی روی WebRTC واقعی و پالیش نهایی UX Sync؛ Stepper، پیشروی خودکار QR، وضعیت تکمیل و رد امن Preview.
+- [ ] فاز ۱۱۹: آماده‌سازی Release 2.2.0؛ همگام‌سازی README/Changelog/Release Manifest با Schema v17، حقوق سفارشی و Device Sync و افزودن رسانه‌های نهایی به README فارسی و انگلیسی.
