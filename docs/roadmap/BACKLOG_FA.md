@@ -228,5 +228,6 @@
 - [x] فاز ۱۳۹: رفع SyntaxError در Browser Route Expression فاز ۱۳۸ با جداکردن سازنده Expression، حذف Regex شکننده از کد تزریق‌شده CDP و افزودن Compile Contract پیش از اجرای Browser Smoke.
 - [x] فاز ۱۴۰: همگام‌سازی Persistence Probe فریلنسر با snapshot envelope واقعی AppData و قرارداد `Invoice.lines`، همراه با diagnostics جزئی و تأیید Hard Reload از IndexedDB.
 - [x] فاز ۱۴۱: Browser UX Journey کامل حالت کارمند؛ Start/Lunch/Break/End، یادداشت، محاسبه خالص، Month/Reports، دوام IndexedDB، Hard Reload و قرارداد viewport موبایل.
-- [ ] فاز ۱۴۲: آماده‌سازی Release Candidate نسخه 2.3.0؛ نسخه، Manifest، Changelog، Release Notes، رسانه‌ها و Gate evidence.
-- [ ] فاز ۱۴۳: نهایی‌سازی Release 2.3.0 و Tag نهایی پس از Gate سبز Candidate.
+- [x] فاز ۱۴۲: رفع transition واقعی Active → Completed در Today؛ remount امن ویرایشگر روز پس از ثبت خروج، نمایش قطعی CTA «ویرایش این روز» و ادامه Employee Browser Journey روی UI واقعی.
+- [ ] فاز ۱۴۳: آماده‌سازی Release Candidate نسخه 2.3.0؛ نسخه، Manifest، Changelog، Release Notes، رسانه‌ها و Gate evidence.
+- [ ] فاز ۱۴۴: نهایی‌سازی Release 2.3.0 و Tag نهایی پس از Gate سبز Candidate.

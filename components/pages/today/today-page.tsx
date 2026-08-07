@@ -74,7 +74,7 @@ export function TodayPage(props: TodayPageProps) {
         openBreak={Boolean(props.activeBreak)}
         lunchRunning={props.lunchRunning}
       />
-      <CompletedDayEditor key={props.selectedDate} {...props} />
+      <CompletedDayEditor key={`${props.selectedDate}:${props.record.start && props.record.end ? "completed" : "active"}`} {...props} />
       {props.editingEntry === "manual" &&
         props.data.settings.mode !== "employee" && (
           <ManualEntryForm {...props} />

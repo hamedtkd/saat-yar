@@ -28,5 +28,5 @@ test("completed days are read only until explicit edit", async () => {
 
 test("day editor state resets when selected date changes", async () => {
   const source = await read("components/pages/today/today-page.tsx");
-  assert.match(source, /<CompletedDayEditor key=\{props\.selectedDate\}/);
+  assert.match(source, /<CompletedDayEditor key=\{`\$\{props\.selectedDate\}:\$\{props\.record\.start && props\.record\.end \? "completed" : "active"\}`\}/);
 });

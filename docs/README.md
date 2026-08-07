@@ -82,3 +82,5 @@
 - [فاز ۱۴۰: قرارداد واقعی Persistence و Hard Reload](./phases/PHASE_140_NOTES_FA.md)
 
 - [فاز ۱۴۱: Browser UX Journey حالت کارمند](./phases/PHASE_141_NOTES_FA.md)
+
+- [فاز ۱۴۲: تکمیل Transition روز کارمند و Browser Journey](./phases/PHASE_142_NOTES_FA.md)

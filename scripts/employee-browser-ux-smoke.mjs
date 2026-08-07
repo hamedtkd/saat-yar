@@ -376,7 +376,11 @@ async function main() {
 
     await setEmployeeNote(client, EMPLOYEE_NOTE);
     await clickButton(client, "پایان روز", true);
-    await waitFor(client, `document.body?.innerText.includes("ثبت این روز کامل شده است")`, "completed employee day");
+    await waitFor(client, `(() => {
+      const norm = (value) => (value || "").replace(/\\s+/g, " ").trim();
+      return document.body?.innerText.includes("ثبت این روز کامل شده است")
+        && [...document.querySelectorAll("button")].some((button) => !button.disabled && norm(button.textContent) === "ویرایش این روز");
+    })()`, "completed employee day edit affordance");
     await clickButton(client, "ویرایش این روز", true);
     await setTimeCardValue(client, "خروج", "17:00");
     await clickButton(client, "ذخیره تغییرات", true);
