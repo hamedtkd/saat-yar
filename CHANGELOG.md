@@ -1,5 +1,6 @@
 ## [Unreleased]
 
+- Freelancer Browser UX smoke اکنون snapshot envelope واقعی IndexedDB را باز می‌کند، قرارداد فعلی `Invoice.lines` را بررسی می‌کند و پس از تأیید persistence یک Hard Reload واقعی برای بازگشت Invoice اجرا می‌کند.
 - Browser route expressionهای Freelancer Smoke پیش از ارسال به CDP از سازنده‌های قابل‌تست تولید می‌شوند؛ نرمال‌سازی trailing slash دیگر از Regex شکننده داخل template string استفاده نمی‌کند و خطای `Unexpected token 'return'` رفع شد.
 - Freelancer Browser UX smoke اکنون Routeهای Static Export دارای `trailingSlash` را هنگام کشف Link و انتظار برای App Router navigation به‌صورت نرمال‌شده مقایسه می‌کند و در شکست، Inventory لینک‌های DOM را گزارش می‌دهد.
 - تست Browser مسیر فریلنسر اکنون بین صفحات کسب‌وکار از Linkهای واقعی App Router استفاده می‌کند و فقط پس از تأیید دوام Client/Project/Expense/Invoice در IndexedDB، Hard Reload را اجرا می‌کند.

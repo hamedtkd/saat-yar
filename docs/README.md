@@ -78,3 +78,5 @@
 
 - [فاز ۱۳۸: اصلاح Navigation Discovery در Static Export](./phases/PHASE_138_NOTES_FA.md)
 - [فاز ۱۳۹: ایمن‌سازی Syntax مسیرهای Browser Smoke](./phases/PHASE_139_NOTES_FA.md)
+
+- [فاز ۱۴۰: قرارداد واقعی Persistence و Hard Reload](./phases/PHASE_140_NOTES_FA.md)

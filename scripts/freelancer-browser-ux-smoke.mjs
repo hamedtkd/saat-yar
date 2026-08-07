@@ -9,6 +9,7 @@ import { createMediaDemoData } from "./media/demo-data.ts";
 import { cleanupBrowserProfile } from "./browser-profile-cleanup.mjs";
 import { findBrowserExecutable } from "./production-browser-smoke.mjs";
 import { buildAppNavigationExpression, buildRouteReadyExpression } from "./browser-route-expression.mjs";
+import { buildFreelancerPersistenceProbeExpression } from "./freelancer-persistence-expression.mjs";
 import { startStaticExportServer } from "./static-export-server.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -135,29 +136,26 @@ async function navigateInApp(client, pathname, text) {
 }
 
 async function waitForFreelancerFlowPersistence(client) {
-  const expression = `(async () => {
-    const db = await new Promise((resolve, reject) => {
-      const request = indexedDB.open("saatyar-db", 1);
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
-    });
-    const data = await new Promise((resolve, reject) => {
-      const tx = db.transaction("app-data", "readonly");
-      const request = tx.objectStore("app-data").get("current");
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
-      tx.oncomplete = () => db.close();
-    });
-    const project = data?.projects?.find((item) => item.name === ${JSON.stringify(PROJECT_NAME)});
-    return Boolean(
-      data?.clients?.some((item) => item.name === ${JSON.stringify(CLIENT_NAME)}) &&
-      project &&
-      data?.timeEntries?.some((item) => item.projectId === project.id && item.endedAt) &&
-      data?.expenses?.some((item) => item.projectId === project.id && item.title === ${JSON.stringify(EXPENSE_NAME)}) &&
-      data?.invoices?.some((item) => item.projectId === project.id && item.items?.some((line) => line.description === ${JSON.stringify(INVOICE_DESCRIPTION)}))
-    );
-  })()`;
-  await waitFor(client, expression, "freelancer workflow persistence");
+  const expression = buildFreelancerPersistenceProbeExpression({
+    clientName: CLIENT_NAME,
+    projectName: PROJECT_NAME,
+    expenseName: EXPENSE_NAME,
+    invoiceDescription: INVOICE_DESCRIPTION,
+  });
+  const deadline = Date.now() + TIMEOUT;
+  let lastProbe = null;
+  while (Date.now() < deadline) {
+    if (client.runtimeErrors.length) throw new Error(`Runtime error while waiting for freelancer workflow persistence: ${client.runtimeErrors.join("\n")}`);
+    try {
+      lastProbe = await evaluate(client, expression);
+      if (lastProbe?.ready) return lastProbe;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      if (!/execution context|Cannot find context|navigated or closed/i.test(message)) throw error;
+    }
+    await new Promise((resolveWait) => setTimeout(resolveWait, 100));
+  }
+  throw new Error(`Timed out while waiting for freelancer workflow persistence. Probe: ${JSON.stringify(lastProbe)}`);
 }
 
 async function seedFreelancerData(client) {
@@ -398,11 +396,13 @@ async function main() {
     await waitFor(client, `document.body?.innerText.includes(${JSON.stringify(CLIENT_NAME)}) && !document.body?.innerText.includes("مشخصات صورتحساب")`, "invoice save");
     console.log("✓ Invoice creation keeps the client/project relation and validates the real form");
 
-    await waitForFreelancerFlowPersistence(client);
-    console.log("✓ Freelancer workflow is durable in IndexedDB before hard reload");
+    const persistenceProbe = await waitForFreelancerFlowPersistence(client);
+    console.log(`✓ Freelancer workflow is durable in IndexedDB (${persistenceProbe.storageShape}, schema v${persistenceProbe.schemaVersion ?? "legacy"})`);
 
     await client.call("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true, screenWidth: 390, screenHeight: 844 });
     await navigate(client, `${server.origin}/invoices`, CLIENT_NAME);
+    await waitFor(client, `document.body?.innerText.includes("INV-")`, "persisted invoice after hard reload");
+    console.log("✓ Hard reload restores the persisted freelancer invoice");
     await clickButton(client, "فاکتور جدید");
     await waitFor(client, `document.body?.innerText.includes("مشخصات صورتحساب")`, "mobile invoice form");
     await clickButton(client, "مشتری جدید");

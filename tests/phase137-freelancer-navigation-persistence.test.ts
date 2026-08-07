@@ -5,6 +5,7 @@ import test from "node:test";
 const read = (path: string) => readFileSync(path, "utf8");
 const smoke = read("scripts/freelancer-browser-ux-smoke.mjs");
 const routeExpressions = read("scripts/browser-route-expression.mjs");
+const persistenceExpressions = read("scripts/freelancer-persistence-expression.mjs");
 
 test("freelancer smoke follows real in-app links between business routes", () => {
   assert.match(smoke, /async function navigateInApp/);
@@ -18,8 +19,9 @@ test("freelancer smoke follows real in-app links between business routes", () =>
 
 test("workflow waits for IndexedDB durability before the intentional hard reload", () => {
   assert.match(smoke, /async function waitForFreelancerFlowPersistence/);
+  assert.match(smoke, /buildFreelancerPersistenceProbeExpression/);
   for (const marker of ["data?.clients", "data?.projects", "data?.timeEntries", "data?.expenses", "data?.invoices"]) {
-    assert.match(smoke, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    assert.match(persistenceExpressions, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
   const persistence = smoke.indexOf("await waitForFreelancerFlowPersistence(client)");
   const hardReload = smoke.indexOf('await navigate(client, `${server.origin}/invoices`, CLIENT_NAME)');
@@ -28,7 +30,8 @@ test("workflow waits for IndexedDB durability before the intentional hard reload
 
 test("browser journey now separates SPA navigation fidelity from reload durability", () => {
   assert.match(smoke, /in-app navigation \$\{pathname\}/);
-  assert.match(smoke, /Freelancer workflow is durable in IndexedDB before hard reload/);
+  assert.match(smoke, /Freelancer workflow is durable in IndexedDB/);
+  assert.match(smoke, /Hard reload restores the persisted freelancer invoice/);
   assert.match(smoke, /await navigate\(client, `\$\{server\.origin\}\/invoices`, CLIENT_NAME\)/);
 });
 

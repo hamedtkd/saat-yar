@@ -226,4 +226,5 @@
 - [x] فاز ۱۳۷: اصلاح وفاداری Freelancer Browser UX smoke به ناوبری واقعی App Router و جداسازی SPA navigation از Reload durability با تأیید صریح IndexedDB.
 - [x] فاز ۱۳۸: اصلاح Navigation Discovery در Static Export با پشتیبانی از `trailingSlash`، تشخیص Route نرمال‌شده و diagnostics لینک‌های واقعی DOM.
 - [x] فاز ۱۳۹: رفع SyntaxError در Browser Route Expression فاز ۱۳۸ با جداکردن سازنده Expression، حذف Regex شکننده از کد تزریق‌شده CDP و افزودن Compile Contract پیش از اجرای Browser Smoke.
-- [ ] فاز ۱۴۰: ادامه Workflow فریلنسر فقط بر اساس اولین شکست واقعی پس از عبور Navigation؛ Project Detail، Timer، Expense، Invoice یا Mobile Dialog.
+- [x] فاز ۱۴۰: همگام‌سازی Persistence Probe فریلنسر با snapshot envelope واقعی AppData و قرارداد `Invoice.lines`، همراه با diagnostics جزئی و تأیید Hard Reload از IndexedDB.
+- [ ] فاز ۱۴۱: ادامه Browser Journey فقط بر اساس اولین شکست واقعی بعد از تأیید persistence؛ تمرکز محتمل روی Mobile Dialog، Focus trap یا viewport.
