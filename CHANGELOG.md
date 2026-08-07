@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+- Fixed a lint-only regression in the employee Time Strip action hook by removing the now-unused `record` dependency after functional WorkRecord patches.
+
 - مسیر کارمند اکنون وضعیت Paid/Unpaid هر وقفه را صریحاً در ویرایشگر نمایش می‌دهد و Browser Journey قرارداد وقفه ۱۵ دقیقه‌ای بدون حقوق را تا محاسبه خالص `۸:۱۵` بررسی می‌کند.
 
 - Release Gate اکنون Browser UX Journey حالت کارمند را نیز بعد از مسیر فریلنسر اجرا می‌کند؛ Start/Lunch/Break/End، یادداشت، محاسبه ۸:۱۵، Month/Reports، Snapshot IndexedDB، Hard Reload و viewport موبایل روی خروجی Production بررسی می‌شوند.

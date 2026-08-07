@@ -6,9 +6,9 @@ import type { BreakItem, WorkRecord } from "@/lib/types";
 
 import type { TodayTimeStripProps } from "./types";
 
-type ActionProps = Pick<TodayTimeStripProps, "record" | "updateRecord">;
+type ActionProps = Pick<TodayTimeStripProps, "updateRecord">;
 
-export function useTimeStripActions({ record, updateRecord }: ActionProps) {
+export function useTimeStripActions({ updateRecord }: ActionProps) {
   const updateLunch = useCallback((patch: Partial<WorkRecord>) => {
     updateRecord((current) => {
       const next = { ...current, ...patch };
