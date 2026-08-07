@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="./public/brand/saatyar-mark-accent.svg" width="112" height="112" alt="Saatyar logo" />
+
 # Saatyar
 
 ### A Persian-first, RTL, local-first web app for worklogs, attendance, payroll, projects, and income

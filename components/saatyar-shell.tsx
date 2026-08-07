@@ -1,7 +1,7 @@
 "use client";
 
 import { CheckCircle2 } from "lucide-react";
-import Image from "next/image";
+import { BrandMark } from "@/components/common/brand-mark";
 import { usePathname } from "next/navigation";
 import { createContext, Suspense, useContext } from "react";
 import { SkipLink } from "@/components/common/skip-link";
@@ -40,13 +40,8 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
           "grid min-h-screen place-content-center gap-3 font-extrabold text-[var(--accent-strong)]",
         )}
       >
-        <span className="w-full grid place-items-center">
-          <Image
-            height={44}
-            width={44}
-            src="/saatyar-logo-green.svg"
-            alt="ساعت‌یار"
-          />
+        <span className="grid w-full place-items-center">
+          <BrandMark size={58} label="لوگوی ساعت‌یار" />
         </span>
         در حال آماده‌سازی ساعت‌یار…
       </main>

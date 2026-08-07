@@ -1,5 +1,7 @@
 <div align="center" dir="rtl">
 
+<img src="./public/brand/saatyar-mark-accent.svg" width="112" height="112" alt="لوگوی ساعت‌یار" />
+
 # ساعت‌یار
 
 ### وب‌اپ فارسی و Local-first برای ثبت زمان، کارکرد، حقوق، پروژه و درآمد

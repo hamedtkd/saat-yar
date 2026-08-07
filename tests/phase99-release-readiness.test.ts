@@ -21,6 +21,8 @@ const manifest = JSON.parse(read("docs/releases/2.1.0.json")) as {
   dataSchemaVersion: number;
   nodeEngine: string;
   releaseNotes: { fa: string; en: string };
+  releaseCommit: string;
+  tag: string;
 };
 
 test("release manifest aligns package, lockfile, Node and AppData schema", () => {
@@ -30,7 +32,9 @@ test("release manifest aligns package, lockfile, Node and AppData schema", () =>
   assert.equal(packageLock.packages[""]?.version, manifest.version);
   assert.equal(packageJson.engines.node, manifest.nodeEngine);
   assert.equal(APP_DATA_SCHEMA_VERSION, manifest.dataSchemaVersion);
-  assert.equal(manifest.status, "release-candidate");
+  assert.equal(manifest.status, "released");
+  assert.equal(manifest.tag, `v${manifest.version}`);
+  assert.equal(manifest.releaseCommit, "0901b67");
 });
 
 test("release gate keeps quality, audit and production browser smoke in order", () => {

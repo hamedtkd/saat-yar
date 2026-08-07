@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#071c19"/><stop offset=".55" stop-color="#0b2f29"/><stop offset="1" stop-color="#105f4a"/></linearGradient>
+  <radialGradient id="glow" cx="72%" cy="18%" r="75%"><stop stop-color="#34d399" stop-opacity=".42"/><stop offset="1" stop-color="#34d399" stop-opacity="0"/></radialGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="34" stdDeviation="30" flood-color="#000" flood-opacity=".32"/></filter>
+</defs>
+<rect width="1024" height="1024" rx="230" fill="url(#bg)"/>
+<rect width="1024" height="1024" rx="230" fill="url(#glow)"/>
+<circle cx="512" cy="512" r="344" fill="#071c19" fill-opacity=".34" stroke="#6ee7b7" stroke-opacity=".22" stroke-width="4"/>
+<image href="../brand/saatyar-mark-accent.svg" x="182" y="182" width="660" height="660" filter="url(#shadow)"/>
+</svg>

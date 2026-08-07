@@ -93,3 +93,8 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+@keyframes saatyar-breathe {
+  0%, 100% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 0 color-mix(in srgb, var(--accent) 0%, transparent)); }
+  50% { transform: scale(1.025) rotate(.6deg); filter: drop-shadow(0 5px 12px color-mix(in srgb, var(--accent) 24%, transparent)); }
+}

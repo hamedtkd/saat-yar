@@ -27,6 +27,7 @@
 ## برنامه‌ریزی و تاریخچه
 
 - [بک‌لاگ و نقشه راه](./roadmap/BACKLOG_FA.md)
+- [یادداشت فاز ۱۰۰: برند، متادیتا و PWA](./phases/PHASE_100_NOTES_FA.md)
 - [یادداشت‌های فازها](./phases/)
 
 فایل‌های قراردادی متداول مانند `README.md`، `SECURITY.md`، `CHANGELOG.md`، `LICENSE`، `CONTRIBUTING.md` و `AGENTS.md` عمداً در ریشه مخزن باقی می‌مانند.
