@@ -3,8 +3,8 @@
 import { useCallback } from "react";
 import { Palette, RotateCcw } from "lucide-react";
 import { SurfaceCard } from "@/components/common/surface-card";
+import { ColorField } from "@/components/common/color-field";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { EditableCardActions } from "@/components/pages/settings/editing/editable-card-actions";
 import { useSettingsDraft } from "@/hooks/settings/use-settings-draft";
 import { defaultSettings } from "@/lib/constants";
@@ -172,23 +172,13 @@ export function AppearanceSettingsCard({ data, setData, setToast }: Props) {
         {appearance.preset === "custom" && (
           <label className="grid max-w-sm gap-2 text-xs font-bold text-[var(--text-muted)]">
             رنگ سفارشی
-            <div className="grid grid-cols-[56px_1fr] gap-2">
-              <input
-                aria-label="انتخاب رنگ سفارشی"
-                type="color"
-                disabled={!editor.editing}
-                value={isHexColor(appearance.accent) ? appearance.accent : themePresets.spotify}
-                onChange={(event) => update({ accent: event.target.value })}
-                className="h-11 w-14 rounded-[var(--control-radius)] border border-[var(--border)] bg-[var(--surface-2)] p-1 disabled:cursor-not-allowed disabled:opacity-55"
-              />
-              <Input
-                dir="ltr"
-                disabled={!editor.editing}
-                value={appearance.accent}
-                aria-invalid={Boolean(validationError)}
-                onChange={(event) => update({ accent: event.target.value })}
-              />
-            </div>
+            <ColorField
+              value={appearance.accent}
+              fallback={themePresets.spotify}
+              disabled={!editor.editing}
+              invalid={Boolean(validationError)}
+              onChange={(accent) => update({ accent })}
+            />
           </label>
         )}
 

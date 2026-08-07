@@ -68,3 +68,5 @@
 - [فاز ۱۳۰: Toast خوانا و تقویم جلالی یکپارچه](./phases/PHASE_130_NOTES_FA.md)
 
 - [فاز ۱۳۱: تعمیم ساخت آیتم وابسته در Invoice و ثبت زمان](./phases/PHASE_131_NOTES_FA.md)
+
+- [فاز ۱۳۲: Audit کنترل‌های Native و ورودی عددی فارسی](./phases/PHASE_132_NOTES_FA.md)

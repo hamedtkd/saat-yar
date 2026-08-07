@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Input } from "@/components/ui/input";
+import { NumberField } from "@/components/common/number-field";
 import {
   Select,
   SelectContent,
@@ -83,16 +83,14 @@ export function MinuteDurationField({
 
       {customMode && (
         <div className="relative">
-          <Input
-            type="number"
+          <NumberField
             disabled={disabled}
-            inputMode="numeric"
             min={min}
             max={max}
             step={1}
             value={Number.isFinite(value) ? value : min}
-            onChange={(event) => updateCustomValue(event.target.value)}
-            className="pl-16 tabular-nums"
+            onValueChange={(nextValue) => updateCustomValue(String(nextValue))}
+            className="pl-16"
             aria-label="مدت زمان دلخواه به دقیقه"
           />
           <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-[11px] font-medium text-[var(--text-muted)]">
