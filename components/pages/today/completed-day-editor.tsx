@@ -11,7 +11,7 @@ import type { TodayPageProps } from "./types";
 import { TodayFocusCard } from "./today-focus-card";
 import { TodayTimeStrip } from "./today-time-strip";
 
-export function CompletedDayEditor(props: TodayPageProps) {
+export function CompletedDayEditor(props: TodayPageProps & { scheduledDayOff: boolean }) {
   const { record, selectedDate, updateRecord } = props;
   const completed = Boolean(record.start && record.end);
   const registryId = useId();

@@ -5,7 +5,9 @@ import { JalaliDatePicker } from "@/components/pickers";
 import { Button } from "@/components/ui/button";
 import { buildGreeting } from "@/lib/greeting";
 import { jalali, localDateKey, shiftDateKey } from "@/lib/format";
+import { getHolidayInfo } from "@/lib/holidays";
 import type { AppData } from "@/lib/types";
+import { isScheduledDayOff } from "@/lib/work-schedule";
 
 export function TodayHero({
   data,
@@ -18,6 +20,14 @@ export function TodayHero({
 }) {
   const today = localDateKey();
   const isToday = selectedDate === today;
+  const holiday = getHolidayInfo(selectedDate, {
+    mode: data.settings.mode,
+    manualHoliday: data.records[selectedDate]?.holiday,
+    includeOfficialHolidays: data.settings.autoOfficialHolidays,
+    includeWeeklyHoliday: data.settings.autoWeeklyHoliday,
+    overrides: data.holidayOverrides,
+  });
+  const scheduledDayOff = !holiday.isHoliday && isScheduledDayOff(selectedDate, data.settings);
   const fullDate = jalali(selectedDate, {
     weekday: "long",
     day: "numeric",
@@ -25,8 +35,16 @@ export function TodayHero({
     year: "numeric",
   });
   const title = isToday
-    ? `${buildGreeting(data.settings.name)}؛ امروز روی چه چیزی کار می‌کنی؟`
-    : "مرور روز کاری";
+    ? holiday.isHoliday
+      ? `${buildGreeting(data.settings.name)}؛ امروز تعطیل است`
+      : scheduledDayOff
+        ? `${buildGreeting(data.settings.name)}؛ امروز طبق برنامه کاری تعطیل است`
+        : `${buildGreeting(data.settings.name)}؛ امروز روی چه چیزی کار می‌کنی؟`
+    : holiday.isHoliday
+      ? "مرور روز تعطیل"
+      : scheduledDayOff
+        ? "این روز طبق برنامه کاری تعطیل است"
+        : "مرور روز کاری";
 
   return (
     <section className="dashboard-card mb-4 grid min-h-[124px] grid-cols-[minmax(250px,.85fr)_minmax(0,1.55fr)_minmax(180px,.65fr)] items-center gap-5 rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[linear-gradient(135deg,var(--surface-1),var(--surface-raised))] px-5 py-4 shadow-[0_5px_18px_rgba(0,0,0,.035)] max-[980px]:grid-cols-[minmax(0,1fr)_auto] max-[980px]:gap-4 max-[720px]:grid-cols-1 max-[720px]:px-4 max-[720px]:text-center">
@@ -51,6 +69,7 @@ export function TodayHero({
             includeOfficialHolidays={data.settings.autoOfficialHolidays}
             includeWeeklyHoliday={data.settings.autoWeeklyHoliday}
             holidayOverrides={data.holidayOverrides}
+            weeklySchedule={data.settings.weeklySchedule}
             placeholder="انتخاب تاریخ"
           />
           <Button

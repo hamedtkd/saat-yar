@@ -105,3 +105,4 @@
 - [فاز ۱۵۵: Audit دامنه Production](./phases/PHASE_155_NOTES_FA.md)
 - [فاز ۱۵۶: اصلاح Audit مسیرهای Precache در Production](./phases/PHASE_156_NOTES_FA.md)
 - [فاز ۱۵۷: قرارداد Deploy استاتیک Vercel](./phases/PHASE_157_NOTES_FA.md)
+- [فاز ۱۵۸: آگاهی Today از روز غیرکاری برنامه هفتگی](./phases/PHASE_158_NOTES_FA.md)

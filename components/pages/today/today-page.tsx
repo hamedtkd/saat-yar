@@ -1,10 +1,11 @@
 "use client";
 
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, CalendarOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { jalali } from "@/lib/format";
+import { jalali, localDateKey } from "@/lib/format";
 import { getHolidayInfo } from "@/lib/holidays";
+import { isScheduledDayOff } from "@/lib/work-schedule";
 import { ManualEntryForm } from "./manual-entry-form";
 import { TodayMetrics } from "./today-metrics";
 import { TodayHero } from "./today-hero";
@@ -20,6 +21,7 @@ import { useUnsavedNavigation } from "@/components/layout/navigation/unsaved-nav
 
 export function TodayPage(props: TodayPageProps) {
   const { requestNavigation } = useUnsavedNavigation();
+  const isToday = props.selectedDate === localDateKey();
   const holiday = getHolidayInfo(props.selectedDate, {
     mode: props.data.settings.mode,
     manualHoliday: props.record.holiday,
@@ -27,6 +29,7 @@ export function TodayPage(props: TodayPageProps) {
     includeWeeklyHoliday: props.data.settings.autoWeeklyHoliday,
     overrides: props.data.holidayOverrides,
   });
+  const scheduledDayOff = !holiday.isHoliday && isScheduledDayOff(props.selectedDate, props.data.settings);
 
   return (
     <>
@@ -62,6 +65,18 @@ export function TodayPage(props: TodayPageProps) {
           <span className="rounded-full border border-red-500/20 bg-[var(--surface-1)] px-2.5 py-1 text-[9px] font-bold">هدف روز: صفر</span>
         </div>
       )}
+      {scheduledDayOff && !holiday.isHoliday && (
+        <div className="mb-5 flex items-center justify-between gap-3 rounded-[var(--card-radius)] border border-[color-mix(in_srgb,var(--warning)_30%,var(--border))] bg-[var(--warning-soft)] px-4 py-3 text-[var(--warning)]">
+          <div className="flex items-start gap-3">
+            <CalendarOff aria-hidden="true" className="mt-0.5 size-5 shrink-0" />
+            <div className="grid gap-0.5">
+              <strong className="text-xs font-extrabold">{isToday ? "امروز طبق برنامه کاری تعطیل است" : "این روز طبق برنامه کاری تعطیل است"}</strong>
+              <span className="text-[10px] text-[var(--text-muted)]">این روز در برنامه هفتگی غیرفعال است؛ در صورت نیاز همچنان می‌توانی کار استثنایی ثبت کنی.</span>
+            </div>
+          </div>
+          <span className="shrink-0 rounded-full border border-[color-mix(in_srgb,var(--warning)_28%,var(--border))] bg-[var(--surface-1)] px-2.5 py-1 text-[9px] font-bold">ساعت موظفی: صفر</span>
+        </div>
+      )}
       <RecordHealthBanner record={props.record} onReset={props.resetRecord} />
       <RecordResetUndo date={props.resetUndoDate} onUndo={props.undoResetRecord} onDismiss={props.dismissResetUndo} />
       <TodaySmartSummary
@@ -73,8 +88,9 @@ export function TodayPage(props: TodayPageProps) {
         suggestedExit={props.suggestedExit}
         openBreak={Boolean(props.activeBreak)}
         lunchRunning={props.lunchRunning}
+        scheduledDayOff={scheduledDayOff}
       />
-      <CompletedDayEditor key={`${props.selectedDate}:${props.record.start && props.record.end ? "completed" : "active"}`} {...props} />
+      <CompletedDayEditor key={`${props.selectedDate}:${props.record.start && props.record.end ? "completed" : "active"}`} {...props} scheduledDayOff={scheduledDayOff} />
       {props.editingEntry === "manual" &&
         props.data.settings.mode !== "employee" && (
           <ManualEntryForm {...props} />
@@ -91,6 +107,7 @@ export function TodayPage(props: TodayPageProps) {
         result={props.todayCalc}
         dailyTarget={props.dailyTarget}
         financialsHidden={props.financialsHidden}
+        scheduledDayOff={scheduledDayOff}
       />
       {props.record.start &&
         !props.record.end &&

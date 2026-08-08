@@ -1,6 +1,7 @@
 import { cn } from "@/lib/cn";
 import { fa, jalali } from "@/lib/format";
 import { getHolidayInfo } from "@/lib/holidays";
+import { isScheduledDayOff } from "@/lib/work-schedule";
 
 import type { CalendarDayCell, HolidayOptions } from "./types";
 
@@ -23,6 +24,10 @@ export function CalendarDay({
 }: CalendarDayProps) {
   const isSelected = cell.key === value;
   const isToday = cell.key === today;
+  const weeklySchedule = holidayOptions.weeklySchedule;
+  const scheduledDayOff = weeklySchedule
+    ? isScheduledDayOff(cell.key, { weeklySchedule })
+    : false;
   const holiday = getHolidayInfo(cell.key, {
     mode: holidayOptions.mode,
     includeOfficialHolidays: holidayOptions.includeOfficialHolidays,
@@ -40,7 +45,7 @@ export function CalendarDay({
         year: "numeric",
       })}
       aria-pressed={isSelected}
-      title={holiday.title}
+      title={holiday.title ?? (scheduledDayOff ? "تعطیل طبق برنامه کاری" : undefined)}
       className={cn(
         "relative aspect-square min-w-0 rounded-xl border border-transparent",
         "bg-transparent text-sm font-bold text-[var(--text)] transition-colors duration-150",
@@ -50,6 +55,10 @@ export function CalendarDay({
         holiday.isHoliday &&
           !isSelected &&
           "border-[var(--danger)] bg-[var(--danger-soft)] text-[var(--danger)] hover:brightness-95",
+        scheduledDayOff &&
+          !holiday.isHoliday &&
+          !isSelected &&
+          "border-[color-mix(in_srgb,var(--warning)_55%,var(--border))] bg-[var(--warning-soft)] text-[var(--warning)] hover:brightness-95",
         isToday && !isSelected && "border-[var(--accent)]",
         isSelected && "border-[var(--accent)] bg-[var(--accent)] text-[var(--accent-foreground)] hover:brightness-105",
       )}
@@ -60,6 +69,12 @@ export function CalendarDay({
         <span
           aria-hidden="true"
           className="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-[var(--danger)]"
+        />
+      )}
+      {scheduledDayOff && !holiday.isHoliday && !isSelected && (
+        <span
+          aria-hidden="true"
+          className="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-[var(--warning)]"
         />
       )}
       {isRecorded && (

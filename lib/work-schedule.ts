@@ -63,6 +63,13 @@ export function getWorkScheduleDay(date: string, settings: Settings): WorkSchedu
   return settings.weeklySchedule[getWeekdayKey(date)];
 }
 
+export function isScheduledDayOff(
+  date: string,
+  settings: Pick<Settings, "weeklySchedule">,
+): boolean {
+  return !settings.weeklySchedule[getWeekdayKey(date)].enabled;
+}
+
 export function getScheduleTargetMinutes(schedule: WorkScheduleDay): number {
   if (!schedule.enabled) return 0;
   const start = timeToMinutes(schedule.start);

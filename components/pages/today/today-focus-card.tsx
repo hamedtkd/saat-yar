@@ -10,7 +10,9 @@ import type { TodayPageProps } from "./types.ts";
 import { TodayProgressArc } from "./today-progress-arc";
 import { TimerRelationFields } from "./timer-relation-fields";
 
-type Props = Pick<TodayPageProps, "data" | "record" | "timerDraft" | "setTimerDraft" | "activeEntry" | "todayCalc" | "dailyTarget" | "suggestedExit" | "toggleProjectTimer" | "startWork" | "finishWork" | "updateRecord" | "createClient" | "createProject">;
+type Props = Pick<TodayPageProps, "data" | "record" | "timerDraft" | "setTimerDraft" | "activeEntry" | "todayCalc" | "dailyTarget" | "suggestedExit" | "toggleProjectTimer" | "startWork" | "finishWork" | "updateRecord" | "createClient" | "createProject"> & {
+  scheduledDayOff: boolean;
+};
 
 export function TodayFocusCard(props: Props) {
   const mode = props.data.settings.mode;
@@ -23,7 +25,9 @@ export function TodayFocusCard(props: Props) {
       ? "در حال کار"
       : props.record.end
         ? "روز کاری ثبت شده"
-        : "آماده شروع";
+        : props.scheduledDayOff
+          ? "تعطیل طبق برنامه کاری"
+          : "آماده شروع";
   const timerValue = props.activeEntry
     ? <LiveDuration startedAt={props.activeEntry.startedAt} />
     : props.record.start
@@ -32,8 +36,12 @@ export function TodayFocusCard(props: Props) {
   const timingCaption = props.record.end
     ? `شروع ${faDigits(props.record.start)} · پایان ${faDigits(props.record.end)}`
     : props.record.start
-      ? `شروع ${faDigits(props.record.start)} · خروج پیشنهادی ${faDigits(props.suggestedExit)}`
-      : `خروج پیشنهادی ${faDigits(props.suggestedExit)}`;
+      ? props.scheduledDayOff
+        ? `شروع ${faDigits(props.record.start)} · بدون ساعت خروج موظفی`
+        : `شروع ${faDigits(props.record.start)} · خروج پیشنهادی ${faDigits(props.suggestedExit)}`
+      : props.scheduledDayOff
+        ? "در صورت نیاز می‌توانی کار استثنایی ثبت کنی"
+        : `خروج پیشنهادی ${faDigits(props.suggestedExit)}`;
 
   return (
     <SurfaceCard className="dashboard-card mb-4 overflow-hidden shadow-[0_6px_18px_rgba(0,0,0,.035)] dark:shadow-[0_10px_26px_rgba(0,0,0,.18)]">
@@ -83,13 +91,13 @@ export function TodayFocusCard(props: Props) {
             </span>
             <TodayProgressArc value={progress}>
               <strong className="block text-[clamp(2.1rem,4vw,3.15rem)] font-black leading-none tracking-[-.04em] text-[var(--accent-strong)]">{timerValue}</strong>
-              <span className="mt-2 block text-[10px] font-bold text-[var(--text-muted)]">{hasTarget ? `${fa.format(progress)}٪ از هدف روزانه` : "این روز هدف کاری ندارد"}</span>
+              <span className="mt-2 block text-[10px] font-bold text-[var(--text-muted)]">{props.scheduledDayOff ? "امروز ساعت موظفی ندارد" : hasTarget ? `${fa.format(progress)}٪ از هدف روزانه` : "این روز هدف کاری ندارد"}</span>
             </TodayProgressArc>
             <small className="-mt-1 min-h-5 text-[10px] text-[var(--text-muted)]">{timingCaption}</small>
             <div className="mt-2 grid w-full max-w-[290px] grid-cols-2 gap-2 max-[520px]:grid-cols-1">
               {!isEmployee && <Button onClick={() => props.toggleProjectTimer()} className="w-full">{props.activeEntry ? <><Square /> پایان تایمر</> : <><Play /> شروع تایمر</>}</Button>}
               {!props.record.start ? (
-                <Button onClick={props.startWork} className={cn("w-full", isEmployee && "col-span-2")}><Play /> شروع روز</Button>
+                <Button onClick={props.startWork} className={cn("w-full", isEmployee && "col-span-2")}><Play /> {props.scheduledDayOff ? "با این حال شروع روز" : "شروع روز"}</Button>
               ) : !props.record.end ? (
                 <Button variant="outline" onClick={props.finishWork} className="w-full"><Square /> پایان روز</Button>
               ) : (

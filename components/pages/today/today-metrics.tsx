@@ -8,13 +8,14 @@ import { calculateEmployeeDayPayForSettings } from "@/lib/payroll";
 import type { ReturnTypeCalc } from "@/lib/type-helpers";
 import type { AppData, WorkRecord } from "@/lib/types";
 
-export function TodayMetrics({ data, record, selectedDate, result, dailyTarget, financialsHidden }: {
+export function TodayMetrics({ data, record, selectedDate, result, dailyTarget, financialsHidden, scheduledDayOff }: {
   data: AppData;
   record: WorkRecord;
   selectedDate: string;
   result: ReturnTypeCalc;
   dailyTarget: number;
   financialsHidden: boolean;
+  scheduledDayOff: boolean;
 }) {
   const hasTarget = dailyTarget > 0;
   const progress = hasTarget ? Math.min(100, Math.round(result.credited / dailyTarget * 100)) : 0;
@@ -34,7 +35,7 @@ export function TodayMetrics({ data, record, selectedDate, result, dailyTarget, 
       <MetricCard icon={<WalletCards />} label={isEmployee ? "حقوق امروز" : isHybrid ? "درآمد ترکیبی امروز" : "درآمد پروژه امروز"} value={<PrivateMoney value={income} hidden={financialsHidden} />} suffix="تومان" tone="green" />
       <SurfaceCard as="article" className="dashboard-card flex min-h-[104px] items-center justify-center gap-4 p-4">
         <ProgressRing value={progress} size="sm"><strong className="text-sm font-black">{hasTarget ? `${fa.format(progress)}٪` : "—"}</strong></ProgressRing>
-        <div><small className="block text-[10px] text-[var(--text-muted)]">{hasTarget ? "هدف روزانه" : "روز بدون هدف"}</small><strong className="mt-1 block text-lg font-black">{duration(result.credited)}</strong><span className="text-[10px] text-[var(--text-muted)]">{hasTarget ? `از ${duration(dailyTarget)}` : "بدون ساعت موظفی"}{!isEmployee ? ` · پروژه ${duration(projectMinutes)}` : ""}</span></div>
+        <div><small className="block text-[10px] text-[var(--text-muted)]">{scheduledDayOff ? "تعطیل طبق برنامه" : hasTarget ? "هدف روزانه" : "روز بدون هدف"}</small><strong className="mt-1 block text-lg font-black">{duration(result.credited)}</strong><span className="text-[10px] text-[var(--text-muted)]">{scheduledDayOff ? "ساعت موظفی صفر" : hasTarget ? `از ${duration(dailyTarget)}` : "بدون ساعت موظفی"}{!isEmployee ? ` · پروژه ${duration(projectMinutes)}` : ""}</span></div>
       </SurfaceCard>
     </section>
   );

@@ -19,4 +19,5 @@ export type TodayTimeStripProps = Pick<
 
 export type TodayTimeStripViewProps = TodayTimeStripProps & {
   showQuickActions?: boolean;
+  scheduledDayOff?: boolean;
 };

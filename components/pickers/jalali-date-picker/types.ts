@@ -1,5 +1,5 @@
 import { jalaliMonthCells } from "@/lib/format";
-import type { HolidayOverride, Mode } from "@/lib/types";
+import type { HolidayOverride, Mode, Settings } from "@/lib/types";
 
 export type JalaliDatePickerProps = {
   value: string;
@@ -9,6 +9,7 @@ export type JalaliDatePickerProps = {
   includeOfficialHolidays?: boolean;
   includeWeeklyHoliday?: boolean;
   holidayOverrides?: HolidayOverride[];
+  weeklySchedule?: Settings["weeklySchedule"];
   placeholder?: string;
 };
 
@@ -19,4 +20,5 @@ export type HolidayOptions = {
   includeOfficialHolidays: boolean;
   includeWeeklyHoliday: boolean;
   holidayOverrides: HolidayOverride[];
+  weeklySchedule?: Settings["weeklySchedule"];
 };

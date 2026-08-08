@@ -13,6 +13,7 @@ export function JalaliDatePicker({
   includeOfficialHolidays = true,
   includeWeeklyHoliday = true,
   holidayOverrides = [],
+  weeklySchedule,
   placeholder = "انتخاب تاریخ",
 }: JalaliDatePickerProps) {
   const picker = useJalaliDatePicker({
@@ -42,6 +43,7 @@ export function JalaliDatePicker({
             includeOfficialHolidays,
             includeWeeklyHoliday,
             holidayOverrides,
+            weeklySchedule,
           }}
           onClose={picker.closePicker}
           onPreviousMonth={picker.showPreviousMonth}

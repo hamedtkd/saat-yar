@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+- صفحه «امروز» اکنون روزهای غیرفعال `weeklySchedule` را صریحاً «تعطیل طبق برنامه کاری» نمایش می‌دهد، ساعت موظفی را صفر توضیح می‌دهد و در صورت نیاز ثبت کار استثنایی را با CTA جداگانه نگه می‌دارد؛ این وضعیت عمداً از تعطیلی رسمی و Holiday Pay جدا است.
+- تقویم جلالی صفحه امروز روزهای غیرکاری برنامه هفتگی را با وضعیت بصری مستقل از تعطیلات رسمی نشان می‌دهد.
+
 - قرارداد Deploy استاتیک Vercel صریح شد: Framework Preset روی `Other`، Build با `npm run build:vercel` و انتشار فقط از `out/` تا Precache نهایی‌شده PWA به‌جای placeholder سورس روی Production سرو شود.
 - دستور `npm run audit:vercel` برای بررسی محلی قرارداد Static Export → PWA finalizer → Vercel output اضافه شد.
 

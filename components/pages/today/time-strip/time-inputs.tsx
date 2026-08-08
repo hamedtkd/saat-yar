@@ -19,20 +19,20 @@ function TimeCard({ title, icon, tone, picker, action }: {
   </div>;
 }
 
-export function TimeInputs({ record, data, suggestedExit, updateRecord, startWork, finishWork }: Pick<TodayTimeStripProps, "record" | "data" | "suggestedExit" | "updateRecord" | "startWork" | "finishWork">) {
+export function TimeInputs({ record, data, suggestedExit, updateRecord, startWork, finishWork, scheduledDayOff }: Pick<TodayTimeStripProps, "record" | "data" | "suggestedExit" | "updateRecord" | "startWork" | "finishWork"> & { scheduledDayOff?: boolean }) {
   return <>
     <TimeCard
       title="ورود"
       icon={<LogIn className="size-4" />}
       tone="bg-[var(--success-soft)] text-[var(--success)]"
       picker={<TimePicker value={record.start} onChange={(start) => updateRecord({ start, startedAt: undefined })} suggestions={[{ label: "شروع معمول", value: data.settings.defaultStart }]} />}
-      action={<Button type="button" size="sm" className="w-full" onClick={startWork} disabled={Boolean(record.start)}>ثبت ورود</Button>}
+      action={<Button type="button" size="sm" className="w-full" onClick={startWork} disabled={Boolean(record.start)}>{scheduledDayOff ? "ثبت ورود استثنایی" : "ثبت ورود"}</Button>}
     />
     <TimeCard
       title="خروج"
       icon={<LogOut className="size-4" />}
       tone="bg-[var(--danger-soft)] text-[var(--danger)]"
-      picker={<TimePicker value={record.end} onChange={(end) => updateRecord({ end, endedAt: undefined })} suggestions={[{ label: "پیشنهادی", value: suggestedExit }, { label: "پایان معمول", value: data.settings.defaultEnd }]} />}
+      picker={<TimePicker value={record.end} onChange={(end) => updateRecord({ end, endedAt: undefined })} suggestions={scheduledDayOff ? [] : [{ label: "پیشنهادی", value: suggestedExit }, { label: "پایان معمول", value: data.settings.defaultEnd }]} />}
       action={<Button type="button" size="sm" variant="destructive" className="w-full" onClick={finishWork} disabled={!record.start || Boolean(record.end)}>ثبت خروج</Button>}
     />
   </>;
