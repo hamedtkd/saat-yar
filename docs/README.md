@@ -102,3 +102,6 @@
 
 - [فاز ۱۵۳: Final Release 2.3.0](./phases/PHASE_153_NOTES_FA.md)
 - [فاز ۱۵۴: Hotfix لینک Roadmap در Gate نهایی 2.3.0](./phases/PHASE_154_NOTES_FA.md)
+- [فاز ۱۵۵: Audit دامنه Production](./phases/PHASE_155_NOTES_FA.md)
+- [فاز ۱۵۶: اصلاح Audit مسیرهای Precache در Production](./phases/PHASE_156_NOTES_FA.md)
+- [فاز ۱۵۷: قرارداد Deploy استاتیک Vercel](./phases/PHASE_157_NOTES_FA.md)

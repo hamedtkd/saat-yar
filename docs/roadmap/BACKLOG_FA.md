@@ -246,3 +246,6 @@
 - [x] فاز ۱۵۲: Release Candidate 2.3.0؛ افزایش نسخه Package/Lockfile، Manifest فعال Schema v17، Release Notes فارسی/انگلیسی، Changelog، Checklist، Audit رسانه و ثبت baseline سبز `ff0177f` با ۵۶۹ تست و سه Browser Smoke.
 - [x] فاز ۱۵۳: Final Release 2.3.0؛ Candidate `75b7be6` با ۵۷۵ تست و Pairing چهار chunk رمزنگاری‌شده ثبت شد، Manifest به `released` تبدیل شد و Tag annotated `v2.3.0` پس از Commit/Push نهایی ساخته می‌شود.
 - [x] فاز ۱۵۴: Hotfix مستندات Release 2.3.0؛ بازگرداندن لینک صریح `docs/roadmap/BACKLOG_FA.md` به README و الزام ساخت Tag فقط روی آخرین Commit با Gate کاملاً سبز.
+- [x] فاز ۱۵۵: Audit پس از انتشار روی دامنه واقعی `https://saat-yar.vercel.app/`؛ بررسی read-only Routeهای عمومی، Settings، PWA Manifest/Service Worker/Precache، آیکون‌ها، robots و sitemap بدون تغییر Manifest تاریخی 2.3.0.
+- [x] فاز ۱۵۶: اصلاح false negative Audit Precache Production؛ parse مستقیم `self.__SAATYAR_PRECACHE`، پشتیبانی از مسیر نسبی `_next/static/...` و تأیید reachability اولین Build Asset.
+- [x] فاز ۱۵۷: قرارداد Deploy استاتیک Vercel؛ انتخاب Framework Preset=Other، اجرای `build:vercel` و انتشار صریح `out/` تا Precache نهایی‌شده به‌جای placeholder سورس Deploy شود.

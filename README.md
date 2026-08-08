@@ -175,6 +175,8 @@ http://localhost:3000
 | `npm run test:browser:production` | Build خروجی Static و اجرای Smoke Test واقعی در Chrome، Edge یا Chromium |
 | `npm run check:release` | Quality کامل و سپس Smoke Test مرورگر روی همان Build |
 | `npm run test:browser:pairing` | Smoke واقعی WebRTC برای انتقال چند chunk رمزنگاری‌شده و ACK |
+| `npm run audit:vercel` | بررسی محلی قرارداد Static Export و انتشار `out/` روی Vercel |
+| `npm run audit:production` | Audit read-only دامنه Deploy‌شده، Routeها، PWA، Service Worker، robots و sitemap |
 | `npm run media:capture` | بازتولید Screenshot/GIFهای محصول با دیتای نمایشی مستقل |
 | `npm run build:pages` | ساخت خروجی Static |
 | `npm run build:vercel` | Build مناسب Vercel |

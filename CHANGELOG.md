@@ -1,5 +1,12 @@
 ## [Unreleased]
 
+- قرارداد Deploy استاتیک Vercel صریح شد: Framework Preset روی `Other`، Build با `npm run build:vercel` و انتشار فقط از `out/` تا Precache نهایی‌شده PWA به‌جای placeholder سورس روی Production سرو شود.
+- دستور `npm run audit:vercel` برای بررسی محلی قرارداد Static Export → PWA finalizer → Vercel output اضافه شد.
+
+- اصلاح false negative در `audit:production`: Precache تولیدشده مسیرهای Next.js را به‌صورت `_next/static/...` بدون slash ابتدایی نگه می‌دارد؛ Audit اکنون Manifest را parse می‌کند و reachability اولین Build Asset را نیز بررسی می‌کند.
+
+- Audit read-only دامنه Production با `npm run audit:production` برای Routeها، PWA، Service Worker/Precache، آیکون‌ها، robots و sitemap.
+
 ## [2.3.0] - 2026-08-08
 
 - Release documentation دوباره لینک صریح `docs/roadmap/BACKLOG_FA.md` را در README نگه می‌دارد تا قرارداد تاریخی Docs/Agent Guide در Gate نهایی ۲.۳.۰ سبز بماند.

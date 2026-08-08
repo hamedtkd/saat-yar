@@ -178,6 +178,8 @@ Installation problems are documented in:
 | `npm run test:browser:production` | Build the static export and run the Chromium production smoke test |
 | `npm run check:release` | Run quality checks and the production browser smoke test on the same build |
 | `npm run test:browser:pairing` | Run the real WebRTC encrypted multi-chunk transfer/ACK smoke |
+| `npm run audit:vercel` | Verify the local static-export → `out/` Vercel deployment contract |
+| `npm run audit:production` | Read-only audit of deployed routes, PWA, service worker, robots, and sitemap |
 | `npm run media:capture` | Regenerate product screenshots/GIF from isolated demo data |
 | `npm run build:pages` | Produce the static application build |
 | `npm run build:vercel` | Produce the Vercel-compatible build |
