@@ -17,11 +17,13 @@
 - [Windows and npm troubleshooting — English](./TROUBLESHOOTING_EN.md)
 - [سازگاری مرورگر / Browser compatibility](./BROWSER_COMPATIBILITY.md)
 
-## انتشار ۲.۳.۰
+## انتشار ۲.۳.۱
 
-- [یادداشت انتشار ۲.۳.۰ فارسی](./releases/RELEASE_NOTES_2.3.0_FA.md)
-- [Saatyar 2.3.0 release notes](./releases/RELEASE_NOTES_2.3.0_EN.md)
-- [Release manifest 2.3.0](./releases/2.3.0.json)
+- [یادداشت انتشار ۲.۳.۱ فارسی](./releases/RELEASE_NOTES_2.3.1_FA.md)
+- [Saatyar 2.3.1 release notes](./releases/RELEASE_NOTES_2.3.1_EN.md)
+- [Release manifest 2.3.1](./releases/2.3.1.json)
+- [یادداشت انتشار تاریخی ۲.۳.۰](./releases/RELEASE_NOTES_2.3.0_FA.md)
+- [Historical release manifest 2.3.0](./releases/2.3.0.json)
 - [یادداشت انتشار تاریخی ۲.۲.۰](./releases/RELEASE_NOTES_2.2.0_FA.md)
 - [Historical release manifest 2.2.0](./releases/2.2.0.json)
 - [یادداشت انتشار تاریخی ۲.۱.۰](./releases/RELEASE_NOTES_2.1.0_FA.md)
@@ -106,3 +108,5 @@
 - [فاز ۱۵۶: اصلاح Audit مسیرهای Precache در Production](./phases/PHASE_156_NOTES_FA.md)
 - [فاز ۱۵۷: قرارداد Deploy استاتیک Vercel](./phases/PHASE_157_NOTES_FA.md)
 - [فاز ۱۵۸: آگاهی Today از روز غیرکاری برنامه هفتگی](./phases/PHASE_158_NOTES_FA.md)
+
+- [فاز ۱۵۹: Final Release 2.3.1](./phases/PHASE_159_NOTES_FA.md)

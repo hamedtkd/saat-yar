@@ -1,14 +1,19 @@
 ## [Unreleased]
 
+## [2.3.1] - 2026-08-08
+
+### اصلاح شد
+
 - صفحه «امروز» اکنون روزهای غیرفعال `weeklySchedule` را صریحاً «تعطیل طبق برنامه کاری» نمایش می‌دهد، ساعت موظفی را صفر توضیح می‌دهد و در صورت نیاز ثبت کار استثنایی را با CTA جداگانه نگه می‌دارد؛ این وضعیت عمداً از تعطیلی رسمی و Holiday Pay جدا است.
 - تقویم جلالی صفحه امروز روزهای غیرکاری برنامه هفتگی را با وضعیت بصری مستقل از تعطیلات رسمی نشان می‌دهد.
+- Audit Production فرمت واقعی `self.__SAATYAR_PRECACHE` و مسیر نسبی `_next/static/...` را parse می‌کند و reachability یک Build Asset را نیز می‌سنجد تا false negative قبلی حذف شود.
 
+### استقرار و سخت‌گیری Release
+
+- Audit read-only دامنه Production با `npm run audit:production` برای Routeها، PWA، Service Worker/Precache، آیکن‌ها، robots و sitemap به قرارداد Release اضافه شد.
 - قرارداد Deploy استاتیک Vercel صریح شد: Framework Preset روی `Other`، Build با `npm run build:vercel` و انتشار فقط از `out/` تا Precache نهایی‌شده PWA به‌جای placeholder سورس روی Production سرو شود.
-- دستور `npm run audit:vercel` برای بررسی محلی قرارداد Static Export → PWA finalizer → Vercel output اضافه شد.
-
-- اصلاح false negative در `audit:production`: Precache تولیدشده مسیرهای Next.js را به‌صورت `_next/static/...` بدون slash ابتدایی نگه می‌دارد؛ Audit اکنون Manifest را parse می‌کند و reachability اولین Build Asset را نیز بررسی می‌کند.
-
-- Audit read-only دامنه Production با `npm run audit:production` برای Routeها، PWA، Service Worker/Precache، آیکون‌ها، robots و sitemap.
+- دستور `npm run audit:vercel` قرارداد Static Export → PWA finalizer → Vercel output را به‌صورت محلی بررسی می‌کند.
+- Patch Release 2.3.1 اصلاحات فازهای ۱۵۵ تا ۱۵۸ را با Baseline تأییدشده `7c675e1` و ۶۰۱ تست سبز بسته‌بندی می‌کند؛ فاز ۱۵۹ شش قرارداد Release اضافه می‌کند و Gate نهایی ۶۰۷ تست است.
 
 ## [2.3.0] - 2026-08-08
 

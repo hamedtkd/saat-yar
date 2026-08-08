@@ -44,11 +44,11 @@ test("2.2.0 release contract avoids an impossible self-referential commit hash",
   assert.match(read("docs/releases/RELEASE_NOTES_2.2.0_EN.md"), /annotated `v2\.2\.0` Git tag is the source of truth/);
 });
 
-test("readmes retain 2.2.0 as historical release documentation while 2.3.0 advances", () => {
+test("readmes retain 2.2.0 and 2.3.0 as historical release documentation", () => {
   assert.match(read("README.md"), /RELEASE_NOTES_2\.2\.0_FA\.md/);
   assert.match(read("README_EN.md"), /RELEASE_NOTES_2\.2\.0_EN\.md/);
   assert.match(read("docs/releases/RELEASE_NOTES_2.2.0_FA.md"), /Manifest نسخه ۲\.۲\.۰ اکنون `released` است/);
-  assert.match(read("README.md"), /نسخه \*\*۲\.۳\.۰\*\* اکنون منتشر شده است/);
+  assert.match(read("README.md"), /RELEASE_NOTES_2\.3\.0_FA\.md/);
 });
 
 test("phase 120 stays closed and the published 2.2.0 tag remains recorded", () => {

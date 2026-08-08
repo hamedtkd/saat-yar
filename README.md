@@ -278,7 +278,8 @@ tests/                         تست‌های دامنه، Regression و معم
 
 - [عیب‌یابی Windows و خطاهای npm](./docs/TROUBLESHOOTING_FA.md)
 - [جدول سازگاری مرورگر و محدودیت‌های Notification/PWA](./docs/BROWSER_COMPATIBILITY.md)
-- [یادداشت انتشار ساعت‌یار ۲.۳.۰](./docs/releases/RELEASE_NOTES_2.3.0_FA.md)
+- [یادداشت انتشار ساعت‌یار ۲.۳.۱](./docs/releases/RELEASE_NOTES_2.3.1_FA.md)
+- [یادداشت انتشار تاریخی ۲.۳.۰](./docs/releases/RELEASE_NOTES_2.3.0_FA.md)
 - [یادداشت انتشار تاریخی ۲.۲.۰](./docs/releases/RELEASE_NOTES_2.2.0_FA.md)
 - [یادداشت انتشار تاریخی ۲.۱.۰](./docs/releases/RELEASE_NOTES_2.1.0_FA.md)
 
@@ -298,9 +299,11 @@ npm run test:browser:production
 
 ## نقشه راه
 
-نسخه **۲.۳.۰** اکنون منتشر شده است. Release Candidate روی commit prefix `75b7be6` با **۵۷۵/۵۷۵ تست، Build کامل و Browser Smokeهای Production، Freelancer و Employee** تأیید شد و Pairing Browser Smoke نیز انتقال مستقیم WebRTC شامل **۴ chunk رمزنگاری‌شده و ACK** را پاس کرد. فاز ۱۵۳ شش تست قرارداد Release نهایی اضافه می‌کند و Gate نهایی باید به **۵۸۱/۵۸۱** برسد. جزئیات در [یادداشت انتشار ۲.۳.۰](./docs/releases/RELEASE_NOTES_2.3.0_FA.md)، [چک‌لیست انتشار](./RELEASE_CHECKLIST_FA.md) و [نقشه راه](./docs/roadmap/BACKLOG_FA.md) ثبت شده‌اند.
+نسخه **۲.۳.۱** Patch Release فعلی ساعت‌یار است. Baseline تأییدشده روی commit prefix `7c675e1` با **۶۰۱/۶۰۱ تست**، Build کامل، Browser Smokeهای Production/Freelancer/Employee، Pairing مستقیم WebRTC، `audit:vercel` و Audit پس از Deploy روی دامنه واقعی Production سبز شد. فاز ۱۵۹ شش تست قرارداد Release اضافه می‌کند و Gate نهایی باید به **۶۰۷/۶۰۷** برسد.
 
-در اولین اجرای Gate فاز ۱۵۳ فقط قرارداد مستندات قدیمیِ لینک نقشه راه شکست خورد؛ فاز ۱۵۴ همان لینک را بدون تغییر محصول، Schema یا تعداد تست‌ها بازگرداند. Manifest نهایی عمداً Commit نهایی را داخل خودش ذخیره نمی‌کند تا قرارداد self-referential ایجاد نشود؛ Tag annotated `v2.3.0` باید پس از سبزشدن Gate فاز ۱۵۴ روی آخرین Commit سبز ساخته شود و همان Tag منبع حقیقت Release خواهد بود. توسعه قابلیت‌های جدید از این نقطه وارد نسخه‌های بعدی می‌شود.
+این Patch Release اصلاحات فازهای ۱۵۵ تا ۱۵۸ را بسته‌بندی می‌کند: Audit واقعی Production، اصلاح Precache، قرارداد Static Export روی Vercel و تشخیص «تعطیل طبق برنامه کاری» در صفحه امروز. AppData همچنان Schema v17 است و Migration یا Dependency جدیدی وجود ندارد. جزئیات در [یادداشت انتشار ۲.۳.۱](./docs/releases/RELEASE_NOTES_2.3.1_FA.md)، [چک‌لیست انتشار](./RELEASE_CHECKLIST_FA.md) و [نقشه راه](./docs/roadmap/BACKLOG_FA.md) ثبت شده‌اند.
+
+Manifest تاریخی ۲.۳.۰ و Tag `v2.3.0` تغییر نمی‌کنند. Manifest ۲.۳.۱ نیز عمداً `releaseCommit` ندارد؛ پس از Commit/Push فاز ۱۵۹، Ready شدن Deploy و سبز شدن `npm run audit:production`، Tag annotated `v2.3.1` روی همان Commit نهایی ساخته می‌شود و منبع حقیقت Release خواهد بود.
 
 ## حمایت مالی
 

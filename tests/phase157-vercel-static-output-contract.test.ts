@@ -38,11 +38,10 @@ test("standalone Vercel deployment contract reports the intended static publicat
   assert.equal(result.outputDirectory, "out");
 });
 
-test("phase 157 is post-release deployment hardening and leaves v2.3.0 immutable", async () => {
+test("phase 157 deployment hardening stays wired while historical v2.3.0 remains immutable", async () => {
   const packageJson = JSON.parse(await read("package.json"));
   const release = JSON.parse(await read("docs/releases/2.3.0.json"));
   const roadmap = await read("docs/roadmap/BACKLOG_FA.md");
-  assert.equal(packageJson.version, "2.3.0");
   assert.equal(packageJson.scripts["audit:vercel"], "node scripts/vercel-static-export-contract.mjs");
   assert.match(packageJson.scripts.test, /phase157-vercel-static-output-contract\.test\.ts/);
   assert.equal(release.status, "released");

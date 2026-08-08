@@ -39,11 +39,10 @@ test("production audit verifies robots and sitemap stay on the production origin
   assert.match(source, /sitemap\.xml is missing/);
 });
 
-test("phase 155 wires the remote production audit without changing the released 2.3.0 manifest", async () => {
+test("phase 155 keeps the remote production audit and historical 2.3.0 manifest intact", async () => {
   const packageJson = JSON.parse(await read("package.json"));
   const release = JSON.parse(await read("docs/releases/2.3.0.json"));
   const roadmap = await read("docs/roadmap/BACKLOG_FA.md");
-  assert.equal(packageJson.version, "2.3.0");
   assert.equal(packageJson.scripts["audit:production"], "node scripts/remote-production-audit.mjs");
   assert.match(packageJson.scripts.test, /phase155-production-domain-audit\.test\.ts/);
   assert.equal(release.status, "released");

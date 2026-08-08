@@ -250,3 +250,9 @@
 - [x] فاز ۱۵۶: اصلاح false negative Audit Precache Production؛ parse مستقیم `self.__SAATYAR_PRECACHE`، پشتیبانی از مسیر نسبی `_next/static/...` و تأیید reachability اولین Build Asset.
 - [x] فاز ۱۵۷: قرارداد Deploy استاتیک Vercel؛ انتخاب Framework Preset=Other، اجرای `build:vercel` و انتشار صریح `out/` تا Precache نهایی‌شده به‌جای placeholder سورس Deploy شود.
 - [x] فاز ۱۵۸: آگاهی Today از روزهای غیرفعال برنامه هفتگی؛ نمایش «تعطیل طبق برنامه کاری»، موظفی صفر، CTA ثبت کار استثنایی و علامت مستقل در تقویم بدون تبدیل آن به Holiday رسمی.
+
+## آمادگی انتشار ۲.۳.۱
+
+- [x] فاز ۱۵۹: Final Release 2.3.1؛ افزایش Package/Lockfile به 2.3.1، فعال‌سازی Manifest جدید روی Schema v17، ثبت Baseline تأییدشده `7c675e1` با ۶۰۱/۶۰۱ تست و Gateهای Production/Freelancer/Employee/Pairing/Vercel/Production Audit، انتقال تغییرات فازهای ۱۵۵ تا ۱۵۸ از Unreleased به Changelog و افزودن شش قرارداد Release برای Gate نهایی ۶۰۷/۶۰۷.
+- [x] Manifest و Tag تاریخی `v2.3.0` بدون تغییر باقی می‌مانند و `v2.3.1` فقط پس از Commit/Push فاز ۱۵۹، Ready شدن Vercel و سبز شدن `npm run audit:production` روی همان Commit نهایی ساخته می‌شود.
+
