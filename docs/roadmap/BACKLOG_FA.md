@@ -245,3 +245,4 @@
 
 - [x] فاز ۱۵۲: Release Candidate 2.3.0؛ افزایش نسخه Package/Lockfile، Manifest فعال Schema v17، Release Notes فارسی/انگلیسی، Changelog، Checklist، Audit رسانه و ثبت baseline سبز `ff0177f` با ۵۶۹ تست و سه Browser Smoke.
 - [x] فاز ۱۵۳: Final Release 2.3.0؛ Candidate `75b7be6` با ۵۷۵ تست و Pairing چهار chunk رمزنگاری‌شده ثبت شد، Manifest به `released` تبدیل شد و Tag annotated `v2.3.0` پس از Commit/Push نهایی ساخته می‌شود.
+- [x] فاز ۱۵۴: Hotfix مستندات Release 2.3.0؛ بازگرداندن لینک صریح `docs/roadmap/BACKLOG_FA.md` به README و الزام ساخت Tag فقط روی آخرین Commit با Gate کاملاً سبز.

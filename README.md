@@ -296,9 +296,9 @@ npm run test:browser:production
 
 ## نقشه راه
 
-نسخه **۲.۳.۰** اکنون منتشر شده است. Release Candidate روی commit prefix `75b7be6` با **۵۷۵/۵۷۵ تست، Build کامل و Browser Smokeهای Production، Freelancer و Employee** تأیید شد و Pairing Browser Smoke نیز انتقال مستقیم WebRTC شامل **۴ chunk رمزنگاری‌شده و ACK** را پاس کرد. فاز ۱۵۳ شش تست قرارداد Release نهایی اضافه می‌کند و Gate نهایی باید به **۵۸۱/۵۸۱** برسد. جزئیات در [یادداشت انتشار ۲.۳.۰](./docs/releases/RELEASE_NOTES_2.3.0_FA.md) و [چک‌لیست انتشار](./RELEASE_CHECKLIST_FA.md) ثبت شده‌اند.
+نسخه **۲.۳.۰** اکنون منتشر شده است. Release Candidate روی commit prefix `75b7be6` با **۵۷۵/۵۷۵ تست، Build کامل و Browser Smokeهای Production، Freelancer و Employee** تأیید شد و Pairing Browser Smoke نیز انتقال مستقیم WebRTC شامل **۴ chunk رمزنگاری‌شده و ACK** را پاس کرد. فاز ۱۵۳ شش تست قرارداد Release نهایی اضافه می‌کند و Gate نهایی باید به **۵۸۱/۵۸۱** برسد. جزئیات در [یادداشت انتشار ۲.۳.۰](./docs/releases/RELEASE_NOTES_2.3.0_FA.md)، [چک‌لیست انتشار](./RELEASE_CHECKLIST_FA.md) و [نقشه راه](./docs/roadmap/BACKLOG_FA.md) ثبت شده‌اند.
 
-Manifest نهایی عمداً Commit نهایی را داخل خودش ذخیره نمی‌کند تا قرارداد self-referential ایجاد نشود؛ پس از Commit/Push فاز ۱۵۳، Tag annotated `v2.3.0` روی همان Commit منبع حقیقت Release خواهد بود. توسعه قابلیت‌های جدید از این نقطه وارد نسخه‌های بعدی می‌شود.
+در اولین اجرای Gate فاز ۱۵۳ فقط قرارداد مستندات قدیمیِ لینک نقشه راه شکست خورد؛ فاز ۱۵۴ همان لینک را بدون تغییر محصول، Schema یا تعداد تست‌ها بازگرداند. Manifest نهایی عمداً Commit نهایی را داخل خودش ذخیره نمی‌کند تا قرارداد self-referential ایجاد نشود؛ Tag annotated `v2.3.0` باید پس از سبزشدن Gate فاز ۱۵۴ روی آخرین Commit سبز ساخته شود و همان Tag منبع حقیقت Release خواهد بود. توسعه قابلیت‌های جدید از این نقطه وارد نسخه‌های بعدی می‌شود.
 
 ## حمایت مالی
 

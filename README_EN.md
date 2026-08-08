@@ -298,9 +298,9 @@ Before opening a pull request, read [CONTRIBUTING.md](./CONTRIBUTING.md) and the
 
 ## Roadmap
 
-Version **2.3.0** is now released. The verified release candidate at commit prefix `75b7be6` passed **575/575 tests, the full production build, and the production, freelancer, and employee browser smokes**. The direct WebRTC pairing smoke also passed with **four encrypted chunks and an ACK**. Phase 153 adds six final-release contract tests, so the final source gate is expected to reach **581/581**. See the [2.3.0 release notes](./docs/releases/RELEASE_NOTES_2.3.0_EN.md) and the Persian [release checklist](./RELEASE_CHECKLIST_FA.md).
+Version **2.3.0** is now released. The verified release candidate at commit prefix `75b7be6` passed **575/575 tests, the full production build, and the production, freelancer, and employee browser smokes**. The direct WebRTC pairing smoke also passed with **four encrypted chunks and an ACK**. Phase 153 adds six final-release contract tests, so the final source gate is expected to reach **581/581**. See the [2.3.0 release notes](./docs/releases/RELEASE_NOTES_2.3.0_EN.md), the Persian [release checklist](./RELEASE_CHECKLIST_FA.md), and the [roadmap](./docs/roadmap/BACKLOG_FA.md).
 
-The final manifest intentionally does not embed its own release commit. After the Phase 153 finalization commit is pushed, the annotated `v2.3.0` Git tag on that commit is the source of truth for the final release commit. New feature work continues in later versions.
+The first Phase 153 gate run exposed only a legacy documentation-contract failure because the README no longer linked the relocated roadmap. Phase 154 restores that link without changing product behavior, schema, dependencies, or the 581-test final gate. The final manifest intentionally does not embed its own release commit; the annotated `v2.3.0` tag must be created on the latest green Phase 154 commit and remains the source of truth for the final release commit. New feature work continues in later versions.
 
 ## Support development
 

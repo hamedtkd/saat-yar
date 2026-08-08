@@ -67,3 +67,7 @@ Employee browser UX smoke passed.
 Release Candidate روی commit prefix `75b7be6` با ۵۷۵/۵۷۵ تست، Build کامل و Browser Smokeهای Production، Freelancer و Employee تأیید شد. Pairing Browser Smoke نیز انتقال مستقیم WebRTC شامل ۴ chunk رمزنگاری‌شده و ACK را پاس کرد. Manifest نسخه ۲.۳.۰ اکنون `released` است.
 
 فاز ۱۵۳ شش تست قرارداد نهایی اضافه می‌کند و Gate سورس نهایی ۵۸۱ تست خواهد داشت. Manifest عمداً `releaseCommit` ندارد؛ Tag annotated `v2.3.0` که پس از Commit نهایی ساخته می‌شود، منبع حقیقت Commit نهایی انتشار است.
+
+### Hotfix پیش از Tag
+
+اولین اجرای Gate نهایی فاز ۱۵۳ روی Commit `12d2933` با `580/581` متوقف شد؛ تنها Failure مربوط به قرارداد تاریخی مستندات بود که انتظار داشت README همچنان به `docs/roadmap/BACKLOG_FA.md` لینک بدهد. فاز ۱۵۴ این لینک را بازمی‌گرداند و هیچ تغییر Product، Schema، Dependency یا Test Count ایجاد نمی‌کند. Tag annotated `v2.3.0` فقط پس از Gate کامل `581/581` روی Commit فاز ۱۵۴ ساخته می‌شود.

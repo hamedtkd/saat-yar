@@ -67,3 +67,7 @@ Employee browser UX smoke passed.
 The release candidate at commit prefix `75b7be6` passed 575/575 tests, the full build, and the production, freelancer, and employee browser smokes. The direct WebRTC pairing smoke also passed four encrypted chunks with an ACK. The 2.3.0 manifest is now `released`.
 
 Phase 153 adds six final-release contract tests for an expected 581-test final source gate. The manifest intentionally contains no `releaseCommit`; the annotated `v2.3.0` Git tag created after the final commit is the source of truth for the final release commit.
+
+### Pre-tag documentation hotfix
+
+The first final Phase 153 gate run on commit `12d2933` stopped at `580/581`; the only failure was the historical documentation contract that requires the README to keep an explicit link to `docs/roadmap/BACKLOG_FA.md`. Phase 154 restores that link without changing product behavior, schema, dependencies, or the 581-test final count. The annotated `v2.3.0` tag must be created only after a fully green `581/581` gate on the Phase 154 commit.

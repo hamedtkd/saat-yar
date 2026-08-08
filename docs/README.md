@@ -101,3 +101,4 @@
 - [فاز ۱۵۲: Release Candidate 2.3.0](./phases/PHASE_152_NOTES_FA.md)
 
 - [فاز ۱۵۳: Final Release 2.3.0](./phases/PHASE_153_NOTES_FA.md)
+- [فاز ۱۵۴: Hotfix لینک Roadmap در Gate نهایی 2.3.0](./phases/PHASE_154_NOTES_FA.md)

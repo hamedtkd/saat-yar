@@ -46,3 +46,6 @@ git push origin v2.3.0
 - Migration جدید: ندارد
 - Dependency جدید: ندارد
 - تغییر Product UI: ندارد
+## اصلاح پس از اجرای Gate
+
+اجرای واقعی فاز ۱۵۳ روی Commit `12d2933` نشان داد ۵۸۰ تست از ۵۸۱ تست پاس می‌شوند و تنها شکست، قرارداد تاریخی `phase60-docs-agent-guide` برای وجود لینک صریح `docs/roadmap/BACKLOG_FA.md` در README است. Pairing Browser Smoke همچنان چهار chunk رمزنگاری‌شده و ACK را پاس کرد. بنابراین روی Commit `12d2933` Tag ساخته نمی‌شود؛ فاز ۱۵۴ این Hotfix صرفاً مستنداتی را اعمال می‌کند و Tag `v2.3.0` فقط روی آخرین Commit با Gate `581/581` ساخته خواهد شد.

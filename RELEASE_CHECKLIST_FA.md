@@ -1,6 +1,6 @@
 # چک‌لیست انتشار ساعت‌یار 2.3.0
 
-این فایل کنترل انسانی Release نهایی نسخه ۲.۳.۰ است. Candidate روی commit prefix `75b7be6` با ۵۷۵ تست، Build کامل و Browser Smokeهای Production، Freelancer و Employee سبز شده و Pairing Browser Smoke نیز انتقال ۴ chunk رمزنگاری‌شده همراه ACK را پاس کرده است. فاز ۱۵۳ فقط Finalization سورس، Gate نهایی و ساخت Tag annotated پس از Commit نهایی را انجام می‌دهد.
+این فایل کنترل انسانی Release نهایی نسخه ۲.۳.۰ است. Candidate روی commit prefix `75b7be6` با ۵۷۵ تست، Build کامل و Browser Smokeهای Production، Freelancer و Employee سبز شده و Pairing Browser Smoke نیز انتقال ۴ chunk رمزنگاری‌شده همراه ACK را پاس کرده است. فاز ۱۵۳ Finalization سورس را انجام داد؛ اجرای Gate آن یک شکست صرفاً مستنداتی در لینک Roadmap نشان داد و فاز ۱۵۴ همین قرارداد را قبل از ساخت Tag اصلاح می‌کند.
 
 ## وضعیت نسخه
 
@@ -26,7 +26,7 @@ Tag: v2.3.0
 - [ ] Employee Browser UX Smoke پاس شود و reference day برابر ۴۹۵ دقیقه / ۸:۱۵ باشد.
 - [ ] `npm run test:browser:pairing` دوباره پاس شود و ۴ chunk رمزنگاری‌شده با ACK منتقل شوند.
 - [ ] `git diff --check` بدون خروجی باشد.
-- [ ] `git status` فقط تغییرات مورد انتظار فاز ۱۵۳ را نشان دهد.
+- [ ] `git status` فقط تغییرات مورد انتظار فاز ۱۵۴ را نشان دهد.
 
 ## قرارداد Release
 
@@ -44,11 +44,11 @@ Tag: v2.3.0
 
 ```powershell
 git add .
-git commit -m "chore(release): finalize 2.3.0"
+git commit -m "docs(release): restore roadmap link before 2.3.0 tag"
 git push
 
 git tag -a v2.3.0 -m "Saatyar 2.3.0"
 git push origin v2.3.0
 ```
 
-Tag annotated `v2.3.0` منبع حقیقت Commit نهایی انتشار است. قبل از ساخت Tag، `git status` باید Clean باشد و Tag نباید روی Candidate `75b7be6` ساخته شود؛ باید روی Commit نهایی فاز ۱۵۳ قرار بگیرد.
+Tag annotated `v2.3.0` منبع حقیقت Commit نهایی انتشار است. قبل از ساخت Tag، `git status` باید Clean باشد و Tag نباید روی Candidate `75b7be6` ساخته شود؛ باید روی آخرین Commit سبز فاز ۱۵۴ قرار بگیرد؛ Commit فاز ۱۵۳ (`12d2933`) به‌دلیل شکست یک تست مستندات نباید Tag شود.
