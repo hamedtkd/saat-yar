@@ -18,10 +18,10 @@ test("creates a versioned recovery snapshot", () => {
 test("round-trips recovery data", () => {
   const source = {
     ...initialData,
-    settings: { ...initialData.settings, name: "هامد" },
+    settings: { ...initialData.settings, name: "حامد" },
   };
   const parsed = parseRecoverySnapshot(JSON.parse(serialiseRecoverySnapshot(createRecoverySnapshot(source))));
-  assert.equal(recoverySnapshotToData(parsed).settings.name, "هامد");
+  assert.equal(recoverySnapshotToData(parsed).settings.name, "حامد");
 });
 
 test("rejects malformed recovery snapshots", () => {
