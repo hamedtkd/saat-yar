@@ -63,7 +63,7 @@ export function CsvImportPanel({ data, commitImport }: {
   return (
     <section className="dashboard-card rounded-[var(--card-radius)] border border-[var(--dashboard-border)] p-4 sm:p-5">
       <PanelHead icon={<FileSpreadsheet />} title="واردسازی CSV / Excel">
-        <Button size="sm" variant="outline" onClick={() => downloadText(getCsvTemplate(kind), `saatyar-${kind}-template.csv`)}><Download /> نمونه CSV</Button>
+        <Button type="button" size="sm" variant="outline" onClick={() => downloadText(getCsvTemplate(kind), `saatyar-${kind}-template.csv`)}><Download /> نمونه CSV</Button>
       </PanelHead>
       <div className="grid gap-4">
         <label className="grid gap-2 text-[11px] font-semibold text-[var(--text-muted)]">نوع داده
@@ -77,7 +77,7 @@ export function CsvImportPanel({ data, commitImport }: {
         {error && <p className="rounded-xl border border-[color-mix(in_srgb,var(--danger)_30%,var(--border))] bg-[var(--danger-soft)] p-3 text-xs text-[var(--danger)]">{error}</p>}
         {parsed && (
           <div className="grid gap-4">
-            <div className="flex items-center justify-between gap-3"><div><strong className="text-sm text-[var(--text)]">تطبیق ستون‌ها</strong><p className="mt-1 text-[10px] text-[var(--text-muted)]">ستون‌ها خودکار تشخیص داده شده‌اند؛ قبل از Preview می‌توانی هرکدام را اصلاح کنی.</p></div><Button size="sm" variant="ghost" onClick={() => setMapping(createAutoMapping(kind, parsed.headers))}><RefreshCcw /> تشخیص دوباره</Button></div>
+            <div className="flex items-center justify-between gap-3"><div><strong className="text-sm text-[var(--text)]">تطبیق ستون‌ها</strong><p className="mt-1 text-[10px] text-[var(--text-muted)]">ستون‌ها خودکار تشخیص داده شده‌اند؛ قبل از Preview می‌توانی هرکدام را اصلاح کنی.</p></div><Button type="button" size="sm" variant="ghost" onClick={() => setMapping(createAutoMapping(kind, parsed.headers))}><RefreshCcw /> تشخیص دوباره</Button></div>
             <CsvMappingGrid kind={kind} headers={parsed.headers} mapping={mapping} onChange={(field, header) => setMapping((current) => ({ ...current, [field]: header }))} />
             {preview && <><ImportPreviewStats ready={preview.readyCount} conflicts={preview.conflictCount} invalid={preview.invalidCount} /><CsvPreviewTable preview={preview} /></>}
             {preview && preview.conflictCount > 0 && (
@@ -88,7 +88,7 @@ export function CsvImportPanel({ data, commitImport }: {
                 </div>
               </div>
             )}
-            <div className="flex flex-wrap items-center gap-2"><Button data-import-apply disabled={busy || !preview || preview.readyCount + (strategy === "replace" ? preview.conflictCount : 0) === 0} onClick={() => { void apply(); }}>اعمال واردسازی</Button><Button variant="ghost" disabled={busy} onClick={() => reset(kind)}>شروع دوباره</Button><span className="inline-flex items-center gap-1 text-[10px] text-[var(--text-muted)]"><ShieldCheck className="size-3.5 text-[var(--success)]" /> ردیف‌های نامعتبر هیچ‌وقت اعمال نمی‌شوند.</span></div>
+            <div className="flex flex-wrap items-center gap-2"><Button type="button" data-import-apply disabled={busy || !preview || preview.readyCount + (strategy === "replace" ? preview.conflictCount : 0) === 0} onClick={() => { void apply(); }}>اعمال واردسازی</Button><Button type="button" variant="ghost" disabled={busy} onClick={() => reset(kind)}>شروع دوباره</Button><span className="inline-flex items-center gap-1 text-[10px] text-[var(--text-muted)]"><ShieldCheck className="size-3.5 text-[var(--success)]" /> ردیف‌های نامعتبر هیچ‌وقت اعمال نمی‌شوند.</span></div>
           </div>
         )}
       </div>

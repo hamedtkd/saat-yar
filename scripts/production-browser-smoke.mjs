@@ -452,7 +452,14 @@ export async function runProductionBrowserSmoke() {
       return appData?.settings?.onboarded === false && appData?.clients?.some((item) => item.name === "مشتری آنبوردینگ") === true;
     })()`, "onboarding Import persistence without premature completion");
     console.log("✓ Personalized onboarding keeps employee setup relevant and imports existing data before completion");
-    await clickButton(client, "شروع ساعت‌یار");
+    await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="7"]')) && Boolean(document.querySelector('[data-onboarding-submit][type="submit"]'))`, "onboarding remains on the explicit final action after inline import");
+    const finalSubmitClicked = await evaluate(client, `(() => {
+      const button = document.querySelector('[data-onboarding-submit][type="submit"]');
+      if (!(button instanceof HTMLButtonElement)) return false;
+      button.click();
+      return true;
+    })()`);
+    if (!finalSubmitClicked) throw new Error("Final onboarding action could not be clicked after inline import.");
     await waitFor(client, "['/today', '/today/'].includes(location.pathname) && !document.body?.innerText.includes('شروع ساعت‌یار')", "today route after onboarding");
     await new Promise((resolveWait) => setTimeout(resolveWait, 700));
 
