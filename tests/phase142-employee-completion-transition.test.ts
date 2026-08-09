@@ -17,7 +17,7 @@ test("today editor remounts when a live record becomes completed", () => {
 test("completed remount starts locked and exposes explicit edit affordance", () => {
   assert.match(editor, /const completed = Boolean\(record\.start && record\.end\)/);
   assert.match(editor, /useState\(!completed\)/);
-  assert.match(editor, /!editing \? \(/);
+  assert.match(editor, /completed && !editing && !savedFeedback/);
   assert.match(editor, /ویرایش این روز/);
 });
 

@@ -134,6 +134,52 @@ async function clickSummary(client, text) {
   await settleUi(client);
 }
 
+async function assertCompletedEditActionBarVisible(client, label, mobile = false) {
+  const contract = await evaluate(client, `(() => {
+    const bar = document.querySelector('[data-completed-edit-actions]');
+    const fields = document.querySelector('[data-completed-edit-fields="active"]');
+    const header = document.querySelector('header');
+    const mobileNav = document.querySelector('nav[aria-label="ناوبری موبایل"]');
+    if (!(bar instanceof HTMLElement)) return { found: false };
+    const rect = bar.getBoundingClientRect();
+    const headerRect = header instanceof HTMLElement ? header.getBoundingClientRect() : null;
+    const navRect = mobileNav instanceof HTMLElement ? mobileNav.getBoundingClientRect() : null;
+    return {
+      found: true,
+      position: getComputedStyle(bar).position,
+      anchored: ${mobile}
+        ? getComputedStyle(bar).position === "fixed"
+        : getComputedStyle(bar).position === "sticky",
+      dirty: bar.getAttribute("data-dirty"),
+      fieldsActive: fields instanceof HTMLFieldSetElement,
+      top: Math.round(rect.top),
+      bottom: Math.round(rect.bottom),
+      viewportHeight: window.innerHeight,
+      headerBottom: headerRect ? Math.round(headerRect.bottom) : 0,
+      mobileNavTop: navRect ? Math.round(navRect.top) : null,
+      visible: rect.bottom > 0 && rect.top < window.innerHeight,
+      clearOfHeader: !headerRect || rect.top >= headerRect.bottom - 2,
+      clearOfMobileNav: !${mobile} || !navRect || rect.bottom <= navRect.top - 4,
+    };
+  })()`);
+  if (!contract?.found || !contract.anchored || !contract.fieldsActive || !contract.visible || !contract.clearOfHeader || !contract.clearOfMobileNav) {
+    throw new Error(`${label} failed: ${JSON.stringify(contract)}`);
+  }
+  return contract;
+}
+
+async function scrollCompletedAdvancedEditorIntoView(client) {
+  const scrolled = await evaluate(client, `(() => {
+    const details = document.querySelector('[data-completed-day-editor] details');
+    if (!(details instanceof HTMLDetailsElement)) return false;
+    details.open = true;
+    details.scrollIntoView({ block: "end", behavior: "auto" });
+    return true;
+  })()`);
+  if (!scrolled) throw new Error("Completed-day advanced editor was not found.");
+  await settleUi(client);
+}
+
 async function focusBySelector(client, expression, label) {
   const focused = await evaluate(client, `(() => {
     const input = ${expression};
@@ -394,7 +440,13 @@ async function main() {
     })()`, "completed employee day edit affordance");
     await clickButton(client, "ویرایش این روز", true);
     await setTimeCardValue(client, "خروج", "17:00");
+    await scrollCompletedAdvancedEditorIntoView(client);
+    const desktopEditBar = await assertCompletedEditActionBarVisible(client, "desktop completed-day edit action bar");
+    if (desktopEditBar.dirty !== "true") throw new Error(`Completed-day edit bar did not expose dirty state: ${JSON.stringify(desktopEditBar)}`);
+    console.log("✓ Completed-day edit actions stay visible beside the editor after scrolling");
     await clickButton(client, "ذخیره تغییرات", true);
+    await waitFor(client, `Boolean(document.querySelector('[data-completed-edit-feedback]'))`, "completed-day save feedback");
+    console.log("✓ Completed-day save confirms success inside the current viewport");
     const completedPersistence = await waitForEmployeePersistence(client, date);
     await waitFor(client, `document.body?.innerText.includes("ثبت این روز کامل شده است") && document.body?.innerText.includes(${JSON.stringify(NET_DURATION)})`, "employee net duration");
     console.log(`✓ Completed-day draft persists the full 08:00–17:00 / lunch / unpaid-break contract before verifying 8:15 (${completedPersistence.storageShape})`);
@@ -430,6 +482,15 @@ async function main() {
       throw new Error(`Mobile employee UX contract failed: ${JSON.stringify(mobileContract)}`);
     }
     console.log("✓ Hard reload restores the employee day and mobile Today stays within the viewport");
+
+    await clickButton(client, "ویرایش این روز", true);
+    await setTimeCardValue(client, "خروج", "17:05");
+    await scrollCompletedAdvancedEditorIntoView(client);
+    const mobileEditBar = await assertCompletedEditActionBarVisible(client, "mobile completed-day edit action bar", true);
+    if (mobileEditBar.dirty !== "true") throw new Error(`Mobile completed-day edit bar did not expose dirty state: ${JSON.stringify(mobileEditBar)}`);
+    console.log("✓ Mobile completed-day edit actions remain visible without colliding with bottom navigation");
+    await clickButton(client, "انصراف", true);
+    await waitFor(client, `document.body?.innerText.includes("ثبت این روز کامل شده است")`, "completed-day mobile cancel");
 
     if (client.runtimeErrors.length) throw new Error(`Browser runtime errors:\n${client.runtimeErrors.join("\n")}`);
     console.log("Employee browser UX smoke passed.");

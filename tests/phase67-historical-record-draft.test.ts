@@ -21,9 +21,11 @@ test("historical record diff reports only changed fields", () => {
 
 test("completed records edit through an isolated draft with explicit save and cancel", async () => {
   const source = await readFile(new URL("../components/pages/today/completed-day-editor.tsx", import.meta.url), "utf8");
+  const actions = await readFile(new URL("../components/pages/today/completed-day-edit-action-bar.tsx", import.meta.url), "utf8");
   assert.match(source, /const \[draft, setDraft\] = useState<WorkRecord>/);
-  assert.match(source, /ذخیره تغییرات/);
-  assert.match(source, /انصراف/);
+  assert.match(source, /CompletedDayEditActionBar/);
+  assert.match(actions, /ذخیره تغییرات/);
+  assert.match(actions, /انصراف/);
   assert.match(source, /getWorkRecordChanges/);
   assert.match(source, /updateRecord\(saved\)/);
 });

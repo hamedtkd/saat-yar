@@ -154,6 +154,6 @@ test("Phase 169 is documented and wired into the main quality command", async ()
   assert.match(notes, /Responsive|ریسپانسیو/);
   assert.match(notes, /حقوق/);
   assert.match(backlog, /\[x\] فاز ۱۶۹/);
-  assert.match(backlog, /\[ \] فاز ۱۷۰: بازخورد و ذخیره ویرایش روز تکمیل‌شده/);
+  assert.match(backlog, /فاز ۱۷۰: بازخورد و ذخیره ویرایش روز تکمیل‌شده/);
   assert.match(changelog, /Phase 169|فاز ۱۶۹/);
 });

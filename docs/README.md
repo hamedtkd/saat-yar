@@ -133,3 +133,4 @@
 
 - [فاز ۱۶۸: قرارداد مرخصی استحقاقی](./phases/PHASE_168_NOTES_FA.md)
 - [فاز ۱۶۹: آنبوردینگ شخصی‌سازی‌شده و Responsive Shell](./phases/PHASE_169_NOTES_FA.md)
+- [فاز ۱۷۰: بازخورد و ذخیره ویرایش روز تکمیل‌شده](./phases/PHASE_170_NOTES_FA.md)
