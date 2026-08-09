@@ -69,7 +69,7 @@ test("about is an allowed supplemental route and phase 126 lint warning is remov
     read("components/layout/navigation/route-guard.tsx"),
     read("components/pages/settings/settings-navigation-model.ts"),
   ]);
-  assert.match(navigation, /SUPPLEMENTAL_ROUTES = \["\/about"\]/);
+  assert.match(navigation, /SUPPLEMENTAL_ROUTES = \["\/about", "\/import"\]/);
   assert.match(guard, /isSupplementalRoute\(normalized\)/);
   assert.doesNotMatch(settingsModel, /DatabaseBackup/);
 });

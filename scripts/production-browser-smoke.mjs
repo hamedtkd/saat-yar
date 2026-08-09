@@ -246,6 +246,19 @@ async function replaceInputValue(client, selector, value) {
 }
 
 
+async function uploadTextFile(client, selector, name, type, content) {
+  const uploaded = await evaluate(client, `(() => {
+    const input = document.querySelector(${JSON.stringify(selector)});
+    if (!(input instanceof HTMLInputElement) || input.type !== "file") return false;
+    const transfer = new DataTransfer();
+    transfer.items.add(new File([${JSON.stringify(content)}], ${JSON.stringify(name)}, { type: ${JSON.stringify(type)} }));
+    input.files = transfer.files;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+    return true;
+  })()`);
+  if (!uploaded) throw new Error(`File input not found: ${selector}`);
+}
+
 async function readStoredSettings(client) {
   return evaluate(client, `(async () => {
     const db = await new Promise((resolve, reject) => {
@@ -454,6 +467,38 @@ export async function runProductionBrowserSmoke() {
     }
     console.log("✓ Wide desktop shell expands and stays centered beside the sidebar");
     await client.call("Emulation.setDeviceMetricsOverride", { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false, screenWidth: 1440, screenHeight: 1000 });
+
+    const importLoad = waitForEvent(client, "Page.loadEventFired", "Import Wizard route");
+    await client.call("Page.navigate", { url: `${origin}/import/` });
+    await importLoad;
+    await waitFor(client, `["/import", "/import/"].includes(location.pathname) && Boolean(document.querySelector('[data-import-source="csv"]'))`, "Import Wizard route render");
+    await evaluate(client, `document.querySelector('[data-import-source="csv"]')?.click()`);
+    await waitFor(client, `Boolean(document.querySelector('input[type="file"][accept*=".csv"]'))`, "CSV import file input");
+    await uploadTextFile(client, 'input[type="file"][accept*=".csv"]', "clients.csv", "text/csv", "name,email\nمشتری Import Smoke,import-smoke@example.com\n");
+    await waitFor(client, `Boolean(document.querySelector('[data-import-preview]')) && !document.querySelector('[data-import-apply]')?.disabled`, "CSV Import preview");
+    await evaluate(client, `document.querySelector('[data-import-apply]')?.click()`);
+    await waitFor(client, `(async () => {
+      const db = await new Promise((resolve, reject) => {
+        const request = indexedDB.open("saatyar-db", 1);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      const stored = await new Promise((resolve, reject) => {
+        const tx = db.transaction("app-data", "readonly");
+        const request = tx.objectStore("app-data").get("current");
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+        tx.oncomplete = () => db.close();
+      });
+      const appData = stored?.format === "saatyar-app-data" && stored?.data ? stored.data : stored;
+      return appData?.clients?.some((client) => client.name === "مشتری Import Smoke") === true;
+    })()`, "CSV Import client persistence");
+    console.log("✓ Import Wizard CSV persisted a client after preview and explicit apply");
+
+    const returnToday = waitForEvent(client, "Page.loadEventFired", "return to Today after Import Wizard");
+    await client.call("Page.navigate", { url: `${origin}/today/` });
+    await returnToday;
+    await waitFor(client, `["/today", "/today/"].includes(location.pathname) && document.body?.innerText.includes("ساعت‌یار")`, "Today after Import Wizard");
 
     await waitFor(client, `navigator.serviceWorker?.ready.then(() => true).catch(() => false)`, "PWA service worker readiness");
     const firstInstallWorker = await evaluate(client, `(async () => {

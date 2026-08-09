@@ -41,7 +41,7 @@ export const settingsNavItems: readonly SettingsNavItem[] = [
   { id: "settings-storage", label: "فضای ذخیره‌سازی", group: "داده و پشتیبان", groupId: "settings-data", icon: HardDrive, keywords: "storage persistence فضا حافظه" },
   { id: "settings-recovery", label: "Recovery محلی", group: "داده و پشتیبان", groupId: "settings-data", icon: LifeBuoy, keywords: "recovery snapshot بازیابی ذخیره" },
   { id: "settings-backup", label: "گرفتن پشتیبان", group: "داده و پشتیبان", groupId: "settings-data", icon: Download, keywords: "backup پشتیبان خروجی export json" },
-  { id: "settings-restore", label: "بازیابی فایل", group: "داده و پشتیبان", groupId: "settings-data", icon: Upload, keywords: "import restore فایل بازیابی ورودی" },
+  { id: "settings-restore", label: "بازیابی فایل", group: "داده و پشتیبان", groupId: "settings-data", icon: Upload, keywords: "import restore فایل بازیابی ورودی csv excel wizard ورود داده" },
   { id: "settings-device-transfer", label: "انتقال بین دستگاه‌ها", group: "داده و پشتیبان", groupId: "settings-data", icon: Smartphone, keywords: "qr webrtc انتقال دستگاه موبایل لپ تاپ sync" },
 
   { id: "settings-work-schedule", label: "برنامه کاری", group: "برنامه کاری و حقوق", groupId: "settings-work", icon: CalendarClock, keywords: "ساعت شروع پایان هدف برنامه کار" },

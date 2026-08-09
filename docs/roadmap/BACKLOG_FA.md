@@ -285,8 +285,8 @@
 - [x] فاز ۱۶۸: Leave Entitlement Contract؛ حذف سهمیه اشتباه ۴۲ ساعته، تفکیک سهمیه ماهانه/سالانه/مصرف/مانده، اعمال مبنای `۷:۲۰ × ۲۶ ÷ ۱۲`، ترمیم دقیق defaults قدیمی و محاسبه چندروزه با عدم کسر تعطیلات و روزهای غیرکاری.
 - [x] فاز ۱۶۹: Onboarding Profile, Payroll & Appearance + Responsive Shell Polish؛ Wizard شش‌مرحله‌ای با برنامه کاری واقعی، حقوق و تم، همگام‌سازی metadata ساعت کار، اصلاح صفحه Welcome، هندسه نمایشگرهای بزرگ و stacking صحیح Dropdown پروفایل روی Settings Search.
 - [x] فاز ۱۷۰: بازخورد و ذخیره ویرایش روز تکمیل‌شده؛ Action Bar چسبان زیر Header با Dirty state، Save/Cancel/Reset همیشه در viewport، تأیید ذخیره در همان محل و Browser Smoke واقعی Desktop/Mobile اضافه شد.
-- [ ] فاز ۱۷۱: Import Wizard؛ ورود داده موجود با Preview و Validation، شروع از Backup ساعت‌یار و سپس CSV برای رکوردهای زمانی/پروژه‌ها و اطلاعات مالی قابل نگاشت.
-- [ ] فاز ۱۷۲: Onboarding شخصی‌شده بر اساس Employee/Freelancer/Hybrid و حذف/ساده‌سازی مراحل نامرتبط برای هر Workspace؛ زیرساخت شش‌مرحله‌ای فاز ۱۶۹ مبنا است.
+- [x] فاز ۱۷۱: Import Wizard؛ Route مستقل `/import` با Preview بدون تغییر داده، بازیابی امن Backup، CSV با تشخیص و Mapping ستون‌ها، پشتیبانی تاریخ شمسی/میلادی و اعداد فارسی، ورود روزهای کاری/مشتری/پروژه/هزینه، خطای ردیفی و Conflict Strategy صریح Skip/Replace.
+- [ ] فاز ۱۷۲: Onboarding شخصی‌شده بر اساس Employee/Freelancer/Hybrid و حذف/ساده‌سازی مراحل نامرتبط برای هر Workspace؛ زیرساخت شش‌مرحله‌ای فاز ۱۶۹ مبنا است و Import Wizard فاز ۱۷۱ به‌عنوان مسیر اختیاری «داده قبلی دارم» قابل استفاده خواهد بود.
 
 ## بین‌المللی‌سازی آینده — پس از Patch بعدی
 

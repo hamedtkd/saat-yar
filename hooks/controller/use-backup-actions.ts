@@ -34,12 +34,23 @@ export function useBackupActions({ data, setData, setToast, importPreview, setIm
     };
     reader.readAsText(file);
   }
+  async function commitImport(next: AppData, message: string, options: { safetyBackup?: boolean } = {}) {
+    if (options.safetyBackup) downloadBlob(backupBlob(data), `saatyar-before-import-${localDateKey()}.json`);
+    try {
+      await storage.save(next);
+      setData(next);
+      setImportPreview(null);
+      setToast(message);
+      return true;
+    } catch {
+      setToast("ذخیره واردسازی ناموفق بود؛ داده‌های فعلی تغییر نکردند");
+      return false;
+    }
+  }
   async function applyImport(mode: "merge" | "replace") {
     if (!importPreview) return;
-    if (mode === "replace") downloadBlob(backupBlob(data), `saatyar-before-replace-${localDateKey()}.json`);
     const next = mode === "replace" ? importPreview : mergeAppData(data, importPreview);
-    await storage.save(next); setData(next); setImportPreview(null);
-    setToast(mode === "replace" ? "داده‌ها با موفقیت جایگزین شدند" : "داده‌ها با موفقیت ادغام شدند");
+    await commitImport(next, mode === "replace" ? "داده‌ها با موفقیت جایگزین شدند" : "داده‌ها با موفقیت ادغام شدند", { safetyBackup: mode === "replace" });
   }
-  return { exportBackup, previewImport, applyImport };
+  return { exportBackup, previewImport, applyImport, commitImport };
 }
