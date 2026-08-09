@@ -1,11 +1,15 @@
+"use client";
+
 import { Check, CheckCircle2, Play, Square } from "lucide-react";
 import { LiveDuration } from "@/components/common/live-duration";
+import { LiveWorkDuration } from "@/components/common/live-work-duration";
 import { SurfaceCard } from "@/components/common/surface-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/cn";
-import { duration, fa, faDigits } from "@/lib/format";
+import { fa, faDigits } from "@/lib/format";
+import { useLiveWorkCalc } from "@/hooks/use-live-work-calc";
 import type { TodayPageProps } from "./types.ts";
 import { TodayProgressArc } from "./today-progress-arc";
 import { TimerRelationFields } from "./timer-relation-fields";
@@ -17,8 +21,9 @@ type Props = Pick<TodayPageProps, "data" | "record" | "timerDraft" | "setTimerDr
 export function TodayFocusCard(props: Props) {
   const mode = props.data.settings.mode;
   const isEmployee = mode === "employee";
+  const liveResult = useLiveWorkCalc(props.record, props.dailyTarget, props.todayCalc);
   const hasTarget = props.dailyTarget > 0;
-  const progress = hasTarget ? Math.min(100, Math.round(props.todayCalc.credited / props.dailyTarget * 100)) : 0;
+  const progress = hasTarget ? Math.min(100, Math.round(liveResult.credited / props.dailyTarget * 100)) : 0;
   const timerLabel = props.activeEntry
     ? "تایمر پروژه در حال اجرا"
     : props.record.start && !props.record.end
@@ -31,7 +36,7 @@ export function TodayFocusCard(props: Props) {
   const timerValue = props.activeEntry
     ? <LiveDuration startedAt={props.activeEntry.startedAt} />
     : props.record.start
-      ? duration(props.todayCalc.worked)
+      ? <LiveWorkDuration record={props.record} fallback={liveResult} />
       : "۰:۰۰";
   const timingCaption = props.record.end
     ? `شروع ${faDigits(props.record.start)} · پایان ${faDigits(props.record.end)}`
@@ -87,7 +92,9 @@ export function TodayFocusCard(props: Props) {
           <div className="pointer-events-none absolute inset-x-10 top-2 h-32 rounded-full bg-[var(--accent-soft)] opacity-70 blur-3xl" aria-hidden="true" />
           <div className="relative grid w-full max-w-[340px] place-items-center gap-2">
             <span className="inline-flex items-center gap-2 rounded-full border border-[color-mix(in_srgb,var(--accent)_22%,var(--border))] bg-[var(--surface-glass)] px-3 py-1.5 text-[10px] font-black text-[var(--accent-strong)] shadow-[0_4px_14px_rgba(0,0,0,.04)]">
-              <i className="size-2 rounded-full bg-[var(--accent)] shadow-[0_0_0_4px_var(--accent-soft)]" />{timerLabel}
+              <i className={cn("size-2 rounded-full bg-[var(--accent)] shadow-[0_0_0_4px_var(--accent-soft)]", (props.activeEntry || (props.record.start && !props.record.end)) && "motion-safe:animate-pulse")} />
+              {timerLabel}
+              {(props.activeEntry || (props.record.start && !props.record.end)) && <em className="not-italic opacity-70">· زنده</em>}
             </span>
             <TodayProgressArc value={progress}>
               <strong className="block text-[clamp(2.1rem,4vw,3.15rem)] font-black leading-none tracking-[-.04em] text-[var(--accent-strong)]">{timerValue}</strong>

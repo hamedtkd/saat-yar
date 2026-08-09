@@ -18,13 +18,14 @@ export function getProjectFinanceSummary(
   project: Project,
   entries: TimeEntry[],
   expenses: Expense[],
+  now = Date.now(),
 ): ProjectFinanceSummary {
   const projectEntries = entries.filter((entry) => entry.projectId === project.id);
   const projectExpenses = expenses.filter((expense) => expense.projectId === project.id);
-  const trackedMinutes = projectEntries.reduce((sum, entry) => sum + entryMinutes(entry), 0);
+  const trackedMinutes = projectEntries.reduce((sum, entry) => sum + entryMinutes(entry, now), 0);
   const billableMinutes = projectEntries
     .filter((entry) => entry.billable)
-    .reduce((sum, entry) => sum + entryMinutes(entry), 0);
+    .reduce((sum, entry) => sum + entryMinutes(entry, now), 0);
   const budgetMinutes = Math.max(0, (project.budgetHours ?? 0) * 60);
   const budgetProgress = budgetMinutes > 0 ? Math.round((trackedMinutes / budgetMinutes) * 100) : 0;
   const budgetStatus = budgetMinutes <= 0
@@ -36,7 +37,7 @@ export function getProjectFinanceSummary(
         : "healthy";
   const revenue = projectEntries
     .filter((entry) => entry.billable)
-    .reduce((sum, entry) => sum + (entryMinutes(entry) / 60) * entry.effectiveRate, 0);
+    .reduce((sum, entry) => sum + (entryMinutes(entry, now) / 60) * entry.effectiveRate, 0);
   const expenseTotal = projectExpenses.reduce((sum, expense) => sum + expense.amount, 0);
   const profit = revenue - expenseTotal;
 

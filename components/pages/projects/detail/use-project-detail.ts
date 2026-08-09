@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import { useRuntimeNow } from "@/hooks/use-runtime-now";
 import { localDateKey } from "@/lib/format";
 import { getProjectFinanceSummary } from "@/lib/project-finance";
 import type { ExpenseCategory } from "@/lib/types";
@@ -17,12 +18,9 @@ const emptyExpense = (): ExpenseDraft => ({
 export function useProjectDetail({ data, setData, project }: ProjectDetailProps) {
   const [showExpenseForm, setShowExpenseForm] = useState(false);
   const [expenseDraft, setExpenseDraft] = useState<ExpenseDraft>(emptyExpense);
-  const [now, setNow] = useState(() => Date.now());
-
-  useEffect(() => {
-    const timer = window.setInterval(() => setNow(Date.now()), 30_000);
-    return () => window.clearInterval(timer);
-  }, []);
+  const timerActive = data.timeEntries.some((entry) => entry.projectId === project.id && !entry.endedAt);
+  const runtimeNow = useRuntimeNow("minute", timerActive);
+  const now = runtimeNow ?? 0;
 
   const entries = useMemo(
     () => data.timeEntries.filter((entry) => entry.projectId === project.id),
@@ -35,8 +33,8 @@ export function useProjectDetail({ data, setData, project }: ProjectDetailProps)
     [data.expenses, project.id],
   );
   const summary = useMemo(
-    () => getProjectFinanceSummary(project, data.timeEntries, data.expenses),
-    [data.expenses, data.timeEntries, project],
+    () => getProjectFinanceSummary(project, data.timeEntries, data.expenses, now),
+    [data.expenses, data.timeEntries, now, project],
   );
 
   function addExpense() {

@@ -40,6 +40,14 @@ export function duration(value: number, signed = false) {
   return `${sign}${fa.format(Math.floor(minutes / 60))}:${faDigits(String(minutes % 60).padStart(2, "0"))}`;
 }
 
+export function durationSeconds(value: number) {
+  const seconds = Math.max(0, Math.floor(value));
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor(seconds / 60) % 60;
+  const remainder = seconds % 60;
+  return `${fa.format(hours)}:${faDigits(String(minutes).padStart(2, "0"))}:${faDigits(String(remainder).padStart(2, "0"))}`;
+}
+
 export function durationWords(value: number) {
   const minutes = Math.max(0, Math.round(value));
   const hours = Math.floor(minutes / 60);

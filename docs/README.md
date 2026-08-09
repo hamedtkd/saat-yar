@@ -135,3 +135,4 @@
 - [فاز ۱۶۹: آنبوردینگ شخصی‌سازی‌شده و Responsive Shell](./phases/PHASE_169_NOTES_FA.md)
 - [فاز ۱۷۰: بازخورد و ذخیره ویرایش روز تکمیل‌شده](./phases/PHASE_170_NOTES_FA.md)
 - [فاز ۱۷۱: Import Wizard و ورود امن Backup/CSV](./phases/PHASE_171_NOTES_FA.md)
+- [فاز ۱۷۲: ساعت زنده Runtime و Refresh کم‌مصرف](./phases/PHASE_172_NOTES_FA.md)

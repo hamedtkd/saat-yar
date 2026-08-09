@@ -121,6 +121,17 @@ async function clickButton(client, text, exact = false) {
   await settleUi(client);
 }
 
+async function assertLiveWorkClockAdvances(client) {
+  await waitFor(client, `Boolean(document.querySelector('[data-live-work-duration="true"]'))`, "live employee work clock");
+  const before = await evaluate(client, `document.querySelector('[data-live-work-duration="true"]')?.textContent || ""`);
+  await waitFor(
+    client,
+    `(() => { const node = document.querySelector('[data-live-work-duration="true"]'); return Boolean(node && node.textContent && node.textContent !== ${JSON.stringify(before)}); })()`,
+    "live employee work clock advance",
+    5_000,
+  );
+}
+
 async function clickSummary(client, text) {
   const clicked = await evaluate(client, `(() => {
     const wanted = ${JSON.stringify(text)};
@@ -408,6 +419,8 @@ async function main() {
 
     await clickButton(client, "شروع روز", true);
     await waitFor(client, `document.body?.innerText.includes("پایان روز")`, "employee day start");
+    await assertLiveWorkClockAdvances(client);
+    console.log("✓ Active employee work clock advances live without a reload");
     await setTimeCardValue(client, "ورود", "08:00");
     console.log("✓ Employee day starts through the real attendance action and keeps an editable arrival time");
 

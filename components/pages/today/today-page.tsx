@@ -80,10 +80,8 @@ export function TodayPage(props: TodayPageProps) {
       <RecordHealthBanner record={props.record} onReset={props.resetRecord} />
       <RecordResetUndo date={props.resetUndoDate} onUndo={props.undoResetRecord} onDismiss={props.dismissResetUndo} />
       <TodaySmartSummary
-        started={Boolean(props.record.start)}
-        finished={Boolean(props.record.end)}
-        workedMinutes={props.todayCalc.worked}
-        creditedMinutes={props.todayCalc.credited}
+        record={props.record}
+        result={props.todayCalc}
         dailyTarget={props.dailyTarget}
         suggestedExit={props.suggestedExit}
         openBreak={Boolean(props.activeBreak)}

@@ -1,19 +1,27 @@
+"use client";
+
 import { Coffee, LogOut, Pause, TimerReset } from "lucide-react";
 import { ProgressRing } from "@/components/common/progress-ring";
 import { SurfaceCard } from "@/components/common/surface-card";
 import { duration, fa } from "@/lib/format";
+import { useLiveWorkCalc } from "@/hooks/use-live-work-calc";
+import type { ReturnTypeCalc } from "@/lib/type-helpers";
+import type { WorkRecord } from "@/lib/types";
 
-export function TodaySmartSummary({ started, finished, workedMinutes, creditedMinutes, dailyTarget, suggestedExit, openBreak, lunchRunning, scheduledDayOff }: {
-  started: boolean;
-  finished: boolean;
-  workedMinutes: number;
-  creditedMinutes: number;
+export function TodaySmartSummary({ record, result, dailyTarget, suggestedExit, openBreak, lunchRunning, scheduledDayOff }: {
+  record: WorkRecord;
+  result: ReturnTypeCalc;
   dailyTarget: number;
   suggestedExit: string;
   openBreak: boolean;
   lunchRunning: boolean;
   scheduledDayOff: boolean;
 }) {
+  const liveResult = useLiveWorkCalc(record, dailyTarget, result);
+  const started = Boolean(record.start);
+  const finished = Boolean(record.end);
+  const workedMinutes = liveResult.worked;
+  const creditedMinutes = liveResult.credited;
   const remaining = Math.max(0, dailyTarget - creditedMinutes);
   const hasTarget = dailyTarget > 0;
   const progress = hasTarget ? Math.min(100, Math.round(creditedMinutes / dailyTarget * 100)) : 0;

@@ -1,3 +1,5 @@
+"use client";
+
 import { ChevronLeft, Folder, Plus, TriangleAlert } from "lucide-react";
 import { EmptyState } from "@/components/common/empty-state";
 import { PrivateMoney } from "@/components/common/private-money";
@@ -6,14 +8,19 @@ import { StatusBadge } from "@/components/common/status-badge";
 import { SurfaceCard } from "@/components/common/surface-card";
 import { Button } from "@/components/ui/button";
 import { duration, fa } from "@/lib/format";
+import { useRuntimeNow } from "@/hooks/use-runtime-now";
 import { getProjectFinanceSummary } from "@/lib/project-finance";
 import type { AppData } from "@/lib/types";
 
 export function ProjectList({ data, onSelect, onCreate, financialsHidden }: { data: AppData; onSelect: (id: string) => void; onCreate: () => void; financialsHidden: boolean }) {
+  const timerActive = data.timeEntries.some((entry) => !entry.endedAt);
+  const runtimeNow = useRuntimeNow("minute", timerActive);
+  const now = runtimeNow ?? 0;
+
   return (
     <section className="grid grid-cols-3 gap-4 max-[1180px]:grid-cols-2 max-[620px]:grid-cols-1">
       {data.projects.map((project) => {
-        const summary = getProjectFinanceSummary(project, data.timeEntries, data.expenses);
+        const summary = getProjectFinanceSummary(project, data.timeEntries, data.expenses, now);
         const progressTone = summary.budgetStatus === "exceeded" ? "danger" : summary.budgetStatus === "warning" ? "warning" : "accent";
         return <SurfaceCard as="article" className="group cursor-pointer p-5 hover:-translate-y-0.5 hover:border-[color-mix(in_srgb,var(--accent)_32%,var(--dashboard-border))] hover:shadow-[0_14px_34px_rgba(0,0,0,.07)]" key={project.id} onClick={() => onSelect(project.id)}>
           <div className="grid grid-cols-[12px_1fr_auto] items-center gap-3"><span className="h-11 rounded-full" style={{ background: project.color }} /><div className="min-w-0"><strong className="block truncate text-base text-[var(--text)]">{project.name}</strong><small className="text-[var(--text-muted)]">{data.clients.find((client) => client.id === project.clientId)?.name ?? "بدون مشتری"}</small></div><StatusBadge success={project.status === "active"}>{project.status === "active" ? "فعال" : project.status === "paused" ? "متوقف" : "تکمیل"}</StatusBadge></div>

@@ -1,3 +1,5 @@
+"use client";
+
 import { Clock3, Edit3, Folder, Info, Play, Plus } from "lucide-react";
 import { EmptyState } from "@/components/common/empty-state";
 import { PanelHead } from "@/components/common/panel-head";
@@ -6,6 +8,7 @@ import { StatusBadge } from "@/components/common/status-badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { duration, entryMinutes, faDigits, localDateKey } from "@/lib/format";
+import { useRuntimeNow } from "@/hooks/use-runtime-now";
 import type { TodayPageProps } from "./types.ts";
 import { cn } from "@/lib/cn";
 
@@ -24,6 +27,8 @@ export function TodayTimeline(
   const entries = props.data.timeEntries.filter(
     (entry) => localDateKey(new Date(entry.startedAt)) === props.selectedDate,
   );
+  const runtimeNow = useRuntimeNow("minute", entries.some((entry) => !entry.endedAt));
+  const now = runtimeNow ?? 0;
   const recentProjects = props.data.projects
     .filter((item) => item.status === "active")
     .slice(0, 3);
@@ -117,7 +122,7 @@ export function TodayTimeline(
                           )
                         : "در حال اجرا"}
                     </td>
-                    <td>{duration(entryMinutes(entry))}</td>
+                    <td>{duration(entryMinutes(entry, now))}</td>
                     <td>
                       <StatusBadge success={entry.billable}>
                         {entry.billable ? "بله" : "خیر"}
@@ -163,7 +168,7 @@ export function TodayTimeline(
             جمع کل:{" "}
             <strong>
               {duration(
-                entries.reduce((sum, entry) => sum + entryMinutes(entry), 0),
+                entries.reduce((sum, entry) => sum + entryMinutes(entry, now), 0),
               )}
             </strong>
           </span>
