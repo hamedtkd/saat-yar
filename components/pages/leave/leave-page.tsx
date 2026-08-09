@@ -4,11 +4,12 @@ import { PageHeading } from "@/components/common/page-heading";
 import { SectionHeading } from "@/components/common/section-heading";
 import { cn } from "@/lib/cn";
 import { duration } from "@/lib/format";
+import type { LeaveEntitlementSummary } from "@/lib/leave-entitlement";
 import type { AppData, LeaveEntry } from "@/lib/types";
 import { LeaveForm } from "./leave-form";
 import { LeaveTable } from "./leave-table";
 
-export function LeavePage({ data, setData, draft, setDraft, saveLeave, used, available }: {
+export function LeavePage({ data, setData, draft, setDraft, saveLeave, used, available, summary }: {
   data: AppData;
   setData: React.Dispatch<React.SetStateAction<AppData>>;
   draft: LeaveEntry;
@@ -16,6 +17,7 @@ export function LeavePage({ data, setData, draft, setDraft, saveLeave, used, ava
   saveLeave: () => void;
   used: number;
   available: number;
+  summary: LeaveEntitlementSummary;
 }) {
   return (
     <>
@@ -26,13 +28,17 @@ export function LeavePage({ data, setData, draft, setDraft, saveLeave, used, ava
           icon={<Umbrella />}
           eyebrow="وضعیت سهمیه"
           title="نمای کلی مرخصی"
-          description="مصرف و مانده سهمیه را قبل از ثبت درخواست جدید ببین."
+          description="مبنای پیش‌فرض قانون کار: ۲۶ روز × ۷:۲۰ = ۱۹۰:۴۰ در سال؛ میانگین ماهانه حدود ۱۵:۵۳ است."
         />
-        <div className={cn("grid gap-3", "grid-cols-3 max-[620px]:grid-cols-1")}>
-          <MetricCard icon={<Umbrella />} label="سهمیه کل" value={duration(data.settings.leaveBalanceMinutes + data.settings.monthlyLeaveMinutes)} suffix="ساعت" tone="blue" />
-          <MetricCard icon={<Clock3 />} label="مصرف‌شده" value={duration(used)} suffix="ساعت" tone="amber" />
-          <MetricCard icon={<CheckCircle2 />} label="مانده مرخصی" value={duration(available)} suffix="ساعت" />
+        <div className={cn("grid gap-3", "grid-cols-4 max-[900px]:grid-cols-2 max-[620px]:grid-cols-1")}>
+          <MetricCard icon={<Umbrella />} label="سهمیه ماهانه" value={duration(summary.monthlyEntitlement)} suffix="ساعت" tone="blue" />
+          <MetricCard icon={<Umbrella />} label="سهمیه سالانه" value={duration(summary.annualEntitlement)} suffix="ساعت" tone="blue" />
+          <MetricCard icon={<Clock3 />} label="مصرف‌شده امسال" value={duration(used)} suffix="ساعت" tone="amber" />
+          <MetricCard icon={<CheckCircle2 />} label="مانده امسال" value={duration(available)} suffix="ساعت" />
         </div>
+        <p className="mt-3 text-[10px] leading-6 text-[var(--text-muted)]">
+          تعطیلات رسمی، جمعه و روزهای غیرفعال برنامه کاری از مرخصی روزانه کسر نمی‌شوند. مانده انتقالی یا اصلاح دستی، در صورت وجود، به سهمیه سالانه اضافه می‌شود.
+        </p>
       </section>
 
       <section>

@@ -3,6 +3,7 @@ import { localDateKey } from "./format.ts";
 import { createDefaultWeeklySchedule } from "./work-schedule.ts";
 import { createCompleteAppData } from "./data/app-data-factory.ts";
 import { clonePayrollPolicy, createLegacyPayrollPolicy } from "./payroll-policy.ts";
+import { LEGAL_MONTHLY_LEAVE_MINUTES } from "./leave-entitlement.ts";
 
 export const defaultSettings: Settings = {
   name: "",
@@ -13,8 +14,8 @@ export const defaultSettings: Settings = {
   defaultStart: "07:30",
   defaultEnd: "16:15",
   lunchMinutes: 45,
-  leaveBalanceMinutes: 26 * 60,
-  monthlyLeaveMinutes: 16 * 60,
+  leaveBalanceMinutes: 0,
+  monthlyLeaveMinutes: LEGAL_MONTHLY_LEAVE_MINUTES,
   salary: 30_000_000,
   overtimeMultiplier: 1.4,
   holidayMultiplier: 1.4,

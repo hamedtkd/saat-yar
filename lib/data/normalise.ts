@@ -2,10 +2,12 @@ import type { AppData, Settings, WeekdayKey } from "../types.ts";
 import { weekdayOrder } from "../work-schedule.ts";
 import { createCompleteAppData } from "./app-data-factory.ts";
 import { normalizePayrollPolicy } from "../payroll-policy.ts";
+import { normalizeLeaveSettings } from "../leave-entitlement.ts";
 
 export function normaliseData(value: AppData, defaults: Settings): AppData {
   const incomingSettings = value.settings ?? defaults;
   const incomingSchedule = incomingSettings.weeklySchedule ?? {};
+  const leaveSettings = normalizeLeaveSettings(incomingSettings);
   const weeklySchedule = Object.fromEntries(
     weekdayOrder.map((day) => [day, {
       ...defaults.weeklySchedule[day],
@@ -19,6 +21,7 @@ export function normaliseData(value: AppData, defaults: Settings): AppData {
       ...defaults,
       ...incomingSettings,
       weeklySchedule,
+      ...leaveSettings,
       notificationSettings: {
         ...defaults.notificationSettings,
         ...(incomingSettings.notificationSettings ?? {}),

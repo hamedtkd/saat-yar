@@ -4,6 +4,7 @@ import { getHolidayInfo } from "@/lib/holidays";
 import { recordMatchesReportFilter } from "@/lib/report-filters";
 import { calc, minutesToTime } from "@/lib/time-engine";
 import { getDailyTargetMinutes, getWorkScheduleDay } from "@/lib/work-schedule";
+import { calculateLeaveEntitlementSummary } from "@/lib/leave-entitlement";
 import type { AppData, ReportFilter } from "@/lib/types";
 
 export function useControllerDerived(data: AppData, selectedDate: string, selectedProjectId: string, reportFilter: ReportFilter) {
@@ -41,8 +42,9 @@ export function useControllerDerived(data: AppData, selectedDate: string, select
   const activeEntry = data.timeEntries.find((entry) => !entry.endedAt);
   const activeBreak = record.breaks.find((item) => item.start && !item.end);
   const lunchRunning = Boolean(record.lunchStart && !record.lunchEnd);
-  const usedLeave = data.leaves.reduce((sum, entry) => sum + (entry.type === "full" ? dailyTarget : entry.type === "half" ? dailyTarget / 2 : entry.minutes), 0);
-  const leaveAvailable = data.settings.leaveBalanceMinutes + data.settings.monthlyLeaveMinutes - usedLeave;
+  const leaveSummary = calculateLeaveEntitlementSummary(data, localDateKey());
+  const usedLeave = leaveSummary.used;
+  const leaveAvailable = leaveSummary.available;
   const selectedProject = data.projects.find((project) => project.id === selectedProjectId);
   const filteredMonthRecords = monthRecords.filter((item) => recordMatchesReportFilter(item, reportFilter, data.settings));
   const filteredEntries = data.timeEntries.filter((entry) => {
@@ -59,6 +61,6 @@ export function useControllerDerived(data: AppData, selectedDate: string, select
   const reportBillable = filteredEntries.filter((entry) => entry.billable).reduce((sum, entry) => sum + entryMinutes(entry), 0);
   const reportIncome = filteredEntries.reduce((sum, entry) => sum + (entry.billable ? entryMinutes(entry) / 60 * entry.effectiveRate : 0), 0);
   return { selectedSchedule, dailyTarget, selectedHoliday, record, todayCalc, suggestedExit, monthRecords, monthStats,
-    activeEntry, activeBreak, lunchRunning, usedLeave, leaveAvailable, selectedProject, filteredMonthRecords, filteredEntries,
+    activeEntry, activeBreak, lunchRunning, usedLeave, leaveAvailable, leaveSummary, selectedProject, filteredMonthRecords, filteredEntries,
     reportBillable, reportIncome };
 }

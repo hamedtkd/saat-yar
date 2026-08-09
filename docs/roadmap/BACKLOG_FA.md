@@ -282,7 +282,7 @@
 
 - [x] فاز ۱۶۶: تبدیل آنبوردینگ اولیه از Overlay داخل App Shell/Today به Route مستقل `/onboarding` با Redirect امن کاربر جدید، Shell متمرکز و Browser Smoke مسیر واقعی.
 - [x] فاز ۱۶۷: Onboarding Recovery & Re-entry؛ ذخیره Progress مرحله‌ای، ادامه راه‌اندازی نیمه‌تمام، Hard Reload واقعی در Browser Smoke و اجرای دوباره Wizard از Settings بدون پاک‌کردن داده. Revision 2 مرحله پیش‌فرض کاربر جدید را به Welcome/Name برمی‌گرداند و Session را بدون `setState` داخل Effect از Local Storage می‌خواند.
-- [ ] فاز ۱۶۸: Leave Entitlement Contract؛ حذف سهمیه اشتباه ۴۲ ساعته، تفکیک سهمیه سالانه از Accrual ماهانه و اعمال مبنای استاندارد `۷:۲۰ × ۲۶ ÷ ۱۲` برای مرخصی استحقاقی ماهانه، همراه امکان Override سازمانی و تست مصرف/مانده.
+- [x] فاز ۱۶۸: Leave Entitlement Contract؛ حذف سهمیه اشتباه ۴۲ ساعته، تفکیک سهمیه ماهانه/سالانه/مصرف/مانده، اعمال مبنای `۷:۲۰ × ۲۶ ÷ ۱۲`، ترمیم دقیق defaults قدیمی و محاسبه چندروزه با عدم کسر تعطیلات و روزهای غیرکاری.
 - [ ] فاز ۱۶۹: Onboarding Profile, Payroll & Appearance؛ شروع قطعی Wizard از نام کاربر، نمایش/تنظیم حقوق دلخواه، انتخاب تم و حالت روشن/تاریک/System در راه‌اندازی اولیه، با Preview و امکان تغییر دوباره از Settings.
 - [ ] فاز ۱۷۰: Import Wizard؛ ورود داده موجود با Preview و Validation، شروع از Backup ساعت‌یار و سپس CSV برای رکوردهای زمانی/پروژه‌ها و اطلاعات مالی قابل نگاشت.
 - [ ] فاز ۱۷۱: Onboarding شخصی‌شده بر اساس Employee/Freelancer/Hybrid و حذف مراحل نامرتبط برای هر Workspace.

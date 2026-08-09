@@ -16,6 +16,7 @@ export default function LeaveRoute() {
       saveLeave={controller.saveLeave}
       used={controller.usedLeave}
       available={controller.leaveAvailable}
+      summary={controller.leaveSummary}
     />
   );
 }
