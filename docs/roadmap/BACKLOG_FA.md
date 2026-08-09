@@ -287,7 +287,8 @@
 - [x] فاز ۱۷۰: بازخورد و ذخیره ویرایش روز تکمیل‌شده؛ Action Bar چسبان زیر Header با Dirty state، Save/Cancel/Reset همیشه در viewport، تأیید ذخیره در همان محل و Browser Smoke واقعی Desktop/Mobile اضافه شد.
 - [x] فاز ۱۷۱: Import Wizard؛ Route مستقل `/import` با Preview بدون تغییر داده، بازیابی امن Backup، CSV با تشخیص و Mapping ستون‌ها، پشتیبانی تاریخ شمسی/میلادی و اعداد فارسی، ورود روزهای کاری/مشتری/پروژه/هزینه، خطای ردیفی و Conflict Strategy صریح Skip/Replace.
 - [x] فاز ۱۷۲: Live Runtime Clock & Low-Power Refresh؛ یک Scheduler مشترک و visibility-aware برای تایمرهای زنده، Refresh ثانیه‌ای فقط برای تایمر اصلی، Refresh دقیقه‌ای برای Summary/Metric/Project، توقف کامل Tick در تب مخفی و Sync فوری روی focus/pageshow بدون Persistence یا Network Tick.
-- [ ] فاز ۱۷۳: Onboarding شخصی‌شده بر اساس Employee/Freelancer/Hybrid و حذف/ساده‌سازی مراحل نامرتبط برای هر Workspace؛ زیرساخت شش‌مرحله‌ای فاز ۱۶۹ مبنا است و Import Wizard فاز ۱۷۱ به‌عنوان مسیر اختیاری «داده قبلی دارم» قابل استفاده خواهد بود.
+- [x] فاز ۱۷۳: Onboarding شخصی‌شده بر اساس Employee/Freelancer/Hybrid؛ مراحل ۳ و ۴ متناسب با Workspace، ساخت اختیاری مشتری/پروژه برای Freelancer، درآمد ترکیبی برای Hybrid و Import داخلی امن در مرحله ۷ با حفظ وضعیت تکمیل تا Submit نهایی.
+- [ ] فاز ۱۷۴: i18n واقعی رابط کاربری؛ Catalog/Dictionary تایپ‌شده، فارسی RTL و انگلیسی LTR، انتخاب زبان Local-first و Regression/Browser Smoke دوطرفه.
 
 ## بین‌المللی‌سازی آینده — پس از Patch بعدی
 

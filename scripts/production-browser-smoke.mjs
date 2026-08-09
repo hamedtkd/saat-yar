@@ -387,6 +387,13 @@ export async function runProductionBrowserSmoke() {
       "onboarding mode step",
     );
     console.log("✓ Onboarding welcome step captured a user name");
+    await clickButton(client, "فریلنسر");
+    await waitFor(client, `document.querySelector('[data-onboarding-progress-mode="freelancer"]') && document.querySelector('[data-onboarding-step-index="2"][data-onboarding-mode="freelancer"]')`, "freelancer personalized onboarding progress");
+    await clickButton(client, "ترکیبی");
+    await waitFor(client, `document.querySelector('[data-onboarding-progress-mode="hybrid"]') && document.querySelector('[data-onboarding-step-index="2"][data-onboarding-mode="hybrid"]')`, "hybrid personalized onboarding progress");
+    await clickButton(client, "کارمند");
+    await waitFor(client, `document.querySelector('[data-onboarding-progress-mode="employee"]') && document.querySelector('[data-onboarding-step-index="2"][data-onboarding-mode="employee"]')`, "employee personalized onboarding progress");
+    console.log("✓ Onboarding progress adapts immediately to Employee/Freelancer/Hybrid selection");
     await clickButton(client, "ادامه");
     await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="3"] [data-work-schedule-editor]'))`, "onboarding schedule step");
 
@@ -431,6 +438,20 @@ export async function runProductionBrowserSmoke() {
     await clickButton(client, "ادامه");
 
     await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="6"]'))`, "onboarding privacy step");
+    await clickButton(client, "ادامه");
+    await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="7"] [data-onboarding-import]')) && Boolean(document.querySelector('[data-onboarding-step-index="7"] [data-import-source="csv"]'))`, "personalized onboarding import step");
+    await evaluate(client, `document.querySelector('[data-onboarding-step-index="7"] [data-import-source="csv"]')?.click()`);
+    await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="7"] input[type="file"][accept*=".csv"]'))`, "onboarding CSV file input");
+    await uploadTextFile(client, '[data-onboarding-step-index="7"] input[type="file"][accept*=".csv"]', "onboarding-clients.csv", "text/csv", "name,email\nمشتری آنبوردینگ,onboarding@example.com\n");
+    await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="7"] [data-import-preview]')) && !document.querySelector('[data-onboarding-step-index="7"] [data-import-apply]')?.disabled`, "onboarding Import preview");
+    await evaluate(client, `document.querySelector('[data-onboarding-step-index="7"] [data-import-apply]')?.click()`);
+    await waitFor(client, `(async () => {
+      const db = await new Promise((resolve, reject) => { const request = indexedDB.open("saatyar-db", 1); request.onsuccess = () => resolve(request.result); request.onerror = () => reject(request.error); });
+      const stored = await new Promise((resolve, reject) => { const tx = db.transaction("app-data", "readonly"); const request = tx.objectStore("app-data").get("current"); request.onsuccess = () => resolve(request.result); request.onerror = () => reject(request.error); tx.oncomplete = () => db.close(); });
+      const appData = stored?.format === "saatyar-app-data" && stored?.data ? stored.data : stored;
+      return appData?.settings?.onboarded === false && appData?.clients?.some((item) => item.name === "مشتری آنبوردینگ") === true;
+    })()`, "onboarding Import persistence without premature completion");
+    console.log("✓ Personalized onboarding keeps employee setup relevant and imports existing data before completion");
     await clickButton(client, "شروع ساعت‌یار");
     await waitFor(client, "['/today', '/today/'].includes(location.pathname) && !document.body?.innerText.includes('شروع ساعت‌یار')", "today route after onboarding");
     await new Promise((resolveWait) => setTimeout(resolveWait, 700));

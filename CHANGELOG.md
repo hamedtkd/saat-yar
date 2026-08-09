@@ -1,6 +1,13 @@
 ## [Unreleased]
 
+### افزوده شد
+
+- Phase 173: آنبوردینگ بر اساس Employee/Freelancer/Hybrid شخصی می‌شود؛ فریلنسر می‌تواند مشتری و پروژه اول را بسازد، Hybrid شروع سریع هر دو جریان درآمد را دارد و Import امن Phase 171 داخل مرحله نهایی Onboarding در دسترس است.
+
 ### تغییر کرد
+
+- Progress آنبوردینگ از شش به هفت مرحله توسعه یافت و برچسب مراحل ۳ و ۴ با Workspace انتخاب‌شده تغییر می‌کنند.
+- Import داخل Onboarding وضعیت `onboarded` را تا Submit نهایی حفظ می‌کند تا Restore باعث خروج زودهنگام از Wizard نشود.
 
 - فاز ۱۷۲: تایمرهای فعال Today و Project از یک Runtime Clock مشترک و کم‌مصرف استفاده می‌کنند؛ تایمر اصلی با ثانیه زنده است و Summary/Metricها فقط در مرز دقیقه تازه می‌شوند.
 - Runtime Clock در تب مخفی Timer ندارد و روی `visibilitychange`، `focus` و `pageshow` فوراً با زمان واقعی Sync می‌شود؛ Tickها هیچ Persistence، Network، Broadcast یا Heartbeat جدیدی ایجاد نمی‌کنند.

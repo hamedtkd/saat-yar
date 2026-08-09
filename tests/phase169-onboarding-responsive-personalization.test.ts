@@ -107,12 +107,12 @@ test("onboarding now covers profile mode schedule payroll appearance and privacy
     read("components/layout/onboarding/onboarding-footer.tsx"),
   ]);
   assert.match(session, /1 \| 2 \| 3 \| 4 \| 5 \| 6/);
-  for (const step of [1, 2, 3, 4, 5, 6]) assert.match(onboarding, new RegExp(`step === ${step}`));
-  assert.match(progress, /"حقوق", "ظاهر", "ذخیره‌سازی"/);
+  for (const step of [1, 2, 3, 4, 5, 6, 7]) assert.match(onboarding, new RegExp(`step === ${step}`));
+  assert.match(progress, /"حقوق", "ظاهر", "حریم داده", "ورود داده"/);
   assert.match(schedule, /WorkScheduleEditor/);
   assert.match(payroll, /data-onboarding-salary/);
   assert.match(appearance, /data-onboarding-theme/);
-  assert.match(footer, /FINAL_STEP = 6/);
+  assert.match(footer, /FINAL_STEP = 7/);
 });
 
 test("production browser smoke proves onboarding persistence, wide desktop geometry and deterministic PWA control", async () => {

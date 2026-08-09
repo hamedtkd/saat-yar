@@ -151,11 +151,11 @@ async function captureOnboardingFrames(client, origin) {
   })()`);
   await screenshot(client, "onboarding.png");
   const frames = [];
-  for (let index = 1; index <= 6; index += 1) {
+  for (let index = 1; index <= 7; index += 1) {
     const frame = `onboarding-frame-${String(index).padStart(2, "0")}.png`;
     await screenshot(client, frame);
     frames.push(resolve(SCREENSHOT_DIR, frame));
-    const label = index < 6 ? "ادامه" : "شروع ساعت‌یار";
+    const label = index < 7 ? "ادامه" : "شروع ساعت‌یار";
     const clicked = await evaluate(client, `(() => { const b=[...document.querySelectorAll('button')].find(x => !x.disabled && (x.textContent||'').includes(${JSON.stringify(label)})); if(!b)return false;b.click();return true; })()`);
     if (!clicked) break;
     await new Promise((resolveWait) => setTimeout(resolveWait, 650));

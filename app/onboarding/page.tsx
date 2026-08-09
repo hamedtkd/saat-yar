@@ -27,6 +27,7 @@ export default function OnboardingRoute() {
     <Onboarding
       data={controller.data}
       setData={controller.setData}
+      commitImport={controller.commitImport}
       step={controller.onboardingStep}
       setStep={controller.setOnboardingStep}
       reentry={controller.onboardingReentry}

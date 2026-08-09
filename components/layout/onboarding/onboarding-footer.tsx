@@ -3,7 +3,7 @@ import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 
-const FINAL_STEP = 6;
+const FINAL_STEP = 7;
 
 export function OnboardingFooter({ step, setStep, canContinue, reentry, onExit }: {
   step: number;
