@@ -278,7 +278,8 @@ tests/                         تست‌های دامنه، Regression و معم
 
 - [عیب‌یابی Windows و خطاهای npm](./docs/TROUBLESHOOTING_FA.md)
 - [جدول سازگاری مرورگر و محدودیت‌های Notification/PWA](./docs/BROWSER_COMPATIBILITY.md)
-- [یادداشت انتشار ساعت‌یار ۲.۳.۱](./docs/releases/RELEASE_NOTES_2.3.1_FA.md)
+- [یادداشت انتشار ساعت‌یار ۲.۳.۲](./docs/releases/RELEASE_NOTES_2.3.2_FA.md)
+- [یادداشت انتشار تاریخی ۲.۳.۱](./docs/releases/RELEASE_NOTES_2.3.1_FA.md)
 - [یادداشت انتشار تاریخی ۲.۳.۰](./docs/releases/RELEASE_NOTES_2.3.0_FA.md)
 - [یادداشت انتشار تاریخی ۲.۲.۰](./docs/releases/RELEASE_NOTES_2.2.0_FA.md)
 - [یادداشت انتشار تاریخی ۲.۱.۰](./docs/releases/RELEASE_NOTES_2.1.0_FA.md)
@@ -299,11 +300,11 @@ npm run test:browser:production
 
 ## نقشه راه
 
-نسخه **۲.۳.۱** Patch Release فعلی ساعت‌یار است. Baseline تأییدشده روی commit prefix `7c675e1` با **۶۰۱/۶۰۱ تست**، Build کامل، Browser Smokeهای Production/Freelancer/Employee، Pairing مستقیم WebRTC، `audit:vercel` و Audit پس از Deploy روی دامنه واقعی Production سبز شد. فاز ۱۵۹ شش تست قرارداد Release اضافه می‌کند و Gate نهایی باید به **۶۰۷/۶۰۷** برسد.
+نسخه **۲.۳.۲** Patch Release فعلی ساعت‌یار است و تغییرات فازهای ۱۶۰ تا ۱۶۴ را بسته‌بندی می‌کند: قرارداد کار خالص/ناهار، پالیش برنامه کاری، CI همسو با Vercel، Resume امن نشست و کنتراست Filled Accent، و README اصلی انگلیسی همراه Roadmap i18n آینده.
 
-این Patch Release اصلاحات فازهای ۱۵۵ تا ۱۵۸ را بسته‌بندی می‌کند: Audit واقعی Production، اصلاح Precache، قرارداد Static Export روی Vercel و تشخیص «تعطیل طبق برنامه کاری» در صفحه امروز. AppData همچنان Schema v17 است و Migration یا Dependency جدیدی وجود ندارد. جزئیات در [یادداشت انتشار ۲.۳.۱](./docs/releases/RELEASE_NOTES_2.3.1_FA.md)، [چک‌لیست انتشار](./RELEASE_CHECKLIST_FA.md) و [نقشه راه](./docs/roadmap/BACKLOG_FA.md) ثبت شده‌اند.
+Baseline فاز ۱۶۴ با **۶۳۳/۶۳۳ تست**، هر سه Browser Journey، Pairing مستقیم WebRTC، `audit:vercel` و `audit:production` سبز شده است. فاز ۱۶۵ شش قرارداد Release اضافه می‌کند و Gate نهایی باید به **۶۳۹/۶۳۹** برسد. AppData همچنان Schema v17 است و Migration یا Dependency جدیدی نداریم. جزئیات در [یادداشت انتشار ۲.۳.۲](./docs/releases/RELEASE_NOTES_2.3.2_FA.md)، [چک‌لیست انتشار](./RELEASE_CHECKLIST_FA.md) و [نقشه راه](./docs/roadmap/BACKLOG_FA.md) ثبت شده‌اند.
 
-Manifest تاریخی ۲.۳.۰ و Tag `v2.3.0` تغییر نمی‌کنند. Manifest ۲.۳.۱ نیز عمداً `releaseCommit` ندارد؛ پس از Commit/Push فاز ۱۵۹، Ready شدن Deploy و سبز شدن `npm run audit:production`، Tag annotated `v2.3.1` روی همان Commit نهایی ساخته می‌شود و منبع حقیقت Release خواهد بود.
+Manifest و Tagهای تاریخی ۲.۳.۱ و قبل‌تر تغییر نمی‌کنند. Manifest ۲.۳.۲ عمداً `releaseCommit` ندارد؛ پس از Commit/Push نهایی، Ready شدن Vercel و سبز شدن `npm run audit:production`، Tag annotated `v2.3.2` روی همان Commit ساخته می‌شود.
 
 ## حمایت مالی
 

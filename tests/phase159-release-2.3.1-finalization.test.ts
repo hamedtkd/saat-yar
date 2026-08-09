@@ -2,7 +2,6 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import { APP_DATA_SCHEMA_VERSION } from "../lib/data/version.ts";
-import { collectReleaseAuditFailures } from "../scripts/release-audit.mjs";
 
 const read = (path: string) => readFileSync(path, "utf8");
 const packageJson = JSON.parse(read("package.json")) as {
@@ -46,10 +45,7 @@ const manifest = JSON.parse(read("docs/releases/2.3.1.json")) as Record<string, 
   };
 };
 
-test("2.3.1 patch release version lock schema and tag are aligned", () => {
-  assert.equal(packageJson.version, "2.3.1");
-  assert.equal(packageLock.version, "2.3.1");
-  assert.equal(packageLock.packages[""]?.version, "2.3.1");
+test("historical 2.3.1 patch release manifest schema and tag remain aligned", () => {
   assert.equal(manifest.version, "2.3.1");
   assert.equal(manifest.releaseDate, "2026-08-08");
   assert.equal(manifest.status, "released");
@@ -109,19 +105,17 @@ test("2.3.1 keeps the release browser gates and both deployment audits explicit"
   assert.equal(manifest.productionAuditCommand, "npm run audit:production");
 });
 
-test("2.3.1 checklist and roadmap require post-deploy audit before the annotated tag", () => {
-  const checklist = read("RELEASE_CHECKLIST_FA.md");
+test("historical 2.3.1 roadmap and phase notes preserve the annotated-tag contract", () => {
+  const phaseNotes = read("docs/phases/PHASE_159_NOTES_FA.md");
   const backlog = read("docs/roadmap/BACKLOG_FA.md");
-  assert.equal(checklist.split(/\r?\n/)[0], "# چک‌لیست انتشار ساعت‌یار 2.3.1");
-  assert.match(checklist, /npm run audit:production/);
-  assert.match(checklist, /git tag -a v2\.3\.1 -m "Saatyar 2\.3\.1"/);
-  assert.match(checklist, /Ready/);
+  assert.match(phaseNotes, /npm run audit:production/);
+  assert.match(phaseNotes, /git tag -a v2\.3\.1 -m "Saatyar 2\.3\.1"/);
   assert.match(backlog, /## آمادگی انتشار ۲\.۳\.۱/);
   assert.match(backlog, /- \[x\] فاز ۱۵۹:/);
   assert.equal(Object.prototype.hasOwnProperty.call(manifest, "releaseCommit"), false);
 });
 
-test("active 2.3.1 release audit passes and Phase 159 is wired into npm test", () => {
-  assert.deepEqual(collectReleaseAuditFailures(), []);
+test("historical Phase 159 remains wired after the active release advances", () => {
   assert.match(packageJson.scripts.test, /tests\/phase159-release-2\.3\.1-finalization\.test\.ts/);
+  assert.equal(packageLock.packages[""]?.version, packageJson.version);
 });

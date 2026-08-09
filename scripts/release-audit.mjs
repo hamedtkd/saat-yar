@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { APP_DATA_SCHEMA_VERSION } from "../lib/data/version.ts";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const ACTIVE_RELEASE_VERSION = "2.3.1";
+const ACTIVE_RELEASE_VERSION = "2.3.2";
 const RELEASE_MANIFEST_PATH = `docs/releases/${ACTIVE_RELEASE_VERSION}.json`;
 const REQUIRED_MEDIA = [
   "docs/assets/screenshots/today-light-desktop.png",
@@ -53,36 +53,37 @@ export function collectReleaseAuditFailures() {
   const packageLock = readJson("package-lock.json");
   const manifest = readJson(RELEASE_MANIFEST_PATH);
 
-  requireCondition(packageJson.version === ACTIVE_RELEASE_VERSION, "package.json is not on the active 2.3.1 patch release.", failures);
+  requireCondition(packageJson.version === ACTIVE_RELEASE_VERSION, "package.json is not on the active 2.3.2 patch release.", failures);
   requireCondition(packageJson.version === manifest.version, "package.json version does not match the active release manifest.", failures);
   requireCondition(packageLock.version === manifest.version, "package-lock.json root version does not match the active release manifest.", failures);
   requireCondition(packageLock.packages?.[""]?.version === manifest.version, "package-lock.json package version does not match the active release manifest.", failures);
   requireCondition(packageJson.engines?.node === manifest.nodeEngine, "Node engine does not match the release manifest.", failures);
   requireCondition(APP_DATA_SCHEMA_VERSION === manifest.dataSchemaVersion, "Current AppData schema must exactly match the active release manifest schema.", failures);
-  requireCondition(manifest.status === "released", "2.3.1 manifest must be finalized as released before the annotated tag is created.", failures);
+  requireCondition(manifest.status === "released", "2.3.2 manifest must be finalized as released before the annotated tag is created.", failures);
   requireCondition(manifest.tag === `v${manifest.version}`, "Release manifest tag is missing or does not match the version.", failures);
 
-  requireCondition(/^[0-9a-f]{7,40}$/.test(manifest.verifiedBaselineCommitPrefix ?? ""), "2.3.1 must record the verified Phase 158 baseline commit prefix.", failures);
-  requireCondition(manifest.verifiedBaselineCommitPrefix === "7c675e1", "2.3.1 must preserve the verified Phase 158 baseline commit prefix 7c675e1.", failures);
-  requireCondition(manifest.verifiedBaselineTestCount === 601, "2.3.1 must record the verified 601-test Phase 158 baseline.", failures);
-  requireCondition(manifest.expectedFinalTestCount === 607, "2.3.1 must declare the 607-test Phase 159 final gate.", failures);
+  requireCondition(/^[0-9a-f]{7,40}$/.test(manifest.verifiedBaselineCommitPrefix ?? ""), "2.3.2 must record the production-audited Phase 164 baseline commit prefix; run npm run release:prepare:2.3.2 first.", failures);
+  requireCondition(manifest.verifiedBaselineCommitPrefix !== "0000000", "2.3.2 baseline commit prefix must not be a placeholder.", failures);
+  requireCondition(manifest.verifiedBaselineTestCount === 633, "2.3.2 must record the verified 633-test Phase 164 baseline.", failures);
+  requireCondition(manifest.expectedFinalTestCount === 639, "2.3.2 must declare the 639-test Phase 165 final gate.", failures);
 
   const evidence = manifest.releaseEvidence ?? {};
-  requireCondition(evidence.productionBrowserSmoke === "passed", "2.3.1 must preserve passing production browser evidence.", failures);
-  requireCondition(evidence.freelancerBrowserSmoke === "passed", "2.3.1 must preserve passing freelancer browser evidence.", failures);
-  requireCondition(evidence.employeeBrowserSmoke === "passed", "2.3.1 must preserve passing employee browser evidence.", failures);
-  requireCondition(evidence.pairingBrowserSmoke === "passed", "2.3.1 must preserve passing pairing browser evidence.", failures);
-  requireCondition(evidence.pairingEncryptedChunks === 4, "2.3.1 must preserve the four encrypted pairing chunks verified on the baseline.", failures);
-  requireCondition(evidence.vercelStaticExportAudit === "passed", "2.3.1 must preserve the passing Vercel static-export audit.", failures);
-  requireCondition(evidence.productionDomainAudit === "passed", "2.3.1 must preserve the passing post-deploy production audit.", failures);
-  requireCondition(evidence.productionPrecacheAssets === 37, "2.3.1 must preserve the verified 37 production precache build assets.", failures);
-  requireCondition(evidence.employeeNetMinutes === 495, "2.3.1 must preserve the 495-minute employee reference-day evidence.", failures);
+  requireCondition(evidence.productionBrowserSmoke === "passed", "2.3.2 must preserve passing production browser evidence.", failures);
+  requireCondition(evidence.freelancerBrowserSmoke === "passed", "2.3.2 must preserve passing freelancer browser evidence.", failures);
+  requireCondition(evidence.employeeBrowserSmoke === "passed", "2.3.2 must preserve passing employee browser evidence.", failures);
+  requireCondition(evidence.pairingBrowserSmoke === "passed", "2.3.2 must preserve passing pairing browser evidence.", failures);
+  requireCondition(evidence.pairingEncryptedChunks === 4, "2.3.2 must preserve the four encrypted pairing chunks verified on the baseline.", failures);
+  requireCondition(evidence.vercelStaticExportAudit === "passed", "2.3.2 must preserve the passing Vercel static-export audit.", failures);
+  requireCondition(evidence.productionDomainAudit === "passed", "2.3.2 must preserve the passing post-deploy production audit.", failures);
+  requireCondition(evidence.productionPrecacheAssets === 37, "2.3.2 must preserve the verified 37 production precache build assets.", failures);
+  requireCondition(evidence.phase164FinalTestCount === 633, "2.3.2 must preserve the 633-test Phase 164 evidence.", failures);
   requireCondition(!Object.prototype.hasOwnProperty.call(manifest, "releaseCommit"), "Released manifest must not contain a self-referential releaseCommit field; the annotated Git tag is the source of truth.", failures);
 
   const requiredFiles = [
     RELEASE_MANIFEST_PATH,
     manifest.releaseNotes?.fa,
     manifest.releaseNotes?.en,
+    "docs/releases/2.3.1.json",
     "docs/releases/2.3.0.json",
     "docs/releases/2.2.0.json",
     "docs/releases/2.1.0.json",
@@ -92,8 +93,9 @@ export function collectReleaseAuditFailures() {
     "README_FA.md",
     "README_EN.md",
     "docs/README.md",
-    "docs/phases/PHASE_159_NOTES_FA.md",
+    "docs/phases/PHASE_165_NOTES_FA.md",
     "docs/assets/README.md",
+    "scripts/prepare-release-2.3.2.mjs",
   ].filter(Boolean);
   for (const path of requiredFiles) {
     requireCondition(existsSync(resolve(ROOT, path)), `Required release file is missing: ${path}`, failures);
@@ -102,10 +104,15 @@ export function collectReleaseAuditFailures() {
   const releaseHeading = `## [${manifest.version}] - ${manifest.releaseDate}`;
   requireCondition(includesLine("CHANGELOG.md", releaseHeading), `CHANGELOG.md is missing ${releaseHeading}`, failures);
   requireCondition(includesLine("RELEASE_CHECKLIST_FA.md", `# چک‌لیست انتشار ساعت‌یار ${manifest.version}`), "Release checklist version is stale.", failures);
-  requireCondition(readText("README_FA.md").includes(manifest.releaseNotes.fa), "Persian README does not link to Persian 2.3.1 release notes.", failures);
-  requireCondition(readText("README.md").includes(manifest.releaseNotes.en), "Canonical English README does not link to English 2.3.1 release notes.", failures);
+  requireCondition(readText("README_FA.md").includes(manifest.releaseNotes.fa), "Persian README does not link to Persian 2.3.2 release notes.", failures);
+  requireCondition(readText("README.md").includes(manifest.releaseNotes.en), "Canonical English README does not link to English 2.3.2 release notes.", failures);
   requireCondition(readText("README_EN.md").includes("./README.md"), "Legacy README_EN.md must point to the canonical English README.", failures);
-  requireCondition(readText("docs/README.md").includes("./releases/2.3.1.json"), "Docs index does not link to the active 2.3.1 release manifest.", failures);
+  requireCondition(readText("docs/README.md").includes("./releases/2.3.2.json"), "Docs index does not link to the active 2.3.2 release manifest.", failures);
+
+  const historical231 = readJson("docs/releases/2.3.1.json");
+  requireCondition(historical231.version === "2.3.1", "Historical 2.3.1 manifest was mutated.", failures);
+  requireCondition(historical231.tag === "v2.3.1", "Historical 2.3.1 tag contract was mutated.", failures);
+  requireCondition(historical231.expectedFinalTestCount === 607, "Historical 2.3.1 final test evidence was mutated.", failures);
 
   const historical230 = readJson("docs/releases/2.3.0.json");
   requireCondition(historical230.version === "2.3.0", "Historical 2.3.0 manifest was mutated.", failures);
@@ -135,6 +142,7 @@ export function collectReleaseAuditFailures() {
     requireCondition(releaseSteps[index] === expected, `check:release step ${index + 1} must be ${expected}.`, failures);
   }
 
+  requireCondition(packageJson.scripts?.["release:prepare:2.3.2"] === "node scripts/prepare-release-2.3.2.mjs", "2.3.2 baseline preparation command is missing or stale.", failures);
   requireCondition(packageJson.scripts?.["check:release:audit"] === "node --experimental-strip-types scripts/release-audit.mjs", "Release audit script command is missing or stale.", failures);
   requireCondition(packageJson.scripts?.["test:browser:production:built"] === "node scripts/production-browser-smoke.mjs", "Production browser gate command is missing or stale.", failures);
   requireCondition(packageJson.scripts?.["test:browser:freelancer:built"] === "node --experimental-strip-types scripts/freelancer-browser-ux-smoke.mjs", "Freelancer browser gate command is missing or stale.", failures);
@@ -160,12 +168,13 @@ export function collectReleaseAuditFailures() {
     requireCondition(declaredTests.has(testPath), `Test file is not included in npm test: ${testPath}`, failures);
   }
 
-  const releaseBacklog = sectionLines("docs/roadmap/BACKLOG_FA.md", "## آمادگی انتشار ۲.۳.۱");
-  requireCondition(releaseBacklog.length > 0, "2.3.1 release-readiness backlog section is missing.", failures);
+  const releaseBacklog = sectionLines("docs/roadmap/BACKLOG_FA.md", "## آمادگی انتشار ۲.۳.۲");
+  requireCondition(releaseBacklog.length > 0, "2.3.2 release-readiness backlog section is missing.", failures);
   const backlogText = releaseBacklog.join("\n");
-  requireCondition(backlogText.includes("- [x] فاز ۱۵۹:"), "Phase 159 must be marked complete in the 2.3.1 release-readiness backlog.", failures);
-  requireCondition(backlogText.includes("7c675e1"), "2.3.1 backlog must preserve the verified Phase 158 baseline commit.", failures);
-  requireCondition(backlogText.includes("۶۰۱/۶۰۱"), "2.3.1 backlog must preserve the verified 601-test baseline.", failures);
+  requireCondition(backlogText.includes("- [x] فاز ۱۶۵:"), "Phase 165 must be marked complete in the 2.3.2 release-readiness backlog.", failures);
+  requireCondition(backlogText.includes(manifest.verifiedBaselineCommitPrefix), "2.3.2 backlog must record the prepared Phase 164 baseline commit.", failures);
+  requireCondition(backlogText.includes("۶۳۳/۶۳۳"), "2.3.2 backlog must preserve the verified 633-test baseline.", failures);
+  requireCondition(backlogText.includes("۶۳۹/۶۳۹"), "2.3.2 backlog must declare the 639-test final gate.", failures);
 
   return failures;
 }

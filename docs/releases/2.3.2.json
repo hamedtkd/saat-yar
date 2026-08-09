@@ -1,0 +1,37 @@
+{
+  "product": "Saatyar",
+  "package": "saatyar-worklog",
+  "version": "2.3.2",
+  "releaseDate": "2026-08-09",
+  "status": "released",
+  "dataSchemaVersion": 17,
+  "nodeEngine": "22.x",
+  "verifiedBaselineCommitPrefix": "e3c0a03",
+  "verifiedBaselineTestCount": 633,
+  "expectedFinalTestCount": 639,
+  "qualityCommand": "npm run check:release",
+  "browserGate": "scripts/production-browser-smoke.mjs",
+  "freelancerBrowserGate": "scripts/freelancer-browser-ux-smoke.mjs",
+  "employeeBrowserGate": "scripts/employee-browser-ux-smoke.mjs",
+  "pairingBrowserGate": "scripts/device-pairing-browser-smoke.mjs",
+  "pairingCommand": "npm run test:browser:pairing",
+  "productionAuditCommand": "npm run audit:production",
+  "vercelAuditCommand": "npm run audit:vercel",
+  "mediaCaptureCommand": "npm run media:capture",
+  "releaseNotes": {
+    "fa": "docs/releases/RELEASE_NOTES_2.3.2_FA.md",
+    "en": "docs/releases/RELEASE_NOTES_2.3.2_EN.md"
+  },
+  "tag": "v2.3.2",
+  "releaseEvidence": {
+    "productionBrowserSmoke": "passed",
+    "freelancerBrowserSmoke": "passed",
+    "employeeBrowserSmoke": "passed",
+    "pairingBrowserSmoke": "passed",
+    "pairingEncryptedChunks": 4,
+    "vercelStaticExportAudit": "passed",
+    "productionDomainAudit": "passed",
+    "productionPrecacheAssets": 37,
+    "phase164FinalTestCount": 633
+  }
+}

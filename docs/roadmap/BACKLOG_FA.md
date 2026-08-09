@@ -267,6 +267,17 @@
 - [x] فاز ۱۶۴: انگلیسی‌کردن README اصلی GitHub، انتقال README فارسی به `README_FA.md`، حفظ مسیر سازگار `README_EN.md` و ثبت نقشه راه i18n برای دو زبانه‌کردن رابط کاربری در فازهای بعدی.
 
 
+## آمادگی انتشار ۲.۳.۲
+
+- [x] فاز ۱۶۰: قرارداد ناهار و هدف کار خالص هفتگی، همراه محاسبه خروج پیشنهادی بر اساس ناهار واقعی.
+- [x] فاز ۱۶۱: پالیش Responsive چیدمان برنامه کاری در Settings.
+- [x] فاز ۱۶۲: CI گیت‌هاب همسو با Vercel و حذف Deploy بلااستفاده GitHub Pages.
+- [x] فاز ۱۶۳: Resume امن نشست Auto-close و Filled Accent خواناتر در تم‌های فیروزه‌ای/آبی.
+- [x] فاز ۱۶۴: README اصلی انگلیسی، README فارسی مستقل و Roadmap i18n.
+- [x] فاز ۱۶۵: Final Release 2.3.2؛ افزایش Package/Lockfile، Manifest/Release Notes جدید، ثبت Baseline `e3c0a03` با ۶۳۳/۶۳۳ تست و Gate نهایی ۶۳۹/۶۳۹، بدون تغییر Schema v17 یا افزودن Migration/Dependency.
+- [ ] پس از Commit/Push فاز ۱۶۵ و Ready شدن Vercel، `npm run audit:production` باید سبز شود؛ سپس Tag annotated `v2.3.2` روی همان Commit ساخته شود.
+
+
 ## بین‌المللی‌سازی آینده — پس از Patch بعدی
 
 - [ ] استخراج متن‌های رابط از Componentها به Catalog/Dictionary تایپ‌شده بدون تغییر رفتار دامنه.

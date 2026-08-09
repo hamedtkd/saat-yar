@@ -289,7 +289,8 @@ The Persian deployment guide covers Windows, macOS, Linux, Docker, GitHub Pages,
 
 [Run and deployment guide](./RUN_AND_DEPLOY_FA.md)
 
-- [Saatyar 2.3.1 release notes](./docs/releases/RELEASE_NOTES_2.3.1_EN.md)
+- [Saatyar 2.3.2 release notes](./docs/releases/RELEASE_NOTES_2.3.2_EN.md)
+- [Historical Saatyar 2.3.1 release notes](./docs/releases/RELEASE_NOTES_2.3.1_EN.md)
 - [Historical Saatyar 2.3.0 release notes](./docs/releases/RELEASE_NOTES_2.3.0_EN.md)
 - [Historical Saatyar 2.2.0 release notes](./docs/releases/RELEASE_NOTES_2.2.0_EN.md)
 - [Historical Saatyar 2.1.0 release notes](./docs/releases/RELEASE_NOTES_2.1.0_EN.md)
@@ -302,13 +303,11 @@ Before opening a pull request, read [CONTRIBUTING.md](./CONTRIBUTING.md) and the
 
 ## Roadmap
 
-Version **2.3.1** is the current Saatyar patch release. The verified baseline at commit prefix `7c675e1` passed **601/601 tests**, the full build, production/freelancer/employee browser smokes, direct WebRTC pairing, `audit:vercel`, and the post-deploy audit against the real production origin. Phase 159 adds six release-contract tests, so the final source gate is expected to reach **607/607**.
+Version **2.3.2** is the current Saatyar patch release. It packages the post-2.3.1 work from Phases 160–164: the net-work/lunch contract, work-schedule layout polish, Vercel-aligned GitHub CI, safe session resume with accessible accent fills, and the English-first GitHub README with a future i18n roadmap.
 
-This patch packages Phases 155–158: real production auditing, correct precache parsing, the explicit Vercel static-export contract, and scheduled-day-off awareness on Today. AppData remains on schema v17 with no new migration or dependency. See the [2.3.1 release notes](./docs/releases/RELEASE_NOTES_2.3.1_EN.md), the Persian [release checklist](./RELEASE_CHECKLIST_FA.md), and the [roadmap](./docs/roadmap/BACKLOG_FA.md).
+The verified Phase 164 baseline passed **633/633 tests**, all three production browser journeys, direct WebRTC pairing, the Vercel static-export audit, and the post-deploy production audit. Phase 165 adds six release-contract tests, so the final source gate is expected to reach **639/639**. AppData remains on schema v17 with no new migration or dependency. See the [2.3.2 release notes](./docs/releases/RELEASE_NOTES_2.3.2_EN.md), the Persian [release checklist](./RELEASE_CHECKLIST_FA.md), and the [roadmap](./docs/roadmap/BACKLOG_FA.md).
 
-The historical 2.3.0 manifest and `v2.3.0` tag remain unchanged. The 2.3.1 manifest intentionally has no `releaseCommit`; after the Phase 159 commit is pushed, the deployment is Ready, and `npm run audit:production` passes, the annotated `v2.3.1` tag is created on that same final commit and becomes the source of truth for the release.
-
-Post-2.3.1 work on `main` is tracked under **Unreleased** and is being prepared for the next patch release. The roadmap also records a future localization pass to add an English LTR product interface while keeping Persian RTL as a first-class locale.
+Historical 2.3.1 and earlier manifests/tags remain immutable. The 2.3.2 manifest intentionally has no `releaseCommit`; after the final commit is pushed, Vercel is Ready, and `npm run audit:production` passes, the annotated `v2.3.2` tag is created on that same commit and becomes the release source of truth.
 
 ## Support development
 

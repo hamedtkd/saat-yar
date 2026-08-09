@@ -20,6 +20,13 @@
 - [Windows and npm troubleshooting — English](./TROUBLESHOOTING_EN.md)
 - [سازگاری مرورگر / Browser compatibility](./BROWSER_COMPATIBILITY.md)
 
+## انتشار ۲.۳.۲
+
+- [یادداشت انتشار ۲.۳.۲ فارسی](./releases/RELEASE_NOTES_2.3.2_FA.md)
+- [Saatyar 2.3.2 release notes](./releases/RELEASE_NOTES_2.3.2_EN.md)
+- [Release manifest 2.3.2](./releases/2.3.2.json)
+- [چک‌لیست انتشار](../RELEASE_CHECKLIST_FA.md)
+
 ## انتشار ۲.۳.۱
 
 - [یادداشت انتشار ۲.۳.۱ فارسی](./releases/RELEASE_NOTES_2.3.1_FA.md)
@@ -119,3 +126,5 @@
 - [فاز ۱۶۲: CI گیت‌هاب همسو با Vercel](./phases/PHASE_162_NOTES_FA.md)
 - [فاز ۱۶۳: بازیابی نشست و کنتراست Accent](./phases/PHASE_163_NOTES_FA.md)
 - [فاز ۱۶۴: README اصلی انگلیسی و نقشه راه i18n](./phases/PHASE_164_NOTES_FA.md)
+
+- [فاز ۱۶۵: Final Release 2.3.2](./phases/PHASE_165_NOTES_FA.md)
