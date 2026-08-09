@@ -41,7 +41,7 @@ export function Onboarding({ data, setData, step, setStep }: OnboardingProps) {
   };
 
   return (
-    <div className={cn("fixed inset-0 z-[500] overflow-y-auto bg-[var(--page)] text-[var(--text)]")}>
+    <div className={cn("min-h-screen bg-[var(--page)] text-[var(--text)]")}>
       <header className={cn("flex min-h-[76px] items-center justify-between border-b border-[var(--border)] bg-[var(--surface-1)] px-5 py-3 sm:px-8")}>
         <Brand />
         <span className={cn("inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--accent-strong)] [&_svg]:h-[15px] [&_svg]:w-[15px] max-[620px]:hidden")}><CheckCircle2 /> ذخیره خودکار</span>

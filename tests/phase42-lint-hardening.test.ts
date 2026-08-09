@@ -22,5 +22,5 @@ test("route effects depend on stable fields instead of the controller object", a
   assert.match(shell, /const \{ ready, selectedDate, setSelectedDate, data \} = controller;/);
   assert.doesNotMatch(shell, /\[controller\./);
   assert.doesNotMatch(shell, /useSearchParams/);
-  assert.match(guard, /\[mode, pathname, ready, router\]/);
+  assert.match(guard, /\[mode, onboarded, pathname, ready, router\]/);
 });

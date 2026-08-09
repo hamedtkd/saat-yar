@@ -13,13 +13,16 @@ import {
 } from "@/lib/navigation";
 import type { Mode } from "@/lib/types";
 
+const ONBOARDING_PATH = "/onboarding";
+
 type RouteGuardProps = {
   mode: Mode;
   pathname: string;
   ready: boolean;
+  onboarded: boolean;
 };
 
-export function RouteGuard({ mode, pathname, ready }: RouteGuardProps) {
+export function RouteGuard({ mode, pathname, ready, onboarded }: RouteGuardProps) {
   const router = useRouter();
 
   useEffect(() => {
@@ -28,6 +31,16 @@ export function RouteGuard({ mode, pathname, ready }: RouteGuardProps) {
     const normalized = normalizePathname(pathname);
     const currentTab = getPathTab(normalized);
     const fallback = getTabHref(getFirstAllowedTab(mode));
+
+    if (!onboarded) {
+      if (normalized !== ONBOARDING_PATH) router.replace(ONBOARDING_PATH);
+      return;
+    }
+
+    if (normalized === ONBOARDING_PATH) {
+      router.replace(fallback);
+      return;
+    }
 
     if (isSupplementalRoute(normalized)) return;
 
@@ -48,7 +61,7 @@ export function RouteGuard({ mode, pathname, ready }: RouteGuardProps) {
     }
 
     router.replace(fallback);
-  }, [mode, pathname, ready, router]);
+  }, [mode, onboarded, pathname, ready, router]);
 
   return null;
 }

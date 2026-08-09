@@ -275,8 +275,15 @@
 - [x] فاز ۱۶۳: Resume امن نشست Auto-close و Filled Accent خواناتر در تم‌های فیروزه‌ای/آبی.
 - [x] فاز ۱۶۴: README اصلی انگلیسی، README فارسی مستقل و Roadmap i18n.
 - [x] فاز ۱۶۵: Final Release 2.3.2؛ افزایش Package/Lockfile، Manifest/Release Notes جدید، ثبت Baseline `e3c0a03` با ۶۳۳/۶۳۳ تست و Gate نهایی ۶۳۹/۶۳۹، بدون تغییر Schema v17 یا افزودن Migration/Dependency.
-- [ ] پس از Commit/Push فاز ۱۶۵ و Ready شدن Vercel، `npm run audit:production` باید سبز شود؛ سپس Tag annotated `v2.3.2` روی همان Commit ساخته شود.
+- [x] Release 2.3.2 روی Commit `56c2c54` با Production Audit سبز نهایی شد و Tag annotated `v2.3.2` منتشر شد.
 
+
+## توسعه پس از ۲.۳.۲ — آنبوردینگ و ورود داده
+
+- [x] فاز ۱۶۶: تبدیل آنبوردینگ اولیه از Overlay داخل App Shell/Today به Route مستقل `/onboarding` با Redirect امن کاربر جدید، Shell متمرکز و Browser Smoke مسیر واقعی.
+- [ ] فاز ۱۶۷: Onboarding Recovery & Re-entry؛ ذخیره Progress مرحله‌ای، ادامه راه‌اندازی نیمه‌تمام و امکان اجرای دوباره Wizard از Settings بدون پاک‌کردن داده.
+- [ ] فاز ۱۶۸: Import Wizard؛ ورود داده موجود با Preview و Validation، شروع از Backup ساعت‌یار و سپس CSV برای رکوردهای زمانی/پروژه‌ها و اطلاعات مالی قابل نگاشت.
+- [ ] فاز ۱۶۹: Onboarding شخصی‌شده بر اساس Employee/Freelancer/Hybrid و حذف مراحل نامرتبط برای هر Workspace.
 
 ## بین‌المللی‌سازی آینده — پس از Patch بعدی
 

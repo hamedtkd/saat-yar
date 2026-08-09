@@ -128,3 +128,4 @@
 - [فاز ۱۶۴: README اصلی انگلیسی و نقشه راه i18n](./phases/PHASE_164_NOTES_FA.md)
 
 - [فاز ۱۶۵: Final Release 2.3.2](./phases/PHASE_165_NOTES_FA.md)
+- [فاز ۱۶۶: Route مستقل آنبوردینگ](./phases/PHASE_166_NOTES_FA.md)

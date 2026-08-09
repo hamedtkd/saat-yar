@@ -1,5 +1,11 @@
 ## [Unreleased]
 
+### تغییر کرد
+
+- راه‌اندازی اولیه از Overlay سراسری روی صفحه Today به Route مستقل `/onboarding` منتقل شد؛ کاربر جدید پیش از ورود به Workspace به این Route هدایت می‌شود و پس از تکمیل به `/today` می‌رود.
+- Shell آنبوردینگ از Header/Sidebar/Bottom Navigation داشبورد جدا شد و Route راه‌اندازی برای موتور جستجو `noindex` باقی می‌ماند.
+- Production Browser Smoke اکنون Redirect واقعی `/` → `/onboarding` → `/today` را روی Storage خالی تأیید می‌کند.
+
 ## [2.3.2] - 2026-08-09
 
 ### مستندات

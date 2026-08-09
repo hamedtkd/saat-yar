@@ -285,10 +285,10 @@ export async function runProductionBrowserSmoke() {
     await waitFor(client, "document.readyState === 'complete'", "initial document load");
     await waitFor(
       client,
-      'document.querySelector(\'[data-onboarding-step-index="2"]\') && document.querySelectorAll(\'[data-onboarding-step-index="2"] button[aria-pressed]\').length >= 3',
-      "onboarding mode step",
+      '["/onboarding", "/onboarding/"].includes(location.pathname) && document.querySelector(\'[data-onboarding-step-index="2"]\') && document.querySelectorAll(\'[data-onboarding-step-index="2"] button[aria-pressed]\').length >= 3',
+      "dedicated onboarding route",
     );
-    console.log("\u2713 Initial production load opened onboarding");
+    console.log("\u2713 Initial production load redirected to dedicated onboarding route");
 
     await clickButton(client, "ادامه");
     await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="3"]'))`, "onboarding schedule step");

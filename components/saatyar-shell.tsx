@@ -16,9 +16,9 @@ import { PwaExperience } from "@/components/pwa/pwa-experience";
 import { UnsavedNavigationProvider } from "@/components/layout/navigation/unsaved-navigation-provider";
 import { RouteGuard } from "@/components/layout/navigation/route-guard";
 import { RouteSync } from "@/components/layout/route-sync";
-import { Onboarding } from "@/components/layout/onboarding";
 import { useSaatyarController } from "@/hooks/use-saatyar-controller";
 import { cn } from "@/lib/cn";
+import { normalizePathname } from "@/lib/navigation";
 
 const SaatyarContext = createContext<ReturnType<typeof useSaatyarController> | null>(null);
 
@@ -49,73 +49,81 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
     );
 
   const { setData } = controller;
+  const onboardingRoute = normalizePathname(pathname) === "/onboarding";
 
   return (
     <SaatyarContext.Provider value={controller}>
-      <UnsavedNavigationProvider>
       <ThemeRuntime appearance={data.settings.appearance} />
-      <RouteGuard mode={mode} pathname={pathname} ready={ready} />
-      <Suspense fallback={null}>
-        <RouteSync selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
-      </Suspense>
-      <SkipLink />
-      <main
-        className={cn(
-          "dashboard-shell min-h-screen w-full bg-[var(--page)] p-2 pb-28 sm:p-3 sm:pb-28 xl:pb-3 [&_label]:grid [&_label]:gap-[7px] [&_label]:text-[11px] [&_label]:font-semibold [&_label]:text-[var(--text-muted)] [&_button]:cursor-pointer [&_svg.lucide]:h-[18px] [&_svg.lucide]:w-[18px] [&_svg.lucide]:stroke-[1.85]",
-        )}
-        dir="rtl"
-      >
-        {controller.toast && <AppToast message={controller.toast} />}
+      <RouteGuard
+        mode={mode}
+        pathname={pathname}
+        ready={ready}
+        onboarded={data.settings.onboarded}
+      />
 
-        {!data.settings.onboarded && (
-          <Onboarding
-            data={data}
-            setData={setData}
-            step={controller.onboardingStep}
-            setStep={controller.setOnboardingStep}
-          />
-        )}
+      {onboardingRoute ? (
+        <>
+          <SkipLink />
+          <main id="main-content" role="main" tabIndex={-1} className="min-h-screen bg-[var(--page)]" dir="rtl">
+            {controller.toast && <AppToast message={controller.toast} />}
+            {children}
+          </main>
+        </>
+      ) : (
+        <UnsavedNavigationProvider>
+          <Suspense fallback={null}>
+            <RouteSync selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+          </Suspense>
+          <SkipLink />
+          <main
+            className={cn(
+              "dashboard-shell min-h-screen w-full bg-[var(--page)] p-2 pb-28 sm:p-3 sm:pb-28 xl:pb-3 [&_label]:grid [&_label]:gap-[7px] [&_label]:text-[11px] [&_label]:font-semibold [&_label]:text-[var(--text-muted)] [&_button]:cursor-pointer [&_svg.lucide]:h-[18px] [&_svg.lucide]:w-[18px] [&_svg.lucide]:stroke-[1.85]",
+            )}
+            dir="rtl"
+          >
+            {controller.toast && <AppToast message={controller.toast} />}
 
-        <SidebarNav mode={data.settings.mode} currentPath={pathname} name={data.settings.name} />
+            <SidebarNav mode={data.settings.mode} currentPath={pathname} name={data.settings.name} />
 
-        <AppHeader
-          name={data.settings.name}
-          mode={data.settings.mode}
-          pathname={pathname}
-          onModeChange={controller.changeMode}
-          onExport={controller.exportBackup}
-          financialsHidden={controller.financialsHidden}
-          onToggleFinancials={() => controller.setFinancialsHidden((value) => !value)}
-          saveState={controller.saveState}
-          appearance={data.settings.appearance}
-          onThemeModeChange={(mode) => setData((previous) => ({ ...previous, settings: { ...previous.settings, appearance: { ...previous.settings.appearance, mode } } }))}
-        />
+            <AppHeader
+              name={data.settings.name}
+              mode={data.settings.mode}
+              pathname={pathname}
+              onModeChange={controller.changeMode}
+              onExport={controller.exportBackup}
+              financialsHidden={controller.financialsHidden}
+              onToggleFinancials={() => controller.setFinancialsHidden((value) => !value)}
+              saveState={controller.saveState}
+              appearance={data.settings.appearance}
+              onThemeModeChange={(appearanceMode) => setData((previous) => ({ ...previous, settings: { ...previous.settings, appearance: { ...previous.settings.appearance, mode: appearanceMode } } }))}
+            />
 
-        <PwaExperience />
+            <PwaExperience />
 
-        <LiveTimerOwnershipBanner blocked={controller.liveTimerOwnership.blocked} owner={controller.liveTimerOwnership.owner} onTakeOver={controller.liveTimerOwnership.takeOver} />
+            <LiveTimerOwnershipBanner blocked={controller.liveTimerOwnership.blocked} owner={controller.liveTimerOwnership.owner} onTakeOver={controller.liveTimerOwnership.takeOver} />
 
-        <MultiTabSyncBanner
-          pending={controller.externalSyncPending}
-          onReload={() => { void controller.reloadExternalData(); }}
-          onDismiss={controller.dismissExternalSync}
-        />
+            <MultiTabSyncBanner
+              pending={controller.externalSyncPending}
+              onReload={() => { void controller.reloadExternalData(); }}
+              onDismiss={controller.dismissExternalSync}
+            />
 
-        <div
-          id="main-content"
-          role="main"
-          tabIndex={-1}
-          className={cn(
-            "shell-main-offset mx-auto max-w-[1510px] px-1 pb-6 pt-4 sm:px-3 sm:pt-5 lg:px-5",
-          )}
-        >
-          {children}
-        </div>
+            <div
+              id="main-content"
+              role="main"
+              tabIndex={-1}
+              className={cn(
+                "shell-main-offset mx-auto max-w-[1510px] px-1 pb-6 pt-4 sm:px-3 sm:pt-5 lg:px-5",
+              )}
+            >
+              {children}
+            </div>
 
-        <div className="shell-main-offset"><AppFooter online={controller.online} /></div>
-        <MobileBottomNav mode={data.settings.mode} currentPath={pathname} />
-      </main>
-      </UnsavedNavigationProvider>
+            <div className="shell-main-offset"><AppFooter online={controller.online} /></div>
+            <MobileBottomNav mode={data.settings.mode} currentPath={pathname} />
+          </main>
+        </UnsavedNavigationProvider>
+      )}
     </SaatyarContext.Provider>
   );
 }
