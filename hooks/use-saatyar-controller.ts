@@ -13,13 +13,14 @@ import { useControllerDerived } from "./controller/use-controller-derived";
 import { useNotificationReminders } from "./controller/use-notification-reminders";
 import { useLiveTimerOwnership } from "./use-live-timer-ownership";
 import { useReportActions } from "./controller/use-report-actions";
+import { useOnboardingSession } from "./use-onboarding-session";
 
 export function useSaatyarController() {
   const persisted = usePersistedAppData();
   const { data, setData, setToast, storage } = persisted;
   const [selectedDate, setSelectedDateState] = useState(localDateKey());
   const [selectedProjectId, setSelectedProjectId] = useState("");
-  const [onboardingStep, setOnboardingStep] = useState(2);
+  const onboarding = useOnboardingSession(persisted.ready);
   const [showClientForm, setShowClientForm] = useState(false);
   const [showProjectForm, setShowProjectForm] = useState(false);
   const [clientDraft, setClientDraft] = useState<ClientDraft>(initialClientDraft);
@@ -73,7 +74,7 @@ export function useSaatyarController() {
   return {
     ...persisted,
     selectedDate, setSelectedDate, selectedProjectId, setSelectedProjectId,
-    onboardingStep, setOnboardingStep, showClientForm, setShowClientForm,
+    ...onboarding, showClientForm, setShowClientForm,
     showProjectForm, setShowProjectForm, clientDraft, setClientDraft,
     projectDraft, setProjectDraft, timerDraft, setTimerDraft,
     editingEntry, setEditingEntry, reportFilter, setReportFilter,

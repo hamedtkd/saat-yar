@@ -14,7 +14,7 @@ import type { OnboardingProps } from "./onboarding/types";
 import { useOnboardingSettings } from "./onboarding/use-onboarding-settings";
 import { WelcomeStep } from "./onboarding/welcome-step";
 
-export function Onboarding({ data, setData, step, setStep }: OnboardingProps) {
+export function Onboarding({ data, setData, step, setStep, reentry, onComplete, onExit }: OnboardingProps) {
   const setSetting = useOnboardingSettings(setData);
   const canContinue = step !== 1 || Boolean(data.settings.name.trim());
 
@@ -29,6 +29,7 @@ export function Onboarding({ data, setData, step, setStep }: OnboardingProps) {
       return;
     }
     setSetting("onboarded", true);
+    onComplete();
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLFormElement>) => {
@@ -55,7 +56,7 @@ export function Onboarding({ data, setData, step, setStep }: OnboardingProps) {
           {step === 3 && <ScheduleStep settings={data.settings} setSetting={setSetting} />}
           {step === 4 && <PrivacyStep />}
         </div>
-        <OnboardingFooter step={step} setStep={setStep} canContinue={canContinue} />
+        <OnboardingFooter step={step} setStep={setStep} canContinue={canContinue} reentry={reentry} onExit={onExit} />
       </form>
     </div>
   );

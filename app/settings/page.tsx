@@ -30,6 +30,7 @@ export default function SettingsRoute() {
       clearRecovery={() => { controller.clearRecovery(); }}
       multiTabSyncStatus={controller.multiTabSyncStatus}
       clearMultiTabSyncHistory={controller.clearMultiTabSyncHistory}
+      startOnboardingReentry={controller.startOnboardingReentry}
     />
   );
 }

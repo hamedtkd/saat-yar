@@ -157,7 +157,8 @@ async function waitFor(client, expression, label, timeout = WAIT_TIMEOUT_MS) {
   const deadline = Date.now() + timeout;
   while (Date.now() < deadline) {
     try {
-      if (await evaluate(client, expression)) return;
+      const predicate = `(async () => Boolean(await (${expression})))()`;
+      if (await evaluate(client, predicate)) return;
       if (client.runtimeErrors.length > 0) {
         const snapshot = await browserStateSnapshot(client);
         throw new Error(`Browser runtime error while waiting for ${label}: ${client.runtimeErrors.join("\n")}${snapshot ? ` Browser state: ${JSON.stringify(snapshot)}` : ""}`);
@@ -200,6 +201,23 @@ async function clickButton(client, text) {
     return true;
   })()`);
   if (!clicked) throw new Error(`Button not found: ${text}`);
+}
+
+async function replaceInputValue(client, selector, value) {
+  const updated = await evaluate(client, `(() => {
+    const field = document.querySelector(${JSON.stringify(selector)});
+    if (!(field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement)) return false;
+    const prototype = field instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+    const setter = Object.getOwnPropertyDescriptor(prototype, "value")?.set;
+    if (!setter) return false;
+    field.focus();
+    setter.call(field, ${JSON.stringify(value)});
+    field.dispatchEvent(new InputEvent("input", { bubbles: true, inputType: "insertText", data: ${JSON.stringify(value)} }));
+    field.dispatchEvent(new Event("change", { bubbles: true }));
+    return field.value === ${JSON.stringify(value)};
+  })()`);
+  if (!updated) throw new Error(`Input could not receive React-compatible text: ${selector}`);
+  await evaluate(client, `new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))`);
 }
 
 async function waitForProcessExit(child, timeoutMs = 5_000) {
@@ -285,13 +303,26 @@ export async function runProductionBrowserSmoke() {
     await waitFor(client, "document.readyState === 'complete'", "initial document load");
     await waitFor(
       client,
-      '["/onboarding", "/onboarding/"].includes(location.pathname) && document.querySelector(\'[data-onboarding-step-index="2"]\') && document.querySelectorAll(\'[data-onboarding-step-index="2"] button[aria-pressed]\').length >= 3',
+      '["/onboarding", "/onboarding/"].includes(location.pathname) && document.querySelector(\'[data-onboarding-step-index="1"] input\')',
       "dedicated onboarding route",
     );
     console.log("\u2713 Initial production load redirected to dedicated onboarding route");
 
+    await replaceInputValue(client, '[data-onboarding-step-index="1"] input', "کاربر تست");
+    await clickButton(client, "ادامه");
+    await waitFor(
+      client,
+      'Boolean(document.querySelector(\'[data-onboarding-step-index="2"]\')) && document.querySelectorAll(\'[data-onboarding-step-index="2"] button[aria-pressed]\').length >= 3',
+      "onboarding mode step",
+    );
+    console.log("✓ Onboarding welcome step captured a user name");
     await clickButton(client, "ادامه");
     await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="3"]'))`, "onboarding schedule step");
+    const onboardingReload = waitForEvent(client, "Page.loadEventFired", "onboarding recovery reload");
+    await client.call("Page.reload", { ignoreCache: false });
+    await onboardingReload;
+    await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="3"]'))`, "recovered onboarding schedule step");
+    console.log("✓ Onboarding reload resumed from the saved step");
     await clickButton(client, "ادامه");
     await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="4"]'))`, "onboarding privacy step");
     await clickButton(client, "شروع ساعت‌یار");

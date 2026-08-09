@@ -11,6 +11,7 @@ import {
   LAST_ROUTE_STORAGE_KEY,
   normalizePathname,
 } from "@/lib/navigation";
+import { isOnboardingReentry } from "@/lib/onboarding-session";
 import type { Mode } from "@/lib/types";
 
 const ONBOARDING_PATH = "/onboarding";
@@ -31,8 +32,9 @@ export function RouteGuard({ mode, pathname, ready, onboarded }: RouteGuardProps
     const normalized = normalizePathname(pathname);
     const currentTab = getPathTab(normalized);
     const fallback = getTabHref(getFirstAllowedTab(mode));
+    const onboardingReentry = isOnboardingReentry(window.localStorage);
 
-    if (!onboarded) {
+    if (!onboarded || onboardingReentry) {
       if (normalized !== ONBOARDING_PATH) router.replace(ONBOARDING_PATH);
       return;
     }

@@ -348,7 +348,12 @@ async function main() {
     await client.call("Page.enable");
     await client.call("Runtime.enable");
     await client.call("Storage.clearDataForOrigin", { origin: server.origin, storageTypes: "all" });
-    await navigate(client, server.origin, "ساعت‌یار را برای خودت تنظیم کن");
+    await navigate(client, server.origin);
+    await waitFor(
+      client,
+      `["/onboarding", "/onboarding/"].includes(location.pathname) && Boolean(document.querySelector('[data-onboarding-step-index="1"]'))`,
+      "dedicated onboarding welcome step",
+    );
     await seedEmployeeData(client);
     const date = await currentDateKey(client);
 

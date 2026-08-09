@@ -18,7 +18,7 @@ test("onboarding is a first-class app route instead of a Today overlay", async (
 test("new users are routed to onboarding and completed users cannot remain there", async () => {
   const guard = await read("components/layout/navigation/route-guard.tsx");
   assert.match(guard, /const ONBOARDING_PATH = "\/onboarding"/);
-  assert.match(guard, /if \(!onboarded\)/);
+  assert.match(guard, /if \(!onboarded(?: \|\| onboardingReentry)?\)/);
   assert.match(guard, /router\.replace\(ONBOARDING_PATH\)/);
   assert.match(guard, /if \(normalized === ONBOARDING_PATH\)/);
   assert.match(guard, /router\.replace\(fallback\)/);

@@ -24,8 +24,9 @@ import type { MultiTabSyncStatus } from "@/lib/multi-tab-sync-status";
 import { RecordRecycleBinCard } from "./record-recycle-bin-card";
 import { SettingsSection } from "./settings-section";
 import { SettingsSearch } from "./settings-search";
+import { OnboardingReentryCard } from "./onboarding-reentry-card";
 
-export function SettingsPage({ data, setData, storage, exportBackup, previewImport, importPreview, applyImport, requestPersistence, requestNotificationPermission, setToast, financialsHidden, saveState, lastSavedAt, saveError, recoverySnapshot, retrySave, createRecovery, restoreRecovery, clearRecovery, multiTabSyncStatus, clearMultiTabSyncHistory }: {
+export function SettingsPage({ data, setData, storage, exportBackup, previewImport, importPreview, applyImport, requestPersistence, requestNotificationPermission, setToast, financialsHidden, saveState, lastSavedAt, saveError, recoverySnapshot, retrySave, createRecovery, restoreRecovery, clearRecovery, multiTabSyncStatus, clearMultiTabSyncHistory, startOnboardingReentry }: {
   data: AppData;
   setData: React.Dispatch<React.SetStateAction<AppData>>;
   storage: StorageInfo;
@@ -47,6 +48,7 @@ export function SettingsPage({ data, setData, storage, exportBackup, previewImpo
   clearRecovery: () => void;
   multiTabSyncStatus: MultiTabSyncStatus;
   clearMultiTabSyncHistory: () => void;
+  startOnboardingReentry: () => void;
 }) {
   return <>
     <PageHeading autosave={false} title="تنظیمات و داده‌ها" description="ظاهر، برنامه کاری، رفتار ذخیره و داده‌های محلی ساعت‌یار را از یک مرکز منظم مدیریت کن." />
@@ -56,6 +58,7 @@ export function SettingsPage({ data, setData, storage, exportBackup, previewImpo
       <div className="grid min-w-0 gap-5">
         <span id="settings-general" className="block scroll-mt-24" aria-hidden="true" />
         <SettingsSection icon={<SlidersHorizontal />} eyebrow="شخصی‌سازی" title="عمومی و ظاهر" description="هویت کاربر، تم، رنگ و رفتار ذخیره تنظیمات.">
+          <OnboardingReentryCard startOnboardingReentry={startOnboardingReentry} />
           <ProfileSettingsCard data={data} setData={setData} setToast={setToast} />
           <AppearanceSettingsCard data={data} setData={setData} setToast={setToast} />
           <SettingsBehaviorCard data={data} setData={setData} setToast={setToast} />

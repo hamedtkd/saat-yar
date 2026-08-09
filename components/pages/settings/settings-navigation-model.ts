@@ -8,6 +8,7 @@ import {
   HeartPulse,
   LifeBuoy,
   Palette,
+  RotateCcw,
   Save,
   ShieldAlert,
   Smartphone,
@@ -30,6 +31,7 @@ export type SettingsNavItem = {
 };
 
 export const settingsNavItems: readonly SettingsNavItem[] = [
+  { id: "settings-onboarding", label: "راه‌اندازی اولیه", group: "عمومی و ظاهر", groupId: "settings-general", icon: RotateCcw, keywords: "onboarding راه اندازی اولیه شروع دوباره wizard" },
   { id: "settings-profile", label: "پروفایل و نام", group: "عمومی و ظاهر", groupId: "settings-general", icon: UserRound, keywords: "نام پروفایل حساب کاربر خوشامدگویی" },
   { id: "settings-appearance", label: "ظاهر و تم", group: "عمومی و ظاهر", groupId: "settings-general", icon: Palette, keywords: "تم دارک روشن رنگ ظاهر پوسته" },
   { id: "settings-behavior", label: "رفتار ذخیره", group: "عمومی و ظاهر", groupId: "settings-general", icon: Save, keywords: "ذخیره خودکار autosave draft" },
