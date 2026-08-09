@@ -10,6 +10,7 @@ export function normaliseData(value: AppData, defaults: Settings): AppData {
     weekdayOrder.map((day) => [day, {
       ...defaults.weeklySchedule[day],
       ...(incomingSchedule[day as WeekdayKey] ?? {}),
+      lunchPaid: Boolean(incomingSchedule[day as WeekdayKey]?.lunchPaid),
     }]),
   ) as Settings["weeklySchedule"];
 

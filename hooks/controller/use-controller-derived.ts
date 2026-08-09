@@ -9,7 +9,11 @@ import type { AppData, ReportFilter } from "@/lib/types";
 export function useControllerDerived(data: AppData, selectedDate: string, selectedProjectId: string, reportFilter: ReportFilter) {
   const selectedSchedule = getWorkScheduleDay(selectedDate, data.settings);
   const dailyTarget = getDailyTargetMinutes(selectedDate, data.settings);
-  const storedRecord = data.records[selectedDate] ?? { ...emptyRecord(selectedDate, data.settings), lunchMinutes: selectedSchedule.lunchMinutes };
+  const storedRecord = data.records[selectedDate] ?? {
+    ...emptyRecord(selectedDate, data.settings),
+    lunchMinutes: selectedSchedule.lunchMinutes,
+    lunchPaid: Boolean(selectedSchedule.lunchPaid),
+  };
   const selectedHoliday = getHolidayInfo(selectedDate, {
     mode: data.settings.mode, manualHoliday: storedRecord.holiday,
     includeOfficialHolidays: data.settings.autoOfficialHolidays,

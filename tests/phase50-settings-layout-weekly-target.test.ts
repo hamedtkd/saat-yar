@@ -26,7 +26,7 @@ test("settings cards use structured responsive surfaces", async () => {
   assert.match(notification, /lg:grid-cols-\[1\.1fr_1fr_1fr\]/);
   assert.match(notification, /bg-\[var\(--accent-soft\)\]/);
   assert.match(schedule, /applyWeeklyTargetHours\(value, hours\)/);
-  assert.match(schedule, /md:grid-cols-\[1fr_auto\]/);
+  assert.match(schedule, /xl:grid-cols-\[1fr_auto_auto\]/);
   assert.match(work, /WorkScheduleEditor/);
 });
 

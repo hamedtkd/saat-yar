@@ -256,3 +256,7 @@
 - [x] فاز ۱۵۹: Final Release 2.3.1؛ افزایش Package/Lockfile به 2.3.1، فعال‌سازی Manifest جدید روی Schema v17، ثبت Baseline تأییدشده `7c675e1` با ۶۰۱/۶۰۱ تست و Gateهای Production/Freelancer/Employee/Pairing/Vercel/Production Audit، انتقال تغییرات فازهای ۱۵۵ تا ۱۵۸ از Unreleased به Changelog و افزودن شش قرارداد Release برای Gate نهایی ۶۰۷/۶۰۷.
 - [x] Manifest و Tag تاریخی `v2.3.0` بدون تغییر باقی می‌مانند و `v2.3.1` فقط پس از Commit/Push فاز ۱۵۹، Ready شدن Vercel و سبز شدن `npm run audit:production` روی همان Commit نهایی ساخته می‌شود.
 
+## توسعه پس از ۲.۳.۱
+
+- [x] فاز ۱۶۰: قرارداد ناهار و ساعت خروج؛ تست مثال‌های واقعی 07:30→16:15، 07:15→16:00 و ناهار کوتاه‌تر، تفکیک ناهار باحقوق/بدون‌حقوق، تنظیم جمعی ناهار برای همه روزها و حفظ هدف کار خالص هنگام تغییر مدت ناهار.
+

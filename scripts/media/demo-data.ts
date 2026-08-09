@@ -33,7 +33,7 @@ function record(date: string, start: string, end: string, note: string, override
 export function createMediaDemoData(anchorIso = "2026-08-07T10:30:00+03:30"): AppData {
   const anchor = new Date(anchorIso);
   const data = createInitialData({ onboarded: true });
-  data.settings.name = "حامد";
+  data.settings.name = "هامد";
   data.settings.mode = "employee";
   data.settings.salary = 48_000_000;
   data.settings.weeklyMinutes = 42 * 60 + 30;

@@ -49,6 +49,7 @@ export function createDefaultWeeklySchedule(
         start: defaultStart,
         end: defaultEnd,
         lunchMinutes,
+        lunchPaid: false,
       },
     ]),
   ) as Record<WeekdayKey, WorkScheduleDay>;
@@ -70,12 +71,59 @@ export function isScheduledDayOff(
   return !settings.weeklySchedule[getWeekdayKey(date)].enabled;
 }
 
-export function getScheduleTargetMinutes(schedule: WorkScheduleDay): number {
-  if (!schedule.enabled) return 0;
+export function getConfiguredWorkMinutes(schedule: WorkScheduleDay): number {
   const start = timeToMinutes(schedule.start);
   let end = timeToMinutes(schedule.end);
   if (end <= start) end += 24 * 60;
-  return Math.max(0, end - start - Math.max(0, schedule.lunchMinutes));
+  const unpaidLunch = schedule.lunchPaid ? 0 : Math.max(0, schedule.lunchMinutes);
+  return Math.max(0, end - start - unpaidLunch);
+}
+
+export function getScheduleTargetMinutes(schedule: WorkScheduleDay): number {
+  return schedule.enabled ? getConfiguredWorkMinutes(schedule) : 0;
+}
+
+function endForTarget(schedule: WorkScheduleDay, target: number, lunchMinutes = schedule.lunchMinutes, lunchPaid = Boolean(schedule.lunchPaid)) {
+  const start = timeToMinutes(schedule.start);
+  const unpaidLunch = lunchPaid ? 0 : Math.max(0, lunchMinutes);
+  const endMinutes = (start + Math.max(0, target) + unpaidLunch) % (24 * 60);
+  return `${String(Math.floor(endMinutes / 60)).padStart(2, "0")}:${String(endMinutes % 60).padStart(2, "0")}`;
+}
+
+export function updateScheduleLunch(schedule: WorkScheduleDay, patch: { lunchMinutes?: number; lunchPaid?: boolean }): WorkScheduleDay {
+  const target = getConfiguredWorkMinutes(schedule);
+  const lunchMinutes = patch.lunchMinutes ?? schedule.lunchMinutes;
+  const lunchPaid = patch.lunchPaid ?? Boolean(schedule.lunchPaid);
+  return {
+    ...schedule,
+    lunchMinutes: Math.max(0, lunchMinutes),
+    lunchPaid,
+    end: endForTarget(schedule, target, lunchMinutes, lunchPaid),
+  };
+}
+
+export function applyLunchMinutesToAll<T extends WeeklyScheduleSettings & { lunchMinutes: number }>(settings: T, lunchMinutes: number): T {
+  const nextLunchMinutes = Math.max(0, Math.round(lunchMinutes));
+  const weeklySchedule = Object.fromEntries(
+    weekdayOrder.map((day) => [day, updateScheduleLunch(settings.weeklySchedule[day], { lunchMinutes: nextLunchMinutes })]),
+  ) as Record<WeekdayKey, WorkScheduleDay>;
+  return {
+    ...settings,
+    lunchMinutes: nextLunchMinutes,
+    weeklyMinutes: getWeeklyTargetMinutes({ ...settings, weeklySchedule }),
+    weeklySchedule,
+  };
+}
+
+export function applyLunchPaidToAll<T extends WeeklyScheduleSettings>(settings: T, lunchPaid: boolean): T {
+  const weeklySchedule = Object.fromEntries(
+    weekdayOrder.map((day) => [day, updateScheduleLunch(settings.weeklySchedule[day], { lunchPaid })]),
+  ) as Record<WeekdayKey, WorkScheduleDay>;
+  return {
+    ...settings,
+    weeklyMinutes: getWeeklyTargetMinutes({ ...settings, weeklySchedule }),
+    weeklySchedule,
+  };
 }
 
 export function getDailyTargetMinutes(date: string, settings: Settings): number {
@@ -102,7 +150,7 @@ export function applyWeeklyTargetHours<T extends WeeklyScheduleSettings>(setting
     const schedule = weeklySchedule[day];
     const start = timeToMinutes(schedule.start);
     const target = baseTarget + (index < remainder ? 1 : 0);
-    const endMinutes = (start + Math.max(0, schedule.lunchMinutes) + target) % (24 * 60);
+    const endMinutes = (start + (schedule.lunchPaid ? 0 : Math.max(0, schedule.lunchMinutes)) + target) % (24 * 60);
     const end = `${String(Math.floor(endMinutes / 60)).padStart(2, "0")}:${String(endMinutes % 60).padStart(2, "0")}`;
     weeklySchedule[day] = { ...schedule, end };
   });

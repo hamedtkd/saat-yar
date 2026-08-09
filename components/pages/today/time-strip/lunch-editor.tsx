@@ -9,7 +9,7 @@ export function LunchEditor({ record, updateRecord, updateLunch }: Pick<TodayTim
   return <section className="rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-4">
     <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
       <div><strong className="text-sm font-extrabold text-[var(--text)]">ناهار</strong><p className="mt-1 text-[10px] leading-5 text-[var(--text-muted)]">زمان شروع، پایان و وضعیت باحقوق بودن ناهار را تنظیم کنید.</p></div>
-      <label className="flex! cursor-pointer items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] px-3 py-2 text-[11px] font-semibold text-[var(--text-muted)]"><Checkbox checked={Boolean(record.lunchPaid)} onCheckedChange={(lunchPaid) => updateRecord({ lunchPaid })} /><span>با حقوق</span></label>
+      <label className="flex! cursor-pointer items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] px-3 py-2 text-[11px] font-semibold text-[var(--text-muted)]"><Checkbox checked={Boolean(record.lunchPaid)} onCheckedChange={(lunchPaid) => updateRecord({ lunchPaid })} /><span>جزو کارکرد (با حقوق)</span></label>
     </div>
     <div className="grid gap-3 md:grid-cols-3">
       <label className="grid min-w-0 gap-2"><span className="text-[11px] font-bold text-[var(--text-muted)]">شروع</span><TimePicker key={`lunch-start-${record.lunchStart ?? "empty"}`} value={record.lunchStart ?? ""} onChange={(lunchStart) => updateLunch({ lunchStart, lunchStartedAt: undefined })} /></label>

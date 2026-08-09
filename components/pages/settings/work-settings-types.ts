@@ -7,6 +7,7 @@ export type WorkSettingsDraft = Pick<
   | "autoWeeklyHoliday"
   | "weeklyMinutes"
   | "weeklySchedule"
+  | "lunchMinutes"
 >;
 
 export function createWorkSettingsDraft(settings: Settings): WorkSettingsDraft {
@@ -16,5 +17,6 @@ export function createWorkSettingsDraft(settings: Settings): WorkSettingsDraft {
     autoWeeklyHoliday: settings.autoWeeklyHoliday,
     weeklyMinutes: settings.weeklyMinutes,
     weeklySchedule: settings.weeklySchedule,
+    lunchMinutes: settings.lunchMinutes,
   };
 }

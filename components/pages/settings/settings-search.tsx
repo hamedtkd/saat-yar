@@ -27,7 +27,7 @@ export function SettingsSearch() {
   };
 
   return (
-    <section className="dashboard-card relative z-20 mb-5 rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-1)] p-3 shadow-[0_5px_16px_rgba(0,0,0,.025)] sm:p-4">
+    <section className="dashboard-card relative z-40 mb-5 rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-1)] p-3 shadow-[0_5px_16px_rgba(0,0,0,.025)] sm:p-4">
       <div className="flex items-center gap-3 rounded-[var(--control-radius)] border border-[var(--border)] bg-[var(--surface-2)] px-3 focus-within:border-[var(--accent)] focus-within:ring-2 focus-within:ring-[var(--accent-soft)]">
         <Search aria-hidden="true" className="size-4.5 shrink-0 text-[var(--accent-strong)]" />
         <input
@@ -46,7 +46,7 @@ export function SettingsSearch() {
       </div>
 
       {normalized && (
-        <div className="absolute left-3 right-3 top-[calc(100%-6px)] z-30 rounded-[16px] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] p-2 shadow-[0_18px_48px_rgba(0,0,0,.16)] backdrop-blur-2xl sm:left-4 sm:right-4">
+        <div className="absolute left-3 right-3 top-[calc(100%-6px)] z-50 rounded-[16px] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] p-2 shadow-[0_18px_48px_rgba(0,0,0,.16)] backdrop-blur-2xl sm:left-4 sm:right-4">
           {results.length > 0 ? (
             <div className="grid gap-1">
               {results.map((item) => (

@@ -80,7 +80,7 @@ function Detail({ icon, label, value, tone = "default" }: { icon: ReactNode; lab
   return (
     <div className="rounded-[15px] border border-[var(--dashboard-border)] bg-[var(--surface-2)] p-3.5">
       <div className="mb-2 flex items-center gap-2 text-[10px] text-[var(--text-muted)]">{icon}{label}</div>
-      <strong dir="rtl" className={cn("block text-right text-sm font-black text-[var(--text)]", tone === "green" && "text-[var(--accent-strong)]", tone === "red" && "text-[var(--danger)]")}>{value}</strong>
+      <strong dir="ltr" className={cn("block text-right text-sm font-black text-[var(--text)]", tone === "green" && "text-[var(--accent-strong)]", tone === "red" && "text-[var(--danger)]")}>{value}</strong>
     </div>
   );
 }

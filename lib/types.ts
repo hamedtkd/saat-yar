@@ -21,6 +21,7 @@ export type WorkScheduleDay = {
   start: string;
   end: string;
   lunchMinutes: number;
+  lunchPaid?: boolean;
 };
 
 export type PayrollComponent = {
