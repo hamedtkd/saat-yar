@@ -8,7 +8,8 @@
 - [`docs/agents/AGENT_GUIDE_FA.md`](./docs/agents/AGENT_GUIDE_FA.md)
 - [`docs/agents/AGENT_GUIDE_EN.md`](./docs/agents/AGENT_GUIDE_EN.md)
 - [`docs/agents/CHANGE_CHECKLISTS.md`](./docs/agents/CHANGE_CHECKLISTS.md)
-- [`README_EN.md`](./README_EN.md)
+- [`README.md`](./README.md) — canonical English project README
+- [`README_FA.md`](./README_FA.md) — Persian project README
 - [`docs/TROUBLESHOOTING_FA.md`](./docs/TROUBLESHOOTING_FA.md)
 - [`docs/BROWSER_COMPATIBILITY.md`](./docs/BROWSER_COMPATIBILITY.md)
 

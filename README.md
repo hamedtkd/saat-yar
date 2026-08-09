@@ -1,138 +1,137 @@
-<div align="center" dir="rtl">
+<div align="center">
 
-<img src="./public/brand/saatyar-mark-accent.svg" width="112" height="112" alt="لوگوی ساعت‌یار" />
+<img src="./public/brand/saatyar-mark-accent.svg" width="112" height="112" alt="Saatyar logo" />
 
-# ساعت‌یار
+# Saatyar
 
-### وب‌اپ فارسی و Local-first برای ثبت زمان، کارکرد، حقوق، پروژه و درآمد
+### A Persian-first, RTL, local-first web app for worklogs, attendance, payroll, projects, and income
 
-[![Quality](https://img.shields.io/badge/quality-400%2B%20tests%20passing-16a34a)](#کنترل-کیفیت)
+[![Quality](https://img.shields.io/badge/quality-600%2B%20tests%20passing-16a34a)](#quality-gates)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/license-MIT-0f766e)](./LICENSE)
-[![RTL](https://img.shields.io/badge/RTL-Persian-7c3aed)](#ویژگیها)
+[![RTL](https://img.shields.io/badge/RTL-Persian-7c3aed)](#product-scope)
 
-[English](./README_EN.md) · [نسخه آنلاین](https://saat-yar.vercel.app) · [راهنمای اجرا](./RUN_AND_DEPLOY_FA.md) · [مشارکت](./CONTRIBUTING.md) · [حمایت مالی](https://daramet.com/hamedtkd)
+[فارسی](./README_FA.md) · [Live app](https://saat-yar.vercel.app) · [Run and deploy](./RUN_AND_DEPLOY_FA.md) · [Contributing](./CONTRIBUTING.md) · [Support development](https://daramet.com/hamedtkd)
 
 </div>
 
 ---
 
-## ساعت‌یار چیست؟
+## What is Saatyar?
 
-ساعت‌یار یک وب‌اپ متن‌باز، فارسی، راست‌به‌چپ و **Local-first** برای مدیریت زمان و کار روزانه است. کارمند، فریلنسر یا کاربر ترکیبی می‌تواند بدون ساخت حساب کاربری و بدون وابستگی به سرور، ساعت ورود و خروج، ناهار، وقفه، مرخصی، پروژه، صورتحساب و گزارش مالی خود را ثبت کند.
+Saatyar is an open-source, Persian-first, right-to-left, **local-first** web application for personal work-time management. Employees, freelancers, and hybrid workers can record attendance, lunch, breaks, leave, projects, expenses, invoices, and reports without creating an account or depending on a remote backend.
 
-داده‌های اصلی در مرورگر خود کاربر و داخل IndexedDB نگهداری می‌شوند. برنامه برای استفاده روزمره به Backend، حساب ابری یا فایل `.env` نیاز ندارد.
+Core product data is stored in the user's browser through IndexedDB. Normal daily use does not require a backend, cloud account, or `.env` file.
 
-> Saatyar is an open-source, Persian-first, RTL, local-first worklog and time-tracking web app for employees, freelancers, and hybrid workers.
+## Live app
 
-## نسخه آنلاین
-
-نسخه عمومی برنامه در این آدرس در دسترس است:
+The public deployment is available at:
 
 **https://saat-yar.vercel.app**
 
-برای اطلاعات واقعی و بلندمدت، پس از ورود به برنامه حتماً از بخش «داده و پشتیبان» یک نسخه پشتیبان JSON بسازید.
+For real long-term data, create regular JSON backups from the data and backup section. Browser storage is not a substitute for an external backup.
 
-## نمای محصول
+## Product media
 
-تصاویر زیر از Build واقعی ساعت‌یار و Fixture نمایشی مستقل ساخته شده‌اند؛ Capture رسانه به داده واقعی کاربر دسترسی ندارد.
+The screenshots below come from a real production build using isolated demo fixtures. The capture workflow does not read real user data.
 
 <p align="center">
-  <img src="./docs/assets/screenshots/today-light-desktop.png" alt="صفحه امروز ساعت‌یار در تم روشن" width="920" />
+  <img src="./docs/assets/screenshots/today-light-desktop.png" alt="Saatyar Today dashboard in light mode" width="920" />
 </p>
 
 <table>
   <tr>
-    <td width="50%"><img src="./docs/assets/screenshots/today-dark-desktop.png" alt="صفحه امروز ساعت‌یار در تم تاریک" /></td>
-    <td width="50%"><img src="./docs/assets/screenshots/reports-light.png" alt="گزارش‌های ساعت‌یار در تم روشن" /></td>
+    <td width="50%"><img src="./docs/assets/screenshots/today-dark-desktop.png" alt="Saatyar Today dashboard in dark mode" /></td>
+    <td width="50%"><img src="./docs/assets/screenshots/reports-light.png" alt="Saatyar reports in light mode" /></td>
   </tr>
   <tr>
-    <td width="50%"><img src="./docs/assets/screenshots/reports-dark.png" alt="گزارش‌های ساعت‌یار در تم تاریک" /></td>
-    <td width="50%"><img src="./docs/assets/screenshots/today-mobile.png" alt="صفحه امروز ساعت‌یار در موبایل" /></td>
+    <td width="50%"><img src="./docs/assets/screenshots/reports-dark.png" alt="Saatyar reports in dark mode" /></td>
+    <td width="50%"><img src="./docs/assets/screenshots/today-mobile.png" alt="Saatyar Today dashboard on mobile" /></td>
   </tr>
 </table>
 
-### دموی کوتاه Onboarding
+### Short onboarding demo
 
 <p align="center">
-  <img src="./docs/assets/media/onboarding.gif" alt="دموی Onboarding ساعت‌یار" width="760" />
+  <img src="./docs/assets/media/onboarding.gif" alt="Saatyar onboarding demo" width="760" />
 </p>
 
-رسانه‌ها با `npm run media:capture` قابل بازتولید هستند. جزئیات در [docs/assets/README.md](./docs/assets/README.md) آمده است.
+Regenerate the media with `npm run media:capture`. See [docs/assets/README.md](./docs/assets/README.md) for the privacy-safe capture contract.
 
-## ویژگی‌ها
+## Product scope
 
-### ثبت زمان و حضور
+### Attendance and time tracking
 
-- شروع و پایان روز کاری
-- ثبت ناهار با حقوق یا بدون حقوق
-- ثبت چند وقفه مستقل
-- ویرایش دقیق ساعت شروع، پایان و مدت وقفه‌ها
-- محاسبه شیفت‌هایی که از نیمه‌شب عبور می‌کنند
-- خروج پیشنهادی بر اساس برنامه همان روز
-- بازیابی نشست بازمانده و علامت‌گذاری برای بررسی کاربر
-- یادآوری استراحت دوره‌ای و اعلان تایمر باز
+- Start and finish a workday
+- Record paid or unpaid lunch
+- Record multiple independent breaks
+- Edit start, end, lunch, and break times precisely
+- Handle shifts that cross midnight
+- Suggest an exit time from the selected day's schedule
+- Recover stale open sessions, resume an auto-closed current-day session safely, and keep the recovery gap out of worked time
+- Optional break reminders and open-timer notifications
 
-### حالت‌های کاری
+### Work modes
 
-- **کارمند:** حضور، موظفی، اضافه‌کاری، کسری، مرخصی و حقوق
-- **فریلنسر:** مشتری، پروژه، نرخ ساعتی، بودجه، هزینه و صورتحساب
-- **ترکیبی:** دسترسی هم‌زمان به قابلیت‌های کارمندی و فریلنسری
+- **Employee:** attendance, targets, overtime, deficit, leave, and estimated payroll
+- **Freelancer:** clients, projects, hourly rates, budgets, expenses, and invoices
+- **Hybrid:** employee and freelancer workflows in the same local workspace
 
-### برنامه کاری و حقوق
+### Schedule and payroll
 
-- برنامه مستقل برای هر روز هفته
-- هدف هفتگی قابل تنظیم و توزیع میان روزهای فعال
-- روش حقوق قابل انتخاب: ماهانه متناسب، ماهانه ثابت، ساعتی یا روزکاری
-- تنظیم مستقل اضافه‌کاری، تعطیل‌کاری، کسرکار و گردکردن مبلغ
-- تشخیص تعطیلات رسمی و تعطیل هفتگی
-- Preview زنده و Breakdown شفاف حقوق، مزایا، کسورات و خالص پرداختی
+- Independent schedule for each weekday
+- Configurable net-work weekly target distributed over enabled days
+- Bulk lunch defaults for duration and paid/unpaid accounting, with per-day overrides
+- Selectable payroll basis: prorated monthly, fixed monthly, hourly, or daily
+- Independent overtime, holiday-work, deficit, and rounding policies
+- Official holidays and manual date overrides
+- Live payroll preview and explainable breakdown of earnings, benefits, deductions, and net pay
 
-### گزارش و مدیریت داده
+### Reports and data safety
 
-- گزارش ماهانه کارکرد، موظفی، اضافه‌کاری و کسری
-- جزئیات روزانه و فیلتر رکوردها
-- خروجی CSV و Excel
-- چاپ و PDF سازگار با A4
-- Backup و Restore نسخه‌بندی‌شده
-- Migration خودکار داده‌های قدیمی
-- نسخه بازیابی محلی برای کاهش ریسک ازدست‌رفتن اطلاعات
-- انتقال مستقیم و رمزنگاری‌شده داده بین موبایل و لپ‌تاپ با WebRTC و Pairing QR محلی
+- Monthly attendance, target, overtime, and deficit reports
+- Daily details and record filters
+- CSV and Excel export
+- A4-aware print and PDF output
+- Versioned backup and restore
+- Automatic migration of older local data
+- Local recovery snapshots and a 30-day recycle bin
+- Direct encrypted mobile/desktop transfer over WebRTC with locally generated pairing QR codes
 
-### تجربه کاربری
+### User experience
 
-- رابط کامل فارسی و RTL
-- تقویم و نمایش تاریخ شمسی
-- تم روشن، تاریک و پیروی از سیستم
-- چند Accent و سطح ظاهری قابل انتخاب
-- فونت Vazirmatn به‌صورت محلی
-- طراحی Responsive برای موبایل و دسکتاپ
-- دسترسی‌پذیری کیبورد، Focus management و Reduced motion
-- PWA با نصب داخل برنامه، Offline shell و اعلان امن نسخه جدید
+- Persian and RTL interface
+- Jalali calendar and Persian date formatting
+- Light, dark, and system themes
+- Configurable accent, surface, and radius options
+- Locally bundled Vazirmatn font
+- Responsive desktop and mobile layouts
+- Keyboard access, focus management, and reduced-motion support
+- PWA install UX, offline shell, and user-approved update prompts where the browser supports them
 
-## حریم خصوصی و مدل Local-first
+## Privacy and the local-first model
 
-ساعت‌یار به‌صورت پیش‌فرض اطلاعات کاری شما را به سرور ارسال نمی‌کند. داده‌ها در همان مرورگر و همان دامنه ذخیره می‌شوند.
+Saatyar does not send core work records to a project server by default. Data belongs to the browser profile and origin where the application is used.
 
-این مدل مزایای مهمی دارد:
+This has useful properties:
 
-- نیاز نداشتن به ثبت‌نام و حساب کاربری
-- کنترل مستقیم کاربر روی اطلاعات
-- کارکرد اصلی بدون وابستگی دائمی به اینترنت
-- نبود پایگاه داده مرکزی حاوی اطلاعات شخصی کاربران
+- No account is required
+- The user keeps direct control of their data
+- Core workflows are not tied to a continuously available backend
+- There is no central Saatyar database containing users' private work records
 
-اما یک محدودیت مهم هم دارد: پاک‌کردن داده‌های سایت، تعویض مرورگر یا دستگاه، استفاده از حالت Private و تغییر دامنه می‌تواند باعث ازدست‌رفتن اطلاعات محلی شود. برای استفاده جدی، Backup منظم ضروری است.
+It also creates a responsibility: clearing site data, changing browsers or devices, using private browsing, or moving to a different origin can make local records unavailable. Regular exported backups are essential for serious use.
 
-## شروع سریع
+## Quick start
 
-### پیش‌نیازها
+### Requirements
 
 - Node.js `22.x`
-- npm همراه Node.js
-- Git برای دریافت سورس
+- npm bundled with Node.js
+- Git
 
-### دریافت و اجرا
+### Clone and run
 
 ```bash
 git clone https://github.com/hamedtkd/saat-yar.git
@@ -141,193 +140,191 @@ npm ci
 npm run dev
 ```
 
-آدرس توسعه Vite/Vinext معمولاً:
+The Vite/Vinext development server normally starts at:
 
 ```text
 http://localhost:5173
 ```
 
-اجرای مستقیم با Next.js:
+To run the Next.js development server directly:
 
 ```bash
 npm run dev:next
 ```
 
-آدرس پیش‌فرض Next.js:
+The default Next.js URL is:
 
 ```text
 http://localhost:3000
 ```
 
-## دستورات مهم
+Installation problems are documented in:
 
-| دستور | کاربرد |
+- [Windows and npm troubleshooting — English](./docs/TROUBLESHOOTING_EN.md)
+- [راهنمای عیب‌یابی Windows و npm — فارسی](./docs/TROUBLESHOOTING_FA.md)
+
+## Main commands
+
+| Command | Purpose |
 | --- | --- |
-| `npm ci` | نصب دقیق Dependencyها از Lockfile |
-| `npm run dev` | اجرای محیط توسعه Vite/Vinext |
-| `npm run dev:next` | اجرای مستقیم Next.js |
-| `npm run check:dependencies` | بررسی نصب بودن Dependencyهای مستقیم پس از دریافت فاز جدید |
-| `npm run typecheck` | بررسی TypeScript بدون تولید خروجی |
-| `npm run lint` | اجرای ESLint با صفر Warning مجاز |
-| `npm test` | اجرای تست‌های منطق و معماری |
-| `npm run check` | پاک‌سازی فایل‌های قدیمی، Import check، Typecheck، Lint و Test |
-| `npm run check:quality` | اجرای تمام کنترل‌های کیفیت و Build نهایی Next.js |
-| `npm run test:browser:production` | Build خروجی Static و اجرای Smoke Test واقعی در Chrome، Edge یا Chromium |
-| `npm run check:release` | Quality کامل و سپس Smoke Test مرورگر روی همان Build |
-| `npm run test:browser:pairing` | Smoke واقعی WebRTC برای انتقال چند chunk رمزنگاری‌شده و ACK |
-| `npm run audit:vercel` | بررسی محلی قرارداد Static Export و انتشار `out/` روی Vercel |
-| `npm run audit:production` | Audit read-only دامنه Deploy‌شده، Routeها، PWA، Service Worker، robots و sitemap |
-| `npm run media:capture` | بازتولید Screenshot/GIFهای محصول با دیتای نمایشی مستقل |
-| `npm run build:pages` | ساخت خروجی Static |
-| `npm run build:vercel` | Build مناسب Vercel |
-| `npm start` | اجرای خروجی Vinext |
+| `npm ci` | Install the exact dependency tree from the lockfile |
+| `npm run dev` | Start the Vite/Vinext development server |
+| `npm run dev:next` | Start Next.js directly |
+| `npm run check:dependencies` | Verify direct dependencies after replacing a phase package |
+| `npm run typecheck` | Run TypeScript validation without emitting files |
+| `npm run lint` | Run ESLint with zero warnings allowed |
+| `npm test` | Run domain, regression, and architecture tests |
+| `npm run check` | Run cleanup, import checks, schema audit, typecheck, lint, and tests |
+| `npm run check:quality` | Run the complete quality pipeline and production Next.js build |
+| `npm run test:browser:production` | Build the static export and run the Chromium production smoke test |
+| `npm run check:release` | Run quality checks and the production browser smoke test on the same build |
+| `npm run test:browser:pairing` | Run the real WebRTC encrypted multi-chunk transfer/ACK smoke |
+| `npm run audit:vercel` | Verify the local static-export → `out/` Vercel deployment contract |
+| `npm run audit:production` | Read-only audit of deployed routes, PWA, service worker, robots, and sitemap |
+| `npm run media:capture` | Regenerate product screenshots/GIF from isolated demo data |
+| `npm run build:pages` | Produce the static application build |
+| `npm run build:vercel` | Produce the Vercel-compatible build |
+| `npm start` | Start the Vinext production output |
 
-برای بررسی کامل قبل از Push:
+Before pushing a change:
 
 ```bash
 npm run check:quality
+npm run check:release
 ```
 
-## منطق محاسبه زمان
+## Time calculation
 
 ```text
-زمان حضور = خروج − ورود
-کارکرد خالص = زمان حضور − ناهار بدون حقوق − وقفه‌های بدون حقوق
-زمان قابل محاسبه = کارکرد خالص + مرخصی قابل محاسبه
-تراز روز = زمان قابل محاسبه − هدف همان روز
+attendance = exit - entry
+net work = attendance - unpaid lunch - unpaid breaks
+credited time = net work + credited leave
+daily balance = credited time - selected-day target
 ```
 
-ناهار یا وقفه «با حقوق» از کارکرد خالص کم نمی‌شود. برای رکوردهای ویرایش‌شده دستی، ساعت‌های همان روز مبنای محاسبه هستند تا Timestamp قدیمی باعث اضافه‌کاری چندروزه نشود.
+Paid lunch and paid breaks are not subtracted from net work. Manually edited records use the selected day's clock values so stale timestamps cannot create multi-day overtime.
 
-## منطق حقوق
-
-موتور حقوق Rule-based است و می‌تواند بر اساس Policy ذخیره‌شده، پایه حقوق را به‌صورت ماهانه متناسب، ماهانه ثابت، ساعتی یا روزکاری محاسبه کند. اضافه‌کاری و تعطیل‌کاری می‌توانند ضریب نرخ پایه، نرخ ثابت ساعتی یا غیرفعال باشند و کسرکار و گردکردن مبلغ نیز مستقل تنظیم می‌شوند.
-
-Preset سازگار با نسخه‌های قدیمی همچنان رفتار «حقوق ماهانه ÷ ۳۰» و محاسبه متناسب با کارکرد را حفظ می‌کند.
-
-> محاسبات ساعت‌یار یک ابزار شخصی و تخمینی است و جایگزین قرارداد استخدام، فیش رسمی حقوق، نظر حسابدار یا قوانین محل کار نیست.
-
-## معماری پروژه
+## Payroll calculation
 
 ```text
-app/                           Routeها و Layout برنامه
+daily base salary = monthly salary / 30
+```
+
+Partial days are prorated from credited time. Time above the daily target can use the configured overtime multiplier, and holiday work can use the configured holiday multiplier.
+
+> Saatyar provides personal estimates. It does not replace an employment contract, official payslip, accountant, or applicable labor and tax rules.
+
+## Architecture
+
+```text
+app/                           Routes and application layout
 components/
-  common/                      اجزای مشترک محصول
-  layout/                      Shell، Header، Navigation و Onboarding
-  pages/                       قابلیت‌های Today، Month، Reports و Settings
-  pickers/                     انتخابگرهای تاریخ و زمان
-  ui/                          Primitiveهای رابط کاربری
+  common/                      Shared product components
+  layout/                      Shell, header, navigation, and onboarding
+  pages/                       Today, month, reports, settings, and business views
+  pickers/                     Jalali date and time pickers
+  ui/                          Shared UI primitives
 hooks/
-  controller/                  عملیات و Workflowهای برنامه
-  settings/                    Draft و ویرایش تنظیمات
-  use-saatyar-controller.ts    Facade اصلی State محصول
-  use-persisted-app-data.ts    بارگذاری و ذخیره Local-first
+  controller/                  Application workflows and mutations
+  settings/                    Draft-based settings editing
+  use-saatyar-controller.ts    Main product state facade
+  use-persisted-app-data.ts    Local-first loading and persistence
 lib/
-  data/                        Migration، Normalization و Version
-  time-engine.ts               موتور محاسبه زمان
-  payroll.ts                   محاسبات حقوق
-  work-schedule.ts             برنامه هفتگی و هدف روزانه
-  backup-schema.ts             اعتبارسنجی Backup
-  storage.ts                   Adapter ذخیره‌سازی IndexedDB
-  types.ts                     قراردادهای دامنه
-  format.ts                    قالب‌بندی فارسی
-scripts/                       Build و Quality utilities
-tests/                         تست‌های دامنه، Regression و معماری
+  data/                        Schema, migrations, normalization, and audit
+  time-engine.ts               Time calculation engine
+  payroll.ts                   Payroll calculations
+  work-schedule.ts             Weekly schedule and targets
+  backup-schema.ts             Backup validation
+  storage.ts                   IndexedDB storage adapter
+  types.ts                     Domain contracts
+scripts/                       Build, quality, and browser smoke utilities
+tests/                         Domain, regression, architecture, and repository tests
 ```
 
-## ذخیره‌سازی و Migration
+## Data schema and migrations
 
-نسخه Schema داده در `lib/data/version.ts` تعریف می‌شود. هر تغییر ناسازگار باید همراه این موارد باشد:
+The current application schema version is defined in `lib/data/version.ts`. Any incompatible data change must include:
 
-1. افزایش نسخه Schema
-2. Migration مرحله‌ای
-3. Normalization داده
-4. اعتبارسنجی Backup
-5. تست Regression
+1. A schema version increment
+2. A deterministic migration step
+3. Normalization for incomplete legacy data
+4. Backup validation and round-trip coverage
+5. Regression tests and a passing schema audit
 
-جزئیات بیشتر در [docs/DATA_MIGRATIONS.md](./docs/DATA_MIGRATIONS.md) قرار دارد.
+See [docs/DATA_MIGRATIONS.md](./docs/DATA_MIGRATIONS.md).
 
-## کنترل کیفیت
+## Quality gates
 
-پروژه برای جلوگیری از Regression از چند لایه کنترل استفاده می‌کند:
+The repository protects the product through several layers:
 
-- بررسی تمام Importهای محلی
-- TypeScript strict validation
-- ESLint با `--max-warnings=0`
-- تست‌های منطق زمان، حقوق، Backup و Migration
-- تست‌های معماری و سقف ۲۵۰ خط برای فایل‌های Production
-- تست‌های Theme و Semantic token
-- Build نهایی Next.js و prerender تمام Routeها
-- Smoke Test مرورگر واقعی برای بارگذاری اولیه، تکمیل Onboarding و تغییر تاریخ
+- Local import resolution checks
+- Direct dependency preflight
+- Runtime `AppData` schema audit across factory, migration, backup, recovery, snapshot, and merge paths
+- TypeScript validation
+- ESLint with `--max-warnings=0`
+- Domain tests for time, payroll, backup, recovery, and migration
+- Architecture and source-boundary tests
+- Theme and semantic-token tests
+- Next.js production build and static prerendering
+- A real Chromium smoke test covering initial load, onboarding, the Today route, and calendar navigation
 
-کنترل کیفیت پروژه شامل بیش از **۵۰۰ تست منطق، Regression، معماری و قرارداد مخزن**، Audit قرارداد داده، Build کامل Next.js، Smoke آفلاین PWA و Browser Journeyهای واقعی فریلنسر و کارمند است.
+The current suite contains more than **600 tests**. The exact release evidence should always come from the current `npm run check:release` output rather than a hard-coded badge alone.
 
-## سیاست رابط و Style
+## Browser support
 
-- کلاس‌های Tailwind کنار Markup همان Component نوشته می‌شوند.
-- رنگ‌های ثابت در بخش‌های اصلی مجاز نیستند و UI باید از Semantic tokenها استفاده کند.
-- فایل Style Registry مرکزی مانند `lib/tw.ts` وجود ندارد.
-- `app/globals.css` فقط Styleهای سراسری، Tokenها و قواعد چاپ را نگهداری می‌کند.
-- فایل‌های Production تا حد ممکن زیر ۲۵۰ خط باقی می‌مانند.
+The automated release browser gate currently runs in Chrome, Edge, or Chromium. Firefox and Safari require manual verification for release-critical UI changes. IndexedDB, multi-tab coordination, service-worker behavior, PWA installation, notifications, and private-mode limitations are documented in the [browser compatibility matrix](./docs/BROWSER_COMPATIBILITY.md).
 
-## استقرار
+## UI and styling policy
 
-راهنمای مرحله‌ای Windows، macOS، Linux، Docker، GitHub Pages و Vercel در فایل زیر قرار دارد:
+- Tailwind classes stay next to the JSX that owns them.
+- Product surfaces use semantic theme tokens instead of fixed color literals.
+- There is no central Tailwind class registry such as `lib/tw.ts`.
+- `app/globals.css` contains only global styles, tokens, print rules, and browser-level behavior.
+- Production UI and hook modules should remain focused and generally below 250 lines.
+- Destructive actions use the shared official Radix/shadcn Alert Dialog wrapper.
 
-[راهنمای اجرا و استقرار](./RUN_AND_DEPLOY_FA.md)
+## Deployment
 
-- [عیب‌یابی Windows و خطاهای npm](./docs/TROUBLESHOOTING_FA.md)
-- [جدول سازگاری مرورگر و محدودیت‌های Notification/PWA](./docs/BROWSER_COMPATIBILITY.md)
-- [یادداشت انتشار ساعت‌یار ۲.۳.۱](./docs/releases/RELEASE_NOTES_2.3.1_FA.md)
-- [یادداشت انتشار تاریخی ۲.۳.۰](./docs/releases/RELEASE_NOTES_2.3.0_FA.md)
-- [یادداشت انتشار تاریخی ۲.۲.۰](./docs/releases/RELEASE_NOTES_2.2.0_FA.md)
-- [یادداشت انتشار تاریخی ۲.۱.۰](./docs/releases/RELEASE_NOTES_2.1.0_FA.md)
+The Persian deployment guide covers Windows, macOS, Linux, Docker, GitHub Pages, and Vercel:
 
-## مشارکت
+[Run and deployment guide](./RUN_AND_DEPLOY_FA.md)
 
-Issue، پیشنهاد UX، گزارش باگ و Pull Request خوش‌آمد است.
+- [Saatyar 2.3.1 release notes](./docs/releases/RELEASE_NOTES_2.3.1_EN.md)
+- [Historical Saatyar 2.3.0 release notes](./docs/releases/RELEASE_NOTES_2.3.0_EN.md)
+- [Historical Saatyar 2.2.0 release notes](./docs/releases/RELEASE_NOTES_2.2.0_EN.md)
+- [Historical Saatyar 2.1.0 release notes](./docs/releases/RELEASE_NOTES_2.1.0_EN.md)
 
-پیش از Pull Request:
+## Contributing
 
-```bash
-npm ci
-npm run check:quality
-npm run test:browser:production
-```
+Bug reports, UX suggestions, documentation fixes, and pull requests are welcome.
 
-سپس دستورالعمل [CONTRIBUTING.md](./CONTRIBUTING.md) را مطالعه کنید. آسیب‌پذیری امنیتی نباید در Issue عمومی منتشر شود؛ روش گزارش مسئولانه در [SECURITY.md](./SECURITY.md) آمده است.
+Before opening a pull request, read [CONTRIBUTING.md](./CONTRIBUTING.md) and the [English agent guide](./docs/agents/AGENT_GUIDE_EN.md). Security vulnerabilities must not be reported in a public issue; use the responsible disclosure path in [SECURITY.md](./SECURITY.md).
 
-## نقشه راه
+## Roadmap
 
-نسخه **۲.۳.۱** Patch Release فعلی ساعت‌یار است. Baseline تأییدشده روی commit prefix `7c675e1` با **۶۰۱/۶۰۱ تست**، Build کامل، Browser Smokeهای Production/Freelancer/Employee، Pairing مستقیم WebRTC، `audit:vercel` و Audit پس از Deploy روی دامنه واقعی Production سبز شد. فاز ۱۵۹ شش تست قرارداد Release اضافه می‌کند و Gate نهایی باید به **۶۰۷/۶۰۷** برسد.
+Version **2.3.1** is the current Saatyar patch release. The verified baseline at commit prefix `7c675e1` passed **601/601 tests**, the full build, production/freelancer/employee browser smokes, direct WebRTC pairing, `audit:vercel`, and the post-deploy audit against the real production origin. Phase 159 adds six release-contract tests, so the final source gate is expected to reach **607/607**.
 
-این Patch Release اصلاحات فازهای ۱۵۵ تا ۱۵۸ را بسته‌بندی می‌کند: Audit واقعی Production، اصلاح Precache، قرارداد Static Export روی Vercel و تشخیص «تعطیل طبق برنامه کاری» در صفحه امروز. AppData همچنان Schema v17 است و Migration یا Dependency جدیدی وجود ندارد. جزئیات در [یادداشت انتشار ۲.۳.۱](./docs/releases/RELEASE_NOTES_2.3.1_FA.md)، [چک‌لیست انتشار](./RELEASE_CHECKLIST_FA.md) و [نقشه راه](./docs/roadmap/BACKLOG_FA.md) ثبت شده‌اند.
+This patch packages Phases 155–158: real production auditing, correct precache parsing, the explicit Vercel static-export contract, and scheduled-day-off awareness on Today. AppData remains on schema v17 with no new migration or dependency. See the [2.3.1 release notes](./docs/releases/RELEASE_NOTES_2.3.1_EN.md), the Persian [release checklist](./RELEASE_CHECKLIST_FA.md), and the [roadmap](./docs/roadmap/BACKLOG_FA.md).
 
-Manifest تاریخی ۲.۳.۰ و Tag `v2.3.0` تغییر نمی‌کنند. Manifest ۲.۳.۱ نیز عمداً `releaseCommit` ندارد؛ پس از Commit/Push فاز ۱۵۹، Ready شدن Deploy و سبز شدن `npm run audit:production`، Tag annotated `v2.3.1` روی همان Commit نهایی ساخته می‌شود و منبع حقیقت Release خواهد بود.
+The historical 2.3.0 manifest and `v2.3.0` tag remain unchanged. The 2.3.1 manifest intentionally has no `releaseCommit`; after the Phase 159 commit is pushed, the deployment is Ready, and `npm run audit:production` passes, the annotated `v2.3.1` tag is created on that same final commit and becomes the source of truth for the release.
 
-## حمایت مالی
+Post-2.3.1 work on `main` is tracked under **Unreleased** and is being prepared for the next patch release. The roadmap also records a future localization pass to add an English LTR product interface while keeping Persian RTL as a first-class locale.
 
-ساعت‌یار رایگان و متن‌باز باقی می‌ماند. اگر برنامه برایتان مفید بوده و مایلید از ادامه توسعه، تست و نگهداری آن حمایت کنید، می‌توانید به‌صورت کاملاً اختیاری از صفحه زیر استفاده کنید:
+## Support development
 
-### [حمایت از توسعه ساعت‌یار در دارمت](https://daramet.com/hamedtkd)
+Saatyar remains free and open source. Optional support is available at:
 
-حمایت مالی هیچ قابلیت اضافه‌ای را باز نمی‌کند و برای استفاده از برنامه الزامی نیست.
+**https://daramet.com/hamedtkd**
 
-## مجوز
+Support does not unlock product features and is not required to use the application.
 
-این پروژه تحت مجوز [MIT](./LICENSE) منتشر شده است. استفاده، تغییر و توزیع آن طبق شرایط این مجوز آزاد است.
+## License
 
-## نویسنده
+Saatyar is released under the [MIT License](./LICENSE).
 
-توسعه و نگهداری: **Hamed Ahmadi — hamedtkd**
+## Author
+
+Maintained by **Hamed Ahmadi — hamedtkd**
 
 - GitHub: [hamedtkd](https://github.com/hamedtkd)
-- حمایت مالی: [daramet.com/hamedtkd](https://daramet.com/hamedtkd)
-
----
-
-<div align="center" dir="rtl">
-
-اگر ساعت‌یار برایتان مفید است، Star دادن به مخزن و معرفی آن به دیگران نیز کمک بزرگی است.
-
-</div>
+- Support: [daramet.com/hamedtkd](https://daramet.com/hamedtkd)

@@ -84,9 +84,9 @@ test("2.3.1 release docs package Phases 155 through 158 while 2.3.0 stays histor
   for (const phase of ["۱۵۵", "۱۵۶", "۱۵۷", "۱۵۸"]) {
     assert.match(read("docs/phases/PHASE_159_NOTES_FA.md"), new RegExp(`فاز ${phase}`));
   }
-  assert.match(read("README.md"), /RELEASE_NOTES_2\.3\.1_FA\.md/);
-  assert.match(read("README.md"), /RELEASE_NOTES_2\.3\.0_FA\.md/);
-  assert.match(read("README_EN.md"), /RELEASE_NOTES_2\.3\.1_EN\.md/);
+  assert.match(read("README_FA.md"), /RELEASE_NOTES_2\.3\.1_FA\.md/);
+  assert.match(read("README_FA.md"), /RELEASE_NOTES_2\.3\.0_FA\.md/);
+  assert.match(read("README.md"), /RELEASE_NOTES_2\.3\.1_EN\.md/);
   assert.ok(read("CHANGELOG.md").split(/\r?\n/).includes("## [2.3.1] - 2026-08-08"));
   const historical = JSON.parse(read("docs/releases/2.3.0.json")) as { version: string; tag: string; expectedFinalTestCount: number };
   assert.equal(historical.version, "2.3.0");

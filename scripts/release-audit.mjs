@@ -89,6 +89,7 @@ export function collectReleaseAuditFailures() {
     "RELEASE_CHECKLIST_FA.md",
     "CHANGELOG.md",
     "README.md",
+    "README_FA.md",
     "README_EN.md",
     "docs/README.md",
     "docs/phases/PHASE_159_NOTES_FA.md",
@@ -101,8 +102,9 @@ export function collectReleaseAuditFailures() {
   const releaseHeading = `## [${manifest.version}] - ${manifest.releaseDate}`;
   requireCondition(includesLine("CHANGELOG.md", releaseHeading), `CHANGELOG.md is missing ${releaseHeading}`, failures);
   requireCondition(includesLine("RELEASE_CHECKLIST_FA.md", `# چک‌لیست انتشار ساعت‌یار ${manifest.version}`), "Release checklist version is stale.", failures);
-  requireCondition(readText("README.md").includes(manifest.releaseNotes.fa), "Persian README does not link to Persian 2.3.1 release notes.", failures);
-  requireCondition(readText("README_EN.md").includes(manifest.releaseNotes.en), "English README does not link to English 2.3.1 release notes.", failures);
+  requireCondition(readText("README_FA.md").includes(manifest.releaseNotes.fa), "Persian README does not link to Persian 2.3.1 release notes.", failures);
+  requireCondition(readText("README.md").includes(manifest.releaseNotes.en), "Canonical English README does not link to English 2.3.1 release notes.", failures);
+  requireCondition(readText("README_EN.md").includes("./README.md"), "Legacy README_EN.md must point to the canonical English README.", failures);
   requireCondition(readText("docs/README.md").includes("./releases/2.3.1.json"), "Docs index does not link to the active 2.3.1 release manifest.", failures);
 
   const historical230 = readJson("docs/releases/2.3.0.json");
@@ -110,8 +112,8 @@ export function collectReleaseAuditFailures() {
   requireCondition(historical230.tag === "v2.3.0", "Historical 2.3.0 tag contract was mutated.", failures);
   requireCondition(historical230.expectedFinalTestCount === 581, "Historical 2.3.0 final test evidence was mutated.", failures);
 
-  const readmeFa = readText("README.md");
-  const readmeEn = readText("README_EN.md");
+  const readmeFa = readText("README_FA.md");
+  const readmeEn = readText("README.md");
   for (const mediaPath of REQUIRED_MEDIA) {
     requireCondition(readmeFa.includes(mediaPath), `Persian README is missing product media reference: ${mediaPath}`, failures);
     requireCondition(readmeEn.includes(mediaPath), `English README is missing product media reference: ${mediaPath}`, failures);

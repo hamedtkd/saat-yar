@@ -42,8 +42,8 @@ test("historical 2.2.0 release notes changelog and readme links remain available
   assert.match(fa, /ساعت‌یار ۲\.۲\.۰/);
   assert.match(en, /Saatyar 2\.2\.0/);
   assert.ok(read("CHANGELOG.md").split(/\r?\n/).includes(`## [2.2.0] - ${manifest.releaseDate}`));
-  assert.match(read("README.md"), /RELEASE_NOTES_2\.2\.0_FA\.md/);
-  assert.match(read("README_EN.md"), /RELEASE_NOTES_2\.2\.0_EN\.md/);
+  assert.match(read("README_FA.md"), /RELEASE_NOTES_2\.2\.0_FA\.md/);
+  assert.match(read("README.md"), /RELEASE_NOTES_2\.2\.0_EN\.md/);
   assert.match(read("docs/phases/PHASE_119_NOTES_FA.md"), /Release Candidate 2\.2\.0/);
 });
 
@@ -56,8 +56,8 @@ test("both readmes retain the released product media references", () => {
     "docs/assets/screenshots/reports-dark.png",
     "docs/assets/media/onboarding.gif",
   ]) {
-    assert.ok(read("README.md").includes(path), `Persian README missing ${path}`);
-    assert.ok(read("README_EN.md").includes(path), `English README missing ${path}`);
+    assert.ok(read("README_FA.md").includes(path), `Persian README missing ${path}`);
+    assert.ok(read("README.md").includes(path), `English README missing ${path}`);
   }
 });
 

@@ -54,8 +54,8 @@ test("historical 2.3.0 final contract avoids a self-referential release commit",
 });
 
 test("2.3.0 release docs remain available after 2.3.1 advances", () => {
-  assert.match(read("README.md"), /RELEASE_NOTES_2\.3\.0_FA\.md/);
-  assert.match(read("README_EN.md"), /RELEASE_NOTES_2\.3\.0_EN\.md/);
+  assert.match(read("README_FA.md"), /RELEASE_NOTES_2\.3\.0_FA\.md/);
+  assert.match(read("README.md"), /RELEASE_NOTES_2\.3\.0_EN\.md/);
   assert.match(read("docs/releases/RELEASE_NOTES_2.3.0_FA.md"), /Manifest نسخه ۲\.۳\.۰ اکنون `released` است/);
   const backlog = read("docs/roadmap/BACKLOG_FA.md");
   assert.match(backlog, /- \[x\] فاز ۱۵۳:/);

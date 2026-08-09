@@ -61,11 +61,11 @@ test("historical 2.3.0 release docs changelog and product media remain available
   assert.match(read(manifest.releaseNotes.fa), /ساعت‌یار ۲\.۳\.۰/);
   assert.match(read(manifest.releaseNotes.en), /Saatyar 2\.3\.0/);
   assert.ok(read("CHANGELOG.md").split(/\r?\n/).includes("## [2.3.0] - 2026-08-08"));
-  assert.match(read("README.md"), /RELEASE_NOTES_2\.3\.0_FA\.md/);
-  assert.match(read("README_EN.md"), /RELEASE_NOTES_2\.3\.0_EN\.md/);
+  assert.match(read("README_FA.md"), /RELEASE_NOTES_2\.3\.0_FA\.md/);
+  assert.match(read("README.md"), /RELEASE_NOTES_2\.3\.0_EN\.md/);
   for (const path of requiredMedia) {
-    assert.ok(read("README.md").includes(path), `Persian README missing ${path}`);
-    assert.ok(read("README_EN.md").includes(path), `English README missing ${path}`);
+    assert.ok(read("README_FA.md").includes(path), `Persian README missing ${path}`);
+    assert.ok(read("README.md").includes(path), `English README missing ${path}`);
   }
 });
 

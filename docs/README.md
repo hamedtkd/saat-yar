@@ -2,7 +2,9 @@
 
 - `phases/PHASE_162_NOTES_FA.md` — حذف Deploy بلااستفاده GitHub Pages و تبدیل Workflow به CI همسو با Vercel.
 - [README فارسی](../README.md)
-- [English README](../README_EN.md)
+- [English README — canonical GitHub README](../README.md)
+- [README فارسی](../README_FA.md)
+- [Legacy English README path](../README_EN.md)
 
 ## توسعه و مشارکت
 
@@ -114,4 +116,6 @@
 - [فاز ۱۶۰: قرارداد ناهار و ساعت خروج](./phases/PHASE_160_NOTES_FA.md)
 
 - [فاز ۱۶۱: پالیش چیدمان برنامه کاری](./phases/PHASE_161_NOTES_FA.md)
+- [فاز ۱۶۲: CI گیت‌هاب همسو با Vercel](./phases/PHASE_162_NOTES_FA.md)
 - [فاز ۱۶۳: بازیابی نشست و کنتراست Accent](./phases/PHASE_163_NOTES_FA.md)
+- [فاز ۱۶۴: README اصلی انگلیسی و نقشه راه i18n](./phases/PHASE_164_NOTES_FA.md)

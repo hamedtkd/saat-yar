@@ -5,7 +5,7 @@ import test from "node:test";
 const read = (path: string) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
 test("README documents the product, quality workflow and optional donation", async () => {
-  const readme = await read("README.md");
+  const readme = await read("README_FA.md");
   assert.match(readme, /https:\/\/saat-yar\.vercel\.app/);
   assert.match(readme, /npm run check:quality/);
   assert.match(readme, /Local-first/);

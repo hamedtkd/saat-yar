@@ -4,8 +4,8 @@ import test from "node:test";
 
 const read = (path: string) => readFileSync(path, "utf8");
 
-const readmeFa = read("README.md");
-const readmeEn = read("README_EN.md");
+const readmeFa = read("README_FA.md");
+const readmeEn = read("README.md");
 const troubleshootingFa = read("docs/TROUBLESHOOTING_FA.md");
 const troubleshootingEn = read("docs/TROUBLESHOOTING_EN.md");
 const browserCompatibility = read("docs/BROWSER_COMPATIBILITY.md");
@@ -13,10 +13,10 @@ const backlog = read("docs/roadmap/BACKLOG_FA.md");
 const packageJson = JSON.parse(read("package.json")) as { scripts: { test: string } };
 
 test("Persian and English READMEs link to each other", () => {
-  assert.match(readmeFa, /\[English\]\(\.\/README_EN\.md\)/);
-  assert.match(readmeEn, /\[فارسی\]\(\.\/README\.md\)/);
+  assert.match(readmeFa, /\[English\]\(\.\/README\.md\)/);
+  assert.match(readmeEn, /\[فارسی\]\(\.\/README_FA\.md\)/);
   assert.match(readmeEn, /local-first/i);
-  assert.match(readmeEn, /more than \*\*400 tests\*\*/i);
+  assert.match(readmeEn, /more than \*\*600 tests\*\*/i);
 });
 
 test("release documentation exposes Windows and npm recovery paths", () => {
