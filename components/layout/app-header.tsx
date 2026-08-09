@@ -46,7 +46,7 @@ export function AppHeader(props: Props) {
   return (
     <header
       className={cn(
-        "shell-main-offset sticky top-2 z-30 mx-auto flex min-h-[62px] max-w-[1510px] items-center justify-between gap-3 rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] px-3.5 py-2 shadow-[0_6px_20px_rgba(0,0,0,.035)] backdrop-blur-xl sm:px-4",
+        "shell-main-offset sticky top-2 z-50 mx-auto flex min-h-[62px] max-w-[var(--shell-content-max)] items-center justify-between gap-3 rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] px-3.5 py-2 shadow-[0_6px_20px_rgba(0,0,0,.035)] backdrop-blur-xl sm:px-4",
         "max-[640px]:min-h-[58px] max-[640px]:rounded-[18px] max-[640px]:px-2.5 max-[640px]:py-1.5",
       )}
     >

@@ -140,14 +140,23 @@ async function screenshot(client, filename) {
 }
 
 async function captureOnboardingFrames(client, origin) {
-  await navigate(client, origin, "ساعت‌یار را برای خودت تنظیم کن");
+  await navigate(client, origin, "به ساعت‌یار خوش آمدی");
+  await evaluate(client, `(() => {
+    const input = document.querySelector('[data-onboarding-step-index="1"] input');
+    if (!(input instanceof HTMLInputElement)) return false;
+    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+    setter?.call(input, "حامد");
+    input.dispatchEvent(new InputEvent("input", { bubbles: true, inputType: "insertText", data: "حامد" }));
+    return true;
+  })()`);
   await screenshot(client, "onboarding.png");
   const frames = [];
-  for (let index = 1; index <= 3; index += 1) {
+  for (let index = 1; index <= 6; index += 1) {
     const frame = `onboarding-frame-${String(index).padStart(2, "0")}.png`;
     await screenshot(client, frame);
     frames.push(resolve(SCREENSHOT_DIR, frame));
-    const clicked = await evaluate(client, `(() => { const b=[...document.querySelectorAll('button')].find(x => !x.disabled && (x.textContent||'').includes(${JSON.stringify(index < 3 ? "ادامه" : "شروع ساعت‌یار")})); if(!b)return false;b.click();return true; })()`);
+    const label = index < 6 ? "ادامه" : "شروع ساعت‌یار";
+    const clicked = await evaluate(client, `(() => { const b=[...document.querySelectorAll('button')].find(x => !x.disabled && (x.textContent||'').includes(${JSON.stringify(label)})); if(!b)return false;b.click();return true; })()`);
     if (!clicked) break;
     await new Promise((resolveWait) => setTimeout(resolveWait, 650));
   }

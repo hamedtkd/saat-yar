@@ -46,12 +46,12 @@ self.addEventListener("message", (event) => {
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(
+  event.waitUntil(Promise.all([
     caches.keys().then((keys) =>
       Promise.all(keys.filter((key) => ![CACHE_NAME, STATIC_CACHE].includes(key)).map((key) => caches.delete(key))),
     ),
-  );
-  self.clients.claim();
+    self.clients.claim(),
+  ]));
 });
 
 async function networkFirst(request) {

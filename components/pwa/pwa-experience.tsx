@@ -164,5 +164,5 @@ export function PwaExperience() {
 }
 
 function PwaBanner({ children }: { children: React.ReactNode }) {
-  return <div className="shell-main-offset mx-auto mt-2 max-w-[1510px] print:hidden">{children}</div>;
+  return <div className="shell-main-offset mx-auto mt-2 max-w-[var(--shell-content-max)] print:hidden">{children}</div>;
 }

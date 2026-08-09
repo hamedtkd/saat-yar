@@ -141,13 +141,23 @@ async function evaluate(client, expression) {
 
 async function browserStateSnapshot(client) {
   try {
-    return await evaluate(client, `(() => ({
-      url: location.href,
-      readyState: document.readyState,
-      body: (document.body?.innerText || "").replace(/\s+/g, " ").trim().slice(0, 500),
-      onboardingStep: document.querySelector("[data-onboarding-step]")?.getAttribute("data-onboarding-step-index") || null,
-      loading: document.body?.innerText.includes("\u062f\u0631 \u062d\u0627\u0644 \u0622\u0645\u0627\u062f\u0647") || false,
-    }))()`);
+    return await evaluate(client, `(async () => {
+      const registration = "serviceWorker" in navigator ? await navigator.serviceWorker.getRegistration().catch(() => undefined) : undefined;
+      return {
+        url: location.href,
+        readyState: document.readyState,
+        body: (document.body?.innerText || "").replace(/\s+/g, " ").trim().slice(0, 500),
+        onboardingStep: document.querySelector("[data-onboarding-step]")?.getAttribute("data-onboarding-step-index") || null,
+        loading: document.body?.innerText.includes("\u062f\u0631 \u062d\u0627\u0644 \u0622\u0645\u0627\u062f\u0647") || false,
+        serviceWorker: registration ? {
+          scope: registration.scope,
+          active: registration.active?.state || null,
+          waiting: registration.waiting?.state || null,
+          installing: registration.installing?.state || null,
+          controlled: Boolean(navigator.serviceWorker.controller),
+        } : null,
+      };
+    })()`);
   } catch {
     return null;
   }
@@ -214,10 +224,58 @@ async function replaceInputValue(client, selector, value) {
     setter.call(field, ${JSON.stringify(value)});
     field.dispatchEvent(new InputEvent("input", { bubbles: true, inputType: "insertText", data: ${JSON.stringify(value)} }));
     field.dispatchEvent(new Event("change", { bubbles: true }));
-    return field.value === ${JSON.stringify(value)};
+    return true;
   })()`);
   if (!updated) throw new Error(`Input could not receive React-compatible text: ${selector}`);
+
+  // NumberField localizes its visible draft and may synchronously rerender after
+  // React receives the input event. Treat aria-valuenow as the semantic source
+  // of truth for spinbuttons instead of requiring the DOM value to remain the
+  // exact ASCII string that the harness inserted.
+  await waitFor(client, `(() => {
+    const field = document.querySelector(${JSON.stringify(selector)});
+    if (!(field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement)) return false;
+    if (field.getAttribute("role") === "spinbutton") {
+      const semanticValue = Number(field.getAttribute("aria-valuenow"));
+      const expectedValue = Number(${JSON.stringify(value)});
+      return Number.isFinite(expectedValue) && semanticValue === expectedValue;
+    }
+    return field.value === ${JSON.stringify(value)};
+  })()`, `React-compatible input value for ${selector}`);
   await evaluate(client, `new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))`);
+}
+
+
+async function readStoredSettings(client) {
+  return evaluate(client, `(async () => {
+    const db = await new Promise((resolve, reject) => {
+      const request = indexedDB.open("saatyar-db", 1);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    const stored = await new Promise((resolve, reject) => {
+      const tx = db.transaction("app-data", "readonly");
+      const request = tx.objectStore("app-data").get("current");
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+      tx.oncomplete = () => db.close();
+    });
+    const data = stored?.format === "saatyar-app-data" && stored?.data ? stored.data : stored;
+    const settings = data?.settings;
+    return settings ? {
+      name: settings.name,
+      workDays: settings.workDays,
+      weeklyMinutes: settings.weeklyMinutes,
+      defaultStart: settings.defaultStart,
+      defaultEnd: settings.defaultEnd,
+      thursdayEnabled: Boolean(settings.weeklySchedule?.thursday?.enabled),
+      salary: settings.salary,
+      payrollBaseAmount: settings.payrollPolicy?.baseAmount,
+      appearancePreset: settings.appearance?.preset,
+      appearanceAccent: settings.appearance?.accent,
+      onboarded: settings.onboarded,
+    } : null;
+  })()`);
 }
 
 async function waitForProcessExit(child, timeoutMs = 5_000) {
@@ -317,21 +375,107 @@ export async function runProductionBrowserSmoke() {
     );
     console.log("✓ Onboarding welcome step captured a user name");
     await clickButton(client, "ادامه");
-    await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="3"]'))`, "onboarding schedule step");
+    await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="3"] [data-work-schedule-editor]'))`, "onboarding schedule step");
+
+    const thursdayEnabled = await evaluate(client, `(() => {
+      const input = document.querySelector('[data-onboarding-step-index="3"] [data-workday-toggle="thursday"]');
+      if (!(input instanceof HTMLInputElement)) return false;
+      if (!input.checked) input.click();
+      return input.checked;
+    })()`);
+    if (!thursdayEnabled) throw new Error("Onboarding could not enable Thursday in the weekly schedule.");
+    await replaceInputValue(client, '[data-onboarding-step-index="3"] [data-work-schedule-weekly-target]', "44");
+    await evaluate(client, `new Promise((resolve) => setTimeout(resolve, 500))`);
+
     const onboardingReload = waitForEvent(client, "Page.loadEventFired", "onboarding recovery reload");
     await client.call("Page.reload", { ignoreCache: false });
     await onboardingReload;
-    await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="3"]'))`, "recovered onboarding schedule step");
+    await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="3"] [data-work-schedule-editor]'))`, "recovered onboarding schedule step");
+    const recoveredSchedule = await evaluate(client, `(() => ({
+      weeklyTarget: document.querySelector('[data-onboarding-step-index="3"] [data-work-schedule-weekly-target]')?.getAttribute('aria-valuenow') || "",
+      thursdayEnabled: document.querySelector('[data-onboarding-step-index="3"] [data-workday-toggle="thursday"]')?.checked === true,
+    }))()`);
+    if (recoveredSchedule?.weeklyTarget !== "44" || !recoveredSchedule?.thursdayEnabled) {
+      throw new Error(`Onboarding schedule did not survive reload: ${JSON.stringify(recoveredSchedule)}`);
+    }
+    console.log("✓ Onboarding work schedule persisted across reload");
     console.log("✓ Onboarding reload resumed from the saved step");
+
     await clickButton(client, "ادامه");
-    await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="4"]'))`, "onboarding privacy step");
+    await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="4"] [data-onboarding-salary]'))`, "onboarding payroll step");
+    await replaceInputValue(client, '[data-onboarding-step-index="4"] [data-onboarding-salary]', "42000000");
+    await clickButton(client, "ادامه");
+
+    await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="5"] [data-onboarding-theme="ocean"]'))`, "onboarding appearance step");
+    const selectedTheme = await evaluate(client, `(() => {
+      const button = document.querySelector('[data-onboarding-step-index="5"] [data-onboarding-theme="ocean"]');
+      if (!(button instanceof HTMLButtonElement)) return false;
+      button.click();
+      return true;
+    })()`);
+    if (!selectedTheme) throw new Error("Onboarding theme preset could not be selected.");
+    await waitFor(client, `getComputedStyle(document.documentElement).getPropertyValue('--accent').trim().toLowerCase() === '#0ea5e9'`, "onboarding theme preview");
+    await clickButton(client, "ادامه");
+
+    await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="6"]'))`, "onboarding privacy step");
     await clickButton(client, "شروع ساعت‌یار");
     await waitFor(client, "['/today', '/today/'].includes(location.pathname) && !document.body?.innerText.includes('شروع ساعت‌یار')", "today route after onboarding");
-    await new Promise((resolveWait) => setTimeout(resolveWait, 400));
-    console.log("✓ Onboarding completed and today route rendered");
+    await new Promise((resolveWait) => setTimeout(resolveWait, 700));
+
+    const onboardingSettings = await readStoredSettings(client);
+    const onboardingContract = onboardingSettings
+      && onboardingSettings.name === "کاربر تست"
+      && onboardingSettings.workDays === 6
+      && onboardingSettings.weeklyMinutes === 44 * 60
+      && onboardingSettings.thursdayEnabled
+      && onboardingSettings.salary === 42_000_000
+      && onboardingSettings.payrollBaseAmount === 42_000_000
+      && onboardingSettings.appearancePreset === "ocean"
+      && onboardingSettings.appearanceAccent?.toLowerCase() === "#0ea5e9"
+      && onboardingSettings.onboarded === true;
+    if (!onboardingContract) throw new Error(`Persisted onboarding settings contract failed: ${JSON.stringify(onboardingSettings)}`);
+    console.log("✓ Onboarding completed with schedule, payroll and appearance persisted to AppData");
+
+    await client.call("Emulation.setDeviceMetricsOverride", { width: 2560, height: 1440, deviceScaleFactor: 1, mobile: false, screenWidth: 2560, screenHeight: 1440 });
+    await evaluate(client, `new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))`);
+    const wideShell = await evaluate(client, `(() => {
+      const header = document.querySelector('header.shell-main-offset');
+      const rect = header?.getBoundingClientRect();
+      const offset = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--shell-content-offset')) || 264;
+      if (!rect) return null;
+      const viewportWidth = document.documentElement.clientWidth;
+      const scrollbarWidth = Math.max(0, window.innerWidth - viewportWidth);
+      const leftGap = rect.left;
+      const rightGap = viewportWidth - rect.right;
+      return { width: rect.width, leftGap, rightGap, offset, viewportWidth, scrollbarWidth, balancedDelta: Math.abs(leftGap - (rightGap - offset)) };
+    })()`);
+    if (!wideShell || wideShell.width < 1800 || wideShell.leftGap < 80 || wideShell.rightGap < wideShell.offset || wideShell.balancedDelta > 24) {
+      throw new Error(`Wide desktop shell contract failed: ${JSON.stringify(wideShell)}`);
+    }
+    console.log("✓ Wide desktop shell expands and stays centered beside the sidebar");
+    await client.call("Emulation.setDeviceMetricsOverride", { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false, screenWidth: 1440, screenHeight: 1000 });
 
     await waitFor(client, `navigator.serviceWorker?.ready.then(() => true).catch(() => false)`, "PWA service worker readiness");
-    await waitFor(client, `Boolean(navigator.serviceWorker?.controller)`, "PWA service worker control");
+    const firstInstallWorker = await evaluate(client, `(async () => {
+      const registration = await navigator.serviceWorker.getRegistration();
+      return {
+        active: Boolean(registration?.active),
+        waiting: Boolean(registration?.waiting),
+        installing: Boolean(registration?.installing),
+        controlled: Boolean(navigator.serviceWorker.controller),
+        scope: registration?.scope || null,
+      };
+    })()`);
+    if (!firstInstallWorker?.active) {
+      throw new Error(`PWA service worker did not reach the active state: ${JSON.stringify(firstInstallWorker)}`);
+    }
+    if (!firstInstallWorker.controlled) {
+      const onlineControlLoad = waitForEvent(client, "Page.loadEventFired", "first-install PWA control reload", 45_000);
+      await client.call("Page.reload", { ignoreCache: false });
+      await onlineControlLoad;
+      await waitFor(client, "document.readyState === 'complete' && document.body?.innerText.includes('ساعت‌یار')", "first-install PWA control reload render", 45_000);
+    }
+    await waitFor(client, `Boolean(navigator.serviceWorker?.controller)`, "PWA service worker control after activation");
     const pwaContract = await evaluate(client, `(async () => {
       const link = document.querySelector('link[rel="manifest"]');
       if (!link) return null;

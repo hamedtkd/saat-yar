@@ -20,7 +20,7 @@ export function LiveTimerOwnershipBanner({ blocked, owner, onTakeOver }: {
   const heartbeat = formatTimerHeartbeat(owner.updatedAt);
 
   return <>
-    <section className="mx-auto mt-3 flex max-w-[1470px] flex-wrap items-center justify-between gap-3 rounded-[15px] border border-[color-mix(in_srgb,var(--warning)_35%,var(--border))] bg-[var(--warning-soft)] px-4 py-3 text-[var(--warning)] xl:mr-[284px]" role="status">
+    <section className="shell-main-offset mx-auto mt-3 flex max-w-[var(--shell-content-max)] flex-wrap items-center justify-between gap-3 rounded-[15px] border border-[color-mix(in_srgb,var(--warning)_35%,var(--border))] bg-[var(--warning-soft)] px-4 py-3 text-[var(--warning)]" role="status">
       <div className="flex items-start gap-3">
         <MonitorSmartphone className="mt-0.5 shrink-0" />
         <div className="grid gap-1">

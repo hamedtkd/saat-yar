@@ -56,7 +56,7 @@ export function WorkScheduleEditor({ value, disabled, onChange }: {
   };
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface-2)]">
+    <section data-work-schedule-editor className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface-2)]">
       <div className="grid gap-3 border-b border-[var(--border)] bg-[var(--surface-1)] p-4 md:grid-cols-2 xl:grid-cols-[1.15fr_1fr_1fr] xl:items-stretch">
         <div className="flex min-h-[148px] flex-col rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-4 text-[var(--text)] md:col-span-2 xl:col-span-1">
           <div className="flex items-start gap-3">
@@ -93,7 +93,7 @@ export function WorkScheduleEditor({ value, disabled, onChange }: {
         <label className="flex min-h-[148px] flex-col rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-4 text-[10px] font-bold text-[var(--text-muted)]">
           <span className="text-[11px] text-[var(--text)]">هدف کار خالص هفتگی</span>
           <div className="mt-3 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
-            <NumberField disabled={disabled} className="h-9 min-w-0" value={Math.round(getWeeklyTargetMinutes(value) / 6) / 10} min={0} step={0.5} onValueChange={(hours) => onChange(applyWeeklyTargetHours(value, hours))} />
+            <NumberField data-work-schedule-weekly-target disabled={disabled} className="h-9 min-w-0" value={Math.round(getWeeklyTargetMinutes(value) / 6) / 10} min={0} step={0.5} onValueChange={(hours) => onChange(applyWeeklyTargetHours(value, hours))} />
             <span className="rounded-lg bg-[var(--surface-1)] px-3 py-2 text-[var(--text)]">ساعت</span>
           </div>
           <small className="mt-auto pt-3 font-medium leading-4">{enabledDayCount ? `${enabledDayCount.toLocaleString("fa-IR")} روز فعال · میانگین ${durationWords(averageDailyTarget)} کار خالص در روز` : "هیچ روز کاری فعالی انتخاب نشده"}</small>
@@ -104,8 +104,8 @@ export function WorkScheduleEditor({ value, disabled, onChange }: {
         {weekdayOrder.map((day) => {
           const schedule = value.weeklySchedule[day];
           return (
-            <div key={day} className="grid grid-cols-[110px_repeat(3,minmax(130px,1fr))_128px] items-end gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-3 max-[980px]:grid-cols-2 max-[620px]:grid-cols-1">
-              <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded-lg px-1"><Checkbox disabled={disabled} checked={schedule.enabled} onCheckedChange={(enabled) => setDay(day, "enabled", enabled)} /><strong className={schedule.enabled ? "text-[var(--text)]" : "text-[var(--text-muted)]"}>{weekdayLabels[day]}</strong></label>
+            <div key={day} data-work-schedule-day={day} className="grid grid-cols-[110px_repeat(3,minmax(130px,1fr))_128px] items-end gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-3 max-[980px]:grid-cols-2 max-[620px]:grid-cols-1">
+              <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded-lg px-1"><Checkbox data-workday-toggle={day} disabled={disabled} checked={schedule.enabled} onCheckedChange={(enabled) => setDay(day, "enabled", enabled)} /><strong className={schedule.enabled ? "text-[var(--text)]" : "text-[var(--text-muted)]"}>{weekdayLabels[day]}</strong></label>
               <label>شروع<TimePicker disabled={disabled} value={schedule.start} onChange={(next) => setDay(day, "start", next)} /></label>
               <label>پایان<TimePicker disabled={disabled} value={schedule.end} onChange={(next) => setDay(day, "end", next)} /></label>
               <label>ناهار<MinuteDurationField disabled={disabled} value={schedule.lunchMinutes} onValueChange={(next) => setDayLunch(day, next)} /></label>

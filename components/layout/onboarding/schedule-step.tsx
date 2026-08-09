@@ -1,28 +1,30 @@
-import { MinuteDurationField } from "@/components/common/minute-duration-field";
-import { NumberField } from "@/components/common/number-field";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { cn } from "@/lib/cn";
-import { fa } from "@/lib/format";
+import { CalendarDays } from "lucide-react";
+
+import { WorkScheduleEditor } from "@/components/pages/settings/work-schedule-editor";
+import { createWorkSettingsDraft } from "@/components/pages/settings/work-settings-types";
+import { mergeWorkSettings } from "@/lib/work-settings-sync";
 import type { AppData } from "@/lib/types";
 import { StepShell } from "./step-shell";
-import type { SetSetting } from "./types";
+import type { UpdateSettings } from "./types";
 
-export function ScheduleStep({ settings, setSetting }: { settings: AppData["settings"]; setSetting: SetSetting }) {
+export function ScheduleStep({ settings, updateSettings }: { settings: AppData["settings"]; updateSettings: UpdateSettings }) {
+  const value = createWorkSettingsDraft(settings);
+
   return (
     <StepShell>
-      <h1>برنامه کاری تو</h1>
-      <p>اعداد اولیه را وارد کن؛ همه موارد بعداً قابل ویرایش‌اند.</p>
-      <div className={cn("mb-4 grid grid-cols-3 gap-[14px] max-[620px]:grid-cols-1")}>
-        <label>هدف هفتگی (ساعت)<NumberField min={0.5} max={168} step={0.5} value={settings.weeklyMinutes / 60} onValueChange={(value) => setSetting("weeklyMinutes", Math.round(value * 60))} /></label>
-        <label>
-          روزهای کاری
-          <Select value={String(settings.workDays)} onValueChange={(value) => setSetting("workDays", Number(value))}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
-            <SelectContent>{[4, 5, 6].map((value) => <SelectItem value={String(value)} key={value}>{fa.format(value)} روز</SelectItem>)}</SelectContent>
-          </Select>
-        </label>
-        <label>ناهار پیش‌فرض<MinuteDurationField value={settings.lunchMinutes} onValueChange={(value) => setSetting("lunchMinutes", value)} /></label>
+      <div className="mx-auto mb-6 max-w-[760px] text-center">
+        <span className="mx-auto mb-3 grid size-11 place-items-center rounded-2xl bg-[var(--accent-soft)] text-[var(--accent-strong)]"><CalendarDays /></span>
+        <h1>برنامه کاری واقعی‌ات را تنظیم کن</h1>
+        <p>روزهای فعال، شروع و پایان، ناهار و هدف کار خالص را همین‌جا مشخص کن تا Today و گزارش‌ها از همان قرارداد استفاده کنند.</p>
       </div>
+      <div data-onboarding-work-schedule className="text-right">
+        <WorkScheduleEditor
+          value={value}
+          disabled={false}
+          onChange={(next) => updateSettings((current) => mergeWorkSettings(current, next))}
+        />
+      </div>
+      <p className="mx-auto mt-3 max-w-[780px] text-center text-[10px] leading-5 text-[var(--text-muted)]">حداقل یک روز کاری باید فعال بماند. تغییر هدف هفتگی بین روزهای فعال پخش می‌شود و ساعت پایان هر روز بر همان اساس به‌روز می‌شود.</p>
     </StepShell>
   );
 }

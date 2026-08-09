@@ -3,6 +3,8 @@ import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 
+const FINAL_STEP = 6;
+
 export function OnboardingFooter({ step, setStep, canContinue, reentry, onExit }: {
   step: number;
   setStep: (step: number) => void;
@@ -17,8 +19,8 @@ export function OnboardingFooter({ step, setStep, canContinue, reentry, onExit }
         {reentry && <Button type="button" variant="ghost" onClick={onExit}>بازگشت به تنظیمات</Button>}
       </div>
       <Button type="submit" disabled={!canContinue}>
-        {step < 4 ? "ادامه" : reentry ? "ذخیره و بازگشت" : "شروع ساعت‌یار"}
-        {step === 4 && <Check aria-hidden="true" />}
+        {step < FINAL_STEP ? "ادامه" : reentry ? "ذخیره و بازگشت" : "شروع ساعت‌یار"}
+        {step === FINAL_STEP && <Check aria-hidden="true" />}
       </Button>
     </footer>
   );

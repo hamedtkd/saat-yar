@@ -5,8 +5,10 @@ import type { FormEvent, KeyboardEvent } from "react";
 
 import { Brand } from "@/components/common/brand";
 import { cn } from "@/lib/cn";
+import { AppearanceStep } from "./onboarding/appearance-step";
 import { ModeStep } from "./onboarding/mode-step";
 import { OnboardingFooter } from "./onboarding/onboarding-footer";
+import { PayrollStep } from "./onboarding/payroll-step";
 import { PrivacyStep } from "./onboarding/privacy-step";
 import { ScheduleStep } from "./onboarding/schedule-step";
 import { StepsProgress } from "./onboarding/steps-progress";
@@ -14,14 +16,16 @@ import type { OnboardingProps } from "./onboarding/types";
 import { useOnboardingSettings } from "./onboarding/use-onboarding-settings";
 import { WelcomeStep } from "./onboarding/welcome-step";
 
+const FINAL_STEP = 6;
+
 export function Onboarding({ data, setData, step, setStep, reentry, onComplete, onExit }: OnboardingProps) {
-  const setSetting = useOnboardingSettings(setData);
+  const { setSetting, updateSettings } = useOnboardingSettings(setData);
   const canContinue = step !== 1 || Boolean(data.settings.name.trim());
 
   const submitStep = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!canContinue) return;
-    if (step < 4) {
+    if (step < FINAL_STEP) {
       setStep(step + 1);
       requestAnimationFrame(() => {
         document.querySelector<HTMLElement>("[data-onboarding-step] input, [data-onboarding-step] button")?.focus();
@@ -43,18 +47,20 @@ export function Onboarding({ data, setData, step, setStep, reentry, onComplete, 
 
   return (
     <div className={cn("min-h-screen bg-[var(--page)] text-[var(--text)]")}>
-      <header className={cn("flex min-h-[76px] items-center justify-between border-b border-[var(--border)] bg-[var(--surface-1)] px-5 py-3 sm:px-8")}>
+      <header className={cn("flex min-h-[72px] items-center justify-between border-b border-[var(--border)] bg-[var(--surface-1)] px-5 py-3 sm:px-8")}>
         <Brand />
         <span className={cn("inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--accent-strong)] [&_svg]:h-[15px] [&_svg]:w-[15px] max-[620px]:hidden")}><CheckCircle2 /> ذخیره خودکار</span>
       </header>
 
-      <form onSubmit={submitStep} onKeyDown={handleKeyDown} className={cn("mx-auto my-8 max-w-[1130px] px-6 max-[620px]:mt-[18px] max-[620px]:px-[14px]")}>
+      <form onSubmit={submitStep} onKeyDown={handleKeyDown} className={cn("mx-auto my-7 max-w-[1320px] px-5 max-[620px]:mt-[16px] max-[620px]:px-[12px]")}>
         <StepsProgress step={step} />
         <div data-onboarding-step data-onboarding-step-index={step}>
           {step === 1 && <WelcomeStep settings={data.settings} setSetting={setSetting} />}
           {step === 2 && <ModeStep settings={data.settings} setSetting={setSetting} />}
-          {step === 3 && <ScheduleStep settings={data.settings} setSetting={setSetting} />}
-          {step === 4 && <PrivacyStep />}
+          {step === 3 && <ScheduleStep settings={data.settings} updateSettings={updateSettings} />}
+          {step === 4 && <PayrollStep settings={data.settings} updateSettings={updateSettings} />}
+          {step === 5 && <AppearanceStep settings={data.settings} updateSettings={updateSettings} />}
+          {step === 6 && <PrivacyStep />}
         </div>
         <OnboardingFooter step={step} setStep={setStep} canContinue={canContinue} reentry={reentry} onExit={onExit} />
       </form>

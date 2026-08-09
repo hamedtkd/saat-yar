@@ -9,6 +9,7 @@ import type { AppData, Mode } from "@/lib/types";
 import { EditableCardActions } from "./editing/editable-card-actions";
 import { WorkScheduleEditor } from "./work-schedule-editor";
 import { createWorkSettingsDraft, type WorkSettingsDraft } from "./work-settings-types";
+import { mergeWorkSettings } from "@/lib/work-settings-sync";
 
 export function WorkSettingsCard({ data, setData, setToast }: {
   data: AppData;
@@ -18,7 +19,7 @@ export function WorkSettingsCard({ data, setData, setToast }: {
   const value = createWorkSettingsDraft(data.settings);
   const saveSettings = (next: WorkSettingsDraft) => setData((previous) => ({
     ...previous,
-    settings: { ...previous.settings, ...next },
+    settings: mergeWorkSettings(previous.settings, next),
   }));
   const editor = useSettingsDraft({ value, autoSave: data.settings.autoSaveSettings, label: "تنظیمات کاری", onSave: saveSettings });
   const settings = editor.draft;

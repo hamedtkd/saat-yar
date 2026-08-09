@@ -39,6 +39,7 @@
   --shell-sidebar-width: 248px;
   --shell-gutter: 12px;
   --shell-content-offset: 264px;
+  --shell-content-max: 1510px;
 }
 
 :root[data-theme="dark"] {
@@ -80,13 +81,28 @@
 }
 
 .shell-main-offset {
+  width: min(100%, var(--shell-content-max));
   margin-right: auto;
   margin-left: auto;
 }
 
 @media (min-width: 1280px) {
   .shell-main-offset {
-    margin-right: var(--shell-content-offset);
+    width: min(var(--shell-content-max), calc(100% - var(--shell-content-offset) - 24px));
+    margin-right: calc(var(--shell-content-offset) + max(0px, (100% - var(--shell-content-offset) - var(--shell-content-max)) / 2));
+    margin-left: auto;
+  }
+}
+
+@media (min-width: 1920px) {
+  :root {
+    --shell-content-max: 1780px;
+  }
+}
+
+@media (min-width: 2400px) {
+  :root {
+    --shell-content-max: 1960px;
   }
 }
 

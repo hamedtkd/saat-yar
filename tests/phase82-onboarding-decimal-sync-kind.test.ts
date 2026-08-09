@@ -7,9 +7,13 @@ import { readFile } from "node:fs/promises";
 const root = new URL("../", import.meta.url);
 
 test("onboarding accepts half-hour weekly targets", async () => {
-  const source = await readFile(new URL("components/layout/onboarding/schedule-step.tsx", root), "utf8");
-  assert.match(source, /step=\{0\.5\}/);
-  assert.match(source, /Math\.round\(value \* 60\)/);
+  const [onboarding, editor] = await Promise.all([
+    readFile(new URL("components/layout/onboarding/schedule-step.tsx", root), "utf8"),
+    readFile(new URL("components/pages/settings/work-schedule-editor.tsx", root), "utf8"),
+  ]);
+  assert.match(onboarding, /WorkScheduleEditor/);
+  assert.match(editor, /step=\{0\.5\}/);
+  assert.match(editor, /applyWeeklyTargetHours/);
 });
 
 test("sync messages expose a validated change kind", () => {

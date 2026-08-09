@@ -1,4 +1,4 @@
-import type { AppData } from "@/lib/types";
+import type { AppData, Settings } from "@/lib/types";
 import type { OnboardingStep } from "@/lib/onboarding-session";
 
 export type OnboardingProps = {
@@ -15,3 +15,5 @@ export type SetSetting = <K extends keyof AppData["settings"]>(
   key: K,
   value: AppData["settings"][K],
 ) => void;
+
+export type UpdateSettings = (updater: (settings: Settings) => Settings) => void;

@@ -130,3 +130,6 @@
 - [فاز ۱۶۵: Final Release 2.3.2](./phases/PHASE_165_NOTES_FA.md)
 - [فاز ۱۶۶: Route مستقل آنبوردینگ](./phases/PHASE_166_NOTES_FA.md)
 - [فاز ۱۶۷: بازیابی Progress و اجرای دوباره آنبوردینگ](./phases/PHASE_167_NOTES_FA.md)
+
+- [فاز ۱۶۸: قرارداد مرخصی استحقاقی](./phases/PHASE_168_NOTES_FA.md)
+- [فاز ۱۶۹: آنبوردینگ شخصی‌سازی‌شده و Responsive Shell](./phases/PHASE_169_NOTES_FA.md)

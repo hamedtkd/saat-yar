@@ -1,4 +1,4 @@
-export type OnboardingStep = 1 | 2 | 3 | 4;
+export type OnboardingStep = 1 | 2 | 3 | 4 | 5 | 6;
 
 export type OnboardingSessionStorage = Pick<Storage, "getItem" | "setItem" | "removeItem">;
 
@@ -9,7 +9,7 @@ export const REENTRY_ONBOARDING_STEP: OnboardingStep = 1;
 
 export function normalizeOnboardingStep(value: unknown, fallback: OnboardingStep = DEFAULT_ONBOARDING_STEP): OnboardingStep {
   const numeric = typeof value === "number" ? value : Number(value);
-  return numeric === 1 || numeric === 2 || numeric === 3 || numeric === 4 ? numeric : fallback;
+  return numeric === 1 || numeric === 2 || numeric === 3 || numeric === 4 || numeric === 5 || numeric === 6 ? numeric : fallback;
 }
 
 export function readOnboardingStep(storage: OnboardingSessionStorage): OnboardingStep {
