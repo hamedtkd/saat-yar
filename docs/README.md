@@ -111,3 +111,5 @@
 
 - [فاز ۱۵۹: Final Release 2.3.1](./phases/PHASE_159_NOTES_FA.md)
 - [فاز ۱۶۰: قرارداد ناهار و ساعت خروج](./phases/PHASE_160_NOTES_FA.md)
+
+- [فاز ۱۶۱: پالیش چیدمان برنامه کاری](./phases/PHASE_161_NOTES_FA.md)

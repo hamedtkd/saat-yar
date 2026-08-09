@@ -15,7 +15,7 @@ test("weekly schedule edits remain inside the work settings draft", async () => 
   const source = await readFile("components/pages/settings/work-schedule-editor.tsx", "utf8");
   assert.match(source, /applyWeeklyTargetHours\(value, hours\)/);
   assert.match(source, /onChange\(\{/);
-  assert.match(source, /weeklySchedule:/);
+  assert.match(source, /weeklySchedule(?:\s*:|,)/);
 });
 
 test("settings sticky regression follows the header-safe offset", async () => {

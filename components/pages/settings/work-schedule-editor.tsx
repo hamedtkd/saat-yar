@@ -39,7 +39,7 @@ export function WorkScheduleEditor({ value, disabled, onChange }: {
     onChange({
       ...value,
       weeklyMinutes: getWeeklyTargetMinutes({ ...value, weeklySchedule }),
-      weeklySchedule: weeklySchedule,
+      weeklySchedule,
     });
   };
 
@@ -51,38 +51,52 @@ export function WorkScheduleEditor({ value, disabled, onChange }: {
     onChange({
       ...value,
       weeklyMinutes: getWeeklyTargetMinutes({ ...value, weeklySchedule }),
-      weeklySchedule: weeklySchedule,
+      weeklySchedule,
     });
   };
 
   return (
     <section className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface-2)]">
-      <div className="grid gap-4 border-b border-[var(--border)] bg-[var(--surface-1)] p-4 xl:grid-cols-[1fr_auto_auto] xl:items-center">
-        <div className="flex items-start gap-3 text-[var(--text)]">
-          <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[var(--accent-soft)] text-[var(--accent-strong)]"><Clock3 /></span>
-          <div className="grid gap-1">
-            <strong className="text-sm">برنامه کاری هفتگی</strong>
-            <small className="max-w-3xl text-[10px] leading-5 text-[var(--text-muted)]">هدف هفتگی یعنی کار خالص و ناهار بدون حقوق جزو آن حساب نمی‌شود. ساعت خروج پیشنهادی با ورود واقعی و مدت واقعی ناهار دوباره محاسبه می‌شود.</small>
+      <div className="grid gap-3 border-b border-[var(--border)] bg-[var(--surface-1)] p-4 md:grid-cols-2 xl:grid-cols-[1.15fr_1fr_1fr] xl:items-stretch">
+        <div className="flex min-h-[148px] flex-col rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-4 text-[var(--text)] md:col-span-2 xl:col-span-1">
+          <div className="flex items-start gap-3">
+            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[var(--accent-soft)] text-[var(--accent-strong)]"><Clock3 /></span>
+            <div className="grid gap-1">
+              <strong className="text-sm">برنامه کاری هفتگی</strong>
+              <small className="text-[10px] leading-5 text-[var(--text-muted)]">هدف هفتگی، کار خالص شماست و خروج پیشنهادی با ورود و ناهار واقعی همان روز به‌روز می‌شود.</small>
+            </div>
+          </div>
+          <div className="mt-auto grid grid-cols-2 gap-2 pt-3 text-[10px] font-medium text-[var(--text-muted)]">
+            <span className="rounded-lg bg-[var(--surface-1)] px-3 py-2">هدف = کار خالص</span>
+            <span className="rounded-lg bg-[var(--surface-1)] px-3 py-2">ناهار بدون حقوق = جبران زمان</span>
           </div>
         </div>
 
-        <div className="grid min-w-[250px] gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-3 text-[10px] font-bold text-[var(--text-muted)]">
-          <span>ناهار پیش‌فرض برای همه روزها</span>
-          <div className="grid grid-cols-[minmax(120px,1fr)_auto] items-center gap-2">
-            <MinuteDurationField disabled={disabled} value={value.lunchMinutes} onValueChange={(minutes) => onChange(applyLunchMinutesToAll(value, minutes))} />
-            <label className="flex min-h-9 cursor-pointer items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface-1)] px-3 text-[10px] text-[var(--text)]">
-              <Checkbox disabled={disabled} checked={allLunchPaid} onCheckedChange={(paid) => onChange(applyLunchPaidToAll(value, paid))} />
-              <span>جزو کارکرد (با حقوق)</span>
+        <div className="flex min-h-[148px] flex-col rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-4">
+          <strong className="text-[11px] text-[var(--text)]">ناهار پیش‌فرض برای همه روزها</strong>
+          <div className="mt-3 grid gap-3 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2">
+            <label className="grid gap-1.5 text-[10px] font-bold text-[var(--text-muted)]">
+              <span>مدت ناهار</span>
+              <MinuteDurationField disabled={disabled} value={value.lunchMinutes} onValueChange={(minutes) => onChange(applyLunchMinutesToAll(value, minutes))} />
+            </label>
+            <label className="grid gap-1.5 text-[10px] font-bold text-[var(--text-muted)]">
+              <span>نحوه محاسبه</span>
+              <span className="flex min-h-9 cursor-pointer items-center justify-between gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface-1)] px-3 text-[10px] text-[var(--text)]">
+                <span>جزو کارکرد (با حقوق)</span>
+                <Checkbox disabled={disabled} checked={allLunchPaid} onCheckedChange={(paid) => onChange(applyLunchPaidToAll(value, paid))} />
+              </span>
             </label>
           </div>
-          <small className="font-medium leading-4">تغییر جمعی ناهار، پایان روزها را طوری جابه‌جا می‌کند که هدف کار خالص ثابت بماند.</small>
+          <small className="mt-auto pt-3 text-[10px] font-medium leading-4 text-[var(--text-muted)]">تغییر جمعی ناهار، هدف کار خالص را ثابت نگه می‌دارد و فقط پایان روزها را جابه‌جا می‌کند.</small>
         </div>
 
-        <label className="grid min-w-[190px] grid-cols-[1fr_auto] items-end gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-3 text-[10px] font-bold text-[var(--text-muted)]">
-          <span className="col-span-full">هدف کار خالص هفتگی</span>
-          <NumberField disabled={disabled} className="h-9 min-w-0" value={Math.round(getWeeklyTargetMinutes(value) / 6) / 10} min={0} step={0.5} onValueChange={(hours) => onChange(applyWeeklyTargetHours(value, hours))} />
-          <span className="pb-2">ساعت</span>
-          <small className="col-span-full font-medium leading-4">{enabledDayCount ? `${enabledDayCount.toLocaleString("fa-IR")} روز فعال · میانگین ${durationWords(averageDailyTarget)} کار خالص در روز` : "هیچ روز کاری فعالی انتخاب نشده"}</small>
+        <label className="flex min-h-[148px] flex-col rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-4 text-[10px] font-bold text-[var(--text-muted)]">
+          <span className="text-[11px] text-[var(--text)]">هدف کار خالص هفتگی</span>
+          <div className="mt-3 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+            <NumberField disabled={disabled} className="h-9 min-w-0" value={Math.round(getWeeklyTargetMinutes(value) / 6) / 10} min={0} step={0.5} onValueChange={(hours) => onChange(applyWeeklyTargetHours(value, hours))} />
+            <span className="rounded-lg bg-[var(--surface-1)] px-3 py-2 text-[var(--text)]">ساعت</span>
+          </div>
+          <small className="mt-auto pt-3 font-medium leading-4">{enabledDayCount ? `${enabledDayCount.toLocaleString("fa-IR")} روز فعال · میانگین ${durationWords(averageDailyTarget)} کار خالص در روز` : "هیچ روز کاری فعالی انتخاب نشده"}</small>
         </label>
       </div>
 
