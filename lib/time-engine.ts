@@ -128,4 +128,3 @@ export function calcLive(record: WorkRecord, dailyTarget: number, now = new Date
   const credited = worked + result.leave;
   return { ...result, worked, credited, balance: credited - result.target };
 }
-
