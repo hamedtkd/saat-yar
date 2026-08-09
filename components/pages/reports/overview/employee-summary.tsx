@@ -105,7 +105,7 @@ const statTone = {
   warning: "bg-[var(--warning-soft)] text-[var(--warning)]",
   success: "bg-[var(--success-soft)] text-[var(--success)]",
   danger: "bg-[var(--danger-soft)] text-[var(--danger)]",
-  dark: "bg-[var(--accent)] text-[var(--accent-foreground)]",
+  dark: "bg-[var(--accent-fill)] text-[var(--accent-foreground)]",
 } as const;
 
 function PayrollStat({

@@ -1,21 +1,22 @@
-name: Deploy Saatyar to GitHub Pages
+name: Validate Saatyar
 
 on:
   push:
+    branches: ["main"]
+  pull_request:
     branches: ["main"]
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: pages
+  group: saatyar-ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   build:
+    name: Quality and Vercel static export
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,21 +28,7 @@ jobs:
       - run: npm run typecheck
       - run: npm run lint
       - run: npm test
-      - name: Build static application
-        env:
-          PAGES_BASE_PATH: /${{ github.event.repository.name }}
-        run: npm run build:pages
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: out
-
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Build the same static export used by Vercel
+        run: npm run build:vercel
+      - name: Verify Vercel publication contract
+        run: npm run audit:vercel

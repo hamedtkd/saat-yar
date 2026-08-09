@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { minutesToTime, spanMinutes, timeToMinutes } from "@/lib/time-engine";
-import { nowTime } from "@/lib/format";
+import { localDateKey, nowTime } from "@/lib/format";
 import { closePreviousRecordForNewDay, findPreviousOpenRecord } from "@/lib/previous-day-session";
 import type { Dispatch, SetStateAction } from "react";
 import type { AppData, WorkRecord, WorkRecordPatch } from "@/lib/types";
 import { createDeletedWorkRecord } from "@/lib/record-recycle-bin";
+import { resumeAutoClosedRecord } from "@/lib/session-close";
 
 type Args = {
   data: AppData;
@@ -102,6 +103,24 @@ export function useAttendanceActions({ data, record, selectedDate, activeBreak, 
     setPendingPreviousRecord(undefined);
     setSelectedDate(date);
   }
+  function resumeAutoClosedWork() {
+    if (selectedDate !== localDateKey()) return setToast("از سرگیری فقط برای روز جاری در دسترس است");
+    if (!ensureLiveTimerOwnership()) return setToast("کنترل تایمر در تب دیگری فعال است");
+    setData((previous) => {
+      const current = previous.records[selectedDate] ?? record;
+      const resumed = resumeAutoClosedRecord(current);
+      if (resumed === current) return previous;
+      return {
+        ...previous,
+        records: {
+          ...previous.records,
+          [selectedDate]: resumed,
+        },
+      };
+    });
+    setToast("روز دوباره فعال شد؛ فاصله قطع ارتباط در صورت وجود به عنوان وقفه بدون حقوق ثبت شد");
+  }
+
   function finishWork() {
     if (!ensureLiveTimerOwnership()) return setToast("کنترل تایمر در تب دیگری فعال است");
     if (activeBreak || lunchRunning) return setToast("ابتدا تایمر ناهار یا وقفه را پایان دهید");
@@ -132,6 +151,6 @@ export function useAttendanceActions({ data, record, selectedDate, activeBreak, 
       endedAt: minutes && item.startedAt ? new Date(new Date(item.startedAt).getTime() + minutes * 60_000).toISOString() : new Date().toISOString() } : item) }));
     setToast(minutes ? `وقفه ${minutes.toLocaleString("fa-IR")} دقیقه‌ای ثبت شد` : "وقفه پایان یافت");
   }
-  return { updateRecord, resetRecord, undoResetRecord, dismissResetUndo, resetUndoDate: resetUndo?.date, startWork, finishWork, startLunch, finishLunch, startBreak, finishBreak,
+  return { updateRecord, resetRecord, undoResetRecord, dismissResetUndo, resetUndoDate: resetUndo?.date, startWork, resumeAutoClosedWork, finishWork, startLunch, finishLunch, startBreak, finishBreak,
     pendingPreviousRecord, closePreviousAndStart, reviewPreviousRecord, dismissPreviousRecord: () => setPendingPreviousRecord(undefined) };
 }

@@ -56,6 +56,7 @@ function applyAppearance(appearance: AppearanceSettings) {
   root.dataset.radius = appearance.radius;
   root.dataset.surface = appearance.surface;
   root.style.setProperty("--accent", tokens.accent);
+  root.style.setProperty("--accent-fill", tokens.fill);
   root.style.setProperty("--accent-foreground", tokens.foreground);
   root.style.setProperty("--accent-strong", tokens.strong);
   root.style.colorScheme = resolved;

@@ -73,7 +73,7 @@ export function DatePickerDialog(props: DatePickerDialogProps) {
         <Button
           type="button"
           onClick={props.onSelectToday}
-          className="mt-4 h-12 w-full rounded-xl bg-[var(--accent)] text-sm font-extrabold text-[var(--accent-foreground)] shadow-none hover:brightness-110"
+          className="mt-4 h-12 w-full rounded-xl bg-[var(--accent-fill)] text-sm font-extrabold text-[var(--accent-foreground)] shadow-none hover:brightness-110"
         >
           <Check aria-hidden="true" className="size-4.5" />
           امروز

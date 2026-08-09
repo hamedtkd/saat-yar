@@ -16,6 +16,7 @@ export type TodayPageProps = {
   timerDraft: TimerDraft;
   setTimerDraft: React.Dispatch<React.SetStateAction<TimerDraft>>;
   startWork: () => void;
+  resumeAutoClosedWork: () => void;
   pendingPreviousRecord?: WorkRecord;
   closePreviousAndStart: () => void;
   reviewPreviousRecord: () => void;

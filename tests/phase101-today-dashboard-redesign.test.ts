@@ -22,7 +22,8 @@ test("today dashboard follows the shared accent instead of a fixed brand color",
   assert.match(focus, /TodayProgressArc/);
   assert.match(focus, /var\(--accent\)/);
   assert.match(summary, /ProgressRing/);
-  assert.match(sidebar, /bg-\[var\(--accent\)\]/);
+  assert.match(sidebar, /bg-\[var\(--accent-fill\)\]/);
+  assert.match(sidebar, /text-\[var\(--accent-foreground\)\]/);
 });
 
 test("employee mode keeps attendance data visible in the redesigned dashboard", async () => {

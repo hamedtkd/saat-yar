@@ -60,7 +60,7 @@ export function CalendarDay({
           !isSelected &&
           "border-[color-mix(in_srgb,var(--warning)_55%,var(--border))] bg-[var(--warning-soft)] text-[var(--warning)] hover:brightness-95",
         isToday && !isSelected && "border-[var(--accent)]",
-        isSelected && "border-[var(--accent)] bg-[var(--accent)] text-[var(--accent-foreground)] hover:brightness-105",
+        isSelected && "border-[var(--accent)] bg-[var(--accent-fill)] text-[var(--accent-foreground)] hover:brightness-105",
       )}
       onClick={() => onSelect(cell.key)}
     >
@@ -82,7 +82,7 @@ export function CalendarDay({
           aria-hidden="true"
           className={cn(
             "absolute bottom-1 left-1/2 size-1.5 -translate-x-1/2 rounded-full",
-            isSelected ? "bg-[var(--accent-foreground)]" : "bg-[var(--accent)]",
+            isSelected ? "bg-[var(--accent-foreground)]" : "bg-[var(--accent-fill)]",
           )}
         />
       )}

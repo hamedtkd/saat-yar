@@ -183,7 +183,7 @@ export function LeaveForm({ draft, setDraft, onSave }: LeaveFormProps) {
           h-13
           w-full
           rounded-xl
-          bg-[var(--accent)]
+          bg-[var(--accent-fill)]
           text-sm
           font-extrabold
           text-[var(--accent-foreground)]

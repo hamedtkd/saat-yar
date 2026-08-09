@@ -38,7 +38,7 @@ export function SidebarNav({ mode, currentPath, name }: Props) {
               className={cn(
                 "group relative flex min-h-11 items-center gap-3 overflow-hidden rounded-[var(--control-radius)] px-3 text-sm font-bold text-[var(--text-muted)] transition",
                 "hover:bg-[var(--accent-soft)] hover:text-[var(--text)]",
-                active && "bg-[var(--accent)] text-[var(--accent-foreground)] shadow-[0_7px_18px_color-mix(in_srgb,var(--accent)_18%,transparent)] hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)]",
+                active && "bg-[var(--accent-fill)] text-[var(--accent-foreground)] shadow-[0_7px_18px_color-mix(in_srgb,var(--accent)_18%,transparent)] hover:bg-[var(--accent-fill)] hover:text-[var(--accent-foreground)]",
               )}
             >
               <span

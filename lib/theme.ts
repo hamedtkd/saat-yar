@@ -39,6 +39,13 @@ export function readableAccentForeground(accent: string) {
   return luminance > 0.24 ? "#061316" : "#ffffff";
 }
 
+export function accentFill(accent: string) {
+  const normalized = accent.toLowerCase();
+  if (normalized === themePresets.spotify) return "#0e7490";
+  if (normalized === themePresets.ocean) return "#0369a1";
+  return accent;
+}
+
 function mixChannel(source: number, target: number, amount: number) {
   return Math.round(source + (target - source) * amount);
 }
@@ -55,9 +62,11 @@ export function accentStrong(accent: string, theme: "light" | "dark") {
 }
 
 export function resolveAccentTokens(accent: string, theme: "light" | "dark") {
+  const fill = accentFill(accent);
   return {
     accent,
-    foreground: readableAccentForeground(accent),
+    fill,
+    foreground: readableAccentForeground(fill),
     strong: accentStrong(accent, theme),
   };
 }

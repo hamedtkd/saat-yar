@@ -40,6 +40,45 @@ function closeOpenRecord(data: AppData, date: string, closedAt: string, reason: 
   };
 }
 
+
+function localTime(value: Date) {
+  return `${String(value.getHours()).padStart(2, "0")}:${String(value.getMinutes()).padStart(2, "0")}`;
+}
+
+export function isResumableAutoClose(record: WorkRecord) {
+  return Boolean(
+    record.start &&
+    record.end &&
+    record.needsReview &&
+    record.autoClosedAt &&
+    (record.autoClosedReason === "page-exit" || record.autoClosedReason === "stale-session"),
+  );
+}
+
+export function resumeAutoClosedRecord(record: WorkRecord, now = new Date()) {
+  if (!isResumableAutoClose(record) || !record.autoClosedAt) return record;
+  const closedAt = new Date(record.autoClosedAt);
+  if (!Number.isFinite(closedAt.getTime()) || now.getTime() < closedAt.getTime()) return record;
+  const gapMinutes = Math.round((now.getTime() - closedAt.getTime()) / 60_000);
+  const recoveryBreak = gapMinutes > 0 ? {
+    id: `session-recovery-${now.getTime()}`,
+    start: localTime(closedAt),
+    end: localTime(now),
+    startedAt: closedAt.toISOString(),
+    endedAt: now.toISOString(),
+    title: "وقفه بازیابی نشست",
+    paid: false,
+  } : null;
+  return {
+    ...record,
+    end: "",
+    endedAt: undefined,
+    breaks: recoveryBreak ? [...record.breaks, recoveryBreak] : record.breaks,
+    needsReview: false,
+    updatedAt: now.toISOString(),
+  };
+}
+
 export function applyPendingClose(data: AppData, pending: PendingClose) {
   return closeOpenRecord(data, pending.date, pending.closedAt, "page-exit");
 }

@@ -27,7 +27,7 @@ export function ModeOption({ id, icon: Icon, title, points, selected, onSelect }
       onClick={() => onSelect(id)}
     >
       {selected && (
-        <span className="absolute right-4 top-4 grid size-8 place-items-center rounded-full bg-[var(--accent)] text-[var(--accent-foreground)]">
+        <span className="absolute right-4 top-4 grid size-8 place-items-center rounded-full bg-[var(--accent-fill)] text-[var(--accent-foreground)]">
           <Check aria-hidden="true" />
         </span>
       )}

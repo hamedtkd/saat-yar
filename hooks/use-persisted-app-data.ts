@@ -7,7 +7,7 @@ import type { RecoverySnapshot } from "@/lib/recovery";
 import type { AppData, StorageInfo } from "@/lib/types";
 import { localDateKey } from "@/lib/format";
 import {
-  applyPendingClose, applyStaleHeartbeat, createPendingClose, createSessionHeartbeat,
+  applyPendingClose, applyStaleHeartbeat, createSessionHeartbeat,
   parsePendingClose, parseSessionHeartbeat, SESSION_CLOSE_KEY, SESSION_HEARTBEAT_INTERVAL_MS,
   SESSION_HEARTBEAT_KEY,
 } from "@/lib/session-close";
@@ -141,14 +141,9 @@ export function usePersistedAppData() {
   useEffect(() => {
     if (!ready) return;
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      const today = localDateKey();
-      const record = latestDataRef.current.records[today];
-      const pending = record ? createPendingClose(today, record) : null;
-      if (pending) window.localStorage.setItem(SESSION_CLOSE_KEY, JSON.stringify(pending));
-      if (saveState === "saving" || pending) {
-        event.preventDefault();
-        event.returnValue = "";
-      }
+      if (saveState !== "saving") return;
+      event.preventDefault();
+      event.returnValue = "";
     };
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);

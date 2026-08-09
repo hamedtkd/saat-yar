@@ -27,6 +27,7 @@ export default function TodayRoute() {
       timerDraft={controller.timerDraft}
       setTimerDraft={controller.setTimerDraft}
       startWork={controller.startWork}
+      resumeAutoClosedWork={controller.resumeAutoClosedWork}
       pendingPreviousRecord={controller.pendingPreviousRecord}
       closePreviousAndStart={controller.closePreviousAndStart}
       reviewPreviousRecord={controller.reviewPreviousRecord}

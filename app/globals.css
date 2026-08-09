@@ -9,7 +9,8 @@
 
 :root {
   --accent: #06b6d4;
-  --accent-foreground: #061316;
+  --accent-fill: #0e7490;
+  --accent-foreground: #ffffff;
   --accent-strong: #0e7490;
   --accent-soft: color-mix(in srgb, var(--accent) 14%, transparent);
   --page: color-mix(in srgb, var(--accent) 2.2%, #f6f8fb);
@@ -41,7 +42,7 @@
 }
 
 :root[data-theme="dark"] {
-  --accent-foreground: #041316;
+  --accent-foreground: #ffffff;
   --accent-strong: #67e8f9;
   --page: color-mix(in srgb, var(--accent) 4.2%, #071017);
   --surface-1: color-mix(in srgb, var(--accent) 3.2%, #0d161d);

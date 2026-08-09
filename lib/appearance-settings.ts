@@ -119,6 +119,7 @@ export function createAppearancePreviewTokens(
 
   return {
     "--accent": accentTokens.accent,
+    "--accent-fill": accentTokens.fill,
     "--accent-foreground": accentTokens.foreground,
     "--accent-strong": accentTokens.strong,
     "--accent-soft": `color-mix(in srgb, ${accentTokens.accent} 14%, transparent)`,

@@ -1,8 +1,9 @@
 "use client";
 
-import { CheckCircle2, Pencil, RotateCcw, Save, X } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Pencil, Play, RotateCcw, Save, X } from "lucide-react";
 import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { localDateKey } from "@/lib/format";
 import { registerSettingsDraft } from "@/lib/settings-draft-registry";
 import { getWorkRecordChanges } from "@/lib/work-record-diff";
 import type { WorkRecord, WorkRecordPatch } from "@/lib/types";
@@ -14,6 +15,12 @@ import { TodayTimeStrip } from "./today-time-strip";
 export function CompletedDayEditor(props: TodayPageProps & { scheduledDayOff: boolean }) {
   const { record, selectedDate, updateRecord } = props;
   const completed = Boolean(record.start && record.end);
+  const autoClosed = Boolean(completed && record.needsReview && record.autoClosedAt);
+  const canResume = Boolean(
+    autoClosed &&
+    selectedDate === localDateKey() &&
+    (record.autoClosedReason === "page-exit" || record.autoClosedReason === "stale-session"),
+  );
   const registryId = useId();
   const [editing, setEditing] = useState(!completed);
   const [baseline, setBaseline] = useState<WorkRecord>(record);
@@ -59,17 +66,34 @@ export function CompletedDayEditor(props: TodayPageProps & { scheduledDayOff: bo
 
   return <>
     {completed && (
-      <div className="mb-4 grid gap-3 rounded-[var(--card-radius)] border border-[color-mix(in_srgb,var(--success)_24%,var(--border))] bg-[var(--success-soft)] px-4 py-3">
+      <div className={`mb-4 grid gap-3 rounded-[var(--card-radius)] border px-4 py-3 ${
+        autoClosed
+          ? "border-[color-mix(in_srgb,var(--warning)_30%,var(--border))] bg-[var(--warning-soft)]"
+          : "border-[color-mix(in_srgb,var(--success)_24%,var(--border))] bg-[var(--success-soft)]"
+      }`}>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-start gap-3">
-            <CheckCircle2 className="mt-0.5 size-5 text-[var(--success)]" aria-hidden="true" />
+            {autoClosed
+              ? <AlertTriangle className="mt-0.5 size-5 text-[var(--warning)]" aria-hidden="true" />
+              : <CheckCircle2 className="mt-0.5 size-5 text-[var(--success)]" aria-hidden="true" />}
             <div className="grid gap-0.5">
-              <strong className="text-xs font-extrabold text-[var(--text)]">ثبت این روز کامل شده است</strong>
-              <span className="text-[10px] leading-5 text-[var(--text-muted)]">ویرایش تاریخی داخل پیش‌نویس انجام می‌شود و تا ذخیره، داده اصلی تغییر نمی‌کند.</span>
+              <strong className="text-xs font-extrabold text-[var(--text)]">
+                {autoClosed ? "این نشست به صورت خودکار بسته شده است" : "ثبت این روز کامل شده است"}
+              </strong>
+              <span className="text-[10px] leading-5 text-[var(--text-muted)]">
+                {autoClosed
+                  ? `آخرین زمان فعال ${record.end || "نامشخص"} ثبت شده است. اگر هنوز سر کاری، از سرگیری را بزن؛ فاصله قطع ارتباط از کارکرد کم می‌شود.`
+                  : "ویرایش تاریخی داخل پیش‌نویس انجام می‌شود و تا ذخیره، داده اصلی تغییر نمی‌کند."}
+              </span>
             </div>
           </div>
           {!editing ? (
-            <Button type="button" variant="secondary" onClick={beginEdit}><Pencil /> ویرایش این روز</Button>
+            <div className="flex flex-wrap gap-2">
+              {canResume && (
+                <Button type="button" onClick={props.resumeAutoClosedWork}><Play /> از سرگیری کار</Button>
+              )}
+              <Button type="button" variant="secondary" onClick={beginEdit}><Pencil /> ویرایش این روز</Button>
+            </div>
           ) : (
             <div className="flex flex-wrap gap-2">
               <Button type="button" variant="ghost" onClick={cancelEdit}><X /> انصراف</Button>
