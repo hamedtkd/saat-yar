@@ -2,8 +2,11 @@ import { ChevronDown, Clock3 } from "lucide-react";
 import type { KeyboardEvent } from "react";
 
 import { Button } from "@/components/ui/button";
+import { translate } from "@/lib/i18n/catalog";
+import type { Locale } from "@/lib/i18n/locales";
 
-export function TimePickerTrigger({ inputValue, error, open, disabled, onInputChange, onCommit, onOpen }: {
+export function TimePickerTrigger({ locale, inputValue, error, open, disabled, onInputChange, onCommit, onOpen }: {
+  locale: Locale;
   inputValue: string;
   error: string;
   open: boolean;
@@ -25,17 +28,17 @@ export function TimePickerTrigger({ inputValue, error, open, disabled, onInputCh
         <input
           dir="ltr"
           inputMode="numeric"
-          aria-label="زمان"
+          aria-label={translate(locale, "picker.time.label")}
           aria-invalid={Boolean(error)}
           value={inputValue}
-        disabled={disabled}
-          placeholder="مثلاً ۰۸:۳۰"
+          disabled={disabled}
+          placeholder={translate(locale, "picker.time.placeholder")}
           className="min-w-0 bg-transparent py-2 text-left font-extrabold tabular-nums text-[var(--text)] outline-none placeholder:font-normal placeholder:text-[var(--text-muted)]"
           onChange={(event) => onInputChange(event.target.value)}
           onBlur={onCommit}
           onKeyDown={handleKeyDown}
         />
-        <Button type="button" variant="ghost" size="icon" className="size-8" onClick={onOpen} aria-haspopup="dialog" aria-expanded={open} aria-label="بازکردن انتخاب‌گر زمان">
+        <Button type="button" variant="ghost" size="icon" className="size-8" onClick={onOpen} aria-haspopup="dialog" aria-expanded={open} aria-label={translate(locale, "picker.time.open")}>
           <ChevronDown aria-hidden="true" className="size-4 text-[var(--text-muted)]" />
         </Button>
       </div>

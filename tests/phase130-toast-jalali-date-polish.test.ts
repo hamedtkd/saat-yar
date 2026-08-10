@@ -43,15 +43,16 @@ test("product UI contains no raw HTML date input after the Persian calendar pass
   assert.doesNotMatch(sourceGroups.flat().join("\n"), /type=["']date["']/);
 });
 
-test("shared calendar renders Persian weekday labels and Persian digits", async () => {
+test("shared calendar renders locale-aware weekday labels and digits", async () => {
   const [grid, day, hook] = await Promise.all([
     read("components/pickers/jalali-date-picker/calendar-grid.tsx"),
     read("components/pickers/jalali-date-picker/calendar-day.tsx"),
     read("components/pickers/jalali-date-picker/use-jalali-date-picker.ts"),
   ]);
-  assert.match(grid, /\["ش", "ی", "د", "س", "چ", "پ", "ج"\]/);
-  assert.match(day, /fa\.format\(cell\.day\)/);
-  assert.match(hook, /jalali\(value/);
+  assert.match(grid, /WEEK_DAY_KEYS/);
+  assert.match(grid, /translate\(locale, key\)/);
+  assert.match(day, /formatLocaleDigits\(locale, cell\.day\)/);
+  assert.match(hook, /formatLocaleDate\(locale, value/);
 });
 
 test("phase 130 is documented, wired into quality, and moves relation expansion to phase 131", async () => {

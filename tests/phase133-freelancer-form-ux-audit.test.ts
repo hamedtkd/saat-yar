@@ -45,7 +45,7 @@ test("manual time entry reports errors inline instead of blocking browser alerts
   assert.match(manual, /<FormFeedback message=\{error\}/);
   assert.match(manual, /<form onSubmit=\{save\}/);
   assert.doesNotMatch(manual, /\balert\(/);
-  assert.match(manual, /هم‌پوشانی/);
+  assert.match(manual, /t\("today\.manual\.errorOverlap"\)/);
 });
 
 test("empty freelancer states offer the next useful action in context", () => {

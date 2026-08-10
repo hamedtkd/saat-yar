@@ -43,9 +43,9 @@ test("today hero exposes guarded previous and next day navigation", async () => 
     read("components/pages/today/today-page.tsx"),
     read("components/pages/today/today-hero.tsx"),
   ]);
-  assert.match(page, /onDateChange=\{\(date\) => requestNavigation/);
-  assert.match(hero, /aria-label="روز قبل"/);
-  assert.match(hero, /aria-label="روز بعد"/);
+  assert.match(page, /onDateChange=\{\(nextDate\) => requestNavigation\(\(\) => props\.setSelectedDate\(nextDate\)\)\}/);
+  assert.match(hero, /aria-label=\{t\("today\.hero\.previousDay"\)\}/);
+  assert.match(hero, /aria-label=\{t\("today\.hero\.nextDay"\)\}/);
   assert.match(hero, /shiftDateKey\(selectedDate, -1\)/);
   assert.match(hero, /shiftDateKey\(selectedDate, 1\)/);
   assert.equal(shiftDateKey("2026-08-07", -1), "2026-08-06");

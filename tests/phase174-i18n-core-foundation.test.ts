@@ -94,7 +94,7 @@ test("production smoke proves English LTR persistence then restores Persian befo
   assert.match(smoke, /Persian RTL locale restore/);
 });
 
-test("Phase 174 is isolated to the i18n foundation and defers full page translation", () => {
+test("Phase 174 remains an isolated i18n foundation with a documented Phase 175 handoff", () => {
   const roadmap = read("docs/roadmap/BACKLOG_FA.md");
   const notes = read("docs/phases/PHASE_174_NOTES_FA.md");
   const pkg = read("package.json");
@@ -104,5 +104,5 @@ test("Phase 174 is isolated to the i18n foundation and defers full page translat
   assert.match(notes, /Migration جدید: ندارد/);
   assert.match(notes, /Dependency جدید: ندارد/);
   assert.match(pkg, /phase174-i18n-core-foundation\.test\.ts/);
-  assert.doesNotMatch(pkg, /phase175-i18n/);
+  assert.match(pkg, /phase175-i18n-core-pages\.test\.ts/);
 });

@@ -29,7 +29,7 @@ test("break editor exposes an explicit paid toggle for every break", async () =>
   assert.match(source, /<Checkbox/);
   assert.match(source, /checked=\{Boolean\(item\.paid\)\}/);
   assert.match(source, /updateBreak\(item\.id, \{ paid \}\)/);
-  assert.match(source, /با حقوق/);
+  assert.match(source, /t\("common\.paid"\)/);
 });
 
 test("employee browser journey pins the created break to the unpaid contract", async () => {

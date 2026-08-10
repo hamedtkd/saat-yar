@@ -1,11 +1,5 @@
-import { fa } from "@/lib/format";
 import { timeToMinutes } from "@/lib/time-engine";
 import type { Settings } from "@/lib/types";
-
-export const WEEKDAY_LABELS = [
-  "یکشنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه",
-  "پنجشنبه", "جمعه", "شنبه",
-];
 
 export const CHART_COLORS = {
   worked: "var(--accent)",
@@ -19,11 +13,7 @@ export const CHART_COLORS = {
 };
 
 export function localDateKey(date: Date) {
-  return [
-    date.getFullYear(),
-    String(date.getMonth() + 1).padStart(2, "0"),
-    String(date.getDate()).padStart(2, "0"),
-  ].join("-");
+  return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, "0"), String(date.getDate()).padStart(2, "0")].join("-");
 }
 
 export function parseLocalDate(value: string) {
@@ -31,32 +21,6 @@ export function parseLocalDate(value: string) {
   return Number.isNaN(date.getTime()) ? new Date(value) : date;
 }
 
-export function formatShortDate(date: Date) {
-  return new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
-    month: "short",
-    day: "numeric",
-  }).format(date);
-}
-
-export function formatPersianDayNumber(date: Date) {
-  return new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
-    day: "numeric",
-  }).format(date);
-}
-
-export function compactMoney(value: number) {
-  const absoluteValue = Math.abs(value);
-  if (absoluteValue >= 1_000_000_000) return `${fa.format(Math.round(value / 1_000_000_000))} میلیارد`;
-  if (absoluteValue >= 1_000_000) return `${fa.format(Math.round(value / 1_000_000))} میلیون`;
-  if (absoluteValue >= 1_000) return `${fa.format(Math.round(value / 1_000))} هزار`;
-  return fa.format(Math.round(value));
-}
-
 export function getDailyTarget(settings: Settings) {
-  return Math.max(
-    1,
-    timeToMinutes(settings.defaultEnd) -
-      timeToMinutes(settings.defaultStart) -
-      settings.lunchMinutes,
-  );
+  return Math.max(1, timeToMinutes(settings.defaultEnd) - timeToMinutes(settings.defaultStart) - settings.lunchMinutes);
 }

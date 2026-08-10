@@ -24,7 +24,7 @@ test("employee smoke reads the real native break checkbox contract", async () =>
 test("phase 143 paid-toggle product contract remains intact while the harness follows it", async () => {
   const editor = await read("components/pages/today/time-strip/breaks-editor.tsx");
   const smoke = await read("scripts/employee-browser-ux-smoke.mjs");
-  assert.match(editor, /aria-label=\{`وقفه \$\{index \+ 1\} با حقوق`\}/);
+  assert.match(editor, /aria-label=\{t\("today\.breaks\.paidAria", \{ count: number\(index \+ 1\) \}\)\}/);
   assert.match(editor, /checked=\{Boolean\(item\.paid\)\}/);
   assert.match(smoke, /ensureFirstBreakUnpaid/);
   assert.match(smoke, /Break paid\/unpaid native checkbox not found/);

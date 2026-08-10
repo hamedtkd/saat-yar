@@ -1,14 +1,10 @@
+"use client";
+
 import { BarChart3 } from "lucide-react";
 import { EmptyState } from "@/components/common/empty-state";
+import { useLocaleUi } from "@/components/i18n/use-locale-ui";
 
 export function WeeklyEmptyState() {
-  return (
-    <div className="mt-4 min-h-[290px]">
-      <EmptyState
-        icon={<BarChart3 />}
-        title="هنوز داده‌ای برای نمودار وجود ندارد"
-        description="بعد از ثبت کارکرد، نمودار هفتگی اینجا نمایش داده می‌شود."
-      />
-    </div>
-  );
+  const { t } = useLocaleUi();
+  return <div className="mt-4 min-h-[290px]"><EmptyState icon={<BarChart3 />} title={t("month.weekly.empty")} description={t("month.weekly.emptyHint")} /></div>;
 }

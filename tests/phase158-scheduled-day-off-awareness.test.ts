@@ -36,8 +36,8 @@ test("today hero announces the configured day off and gives the picker the weekl
   const hero = await read("components/pages/today/today-hero.tsx");
 
   assert.match(hero, /isScheduledDayOff\(selectedDate, data\.settings\)/);
-  assert.match(hero, /امروز طبق برنامه کاری تعطیل است/);
-  assert.match(hero, /این روز طبق برنامه کاری تعطیل است/);
+  assert.match(hero, /t\("today\.hero\.scheduledOffToday"/);
+  assert.match(hero, /t\("today\.hero\.reviewScheduledOff"\)/);
   assert.match(hero, /weeklySchedule=\{data\.settings\.weeklySchedule\}/);
 });
 
@@ -48,12 +48,12 @@ test("today surfaces describe a scheduled day off instead of a generic zero-targ
     read("components/pages/today/today-metrics.tsx"),
   ]);
 
-  assert.match(page, /امروز طبق برنامه کاری تعطیل است/);
-  assert.match(page, /ساعت موظفی: صفر/);
-  assert.match(summary, /تعطیل طبق برنامه کاری/);
-  assert.match(summary, /کار استثنایی در روز تعطیل/);
-  assert.match(metrics, /تعطیل طبق برنامه/);
-  assert.match(metrics, /ساعت موظفی صفر/);
+  assert.match(page, /t\("today\.scheduleOff\.today"\)/);
+  assert.match(page, /t\("today\.scheduleOff\.zeroTarget"\)/);
+  assert.match(summary, /t\("today\.summary\.scheduledOff"\)/);
+  assert.match(summary, /today\.summary\.exception/);
+  assert.match(metrics, /t\("today\.summary\.scheduledOff"\)/);
+  assert.match(metrics, /t\("today\.metrics\.zeroRequired"\)/);
 });
 
 test("attendance controls keep exceptional work possible without presenting the day as normal", async () => {
@@ -62,11 +62,11 @@ test("attendance controls keep exceptional work possible without presenting the 
     read("components/pages/today/time-strip/time-inputs.tsx"),
   ]);
 
-  assert.match(focus, /تعطیل طبق برنامه کاری/);
-  assert.match(focus, /در صورت نیاز می‌توانی کار استثنایی ثبت کنی/);
-  assert.match(focus, /بدون ساعت خروج موظفی/);
-  assert.match(focus, /با این حال شروع روز/);
-  assert.match(inputs, /ثبت ورود استثنایی/);
+  assert.match(focus, /t\("today\.focus\.scheduledOff"\)/);
+  assert.match(focus, /t\("today\.focus\.exceptionHint"\)/);
+  assert.match(focus, /t\("today\.focus\.startNoRequiredEnd"/);
+  assert.match(focus, /t\("today\.focus\.startAnyway"\)/);
+  assert.match(inputs, /t\("today\.time\.exceptionStart"\)/);
   assert.match(inputs, /scheduledDayOff \? \[\] :/);
 });
 
@@ -80,7 +80,7 @@ test("jalali calendar marks scheduled days off separately from official holidays
   assert.match(types, /weeklySchedule\?: Settings\["weeklySchedule"\]/);
   assert.match(picker, /weeklySchedule,/);
   assert.match(day, /isScheduledDayOff/);
-  assert.match(day, /تعطیل طبق برنامه کاری/);
+  assert.match(day, /translate\(locale, "picker\.date\.scheduledOff"\)/);
   assert.match(day, /var\(--warning\)/);
   assert.match(day, /!holiday\.isHoliday/);
 });

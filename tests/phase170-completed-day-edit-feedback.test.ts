@@ -14,17 +14,17 @@ test("completed-day edit actions dock above mobile navigation and stay sticky on
   assert.match(bar, /xl:top-\[78px\]/);
   assert.match(bar, /xl:bottom-auto/);
   assert.match(editor, /pb-\[calc\(136px\+env\(safe-area-inset-bottom\)\)\] xl:pb-0/);
-  assert.match(bar, /aria-label="کنترل‌های ویرایش روز"/);
+  assert.match(bar, /aria-label=\{t\("today\.edit\.controlsAria"\)\}/);
 });
 
 test("completed-day edit bar exposes dirty state and explicit draft actions", async () => {
   const bar = await read("components/pages/today/completed-day-edit-action-bar.tsx");
   assert.match(bar, /data-dirty=\{dirty \? "true" : "false"\}/);
-  assert.match(bar, /تغییر ذخیره‌نشده/);
-  assert.match(bar, /هنوز تغییری ندادی/);
-  assert.match(bar, /انصراف/);
-  assert.match(bar, /بازنشانی/);
-  assert.match(bar, /ذخیره تغییرات/);
+  assert.match(bar, /t\("today\.edit\.unsavedCount"/);
+  assert.match(bar, /t\("today\.edit\.noChanges"\)/);
+  assert.match(bar, /t\("common\.cancel"\)/);
+  assert.match(bar, /t\("common\.reset"\)/);
+  assert.match(bar, /t\("common\.saveChanges"\)/);
   assert.match(bar, /disabled=\{!dirty\}/);
 });
 
@@ -38,7 +38,7 @@ test("save feedback replaces the visible edit bar before fading", async () => {
   assert.match(editor, /<CompletedDayEditSavedNotice \/>/);
   assert.match(bar, /data-completed-edit-feedback/);
   assert.match(bar, /role="status"/);
-  assert.match(bar, /تغییرات این روز ذخیره شد/);
+  assert.match(bar, /t\("today\.edit\.saved"\)/);
 });
 
 test("completed-day fields expose a clear locked versus editing contract", async () => {

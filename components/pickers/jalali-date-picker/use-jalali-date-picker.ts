@@ -1,32 +1,32 @@
 import { useMemo, useState } from "react";
 
-import {
-  jalali,
-  jalaliMonthCells,
-  localDateKey,
-  shiftJalaliMonth,
-} from "@/lib/format";
+import { jalaliMonthCells, localDateKey, shiftJalaliMonth } from "@/lib/format";
+import { formatLocaleDate } from "@/lib/i18n/formatters";
+import type { Locale } from "@/lib/i18n/locales";
 
 import type { JalaliDatePickerProps } from "./types";
+
+type PickerStateProps = Pick<
+  JalaliDatePickerProps,
+  "value" | "onChange" | "recordedDates" | "placeholder"
+> & { locale: Locale };
 
 export function useJalaliDatePicker({
   value,
   onChange,
   recordedDates = [],
-  placeholder = "انتخاب تاریخ",
-}: Pick<
-  JalaliDatePickerProps,
-  "value" | "onChange" | "recordedDates" | "placeholder"
->) {
+  placeholder = "",
+  locale,
+}: PickerStateProps) {
   const today = localDateKey();
   const [open, setOpen] = useState(false);
   const [viewDate, setViewDate] = useState(value || today);
 
   const cells = useMemo(() => jalaliMonthCells(viewDate), [viewDate]);
   const recorded = useMemo(() => new Set(recordedDates), [recordedDates]);
-  const title = jalali(viewDate, { month: "long", year: "numeric" });
+  const title = formatLocaleDate(locale, viewDate, { month: "long", year: "numeric" });
   const selectedLabel = value
-    ? jalali(value, {
+    ? formatLocaleDate(locale, value, {
         weekday: "long",
         day: "numeric",
         month: "long",
@@ -40,10 +40,8 @@ export function useJalaliDatePicker({
   };
 
   const closePicker = () => setOpen(false);
-  const showPreviousMonth = () =>
-    setViewDate((current) => shiftJalaliMonth(current, -1));
-  const showNextMonth = () =>
-    setViewDate((current) => shiftJalaliMonth(current, 1));
+  const showPreviousMonth = () => setViewDate((current) => shiftJalaliMonth(current, -1));
+  const showNextMonth = () => setViewDate((current) => shiftJalaliMonth(current, 1));
 
   const selectDate = (date: string) => {
     onChange(date);

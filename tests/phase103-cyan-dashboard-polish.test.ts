@@ -28,7 +28,7 @@ test("zero-target days never masquerade as one hundred percent complete", () => 
     assert.doesNotMatch(source, /dailyTarget\s*===\s*0\s*\?\s*100/);
     assert.match(source, /hasTarget/);
   }
-  assert.match(read("components/pages/today/today-smart-summary.tsx"), /روز بدون هدف کاری/);
+  assert.match(read("components/pages/today/today-smart-summary.tsx"), /t\("today\.summary\.noTargetWorkday"\)/);
 });
 
 test("today progress arc uses a stable dash-offset contract", () => {
@@ -41,8 +41,8 @@ test("today progress arc uses a stable dash-offset contract", () => {
 test("completed days present a final state instead of a disabled restart action", () => {
   const focus = read("components/pages/today/today-focus-card.tsx");
   const inputs = read("components/pages/today/time-strip/time-inputs.tsx");
-  assert.match(focus, /روز کاری ثبت شده/);
-  assert.match(focus, /روز ثبت شده/);
+  assert.match(focus, /t\("today\.focus\.dayRecorded"\)/);
+  assert.match(focus, /t\("today\.focus\.daySaved"\)/);
   assert.doesNotMatch(focus, /شروع دوباره/);
   assert.match(inputs, /disabled=\{Boolean\(record\.start\)\}/);
 });

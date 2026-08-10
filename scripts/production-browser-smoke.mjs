@@ -542,6 +542,27 @@ export async function runProductionBrowserSmoke() {
     await client.call("Page.reload", { ignoreCache: false });
     await localeReload;
     await waitFor(client, `document.documentElement.lang === "en" && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Settings & data")`, "English locale persistence after reload");
+
+    const englishTodayLoad = waitForEvent(client, "Page.loadEventFired", "English Today route");
+    await client.call("Page.navigate", { url: `${origin}/today/` });
+    await englishTodayLoad;
+    await waitFor(client, `["/today", "/today/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Today summary") && document.body?.innerText.includes("Daily target")`, "English Today core surface");
+
+    const englishMonthLoad = waitForEvent(client, "Page.loadEventFired", "English Month route");
+    await client.call("Page.navigate", { url: `${origin}/month/` });
+    await englishMonthLoad;
+    await waitFor(client, `["/month", "/month/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("My month") && document.body?.innerText.includes("Calendar and weekly trend")`, "English Month core surface");
+
+    const englishReportsLoad = waitForEvent(client, "Page.loadEventFired", "English Reports route");
+    await client.call("Page.navigate", { url: `${origin}/reports/` });
+    await englishReportsLoad;
+    await waitFor(client, `["/reports", "/reports/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Work and payroll report") && document.body?.innerText.includes("Analytics charts")`, "English Reports core surface");
+    console.log("✓ Today, Month, and Reports render localized English LTR surfaces before Persian restore");
+
+    const settingsLocaleRestoreLoad = waitForEvent(client, "Page.loadEventFired", "Settings locale restore route");
+    await client.call("Page.navigate", { url: `${origin}/settings/` });
+    await settingsLocaleRestoreLoad;
+    await waitFor(client, `Boolean(document.querySelector('[data-locale-choice="fa-IR"]')) && document.documentElement.lang === "en"`, "language settings before Persian restore");
     await evaluate(client, `document.querySelector('[data-locale-choice="fa-IR"]')?.click()`);
     await waitFor(client, `document.documentElement.lang === "fa" && document.documentElement.dir === "rtl" && localStorage.getItem("saatyar-locale-v1") === "fa-IR" && document.body?.innerText.includes("تنظیمات و داده‌ها")`, "Persian RTL locale restore");
     console.log("✓ Local-first locale switch persists English LTR across reload and restores Persian RTL");

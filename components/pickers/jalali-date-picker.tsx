@@ -1,5 +1,6 @@
 "use client";
 
+import { useLocaleUi } from "@/components/i18n/use-locale-ui";
 import { DatePickerDialog } from "./jalali-date-picker/date-picker-dialog";
 import { DatePickerTrigger } from "./jalali-date-picker/date-picker-trigger";
 import type { JalaliDatePickerProps } from "./jalali-date-picker/types";
@@ -14,25 +15,29 @@ export function JalaliDatePicker({
   includeWeeklyHoliday = true,
   holidayOverrides = [],
   weeklySchedule,
-  placeholder = "انتخاب تاریخ",
+  placeholder,
 }: JalaliDatePickerProps) {
+  const { locale, t } = useLocaleUi();
+  const localizedPlaceholder = placeholder ?? t("picker.date.placeholder");
   const picker = useJalaliDatePicker({
     value,
     onChange,
     recordedDates,
-    placeholder,
+    placeholder: localizedPlaceholder,
+    locale,
   });
 
   return (
     <div className="relative min-w-0 w-full">
       <DatePickerTrigger
         open={picker.open}
-        placeholder={placeholder}
+        placeholder={localizedPlaceholder}
         selectedLabel={picker.selectedLabel}
         onOpen={picker.openPicker}
       />
       {picker.open && (
         <DatePickerDialog
+          locale={locale}
           title={picker.title}
           cells={picker.cells}
           value={value}

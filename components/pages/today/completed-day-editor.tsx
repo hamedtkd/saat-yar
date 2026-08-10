@@ -2,6 +2,7 @@
 
 import { AlertTriangle, CheckCircle2, Pencil, Play } from "lucide-react";
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { useLocaleUi } from "@/components/i18n/use-locale-ui";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 import { localDateKey } from "@/lib/format";
@@ -15,6 +16,7 @@ import { TodayFocusCard } from "./today-focus-card";
 import { TodayTimeStrip } from "./today-time-strip";
 
 export function CompletedDayEditor(props: TodayPageProps & { scheduledDayOff: boolean }) {
+  const { t, digits } = useLocaleUi();
   const { record, selectedDate, updateRecord } = props;
   const completed = Boolean(record.start && record.end);
   const autoClosed = Boolean(completed && record.needsReview && record.autoClosedAt);
@@ -75,12 +77,12 @@ export function CompletedDayEditor(props: TodayPageProps & { scheduledDayOff: bo
 
   useEffect(
     () => registerSettingsDraft(registryId, {
-      label: `ویرایش رکورد ${selectedDate}`,
+      label: t("today.edit.registryLabel", { date: digits(selectedDate) }),
       dirty: completed && editing && dirty,
       save: saveEdit,
       discard: cancelEdit,
     }),
-    [cancelEdit, completed, dirty, editing, registryId, saveEdit, selectedDate],
+    [cancelEdit, completed, digits, dirty, editing, registryId, saveEdit, selectedDate, t],
   );
 
   const childProps = { ...props, record: visibleRecord, updateRecord: updateVisibleRecord };
@@ -100,20 +102,20 @@ export function CompletedDayEditor(props: TodayPageProps & { scheduledDayOff: bo
                 : <CheckCircle2 className="mt-0.5 size-5 text-[var(--success)]" aria-hidden="true" />}
               <div className="grid gap-0.5">
                 <strong className="text-xs font-extrabold text-[var(--text)]">
-                  {autoClosed ? "این نشست به صورت خودکار بسته شده است" : "ثبت این روز کامل شده است"}
+                  {autoClosed ? t("today.edit.autoClosed") : t("today.edit.completed")}
                 </strong>
                 <span className="text-[10px] leading-5 text-[var(--text-muted)]">
                   {autoClosed
-                    ? `آخرین زمان فعال ${record.end || "نامشخص"} ثبت شده است. اگر هنوز سر کاری، از سرگیری را بزن؛ فاصله قطع ارتباط از کارکرد کم می‌شود.`
-                    : "این رکورد فقط‌خواندنی است. برای اصلاح، ویرایش را شروع کن؛ تغییرها تا ذخیره وارد داده اصلی نمی‌شوند."}
+                    ? t("today.edit.autoClosedDetail", { time: digits(record.end || t("common.unknown")) })
+                    : t("today.edit.readOnlyDetail")}
                 </span>
               </div>
             </div>
             <div className="flex flex-wrap gap-2">
               {canResume && (
-                <Button type="button" onClick={props.resumeAutoClosedWork}><Play /> از سرگیری کار</Button>
+                <Button type="button" onClick={props.resumeAutoClosedWork}><Play /> {t("today.edit.resume")}</Button>
               )}
-              <Button type="button" variant="secondary" onClick={beginEdit}><Pencil /> ویرایش این روز</Button>
+              <Button type="button" variant="secondary" onClick={beginEdit}><Pencil /> {t("today.edit.start")}</Button>
             </div>
           </div>
         </div>

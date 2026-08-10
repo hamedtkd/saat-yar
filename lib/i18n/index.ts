@@ -11,3 +11,13 @@ export {
   type Locale,
 } from "./locales.ts";
 export { getBrowserLocale, readStoredLocale, setBrowserLocale, subscribeBrowserLocale } from "./locale-store.ts";
+export {
+  formatLocaleDate,
+  formatLocaleDigits,
+  formatLocaleDuration,
+  formatLocaleDurationSeconds,
+  formatLocaleMoney,
+  formatLocaleNumber,
+  formatLocalePercent,
+  formatLocaleTime,
+} from "./formatters.ts";

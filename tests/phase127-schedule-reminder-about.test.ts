@@ -38,7 +38,7 @@ test("work schedule shows exact hour and minute wording instead of a misleading 
 test("time picker remounts when a parent recalculates its controlled value", async () => {
   const picker = await read("components/pickers/time-picker.tsx");
   assert.match(picker, /<TimePickerSession key=\{props\.value\}/);
-  assert.match(picker, /useTimePicker\(value, onChange\)/);
+  assert.match(picker, /useTimePicker\(value, onChange, locale\)/);
 });
 
 test("break reminder toggle stays aligned with its own title instead of floating over the coffee icon", async () => {

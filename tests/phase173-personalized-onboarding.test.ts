@@ -116,7 +116,7 @@ test("Phase 173 is documented and advances the roadmap to i18n hardening", async
   ]);
   assert.match(roadmap, /\[x\] فاز ۱۷۳: Onboarding شخصی‌شده/);
   assert.match(roadmap, /\[x\] فاز ۱۷۴:.*i18n/);
-  assert.match(roadmap, /\[ \] فاز ۱۷۵:/);
+  assert.match(roadmap, /\[x\] فاز ۱۷۵:/);
   assert.match(notes, /Employee/);
   assert.match(notes, /Freelancer/);
   assert.match(notes, /Hybrid/);

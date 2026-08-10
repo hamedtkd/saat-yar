@@ -3,9 +3,10 @@ const DEFAULT_TIME = "00:00";
 const PERSIAN_DIGITS = "۰۱۲۳۴۵۶۷۸۹";
 const ARABIC_DIGITS = "٠١٢٣٤٥٦٧٨٩";
 
+export type TimeValidationErrorCode = "required" | "format" | "hour" | "minute";
 export type TimeValidationResult =
   | { valid: true; value: string }
-  | { valid: false; error: string };
+  | { valid: false; code: TimeValidationErrorCode; error: string };
 
 export function toEnglishDigits(value: string): string {
   return value.replace(/[۰-۹٠-٩]/g, (digit) => {
@@ -17,17 +18,17 @@ export function toEnglishDigits(value: string): string {
 
 export function parseTimeInput(rawValue: string): TimeValidationResult {
   const value = toEnglishDigits(rawValue).trim().replace(/٫|\./g, ":");
-  if (!value) return { valid: false, error: "لطفاً یک زمان وارد کنید." };
+  if (!value) return { valid: false, code: "required", error: "لطفاً یک زمان وارد کنید." };
 
   const parts = value.split(":");
   if (parts.length > 2 || parts.some((part) => !/^\d{1,2}$/.test(part))) {
-    return { valid: false, error: "فرمت ساعت باید مانند ۰۸:۳۰ باشد." };
+    return { valid: false, code: "format", error: "فرمت ساعت باید مانند ۰۸:۳۰ باشد." };
   }
 
   const hour = Number(parts[0]);
   const minute = parts.length === 1 ? 0 : Number(parts[1]);
-  if (hour < 0 || hour > 23) return { valid: false, error: "ساعت باید بین ۰۰ تا ۲۳ باشد." };
-  if (minute < 0 || minute > 59) return { valid: false, error: "دقیقه باید بین ۰۰ تا ۵۹ باشد." };
+  if (hour < 0 || hour > 23) return { valid: false, code: "hour", error: "ساعت باید بین ۰۰ تا ۲۳ باشد." };
+  if (minute < 0 || minute > 59) return { valid: false, code: "minute", error: "دقیقه باید بین ۰۰ تا ۵۹ باشد." };
 
   return {
     valid: true,

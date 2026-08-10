@@ -32,7 +32,7 @@ test("employee mode keeps attendance data visible in the redesigned dashboard", 
     read("components/pages/today/today-attendance-log.tsx"),
   ]);
   assert.match(page, /<TodayAttendanceLog record=\{props\.record\}/);
-  assert.match(log, /ورودها، خروج‌ها، ناهار و وقفه‌ها/);
+  assert.match(log, /t\("today\.attendance\.title"\)/);
   assert.match(log, /record\.breaks\.map/);
   assert.match(log, /record\.lunchStart/);
 });

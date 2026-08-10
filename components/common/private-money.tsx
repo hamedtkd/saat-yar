@@ -1,7 +1,8 @@
-import type { ReactNode } from "react";
+"use client";
 
+import type { ReactNode } from "react";
+import { useLocaleUi } from "@/components/i18n/use-locale-ui";
 import { cn } from "@/lib/cn";
-import { money } from "@/lib/format";
 
 type PrivateMoneyProps = {
   value: number;
@@ -11,16 +12,11 @@ type PrivateMoneyProps = {
   maskedClassName?: string;
 };
 
-export function PrivateMoney({
-  value,
-  hidden = false,
-  suffix,
-  className,
-  maskedClassName,
-}: PrivateMoneyProps) {
+export function PrivateMoney({ value, hidden = false, suffix, className, maskedClassName }: PrivateMoneyProps) {
+  const { money, t } = useLocaleUi();
   return (
     <span
-      aria-label={hidden ? "مبلغ مخفی شده است" : undefined}
+      aria-label={hidden ? t("common.amountHidden") : undefined}
       className={cn(className, hidden && "select-none", hidden && maskedClassName)}
     >
       {hidden ? "••••••" : money(value)}

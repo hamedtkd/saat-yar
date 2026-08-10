@@ -1,9 +1,20 @@
+import { translate, type MessageKey } from "@/lib/i18n/catalog";
+import type { Locale } from "@/lib/i18n/locales";
 import { CalendarDay } from "./calendar-day";
 import type { CalendarDayCell, HolidayOptions } from "./types";
 
-const WEEK_DAYS = ["ش", "ی", "د", "س", "چ", "پ", "ج"];
+const WEEK_DAY_KEYS: MessageKey[] = [
+  "weekday.sat.short",
+  "weekday.sun.short",
+  "weekday.mon.short",
+  "weekday.tue.short",
+  "weekday.wed.short",
+  "weekday.thu.short",
+  "weekday.fri.short",
+];
 
 type CalendarGridProps = {
+  locale: Locale;
   cells: CalendarDayCell[];
   value: string;
   today: string;
@@ -13,6 +24,7 @@ type CalendarGridProps = {
 };
 
 export function CalendarGrid({
+  locale,
   cells,
   value,
   today,
@@ -23,12 +35,12 @@ export function CalendarGrid({
   return (
     <>
       <div className="grid grid-cols-7 gap-1.5">
-        {WEEK_DAYS.map((day) => (
+        {WEEK_DAY_KEYS.map((key) => (
           <span
-            key={day}
+            key={key}
             className="py-2 text-center text-[10px] font-bold text-[var(--text-muted)]"
           >
-            {day}
+            {translate(locale, key)}
           </span>
         ))}
       </div>
@@ -36,6 +48,7 @@ export function CalendarGrid({
         {cells.map((cell) => (
           <CalendarDay
             key={cell.key}
+            locale={locale}
             cell={cell}
             value={value}
             today={today}
