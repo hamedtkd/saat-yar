@@ -1,18 +1,20 @@
-import { duration, jalali } from "@/lib/format";
+import { formatLocaleDate, formatLocaleDuration } from "@/lib/i18n/formatters";
+import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n/locales";
+import { translateBusiness } from "@/lib/i18n/business";
 import type { LeaveEntry } from "@/lib/types";
 
-export function getLeaveTypeLabel(type: LeaveEntry["type"]) {
-  if (type === "full") return "روز کامل";
-  if (type === "half") return "نیم‌روز";
-  return "ساعتی";
+export function getLeaveTypeLabel(type: LeaveEntry["type"], locale: Locale = DEFAULT_LOCALE) {
+  if (type === "full") return translateBusiness(locale, "leave.type.full");
+  if (type === "half") return translateBusiness(locale, "leave.type.half");
+  return translateBusiness(locale, "leave.type.hourly");
 }
 
-export function getLeaveDurationLabel(entry: LeaveEntry) {
-  if (entry.type === "hourly") return duration(entry.minutes);
-  if (entry.type === "half") return "نیم‌روز";
-  return "یک روز";
+export function getLeaveDurationLabel(entry: LeaveEntry, locale: Locale = DEFAULT_LOCALE) {
+  if (entry.type === "hourly") return formatLocaleDuration(locale, entry.minutes);
+  if (entry.type === "half") return translateBusiness(locale, "leave.type.half");
+  return translateBusiness(locale, "leave.duration.oneDay");
 }
 
-export function formatLeaveDate(value: string) {
-  return jalali(value, { day: "numeric", month: "long", year: "numeric" });
+export function formatLeaveDate(value: string, locale: Locale = DEFAULT_LOCALE) {
+  return formatLocaleDate(locale, value, { day: "numeric", month: "long", year: "numeric" });
 }

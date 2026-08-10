@@ -1,6 +1,9 @@
+"use client";
+
 import { FolderKanban, Plus } from "lucide-react";
 import { PageHeading } from "@/components/common/page-heading";
 import { SectionHeading } from "@/components/common/section-heading";
+import { useBusinessUi } from "@/components/i18n/use-business-ui";
 import { Button } from "@/components/ui/button";
 import type { AppData, ClientDraft, Project, ProjectDraft, TimeEntry } from "@/lib/types";
 import { ProjectDetail } from "./project-detail";
@@ -22,17 +25,18 @@ export function ProjectsPage({ data, setData, selectedProject, setSelectedProjec
   toggleProjectTimer: (id?: string) => void;
   financialsHidden: boolean;
 }) {
+  const { b } = useBusinessUi();
   if (selectedProject) {
     return <ProjectDetail data={data} setData={setData} project={selectedProject} activeEntry={activeEntry} onBack={() => setSelectedProjectId("")} onToggleTimer={toggleProjectTimer} financialsHidden={financialsHidden} />;
   }
 
   return (
     <>
-      <PageHeading title="پروژه‌ها" description="بودجه، نرخ، زمان و وضعیت هر پروژه را بدون از دست دادن جزئیات دنبال کن.">
-        <Button onClick={() => setShowForm(!showForm)}><Plus /> پروژه جدید</Button>
+      <PageHeading title={b("projects.title")} description={b("projects.description")}>
+        <Button onClick={() => setShowForm(!showForm)}><Plus /> {b("projects.new")}</Button>
       </PageHeading>
       {showForm && <ProjectForm data={data} draft={draft} setDraft={setDraft} createClient={createClient} onSave={addProject} onCancel={() => setShowForm(false)} />}
-      <SectionHeading icon={<FolderKanban />} eyebrow="پرتفوی پروژه" title="پروژه‌های شما" description="وضعیت، مصرف بودجه و سود هر پروژه را در کارت‌های یکپارچه مرور کن." />
+      <SectionHeading icon={<FolderKanban />} eyebrow={b("projects.section.eyebrow")} title={b("projects.section.title")} description={b("projects.section.description")} />
       <ProjectList data={data} financialsHidden={financialsHidden} onSelect={setSelectedProjectId} onCreate={() => setShowForm(true)} />
     </>
   );

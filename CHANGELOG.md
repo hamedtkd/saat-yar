@@ -2,6 +2,9 @@
 
 ### افزوده شد
 
+- Phase 176: i18n به Clients، Projects، Project Detail/Expenses، Invoices و Leave گسترش یافت؛ Validation و Toastهای تجاری نیز از Locale فعال پیروی می‌کنند.
+- Exportهای CSV/Excel گزارش‌ها اکنون Header، تاریخ، Yes/No، نام فایل و Toast را مطابق Locale فعال تولید می‌کنند و Browser Smoke مسیرهای تجاری English/LTR را پیش از بازگشت به Persian/RTL بررسی می‌کند.
+
 - Phase 175: i18n از Shell/Settings به Today، Month و Reports گسترش یافت؛ متن‌ها، جدول‌ها، نمودارها، Pickerهای زمان/تاریخ و Empty Stateها از Catalog تایپ‌شده فارسی/انگلیسی استفاده می‌کنند.
 - نمایش تاریخ/عدد/مدت/پول Locale-aware شد؛ `fa-IR` با RTL و ارقام فارسی و `en` با LTR و ارقام لاتین، در حالی که تقویم شمسی و کلیدهای ذخیره‌شده تاریخ/زمان بدون تغییر می‌مانند.
 - Production Browser Smoke اکنون پس از ماندگاری English/LTR سه Route واقعی Today/Month/Reports را بررسی می‌کند و سپس Locale را به Persian/RTL بازمی‌گرداند.

@@ -290,7 +290,8 @@
 - [x] فاز ۱۷۳: Onboarding شخصی‌شده بر اساس Employee/Freelancer/Hybrid؛ مراحل ۳ و ۴ متناسب با Workspace، ساخت اختیاری مشتری/پروژه برای Freelancer، درآمد ترکیبی برای Hybrid و Import داخلی امن در مرحله ۷ با حفظ وضعیت تکمیل تا Submit نهایی.
 - [x] فاز ۱۷۴: زیرساخت i18n واقعی (Foundation)؛ Catalog/Dictionary تایپ‌شده، Locale مستقل Local-first، سوییچ بدون Reload، Shell/Navigation/Settings دوطرفه فارسی RTL و انگلیسی LTR و Browser Smoke ماندگاری Locale.
 - [x] فاز ۱۷۵: گسترش i18n به Today/Month/Reports؛ متن‌ها، تقویم شمسی، اعداد، مدت، پول، Pickerها، جدول/نمودار و Browser Smoke واقعی English/LTR → Persian/RTL بدون تغییر Schema یا AppData.
-- [ ] فاز ۱۷۶: گسترش i18n به Clients/Projects/Invoices/Leave و سطوح تجاری، همراه با Validation/Toast/Print/CSV و Browser Journey دو Locale.
+- [x] فاز ۱۷۶: گسترش i18n به Clients/Projects/Invoices/Leave و سطوح تجاری، همراه با Validation/Toast/Print/CSV و Browser Journey دو Locale.
+- [ ] فاز ۱۷۷: تکمیل i18n در Settings/Onboarding/Import/About و متن‌های System/PWA metadata، سپس Audit سراسری hard-coded copy در هر دو جهت.
 
 ## بین‌المللی‌سازی آینده — پس از Patch بعدی
 
@@ -298,5 +299,6 @@
 - [x] افزودن Locale انگلیسی و قرارداد LTR برای Shell/Navigation/Settings؛ ترجمه کامل صفحه‌های دامنه و سیاست تقویم/اعداد در فاز ۱۷۵ ادامه دارد.
 - [x] ذخیره Locale انتخابی به‌صورت Local-first خارج از AppData و تغییر آن از Settings بدون Reload مخرب یا دست‌زدن به Draftهای AppData.
 - [x] گسترش Regression و Browser Smoke دوطرفه `fa-IR / RTL` و `en / LTR` از Shell/Settings به Today، Month و Reports در فاز ۱۷۵.
-- [ ] گسترش همین قرارداد به Clients/Projects/Invoices/Leave و Journeyهای تجاری در فاز ۱۷۶.
-- [ ] تعیین سیاست ترجمه برای متن‌های سیستم، Toastها، Validation، PWA metadata و خروجی‌های CSV/Print پیش از فعال‌کردن زبان دوم در Production.
+- [x] گسترش همین قرارداد به Clients/Projects/Invoices/Leave و Journeyهای تجاری در فاز ۱۷۶.
+- [x] ترجمه Validation/Toastهای تجاری و خروجی CSV/Excel/سطح چاپ مرتبط در فاز ۱۷۶، بدون تغییر داده دامنه.
+- [ ] تکمیل متن‌های System/PWA metadata و سطوح باقی‌مانده Settings/Onboarding/Import/About در فاز ۱۷۷ پیش از فعال‌کردن زبان دوم در Production.

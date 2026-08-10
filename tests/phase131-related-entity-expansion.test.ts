@@ -42,7 +42,7 @@ test("quick project dialog can return the created project to its owning form", (
   const dialog = read("components/pages/projects/quick-project-dialog.tsx");
   assert.match(dialog, /onCreated\?: \(id: string\) => void/);
   assert.match(dialog, /onCreated\?\.\(id\)/);
-  assert.match(dialog, /ذخیره و انتخاب/);
+  assert.match(dialog, /b\("common\.saveAndSelect"\)/);
 });
 
 test("phase 131 is wired into quality and roadmap documents contextual expenses", () => {

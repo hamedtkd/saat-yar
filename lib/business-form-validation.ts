@@ -1,4 +1,6 @@
-import type { ClientDraft, ProjectDraft } from "./types";
+import { DEFAULT_LOCALE, type Locale } from "./i18n/locales.ts";
+import { translateBusiness } from "./i18n/business.ts";
+import type { ClientDraft, ProjectDraft } from "./types.ts";
 
 export type FormErrors<K extends string> = Partial<Record<K, string>>;
 
@@ -6,19 +8,19 @@ export function hasFormErrors<K extends string>(errors: FormErrors<K>) {
   return Object.values(errors as Record<string, string | undefined>).some(Boolean);
 }
 
-export function validateClientDraft(draft: ClientDraft): FormErrors<"name" | "email"> {
+export function validateClientDraft(draft: ClientDraft, locale: Locale = DEFAULT_LOCALE): FormErrors<"name" | "email"> {
   const errors: FormErrors<"name" | "email"> = {};
-  if (!draft.name.trim()) errors.name = "نام مشتری را وارد کن.";
-  if (draft.email.trim() && !/^\S+@\S+\.\S+$/.test(draft.email.trim())) errors.email = "ایمیل را با قالب معتبر وارد کن.";
+  if (!draft.name.trim()) errors.name = translateBusiness(locale, "validation.client.name");
+  if (draft.email.trim() && !/^\S+@\S+\.\S+$/.test(draft.email.trim())) errors.email = translateBusiness(locale, "validation.client.email");
   return errors;
 }
 
-export function validateProjectDraft(draft: ProjectDraft): FormErrors<"name" | "clientId" | "rate" | "budgetHours"> {
+export function validateProjectDraft(draft: ProjectDraft, locale: Locale = DEFAULT_LOCALE): FormErrors<"name" | "clientId" | "rate" | "budgetHours"> {
   const errors: FormErrors<"name" | "clientId" | "rate" | "budgetHours"> = {};
-  if (!draft.name.trim()) errors.name = "نام پروژه را وارد کن.";
-  if (!draft.clientId) errors.clientId = "یک مشتری را انتخاب یا همین‌جا ایجاد کن.";
-  if (draft.rate < 0) errors.rate = "نرخ ساعتی نمی‌تواند منفی باشد.";
-  if (draft.budgetHours < 0) errors.budgetHours = "بودجه زمانی نمی‌تواند منفی باشد.";
+  if (!draft.name.trim()) errors.name = translateBusiness(locale, "validation.project.name");
+  if (!draft.clientId) errors.clientId = translateBusiness(locale, "validation.project.client");
+  if (draft.rate < 0) errors.rate = translateBusiness(locale, "validation.project.rate");
+  if (draft.budgetHours < 0) errors.budgetHours = translateBusiness(locale, "validation.project.budget");
   return errors;
 }
 
@@ -31,23 +33,23 @@ export function validateInvoiceDraft(draft: {
   unitPrice: number;
   discount: number;
   taxPercent: number;
-}): FormErrors<"clientId" | "issuedAt" | "dueAt" | "description" | "quantity" | "unitPrice" | "discount" | "taxPercent"> {
+}, locale: Locale = DEFAULT_LOCALE): FormErrors<"clientId" | "issuedAt" | "dueAt" | "description" | "quantity" | "unitPrice" | "discount" | "taxPercent"> {
   const errors: FormErrors<"clientId" | "issuedAt" | "dueAt" | "description" | "quantity" | "unitPrice" | "discount" | "taxPercent"> = {};
-  if (!draft.clientId) errors.clientId = "مشتری فاکتور را انتخاب یا ایجاد کن.";
-  if (!draft.issuedAt) errors.issuedAt = "تاریخ صدور الزامی است.";
-  if (draft.dueAt && draft.issuedAt && draft.dueAt < draft.issuedAt) errors.dueAt = "سررسید نمی‌تواند قبل از تاریخ صدور باشد.";
-  if (!draft.description.trim()) errors.description = "شرح صورتحساب را وارد کن.";
-  if (draft.quantity <= 0) errors.quantity = "تعداد باید بیشتر از صفر باشد.";
-  if (draft.unitPrice < 0) errors.unitPrice = "مبلغ واحد نمی‌تواند منفی باشد.";
-  if (draft.discount < 0) errors.discount = "تخفیف نمی‌تواند منفی باشد.";
-  if (draft.taxPercent < 0) errors.taxPercent = "درصد مالیات نمی‌تواند منفی باشد.";
+  if (!draft.clientId) errors.clientId = translateBusiness(locale, "validation.invoice.client");
+  if (!draft.issuedAt) errors.issuedAt = translateBusiness(locale, "validation.invoice.issued");
+  if (draft.dueAt && draft.issuedAt && draft.dueAt < draft.issuedAt) errors.dueAt = translateBusiness(locale, "validation.invoice.due");
+  if (!draft.description.trim()) errors.description = translateBusiness(locale, "validation.invoice.description");
+  if (draft.quantity <= 0) errors.quantity = translateBusiness(locale, "validation.invoice.quantity");
+  if (draft.unitPrice < 0) errors.unitPrice = translateBusiness(locale, "validation.invoice.unitPrice");
+  if (draft.discount < 0) errors.discount = translateBusiness(locale, "validation.invoice.discount");
+  if (draft.taxPercent < 0) errors.taxPercent = translateBusiness(locale, "validation.invoice.tax");
   return errors;
 }
 
-export function validateExpenseDraft(draft: { title: string; amount: number; date: string }): FormErrors<"title" | "amount" | "date"> {
+export function validateExpenseDraft(draft: { title: string; amount: number; date: string }, locale: Locale = DEFAULT_LOCALE): FormErrors<"title" | "amount" | "date"> {
   const errors: FormErrors<"title" | "amount" | "date"> = {};
-  if (!draft.title.trim()) errors.title = "عنوان هزینه را وارد کن.";
-  if (draft.amount <= 0) errors.amount = "مبلغ هزینه باید بیشتر از صفر باشد.";
-  if (!draft.date) errors.date = "تاریخ هزینه را انتخاب کن.";
+  if (!draft.title.trim()) errors.title = translateBusiness(locale, "validation.expense.title");
+  if (draft.amount <= 0) errors.amount = translateBusiness(locale, "validation.expense.amount");
+  if (!draft.date) errors.date = translateBusiness(locale, "validation.expense.date");
   return errors;
 }

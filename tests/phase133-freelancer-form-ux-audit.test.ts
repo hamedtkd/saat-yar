@@ -53,10 +53,10 @@ test("empty freelancer states offer the next useful action in context", () => {
   const invoices = read("components/pages/invoices/table/invoices-table.tsx");
   const expenses = read("components/pages/projects/detail/expenses-panel.tsx");
   const entries = read("components/pages/projects/detail/time-entries-panel.tsx");
-  assert.match(clients, /مشتری جدید/);
-  assert.match(invoices, /فاکتور جدید/);
-  assert.match(expenses, /ثبت اولین هزینه/);
-  assert.match(entries, /شروع تایمر/);
+  assert.match(clients, /b\("clients\.new"\)/);
+  assert.match(invoices, /b\("invoices\.new"\)/);
+  assert.match(expenses, /b\("expenses\.addFirst"\)/);
+  assert.match(entries, /b\("projects\.detail\.timerStart"\)/);
 });
 
 test("phase 133 is documented, wired into quality, and does not invent redundant relations", () => {

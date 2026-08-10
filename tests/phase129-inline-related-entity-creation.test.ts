@@ -25,8 +25,8 @@ test("project form can create and auto-select a client without leaving the form"
   assert.match(form, /QuickClientDialog/);
   assert.match(form, /onCreated=\{selectClient\}/);
   assert.match(form, /activeClients\.length > 0/);
-  assert.match(form, /هنوز مشتری فعالی نداری/);
-  assert.match(quick, /ذخیره و انتخاب/);
+  assert.match(form, /b\("projects\.form\.noClient"\)/);
+  assert.match(quick, /b\("common\.saveAndSelect"\)/);
   assert.match(quick, /onCreated\(id\)/);
 });
 
@@ -35,8 +35,8 @@ test("client list can create a project already linked to that client", async () 
   const quick = await read("components/pages/projects/quick-project-dialog.tsx");
   assert.match(table, /QuickProjectDialog client=\{client\}/);
   assert.match(quick, /clientId: client\.id/);
-  assert.match(quick, /پروژه جدید برای \{client\.name\}/);
-  assert.match(quick, /مستقیماً به همین مشتری متصل می‌شود/);
+  assert.match(quick, /b\("projects\.quick\.title", \{ client: client\.name \}\)/);
+  assert.match(quick, /b\("projects\.quick\.description"\)/);
 });
 
 test("business actions expose reusable create functions instead of duplicating persistence", async () => {

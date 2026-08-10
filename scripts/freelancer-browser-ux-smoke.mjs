@@ -276,7 +276,17 @@ async function main() {
     await seedFreelancerData(client);
 
     await client.call("Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+    await evaluate(client, `localStorage.setItem("saatyar-locale-v1", "en")`);
+    await navigate(client, `${server.origin}/clients`, "No clients yet");
+    await waitFor(client, `document.documentElement.lang === "en" && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Business status")`, "English freelancer client surface");
+    await clickButton(client, "New client", true);
+    await waitFor(client, `document.body?.innerText.includes("Basic information")`, "English client form");
+    await clickButton(client, "Save client", true);
+    await waitFor(client, `Boolean(document.querySelector('[role="alert"]')) && document.body?.innerText.includes("Enter a client name")`, "English client validation");
+    console.log("✓ Freelancer business surface and validation follow English LTR locale");
+    await evaluate(client, `localStorage.setItem("saatyar-locale-v1", "fa-IR")`);
     await navigate(client, `${server.origin}/clients`, "هنوز مشتری‌ای ثبت نشده");
+    await waitFor(client, `document.documentElement.lang === "fa" && document.documentElement.dir === "rtl"`, "Persian freelancer locale restore");
     await clickButton(client, "مشتری جدید");
     await waitFor(client, `document.body?.innerText.includes("اطلاعات پایه")`, "client form");
     const clientAutofocus = await evaluate(client, `document.activeElement?.tagName === "INPUT"`);

@@ -1,5 +1,7 @@
 import type { Dispatch, SetStateAction } from "react";
 import { colors, createLeaveDraft } from "@/lib/constants";
+import { getBrowserLocale, translate } from "@/lib/i18n";
+import { translateBusiness } from "@/lib/i18n/business";
 import type { AppData, ClientDraft, LeaveEntry, Mode, ProjectDraft, TimerDraft } from "@/lib/types";
 import { initialClientDraft, initialProjectDraft } from "./defaults";
 
@@ -19,20 +21,20 @@ export function useBusinessActions(args: Args) {
   const { data, setData, setToast, clientDraft, setClientDraft, projectDraft, setProjectDraft, timerDraft, setTimerDraft,
     leaveDraft, setLeaveDraft, setSelectedProjectId, setShowClientForm, setShowProjectForm, activeEntry, ensureLiveTimerOwnership } = args;
   function toggleProjectTimer(projectId?: string) {
-    if (!ensureLiveTimerOwnership()) return setToast("کنترل تایمر در تب دیگری فعال است");
+    if (!ensureLiveTimerOwnership()) return setToast(translateBusiness(getBrowserLocale(), "toast.timerOtherTab"));
     if (activeEntry) {
       setData((previous) => ({ ...previous, timeEntries: previous.timeEntries.map((entry) => entry.id === activeEntry.id ? { ...entry, endedAt: new Date().toISOString() } : entry) }));
-      return setToast("تایمر پروژه متوقف و ذخیره شد");
+      return setToast(translateBusiness(getBrowserLocale(), "toast.timerStopped"));
     }
     const project = data.projects.find((item) => item.id === (projectId || timerDraft.projectId));
-    if (!project) return setToast("ابتدا یک پروژه انتخاب کنید");
+    if (!project) return setToast(translateBusiness(getBrowserLocale(), "toast.selectProject"));
     setData((previous) => ({ ...previous, timeEntries: [{ id: crypto.randomUUID(), clientId: project.clientId, projectId: project.id,
       task: timerDraft.task, startedAt: new Date().toISOString(), endedAt: null, note: timerDraft.note,
       billable: timerDraft.billable, effectiveRate: project.rate }, ...previous.timeEntries] }));
-    setToast("تایمر پروژه شروع شد");
+    setToast(translateBusiness(getBrowserLocale(), "toast.timerStarted"));
   }
   function createClient(draft: ClientDraft, selectForProject: "never" | "if-empty" | "always" = "never") {
-    if (!draft.name.trim()) { setToast("نام مشتری را وارد کنید"); return undefined; }
+    if (!draft.name.trim()) { setToast(translateBusiness(getBrowserLocale(), "toast.clientName")); return undefined; }
     const id = crypto.randomUUID();
     setData((previous) => ({ ...previous, clients: [...previous.clients, {
       id, name: draft.name.trim(), email: draft.email.trim(), note: draft.note.trim(),
@@ -44,7 +46,7 @@ export function useBusinessActions(args: Args) {
         clientId: selectForProject === "always" ? id : previous.clientId || id,
       }));
     }
-    setToast("مشتری جدید ذخیره شد");
+    setToast(translateBusiness(getBrowserLocale(), "toast.clientSaved"));
     return id;
   }
   function addClient() {
@@ -53,7 +55,7 @@ export function useBusinessActions(args: Args) {
     setClientDraft(initialClientDraft); setShowClientForm(false);
   }
   function createProject(draft: ProjectDraft, selectAfterCreate = false) {
-    if (!draft.name.trim() || !draft.clientId) { setToast("نام پروژه و مشتری الزامی است"); return undefined; }
+    if (!draft.name.trim() || !draft.clientId) { setToast(translateBusiness(getBrowserLocale(), "toast.projectRequired")); return undefined; }
     const id = crypto.randomUUID();
     setData((previous) => ({ ...previous, projects: [...previous.projects, {
       id, clientId: draft.clientId, name: draft.name.trim(), rate: draft.rate, budgetHours: draft.budgetHours,
@@ -63,7 +65,7 @@ export function useBusinessActions(args: Args) {
       setSelectedProjectId(id);
       setTimerDraft((previous) => ({ ...previous, projectId: id }));
     }
-    setToast("پروژه ساخته شد");
+    setToast(translateBusiness(getBrowserLocale(), "toast.projectSaved"));
     return id;
   }
   function addProject() {
@@ -72,16 +74,18 @@ export function useBusinessActions(args: Args) {
     setProjectDraft({ ...initialProjectDraft, clientId: projectDraft.clientId }); setShowProjectForm(false);
   }
   function saveLeave() {
-    if (leaveDraft.endDate < leaveDraft.startDate) return setToast("بازه تاریخ معتبر نیست");
+    if (leaveDraft.endDate < leaveDraft.startDate) return setToast(translateBusiness(getBrowserLocale(), "toast.leaveRange"));
     const overlap = data.leaves.some((item) => item.id !== leaveDraft.id && item.startDate <= leaveDraft.endDate && item.endDate >= leaveDraft.startDate);
-    if (overlap) return setToast("این بازه با مرخصی دیگری هم‌پوشانی دارد");
+    if (overlap) return setToast(translateBusiness(getBrowserLocale(), "toast.leaveOverlap"));
     const entry = { ...leaveDraft, id: leaveDraft.id || crypto.randomUUID(), createdAt: leaveDraft.createdAt || new Date().toISOString() };
     setData((previous) => ({ ...previous, leaves: leaveDraft.id ? previous.leaves.map((item) => item.id === leaveDraft.id ? entry : item) : [entry, ...previous.leaves] }));
-    setLeaveDraft(createLeaveDraft()); setToast(leaveDraft.id ? "مرخصی ویرایش شد" : "مرخصی ثبت شد");
+    setLeaveDraft(createLeaveDraft()); setToast(translateBusiness(getBrowserLocale(), leaveDraft.id ? "toast.leaveEdited" : "toast.leaveSaved"));
   }
   function changeMode(mode: Mode) {
     setData((previous) => ({ ...previous, settings: { ...previous.settings, mode } }));
-    setToast(`فضای کاری روی «${{ employee: "کارمند", freelancer: "فریلنسر", hybrid: "ترکیبی" }[mode]}» قرار گرفت`);
+    const locale = getBrowserLocale();
+    const modeLabel = translate(locale, mode === "employee" ? "mode.employee" : mode === "freelancer" ? "mode.freelancer" : "mode.hybrid");
+    setToast(translateBusiness(locale, "toast.workspaceMode", { mode: modeLabel }));
   }
   return { toggleProjectTimer, createClient, addClient, createProject, addProject, saveLeave, changeMode };
 }

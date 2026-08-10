@@ -1,17 +1,18 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useBusinessUi } from "@/components/i18n/use-business-ui";
 import { localDateKey } from "@/lib/format";
 import { nextInvoiceNumber } from "@/lib/invoices";
 import type { AppData, Invoice, InvoiceStatus } from "@/lib/types";
 import type { InvoiceDraft } from "./types";
 
-const createDraft = (): InvoiceDraft => ({
+const createDraft = (description: string): InvoiceDraft => ({
   clientId: "",
   projectId: "",
   issuedAt: localDateKey(),
   dueAt: "",
-  description: "خدمات پروژه",
+  description,
   quantity: 1,
   unitPrice: 0,
   discount: 0,
@@ -20,10 +21,11 @@ const createDraft = (): InvoiceDraft => ({
 });
 
 export function useInvoices(data: AppData, setData: React.Dispatch<React.SetStateAction<AppData>>) {
+  const { b } = useBusinessUi();
   const [showForm, setShowForm] = useState(false);
-  const [draft, setDraft] = useState<InvoiceDraft>(createDraft);
+  const [draft, setDraft] = useState<InvoiceDraft>(() => createDraft(b("invoices.defaultDescription")));
   const invoices = useMemo(
-    () => [...data.invoices].sort((a, b) => b.issuedAt.localeCompare(a.issuedAt)),
+    () => [...data.invoices].sort((a, bValue) => bValue.issuedAt.localeCompare(a.issuedAt)),
     [data.invoices],
   );
 
@@ -44,7 +46,7 @@ export function useInvoices(data: AppData, setData: React.Dispatch<React.SetStat
       createdAt: new Date().toISOString(),
     };
     setData((previous) => ({ ...previous, invoices: [invoice, ...previous.invoices] }));
-    setDraft(createDraft());
+    setDraft(createDraft(b("invoices.defaultDescription")));
     setShowForm(false);
   }
 

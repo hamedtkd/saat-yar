@@ -128,6 +128,7 @@
 - [فاز ۱۶۴: README اصلی انگلیسی و نقشه راه i18n](./phases/PHASE_164_NOTES_FA.md)
 - [فاز ۱۷۴: زیرساخت i18n و Locale Local-first](./phases/PHASE_174_NOTES_FA.md)
 - [فاز ۱۷۵: i18n صفحات Today / Month / Reports](./phases/PHASE_175_NOTES_FA.md)
+- [فاز ۱۷۶: i18n جریان‌های تجاری Clients / Projects / Invoices / Leave](./phases/PHASE_176_NOTES_FA.md)
 
 - [فاز ۱۶۵: Final Release 2.3.2](./phases/PHASE_165_NOTES_FA.md)
 - [فاز ۱۶۶: Route مستقل آنبوردینگ](./phases/PHASE_166_NOTES_FA.md)

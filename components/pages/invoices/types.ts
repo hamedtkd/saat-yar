@@ -1,3 +1,4 @@
+import type { BusinessMessageKey } from "@/lib/i18n/business";
 import type { InvoiceStatus } from "@/lib/types";
 
 export type InvoiceDraft = {
@@ -13,10 +14,10 @@ export type InvoiceDraft = {
   note: string;
 };
 
-export const statusLabels: Record<InvoiceStatus, string> = {
-  draft: "پیش‌نویس",
-  sent: "ارسال‌شده",
-  paid: "پرداخت‌شده",
-  overdue: "سررسیدگذشته",
-  cancelled: "لغوشده",
+export const statusMessageKeys: Record<InvoiceStatus, BusinessMessageKey> = {
+  draft: "invoices.status.draft",
+  sent: "invoices.status.sent",
+  paid: "invoices.status.paid",
+  overdue: "invoices.status.overdue",
+  cancelled: "invoices.status.cancelled",
 };

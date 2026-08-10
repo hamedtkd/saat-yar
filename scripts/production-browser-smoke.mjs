@@ -559,6 +559,27 @@ export async function runProductionBrowserSmoke() {
     await waitFor(client, `["/reports", "/reports/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Work and payroll report") && document.body?.innerText.includes("Analytics charts")`, "English Reports core surface");
     console.log("✓ Today, Month, and Reports render localized English LTR surfaces before Persian restore");
 
+    const englishClientsLoad = waitForEvent(client, "Page.loadEventFired", "English Clients route");
+    await client.call("Page.navigate", { url: `${origin}/clients/` });
+    await englishClientsLoad;
+    await waitFor(client, `["/clients", "/clients/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Clients") && document.body?.innerText.includes("Business status")`, "English Clients business surface");
+
+    const englishProjectsLoad = waitForEvent(client, "Page.loadEventFired", "English Projects route");
+    await client.call("Page.navigate", { url: `${origin}/projects/` });
+    await englishProjectsLoad;
+    await waitFor(client, `["/projects", "/projects/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Projects") && document.body?.innerText.includes("Your projects")`, "English Projects business surface");
+
+    const englishInvoicesLoad = waitForEvent(client, "Page.loadEventFired", "English Invoices route");
+    await client.call("Page.navigate", { url: `${origin}/invoices/` });
+    await englishInvoicesLoad;
+    await waitFor(client, `["/invoices", "/invoices/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Invoices") && document.body?.innerText.includes("Invoice list")`, "English Invoices business surface");
+
+    const englishLeaveLoad = waitForEvent(client, "Page.loadEventFired", "English Leave route");
+    await client.call("Page.navigate", { url: `${origin}/leave/` });
+    await englishLeaveLoad;
+    await waitFor(client, `["/leave", "/leave/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("My leave") && document.body?.innerText.includes("Leave overview")`, "English Leave business surface");
+    console.log("✓ Clients, Projects, Invoices, and Leave render localized English LTR business surfaces");
+
     const settingsLocaleRestoreLoad = waitForEvent(client, "Page.loadEventFired", "Settings locale restore route");
     await client.call("Page.navigate", { url: `${origin}/settings/` });
     await settingsLocaleRestoreLoad;
