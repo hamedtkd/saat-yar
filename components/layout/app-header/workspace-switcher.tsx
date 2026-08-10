@@ -13,6 +13,8 @@ export function WorkspaceSwitcher({ mode, onChange }: { mode: Mode; onChange: (m
     <Select value={mode} onValueChange={(value) => onChange(value as Mode)}>
       <SelectTrigger
         aria-label={t("mode.switchLabel")}
+        data-workspace-switch-trigger
+        data-workspace-mode={mode}
         className={cn(
           headerControlShell,
           "w-auto min-w-[132px] justify-start gap-2 py-0 ps-2.5 pe-9 text-xs font-extrabold",
@@ -33,9 +35,9 @@ export function WorkspaceSwitcher({ mode, onChange }: { mode: Mode; onChange: (m
         </div>
         <SelectGroup>
           <SelectLabel>{t("mode.switchHint")}</SelectLabel>
-          <SelectItem value="employee">{t("mode.employee")}</SelectItem>
-          <SelectItem value="freelancer">{t("mode.freelancer")}</SelectItem>
-          <SelectItem value="hybrid">{t("mode.hybrid")}</SelectItem>
+          <SelectItem value="employee"><span data-workspace-mode-option="employee">{t("mode.employee")}</span></SelectItem>
+          <SelectItem value="freelancer"><span data-workspace-mode-option="freelancer">{t("mode.freelancer")}</span></SelectItem>
+          <SelectItem value="hybrid"><span data-workspace-mode-option="hybrid">{t("mode.hybrid")}</span></SelectItem>
         </SelectGroup>
       </SelectContent>
     </Select>

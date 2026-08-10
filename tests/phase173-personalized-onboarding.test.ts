@@ -16,9 +16,9 @@ test("onboarding progress now accepts the optional import step without breaking 
 
 test("progress labels are personalized for employee freelancer and hybrid workspaces", async () => {
   const progress = await read("components/layout/onboarding/steps-progress.tsx");
-  assert.match(progress, /employee: \["خوش‌آمدید", "نوع استفاده", "برنامه کاری", "حقوق"/);
-  assert.match(progress, /freelancer: \["خوش‌آمدید", "نوع استفاده", "مشتری", "پروژه"/);
-  assert.match(progress, /hybrid: \["خوش‌آمدید", "نوع استفاده", "برنامه کاری", "درآمد ترکیبی"/);
+  assert.match(progress, /employee: \["Welcome", "Workspace", "Work schedule", "Payroll"/);
+  assert.match(progress, /freelancer: \["Welcome", "Workspace", "Client", "Project name"/);
+  assert.match(progress, /hybrid: \["Welcome", "Workspace", "Work schedule", "Combined income"/);
   assert.match(progress, /data-onboarding-progress-mode/);
   assert.match(progress, /grid-cols-7/);
 });

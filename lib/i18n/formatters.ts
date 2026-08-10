@@ -10,8 +10,8 @@ const calendarLocales: Record<Locale, string> = {
   en: "en-US-u-ca-persian",
 };
 
-export function formatLocaleNumber(locale: Locale, value: number) {
-  return numberFormatters[locale].format(value);
+export function formatLocaleNumber(locale: Locale, value: number, options?: Intl.NumberFormatOptions) {
+  return options ? new Intl.NumberFormat(locale === "fa-IR" ? "fa-IR" : "en-US", options).format(value) : numberFormatters[locale].format(value);
 }
 
 export function formatLocaleDigits(locale: Locale, value: string | number) {
@@ -25,6 +25,21 @@ export function formatLocaleDuration(locale: Locale, value: number, signed = fal
   const hours = Math.floor(minutes / 60);
   const remainder = String(minutes % 60).padStart(2, "0");
   return `${sign}${formatLocaleNumber(locale, hours)}:${formatLocaleDigits(locale, remainder)}`;
+}
+
+export function formatLocaleDurationWords(locale: Locale, value: number) {
+  const minutes = Math.max(0, Math.round(value));
+  const hours = Math.floor(minutes / 60);
+  const remainder = minutes % 60;
+  const n = (v: number) => formatLocaleNumber(locale, v);
+  if (locale === "en") {
+    if (!hours) return `${n(remainder)} minutes`;
+    if (!remainder) return `${n(hours)} hours`;
+    return `${n(hours)} hours and ${n(remainder)} minutes`;
+  }
+  if (!hours) return `${n(remainder)} دقیقه`;
+  if (!remainder) return `${n(hours)} ساعت`;
+  return `${n(hours)} ساعت و ${n(remainder)} دقیقه`;
 }
 
 export function formatLocaleDurationSeconds(locale: Locale, value: number) {

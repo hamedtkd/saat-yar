@@ -2,6 +2,9 @@
 
 ### افزوده شد
 
+- Phase 177: i18n در Settings، Onboarding، Import، About، Device Transfer، PWA Experience و پیام‌های System/Persistence/Notification تکمیل شد؛ Runtime title نیز از Locale فعال پیروی می‌کند.
+- Production Browser Smoke اکنون Settings/Import/About و Re-entry واقعی Onboarding را در English/LTR پیش از Restore فارسی بررسی می‌کند؛ Static metadata و Manifest منتشرشده برای سازگاری Release 2.3.2 فعلاً Canonical فارسی باقی مانده‌اند.
+
 - Phase 176: i18n به Clients، Projects، Project Detail/Expenses، Invoices و Leave گسترش یافت؛ Validation و Toastهای تجاری نیز از Locale فعال پیروی می‌کنند.
 - Exportهای CSV/Excel گزارش‌ها اکنون Header، تاریخ، Yes/No، نام فایل و Toast را مطابق Locale فعال تولید می‌کنند و Browser Smoke مسیرهای تجاری English/LTR را پیش از بازگشت به Persian/RTL بررسی می‌کند.
 

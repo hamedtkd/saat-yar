@@ -291,7 +291,8 @@
 - [x] فاز ۱۷۴: زیرساخت i18n واقعی (Foundation)؛ Catalog/Dictionary تایپ‌شده، Locale مستقل Local-first، سوییچ بدون Reload، Shell/Navigation/Settings دوطرفه فارسی RTL و انگلیسی LTR و Browser Smoke ماندگاری Locale.
 - [x] فاز ۱۷۵: گسترش i18n به Today/Month/Reports؛ متن‌ها، تقویم شمسی، اعداد، مدت، پول، Pickerها، جدول/نمودار و Browser Smoke واقعی English/LTR → Persian/RTL بدون تغییر Schema یا AppData.
 - [x] فاز ۱۷۶: گسترش i18n به Clients/Projects/Invoices/Leave و سطوح تجاری، همراه با Validation/Toast/Print/CSV و Browser Journey دو Locale.
-- [ ] فاز ۱۷۷: تکمیل i18n در Settings/Onboarding/Import/About و متن‌های System/PWA metadata، سپس Audit سراسری hard-coded copy در هر دو جهت.
+- [x] فاز ۱۷۷: تکمیل i18n در Settings/Onboarding/Import/About و Surfaceهای System/PWA، پیام‌های Runtime و Browser Smoke دو Locale بدون تغییر Schema یا Dependency.
+- [ ] فاز ۱۷۸: Closure/Audit نهایی i18n؛ Hard-coded UI audit سراسری، RTL/LTR geometry، Metadata/PWA policy، CSV/Print و Release readiness پیش از Merge کنترل‌شده.
 
 ## بین‌المللی‌سازی آینده — پس از Patch بعدی
 
@@ -301,4 +302,5 @@
 - [x] گسترش Regression و Browser Smoke دوطرفه `fa-IR / RTL` و `en / LTR` از Shell/Settings به Today، Month و Reports در فاز ۱۷۵.
 - [x] گسترش همین قرارداد به Clients/Projects/Invoices/Leave و Journeyهای تجاری در فاز ۱۷۶.
 - [x] ترجمه Validation/Toastهای تجاری و خروجی CSV/Excel/سطح چاپ مرتبط در فاز ۱۷۶، بدون تغییر داده دامنه.
-- [ ] تکمیل متن‌های System/PWA metadata و سطوح باقی‌مانده Settings/Onboarding/Import/About در فاز ۱۷۷ پیش از فعال‌کردن زبان دوم در Production.
+- [x] تکمیل متن‌های System/PWA و سطوح باقی‌مانده Settings/Onboarding/Import/About در فاز ۱۷۷؛ Metadata استاتیک فعلاً Canonical فارسی و Runtime title دو Locale است.
+- [ ] فاز ۱۷۸: Audit نهایی Hard-coded UI، Metadata/PWA، Print/CSV و هندسه دو جهت پیش از تصمیم Rollout زبان دوم.

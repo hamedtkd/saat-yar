@@ -17,7 +17,7 @@ export function SettingsSearch() {
     return settingsNavItems
       .filter((item) => {
         const translatedGroup = settingsNavGroups.find((group) => group.id === item.groupId);
-        const haystack = [item.label, t(item.labelKey), item.group, translatedGroup ? t(translatedGroup.labelKey) : "", item.keywords]
+        const haystack = [t(item.labelKey), translatedGroup ? t(translatedGroup.labelKey) : "", item.keywords]
           .join(" ")
           .toLocaleLowerCase(locale === "en" ? "en-US" : "fa-IR");
         return haystack.includes(normalized);
@@ -35,10 +35,10 @@ export function SettingsSearch() {
   };
 
   const quickItems = [
-    { label: t("settings.search.payroll"), query: locale === "en" ? "payroll" : "حقوق" },
+    { label: t("settings.search.payroll"), query: t("settings.search.payroll") },
     { label: "QR", query: "QR" },
-    { label: t("settings.search.appearance"), query: locale === "en" ? "appearance" : "ظاهر" },
-    { label: t("settings.search.backup"), query: locale === "en" ? "backup" : "پشتیبان" },
+    { label: t("settings.search.appearance"), query: t("settings.search.appearance") },
+    { label: t("settings.search.backup"), query: t("settings.search.backup") },
   ];
 
   return (
@@ -75,7 +75,7 @@ export function SettingsSearch() {
                   >
                     <span className="grid gap-0.5">
                       <strong className="text-[11px] text-[var(--text)] group-hover:text-[var(--accent-strong)]">{t(item.labelKey)}</strong>
-                      <small className="text-[9px] font-semibold text-[var(--text-muted)]">{group ? t(group.labelKey) : item.group}</small>
+                      <small className="text-[9px] font-semibold text-[var(--text-muted)]">{group ? t(group.labelKey) : ""}</small>
                     </span>
                     <ArrowLeft aria-hidden="true" className={cn("size-4 text-[var(--text-muted)] group-hover:text-[var(--accent-strong)]", direction === "ltr" && "rotate-180")} />
                   </button>

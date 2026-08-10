@@ -35,8 +35,8 @@ test("sync UI shows progress completion and an explicit safe rejection path", ()
   const preview = read("components/pages/settings/device-transfer-preview.tsx");
   assert.match(card, /<DeviceTransferSteps role=\{pairing\.role\} state=\{pairing\.state\}/);
   assert.match(card, /pairing\.state === "completed"/);
-  assert.match(steps, /aria-label="مراحل انتقال دستگاه"/);
-  assert.match(preview, /رد انتقال و پایان نشست/);
+  assert.match(steps, /aria-label=\{s\("Device transfer steps"\)\}/);
+  assert.match(preview, /s\("Reject transfer and end session"\)/);
   assert.match(preview, /onCancel/);
 });
 

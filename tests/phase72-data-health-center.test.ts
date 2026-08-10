@@ -24,7 +24,7 @@ test("data health center collects invalid incomplete and review records", () => 
 test("settings data section exposes an actionable health card", async () => {
   const card = await read("components/pages/settings/data-health-card.tsx");
   const page = await read("components/pages/settings/settings-page.tsx");
-  assert.match(card, /سلامت داده‌ها/);
+  assert.match(card, /s\("Data health"\)/);
   assert.match(card, /\/today\?date=\$\{item\.date\}/);
   assert.match(card, /GuardedLink/);
   assert.match(page, /<DataHealthCard records=\{data\.records\}/);

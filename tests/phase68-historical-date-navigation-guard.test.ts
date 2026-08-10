@@ -21,5 +21,5 @@ test("date changes pass through the global unsaved navigation guard", async () =
 
 test("unsaved dialog wording covers section and date navigation", async () => {
   const source = await read("components/pages/settings/unsaved-settings-guard.tsx");
-  assert.match(source, /بخش یا تاریخ دیگر/);
+  assert.match(source, /s\("Before moving to another section or date, save your edits or continue without saving\."\)/);
 });

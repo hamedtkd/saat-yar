@@ -68,7 +68,7 @@ test("appearance settings use shared draft editing and an isolated preview", asy
   assert.match(card, /prepare: normalizeAppearanceSettings/);
   assert.match(card, /fieldset disabled=\{!editor\.editing\}/);
   assert.match(card, /ThemePreview appearance=\{appearance\}/);
-  assert.match(card, /ظاهر کل برنامه فقط بعد از ذخیره تغییر می‌کند/);
+  assert.match(card, /s\("The preview is isolated inside this card\. In manual-save mode, the whole app appearance changes only after you save\."\)/);
   assert.match(preview, /createAppearancePreviewTokens/);
   assert.match(preview, /useSyncExternalStore/);
   assert.match(option, /disabled=\{disabled\}/);

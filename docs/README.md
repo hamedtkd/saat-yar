@@ -129,6 +129,7 @@
 - [فاز ۱۷۴: زیرساخت i18n و Locale Local-first](./phases/PHASE_174_NOTES_FA.md)
 - [فاز ۱۷۵: i18n صفحات Today / Month / Reports](./phases/PHASE_175_NOTES_FA.md)
 - [فاز ۱۷۶: i18n جریان‌های تجاری Clients / Projects / Invoices / Leave](./phases/PHASE_176_NOTES_FA.md)
+- [فاز ۱۷۷: تکمیل i18n در Setup / Settings / System Surfaces](./phases/PHASE_177_NOTES_FA.md)
 
 - [فاز ۱۶۵: Final Release 2.3.2](./phases/PHASE_165_NOTES_FA.md)
 - [فاز ۱۶۶: Route مستقل آنبوردینگ](./phases/PHASE_166_NOTES_FA.md)

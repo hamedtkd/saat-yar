@@ -68,7 +68,7 @@ test("holiday settings use shared draft editing and confirmed deletion", async (
   assert.match(source, /EditableCardActions/);
   assert.match(source, /prepare: normalizeHolidayOverrides/);
   assert.match(source, /editor\.editing &&/);
-  assert.match(source, /AlertDialogTitle>این استثنای تعطیلی حذف شود/);
-  assert.match(source, /استثنا از پیش‌نویس حذف شد/);
+  assert.match(source, /AlertDialogTitle>\{s\("Delete this holiday exception\?"\)\}<\/AlertDialogTitle>/);
+  assert.match(source, /s\("Exception was removed from the draft; save to apply"\)/);
   assert.doesNotMatch(source, /function remove\(/);
 });

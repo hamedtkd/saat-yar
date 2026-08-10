@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { createLeaveDraft } from "@/lib/constants";
 import { localDateKey } from "@/lib/format";
+import { getBrowserLocale } from "@/lib/i18n";
+import { translateSystem } from "@/lib/i18n/system";
 import type { AppData, ClientDraft, LeaveEntry, ProjectDraft, ReportFilter, TimerDraft } from "@/lib/types";
 import { usePersistedAppData } from "./use-persisted-app-data.ts";
 import { initialClientDraft, initialFilters, initialProjectDraft, initialTimerDraft } from "./controller/defaults";
@@ -68,7 +70,7 @@ export function useSaatyarController() {
   async function requestPersistence() {
     const persistedValue = await storage.requestPersistence();
     persisted.setStorageInfo(await storage.estimate());
-    setToast(persistedValue ? "ذخیره پایدار فعال شد" : "مرورگر ذخیره پایدار را فعال نکرد؛ پشتیبان‌گیری را ادامه دهید");
+    setToast(persistedValue ? translateSystem(getBrowserLocale(), "Persistent storage was enabled.") : translateSystem(getBrowserLocale(), "Browser did not enable persistent storage; keep making backups."));
   }
 
   return {

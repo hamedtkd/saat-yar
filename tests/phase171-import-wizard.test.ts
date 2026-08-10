@@ -145,8 +145,8 @@ test("Phase 171 exposes a reusable noindex import route, settings entry point an
   assert.match(route, /ImportPage/);
   assert.match(layout, /index: false/);
   assert.match(navigation, /"\/import"/);
-  assert.match(restore, /بازکردن Import Wizard/);
-  assert.match(page, /Local-first/);
+  assert.match(restore, /s\("Open Import Wizard"\)/);
+  assert.match(page, /s\("Safe, local-first import"\)/);
   assert.match(smoke, /Import Wizard CSV persisted a client/);
   assert.match(roadmap, /\[x\] فاز ۱۷۱/);
   assert.match(pkg, /phase171-import-wizard\.test\.ts/);

@@ -60,9 +60,9 @@ test("pairing QR is generated and scanned locally with animated frame support", 
 test("QR camera flow keeps Copy/Paste as a safe fallback", () => {
   const card = read("components/pages/settings/device-transfer-card.tsx");
   const scanner = read("components/pages/settings/device-pairing-qr-scanner.tsx");
-  assert.match(card, /کپی کد/);
+  assert.ok(card.includes('s("Copy code")'));
   assert.match(card, /Copy\/Paste/);
-  assert.match(scanner, /اسکن QR داخل این مرورگر در دسترس نیست/);
+  assert.ok(scanner.includes('s("QR scanning is not available in this browser; use Copy/Paste for the connection code.")'));
 });
 
 test("phase 115 is wired into quality and closes the QR pairing roadmap", () => {

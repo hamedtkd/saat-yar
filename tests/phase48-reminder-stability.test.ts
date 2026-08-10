@@ -55,6 +55,6 @@ test("notification hook avoids whole-record effect dependencies and supports dai
   assert.doesNotMatch(hook, /\], \[[\s\S]*?\brecord\b/);
   assert.match(hook, /activeTrackingMinutes/);
   assert.match(hook, /breakReminderSnoozeKey/);
-  assert.match(card, /امروز یادآوری نکن/);
+  assert.match(card, /s\("Do not remind me today"\)/);
   assert.equal(breakReminderSnoozeKey("2026-08-05"), "saatyar-break-reminder-snooze:2026-08-05");
 });

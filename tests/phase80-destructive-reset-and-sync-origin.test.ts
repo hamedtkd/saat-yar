@@ -29,6 +29,6 @@ test("sync history presents a Persian source page label", async () => {
   assert.equal(formatSyncSourcePath("/unknown"), "/unknown");
   const panel = await read("components/pages/settings/multi-tab-health-panel.tsx");
   const sync = await read("hooks/use-multi-tab-data-sync.ts");
-  assert.match(panel, /formatSyncSourcePath\(event\.sourcePath\)/);
+  assert.match(panel, /pathKeys\[event\.sourcePath\] \? s\(pathKeys\[event\.sourcePath\]\) : event\.sourcePath/);
   assert.match(sync, /window\.location\.pathname/);
 });

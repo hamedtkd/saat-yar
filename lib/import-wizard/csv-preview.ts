@@ -1,4 +1,6 @@
 import { colors } from "../constants.ts";
+import { translateSystem } from "../i18n/system.ts";
+import type { Locale } from "../i18n/locales.ts";
 import type { AppData, ExpenseCategory, Project } from "../types.ts";
 import { normalizeImportText, normalizeKey, parseImportBoolean, parseImportDate, parseImportNumber, parseImportTime } from "./normalize.ts";
 import type { CsvImportKind, CsvImportPreview, CsvMapping, ImportCandidate, ParsedCsv } from "./types.ts";
@@ -35,18 +37,18 @@ function expenseCategory(value: string): ExpenseCategory {
   return "other";
 }
 
-function buildWorkRecord(row: Record<string, string>, mapping: CsvMapping): { candidate: ImportCandidate | null; issues: string[]; label: string } {
+function buildWorkRecord(row: Record<string, string>, mapping: CsvMapping, locale: Locale): { candidate: ImportCandidate | null; issues: string[]; label: string } {
   const issues: string[] = [];
   const date = parseImportDate(cell(row, mapping, "date"));
-  if (!date) issues.push("تاریخ معتبر نیست");
+  if (!date) issues.push(translateSystem(locale, "Invalid date"));
   const start = parseImportTime(cell(row, mapping, "start"));
   const end = parseImportTime(cell(row, mapping, "end"));
-  if (start === null) issues.push("ساعت ورود معتبر نیست");
-  if (end === null) issues.push("ساعت خروج معتبر نیست");
+  if (start === null) issues.push(translateSystem(locale, "Invalid clock-in time"));
+  if (end === null) issues.push(translateSystem(locale, "Invalid clock-out time"));
   const lunchValue = cell(row, mapping, "lunchMinutes");
   const lunch = lunchValue ? parseImportNumber(lunchValue) : 0;
-  if (lunch === null || lunch < 0 || lunch > 24 * 60) issues.push("دقیقه ناهار معتبر نیست");
-  const label = date ?? (normalizeImportText(cell(row, mapping, "date")) || "روز بدون تاریخ");
+  if (lunch === null || lunch < 0 || lunch > 24 * 60) issues.push(translateSystem(locale, "Invalid lunch minutes"));
+  const label = date ?? (normalizeImportText(cell(row, mapping, "date")) || translateSystem(locale, "Day without a date"));
   if (!date || issues.length) return { candidate: null, issues, label };
   return {
     issues,
@@ -72,10 +74,10 @@ function buildWorkRecord(row: Record<string, string>, mapping: CsvMapping): { ca
   };
 }
 
-function buildClient(row: Record<string, string>, mapping: CsvMapping, index: number): { candidate: ImportCandidate | null; issues: string[]; label: string } {
+function buildClient(row: Record<string, string>, mapping: CsvMapping, index: number, locale: Locale): { candidate: ImportCandidate | null; issues: string[]; label: string } {
   const name = normalizeImportText(cell(row, mapping, "name"));
-  const issues = name ? [] : ["نام مشتری الزامی است"];
-  const label = name || "مشتری بدون نام";
+  const issues = name ? [] : [translateSystem(locale, "Client name is required")];
+  const label = name || translateSystem(locale, "Unnamed client");
   if (issues.length) return { candidate: null, issues, label };
   return {
     issues,
@@ -94,21 +96,21 @@ function buildClient(row: Record<string, string>, mapping: CsvMapping, index: nu
   };
 }
 
-function buildProject(row: Record<string, string>, mapping: CsvMapping, data: AppData, index: number): { candidate: ImportCandidate | null; issues: string[]; label: string } {
+function buildProject(row: Record<string, string>, mapping: CsvMapping, data: AppData, index: number, locale: Locale): { candidate: ImportCandidate | null; issues: string[]; label: string } {
   const name = normalizeImportText(cell(row, mapping, "name"));
   const clientValue = normalizeImportText(cell(row, mapping, "client"));
   const client = findClient(data, clientValue);
   const issues: string[] = [];
-  if (!name) issues.push("نام پروژه الزامی است");
-  if (!clientValue) issues.push("مشتری پروژه الزامی است");
-  else if (!client) issues.push(`مشتری «${clientValue}» در ساعت‌یار پیدا نشد`);
+  if (!name) issues.push(translateSystem(locale, "Project name is required"));
+  if (!clientValue) issues.push(translateSystem(locale, "Project client is required"));
+  else if (!client) issues.push(translateSystem(locale, "Client “{name}” was not found in Saatyar", { name: clientValue }));
   const rateValue = cell(row, mapping, "rate");
   const budgetValue = cell(row, mapping, "budgetHours");
   const rate = rateValue ? parseImportNumber(rateValue) : 0;
   const budgetHours = budgetValue ? parseImportNumber(budgetValue) : null;
-  if (rate === null || rate < 0) issues.push("نرخ پروژه معتبر نیست");
-  if (budgetHours !== null && budgetHours < 0) issues.push("بودجه ساعت معتبر نیست");
-  const label = name || "پروژه بدون نام";
+  if (rate === null || rate < 0) issues.push(translateSystem(locale, "Invalid project rate"));
+  if (budgetHours !== null && budgetHours < 0) issues.push(translateSystem(locale, "Invalid hour budget"));
+  const label = name || translateSystem(locale, "Unnamed project");
   if (!client || issues.length) return { candidate: null, issues, label };
   return {
     issues,
@@ -130,7 +132,7 @@ function buildProject(row: Record<string, string>, mapping: CsvMapping, data: Ap
   };
 }
 
-function buildExpense(row: Record<string, string>, mapping: CsvMapping, data: AppData): { candidate: ImportCandidate | null; issues: string[]; label: string } {
+function buildExpense(row: Record<string, string>, mapping: CsvMapping, data: AppData, locale: Locale): { candidate: ImportCandidate | null; issues: string[]; label: string } {
   const title = normalizeImportText(cell(row, mapping, "title"));
   const date = parseImportDate(cell(row, mapping, "date"));
   const amount = parseImportNumber(cell(row, mapping, "amount"));
@@ -139,14 +141,14 @@ function buildExpense(row: Record<string, string>, mapping: CsvMapping, data: Ap
   const project = projectValue ? findProject(data, projectValue) : null;
   const client = clientValue ? findClient(data, clientValue) : (project ? data.clients.find((item) => item.id === project.clientId) ?? null : null);
   const issues: string[] = [];
-  if (!date) issues.push("تاریخ معتبر نیست");
-  if (!title) issues.push("عنوان هزینه الزامی است");
-  if (amount === null || amount < 0) issues.push("مبلغ هزینه معتبر نیست");
-  if (clientValue && !client) issues.push(`مشتری «${clientValue}» پیدا نشد`);
-  if (!projectValue) issues.push("پروژه هزینه الزامی است");
-  else if (!project) issues.push(`پروژه «${projectValue}» پیدا نشد`);
-  if (project && client && project.clientId !== client.id) issues.push("پروژه به مشتری انتخاب‌شده تعلق ندارد");
-  const label = title || "هزینه بدون عنوان";
+  if (!date) issues.push(translateSystem(locale, "Invalid date"));
+  if (!title) issues.push(translateSystem(locale, "Expense title is required"));
+  if (amount === null || amount < 0) issues.push(translateSystem(locale, "Invalid expense amount"));
+  if (clientValue && !client) issues.push(translateSystem(locale, "Client “{name}” was not found", { name: clientValue }));
+  if (!projectValue) issues.push(translateSystem(locale, "Expense project is required"));
+  else if (!project) issues.push(translateSystem(locale, "Project “{name}” was not found", { name: projectValue }));
+  if (project && client && project.clientId !== client.id) issues.push(translateSystem(locale, "The project does not belong to the selected client"));
+  const label = title || translateSystem(locale, "Untitled expense");
   if (!date || amount === null || issues.length) return { candidate: null, issues, label };
   const clientId = client?.id ?? project?.clientId ?? "";
   const projectId = project?.id ?? "";
@@ -177,18 +179,18 @@ function isConflict(data: AppData, candidate: ImportCandidate) {
   return data.expenses.some((item) => `${item.date}:${normalizeKey(item.title)}:${item.amount}:${item.projectId}` === candidate.key);
 }
 
-export function buildCsvImportPreview(kind: CsvImportKind, parsed: ParsedCsv, mapping: CsvMapping, data: AppData): CsvImportPreview {
+export function buildCsvImportPreview(kind: CsvImportKind, parsed: ParsedCsv, mapping: CsvMapping, data: AppData, locale: Locale = "fa-IR"): CsvImportPreview {
   const seen = new Set<string>();
   const rows = parsed.rows.map((row, index) => {
-    const built = kind === "work-records" ? buildWorkRecord(row, mapping)
-      : kind === "clients" ? buildClient(row, mapping, index)
-      : kind === "projects" ? buildProject(row, mapping, data, index)
-      : buildExpense(row, mapping, data);
+    const built = kind === "work-records" ? buildWorkRecord(row, mapping, locale)
+      : kind === "clients" ? buildClient(row, mapping, index, locale)
+      : kind === "projects" ? buildProject(row, mapping, data, index, locale)
+      : buildExpense(row, mapping, data, locale);
     if (!built.candidate) return { rowNumber: index + 2, label: built.label, status: "invalid" as const, issues: built.issues, candidate: null };
     const duplicateInFile = seen.has(built.candidate.key);
     seen.add(built.candidate.key);
     const conflict = duplicateInFile || isConflict(data, built.candidate);
-    const issues = duplicateInFile ? [...built.issues, "مورد تکراری داخل همین فایل"] : built.issues;
+    const issues = duplicateInFile ? [...built.issues, translateSystem(locale, "Duplicate item in this file")] : built.issues;
     return { rowNumber: index + 2, label: built.label, status: conflict ? "conflict" as const : "ready" as const, issues, candidate: built.candidate };
   });
   return {

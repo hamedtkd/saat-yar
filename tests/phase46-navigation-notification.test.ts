@@ -15,7 +15,7 @@ test("route pages import getTabHref from the shared navigation module", async ()
 test("notification settings expose permission state and a test action", async () => {
   const source = await read("components/pages/settings/notification-settings-card.tsx");
   assert.match(source, /getPermissionState/);
-  assert.match(source, /ارسال اعلان آزمایشی/);
+  assert.match(source, /s\("Send test notification"\)/);
   assert.match(source, /setBreakReminderEnabled/);
   assert.match(source, /permission === "denied"/);
 });

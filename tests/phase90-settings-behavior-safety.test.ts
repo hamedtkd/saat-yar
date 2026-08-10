@@ -66,7 +66,7 @@ test("settings behavior card stays explicit and blocks unsafe autosave activatio
 
   assert.match(card, /autoSave: false/);
   assert.match(card, /getUnsavedSettingsDraftLabelsExcept\(editor\.registryId\)/);
-  assert.match(card, /فعال‌سازی ذخیره خودکار فعلاً امن نیست/);
+  assert.match(card, /s\("Enabling autosave is not safe yet\."\)/);
   assert.match(card, /EditableCardActions/);
   assert.match(hook, /registryId,/);
 });

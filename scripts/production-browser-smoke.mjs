@@ -146,7 +146,8 @@ async function browserStateSnapshot(client) {
       return {
         url: location.href,
         readyState: document.readyState,
-        body: (document.body?.innerText || "").replace(/\s+/g, " ").trim().slice(0, 500),
+        body: (document.body?.innerText || "").replace(/\\s+/g, " ").trim().slice(0, 500),
+        title: document.title,
         onboardingStep: document.querySelector("[data-onboarding-step]")?.getAttribute("data-onboarding-step-index") || null,
         loading: document.body?.innerText.includes("\u062f\u0631 \u062d\u0627\u0644 \u0622\u0645\u0627\u062f\u0647") || false,
         serviceWorker: registration ? {
@@ -211,6 +212,26 @@ async function clickButton(client, text) {
     return true;
   })()`);
   if (!clicked) throw new Error(`Button not found: ${text}`);
+}
+
+async function switchWorkspaceMode(client, mode) {
+  const opened = await evaluate(client, `(() => {
+    const trigger = document.querySelector('[data-workspace-switch-trigger]');
+    if (!(trigger instanceof HTMLButtonElement)) return false;
+    trigger.click();
+    return true;
+  })()`);
+  if (!opened) throw new Error(`Workspace switch trigger not found for mode: ${mode}`);
+  await waitFor(client, `Boolean(document.querySelector('[data-workspace-mode-option="${mode}"]'))`, `workspace option ${mode}`);
+  const selected = await evaluate(client, `(() => {
+    const marker = document.querySelector('[data-workspace-mode-option="${mode}"]');
+    const option = marker?.closest('[role="option"]') || marker?.parentElement;
+    if (!(option instanceof HTMLElement)) return false;
+    option.click();
+    return true;
+  })()`);
+  if (!selected) throw new Error(`Workspace option could not be selected: ${mode}`);
+  await waitFor(client, `document.querySelector('[data-workspace-switch-trigger]')?.getAttribute('data-workspace-mode') === "${mode}"`, `workspace mode ${mode}`);
 }
 
 async function replaceInputValue(client, selector, value) {
@@ -559,6 +580,11 @@ export async function runProductionBrowserSmoke() {
     await waitFor(client, `["/reports", "/reports/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Work and payroll report") && document.body?.innerText.includes("Analytics charts")`, "English Reports core surface");
     console.log("✓ Today, Month, and Reports render localized English LTR surfaces before Persian restore");
 
+    // Employee mode intentionally cannot access freelancer-only business routes.
+    // Exercise the real workspace switcher before the business-route matrix so
+    // RouteGuard remains authoritative instead of bypassing the product contract.
+    await switchWorkspaceMode(client, "hybrid");
+
     const englishClientsLoad = waitForEvent(client, "Page.loadEventFired", "English Clients route");
     await client.call("Page.navigate", { url: `${origin}/clients/` });
     await englishClientsLoad;
@@ -579,6 +605,35 @@ export async function runProductionBrowserSmoke() {
     await englishLeaveLoad;
     await waitFor(client, `["/leave", "/leave/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("My leave") && document.body?.innerText.includes("Leave overview")`, "English Leave business surface");
     console.log("✓ Clients, Projects, Invoices, and Leave render localized English LTR business surfaces");
+
+    // Restore the onboarding-selected Employee workspace before system/PWA
+    // checks so the historical production journey keeps its original mode.
+    await switchWorkspaceMode(client, "employee");
+
+    const englishSystemSettingsLoad = waitForEvent(client, "Page.loadEventFired", "English Settings system route");
+    await client.call("Page.navigate", { url: `${origin}/settings/` });
+    await englishSystemSettingsLoad;
+    await waitFor(client, `document.documentElement.dir === "ltr" && document.querySelector('#settings-onboarding')?.textContent.includes("Initial setup") && document.querySelector('#settings-device-transfer')?.textContent.includes("Connect phone and laptop") && document.title === "Settings | Saatyar"`, "English Settings deep system surface");
+
+    const englishImportLoad = waitForEvent(client, "Page.loadEventFired", "English Import system route");
+    await client.call("Page.navigate", { url: `${origin}/import/` });
+    await englishImportLoad;
+    await waitFor(client, `["/import", "/import/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Import files") && document.body?.innerText.includes("Safe, local-first import") && document.title === "Import files | Saatyar"`, "English Import system surface");
+
+    const englishAboutLoad = waitForEvent(client, "Page.loadEventFired", "English About system route");
+    await client.call("Page.navigate", { url: `${origin}/about/` });
+    await englishAboutLoad;
+    await waitFor(client, `["/about", "/about/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("About and guide") && document.body?.innerText.includes("What is Saatyar?") && document.title === "About & help | Saatyar"`, "English About system surface");
+
+    const englishReentrySettingsLoad = waitForEvent(client, "Page.loadEventFired", "English Settings onboarding reentry route");
+    await client.call("Page.navigate", { url: `${origin}/settings/` });
+    await englishReentrySettingsLoad;
+    await waitFor(client, `document.documentElement.dir === "ltr" && Boolean(document.querySelector('[data-onboarding-reentry-action]'))`, "English onboarding reentry action");
+    await evaluate(client, `document.querySelector('[data-onboarding-reentry-action]')?.click()`);
+    await waitFor(client, `["/onboarding", "/onboarding/"].includes(location.pathname) && document.documentElement.dir === "ltr" && Boolean(document.querySelector('[data-onboarding-step-index="1"]')) && document.body?.innerText.includes("Welcome to Saatyar") && document.title === "Initial setup | Saatyar"`, "English onboarding reentry surface");
+    await evaluate(client, `document.querySelector('[data-onboarding-back-settings]')?.click()`);
+    await waitFor(client, `["/settings", "/settings/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Settings & data")`, "return from English onboarding reentry");
+    console.log("✓ Settings, Onboarding, Import, and About follow English LTR before Persian restore");
 
     const settingsLocaleRestoreLoad = waitForEvent(client, "Page.loadEventFired", "Settings locale restore route");
     await client.call("Page.navigate", { url: `${origin}/settings/` });

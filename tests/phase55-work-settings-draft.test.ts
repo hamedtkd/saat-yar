@@ -7,7 +7,7 @@ test("work settings use manual draft edit save and cancel actions", async () => 
   assert.match(source, /useSettingsDraft/);
   assert.match(source, /EditableCardActions/);
   assert.match(source, /disabled=\{!canEdit\}/);
-  assert.match(source, /تنظیمات کاری ذخیره شد/);
+  assert.match(source, /s\("Work settings were saved"\)/);
   assert.doesNotMatch(source, /onModeChange/);
 });
 

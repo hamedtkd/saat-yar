@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useSystemUi } from "@/components/i18n/use-system-ui";
 import {
   createPairingLink,
   decodeDevicePairingSignal,
@@ -47,6 +48,7 @@ export function useDeviceTransferPairing({ data, setData, setToast }: {
   setData: React.Dispatch<React.SetStateAction<AppData>>;
   setToast: (message: string) => void;
 }) {
+  const { locale, s } = useSystemUi();
   const [role, setRole] = React.useState<Role>("idle");
   const [state, setState] = React.useState<ConnectionState>("idle");
   const [localCode, setLocalCode] = React.useState("");
@@ -69,10 +71,10 @@ export function useDeviceTransferPairing({ data, setData, setToast }: {
   const stopListenerRef = React.useRef<(() => void) | null>(null);
 
   const fail = React.useCallback((value: unknown) => {
-    const message = value instanceof Error ? value.message : "اتصال دستگاه ناموفق بود.";
+    const message = value instanceof Error ? value.message : s("Device connection failed.");
     setError(message);
     setState("error");
-  }, []);
+  }, [s]);
 
   const attachChannel = React.useCallback((channel: RTCDataChannel, sessionKey: DeviceTransferSessionKey) => {
     channelRef.current = channel;
@@ -98,7 +100,7 @@ export function useDeviceTransferPairing({ data, setData, setToast }: {
         id: `sent:${globalThis.crypto.randomUUID()}`,
         at: new Date().toISOString(),
         direction: "sent",
-        deviceName: remote?.deviceName ?? "دستگاه مقابل",
+        deviceName: remote?.deviceName ?? s("Other device"),
         status: "acknowledged",
       });
     });
@@ -107,7 +109,7 @@ export function useDeviceTransferPairing({ data, setData, setToast }: {
       channel.removeEventListener("open", onOpen);
       channel.removeEventListener("close", onClose);
     };
-  }, [data, fail]);
+  }, [data, fail, s]);
 
   const closeTransport = React.useCallback(() => {
     stopListenerRef.current?.();
@@ -148,14 +150,14 @@ export function useDeviceTransferPairing({ data, setData, setToast }: {
       reset();
       setRole("sender");
       setState("preparing");
-      const result = await createDevicePairingOffer(createLocalDeviceSource());
+      const result = await createDevicePairingOffer(createLocalDeviceSource(locale));
       peerRef.current = result.peer;
       offerRef.current = result.offer;
       attachChannel(result.channel, result.offer.sessionKey);
       setLocalCode(encodeDevicePairingSignal(result.offer));
       setState("waiting");
     } catch (value) { fail(value); }
-  }, [attachChannel, fail, reset]);
+  }, [attachChannel, fail, locale, reset]);
 
   const startReceiver = React.useCallback(async (code = remoteCode) => {
     try {
@@ -163,44 +165,44 @@ export function useDeviceTransferPairing({ data, setData, setToast }: {
       setState("preparing");
       setError("");
       const signal = decodeDevicePairingSignal(code);
-      if (signal.kind !== "offer") throw new Error("برای دستگاه دریافت‌کننده باید Offer وارد شود.");
+      if (signal.kind !== "offer") throw new Error(s("Receiver device requires an Offer."));
       remoteSourceRef.current = signal.source;
-      const result = await createDevicePairingAnswer(signal, createLocalDeviceSource());
+      const result = await createDevicePairingAnswer(signal, createLocalDeviceSource(locale));
       peerRef.current = result.peer;
       sessionKeyRef.current = result.sessionKey;
       result.channelPromise.then((channel) => attachChannel(channel, result.sessionKey)).catch(fail);
       setLocalCode(encodeDevicePairingSignal(result.answer));
       setState("waiting");
     } catch (value) { fail(value); }
-  }, [attachChannel, fail, remoteCode]);
+  }, [attachChannel, fail, locale, remoteCode, s]);
 
   const acceptAnswer = React.useCallback(async (code = remoteCode) => {
     try {
       const peer = peerRef.current;
       const offer = offerRef.current;
-      if (!peer || !offer) throw new Error("ابتدا Offer این دستگاه را بساز.");
+      if (!peer || !offer) throw new Error(s("Create this device Offer first."));
       const signal = decodeDevicePairingSignal(code);
-      if (signal.kind !== "answer") throw new Error("کد واردشده Answer نیست.");
+      if (signal.kind !== "answer") throw new Error(s("The entered code is not an Answer."));
       remoteSourceRef.current = signal.source;
       await acceptDevicePairingAnswer(peer, offer.pairingId, signal);
       setState("waiting");
       setError("");
     } catch (value) { fail(value); }
-  }, [fail, remoteCode]);
+  }, [fail, remoteCode, s]);
 
   const sendCurrentData = React.useCallback(async () => {
     try {
       const channel = channelRef.current;
       const sessionKey = sessionKeyRef.current;
-      if (!channel || !sessionKey) throw new Error("اتصال مستقیم آماده نیست.");
+      if (!channel || !sessionKey) throw new Error(s("Direct connection is not ready."));
       setAcknowledged(false);
       setState("connected");
-      const payload = await createDeviceTransferPayload(data, createLocalDeviceSource());
+      const payload = await createDeviceTransferPayload(data, createLocalDeviceSource(locale));
       const envelope = await encryptDeviceTransferPayload(payload, sessionKey);
       sendDeviceTransferEnvelope(channel, envelope);
-      setToast("داده رمزنگاری‌شده ارسال شد؛ منتظر تأیید دستگاه مقابل هستیم.");
+      setToast(s("Encrypted data was sent; waiting for the other device to acknowledge it."));
     } catch (value) { fail(value); }
-  }, [data, fail, setToast]);
+  }, [data, fail, locale, s, setToast]);
 
   const applyIncoming = React.useCallback((mode: DeviceTransferApplyMode, conflicts: DeviceTransferConflictResolution) => {
     if (!incoming) return;
@@ -220,16 +222,16 @@ export function useDeviceTransferPairing({ data, setData, setToast }: {
       mode,
       conflictResolution: conflicts,
     });
-    setToast(mode === "replace" ? "داده این دستگاه با انتقال جدید جایگزین شد." : "داده دستگاه مقابل با اطلاعات محلی ادغام شد.");
+    setToast(mode === "replace" ? s("This device data was replaced with the new transfer.") : s("The other device data was merged with local data."));
     setIncoming(null);
     setPreview(null);
     setState("completed");
-  }, [incoming, preview, setData, setToast]);
+  }, [incoming, preview, s, setData, setToast]);
 
   const clearHistory = React.useCallback(() => {
     clearDeviceTransferHistory();
-    setToast("تاریخچه انتقال پاک شد.");
-  }, [setToast]);
+    setToast(s("Transfer history was cleared."));
+  }, [s, setToast]);
 
   const pairingLink = React.useMemo(() => {
     if (!localCode || typeof window === "undefined") return "";

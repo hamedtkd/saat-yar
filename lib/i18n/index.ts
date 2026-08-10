@@ -15,6 +15,7 @@ export {
   formatLocaleDate,
   formatLocaleDigits,
   formatLocaleDuration,
+  formatLocaleDurationWords,
   formatLocaleDurationSeconds,
   formatLocaleMoney,
   formatLocaleNumber,

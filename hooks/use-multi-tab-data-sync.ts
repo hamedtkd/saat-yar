@@ -4,6 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { APP_SYNC_CHANNEL, createDataSavedMessage, createTabId, isAppSyncMessage } from "@/lib/multi-tab-sync";
 import { addSyncEvent, clearSyncHistory, createInitialSyncStatus } from "@/lib/multi-tab-sync-status";
 import { hasUnsavedSettingsDrafts } from "@/lib/settings-draft-registry";
+import { getBrowserLocale } from "@/lib/i18n";
+import { translateSystem } from "@/lib/i18n/system";
 import type { AppDataStorageAdapter } from "@/lib/storage";
 import type { AppData } from "@/lib/types";
 import type { SaveState } from "./use-persisted-app-data";
@@ -35,7 +37,7 @@ export function useMultiTabDataSync({ ready, saveState, storage, setData, setToa
 
   const loadExternalData = useCallback(async () => {
     if (hasUnsavedSettingsDrafts()) {
-      setToast("ابتدا تغییرات در حال ویرایش را ذخیره یا لغو کنید");
+      setToast(translateSystem(getBrowserLocale(), "Save or discard the changes you are editing first."));
       return false;
     }
     const { value } = await storage.load();
@@ -44,7 +46,7 @@ export function useMultiTabDataSync({ ready, saveState, storage, setData, setToa
     setData(value);
     setExternalSyncPending(false);
     setMultiTabSyncStatus((current) => ({ ...current, pending: false }));
-    setToast("تغییرات تب دیگر بارگذاری شد");
+    setToast(translateSystem(getBrowserLocale(), "Changes from another tab were loaded."));
     return true;
   }, [setData, setToast, storage]);
 

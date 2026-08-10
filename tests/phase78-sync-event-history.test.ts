@@ -40,8 +40,8 @@ test("clearing sync history preserves browser support and current tab", () => {
 test("settings health panel exposes recent events and a clear action", async () => {
   const panel = await read("components/pages/settings/multi-tab-health-panel.tsx");
   const route = await read("app/settings/page.tsx");
-  assert.match(panel, /رخدادهای اخیر/);
-  assert.match(panel, /پاک‌کردن تاریخچه همگام‌سازی/);
+  assert.match(panel, /s\("Recent events"\)/);
+  assert.match(panel, /s\("Clear sync history"\)/);
   assert.match(panel, /event\.kind === "deferred"/);
   assert.match(route, /clearMultiTabSyncHistory=\{controller\.clearMultiTabSyncHistory\}/);
 });

@@ -1,7 +1,7 @@
 "use client";
-
 import { useState } from "react";
 import { CheckCircle2, DatabaseBackup, ShieldCheck } from "lucide-react";
+import { useSystemUi } from "@/components/i18n/use-system-ui";
 import { FileDropField } from "@/components/common/file-drop-field";
 import { PanelHead } from "@/components/common/panel-head";
 import { StatusBadge } from "@/components/common/status-badge";
@@ -10,60 +10,11 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { parseBackupEnvelope } from "@/lib/backup-workflow";
 import { defaultSettings } from "@/lib/constants";
 import { normaliseData } from "@/lib/data/normalise";
-import { fa } from "@/lib/format";
 import { analyzeBackupImport, mergeBackupKeepingCurrent, type BackupImportAnalysis } from "@/lib/import-wizard";
 import type { AppData } from "@/lib/types";
-
-export function BackupImportPanel({ data, commitImport }: {
-  data: AppData;
-  commitImport: (next: AppData, message: string, options?: { safetyBackup?: boolean }) => Promise<boolean>;
-}) {
-  const [analysis, setAnalysis] = useState<BackupImportAnalysis | null>(null);
-  const [error, setError] = useState("");
-  const [busy, setBusy] = useState(false);
-
-  async function onFile(file?: File) {
-    if (!file) return;
-    setError(""); setAnalysis(null);
-    try {
-      const parsed = parseBackupEnvelope(JSON.parse(await file.text()));
-      const incoming = normaliseData(parsed, defaultSettings);
-      setAnalysis(analyzeBackupImport(data, incoming));
-    } catch {
-      setError("فایل انتخاب‌شده یک پشتیبان معتبر ساعت‌یار نیست.");
-    }
-  }
-
-  async function apply(mode: "safe" | "replace") {
-    if (!analysis || busy) return;
-    setBusy(true);
-    const next = mode === "replace" ? analysis.incoming : mergeBackupKeepingCurrent(data, analysis.incoming);
-    await commitImport(
-      next,
-      mode === "replace" ? "پشتیبان با موفقیت جایگزین شد" : "موارد جدید پشتیبان بدون بازنویسی داده فعلی اضافه شدند",
-      { safetyBackup: mode === "replace" },
-    );
-    setBusy(false);
-  }
-
-  return (
-    <section className="dashboard-card rounded-[var(--card-radius)] border border-[var(--dashboard-border)] p-4 sm:p-5">
-      <PanelHead icon={<DatabaseBackup />} title="واردسازی پشتیبان ساعت‌یار" />
-      <p className="mb-4 text-[11px] leading-6 text-[var(--text-muted)]">فایل ابتدا فقط خوانده و تحلیل می‌شود. تا قبل از فشردن دکمه اعمال، هیچ داده‌ای تغییر نمی‌کند.</p>
-      <FileDropField accept=".json,application/json" title="فایل JSON ساعت‌یار را انتخاب کن" description="پشتیبان نسخه‌های قبلی هم در صورت پشتیبانی Schema مهاجرت داده می‌شود" onFile={(file) => { void onFile(file); }} />
-      {error && <p className="mt-3 rounded-xl border border-[color-mix(in_srgb,var(--danger)_30%,var(--border))] bg-[var(--danger-soft)] p-3 text-xs text-[var(--danger)]">{error}</p>}
-      {analysis && (
-        <div className="mt-4 grid gap-4" data-import-backup-preview>
-          <div className="flex flex-wrap gap-2"><StatusBadge tone="success"><CheckCircle2 className="me-1 size-3" /> فایل معتبر</StatusBadge><StatusBadge tone={analysis.conflicts ? "warning" : "neutral"}>{fa.format(analysis.conflicts)} تعارض</StatusBadge><StatusBadge tone="info">{fa.format(analysis.additions)} مورد جدید</StatusBadge></div>
-          <div className="grid gap-2 rounded-xl border border-[var(--dashboard-border)] bg-[var(--surface-2)] p-3 text-[11px] text-[var(--text-muted)] sm:grid-cols-3">
-            <span><strong className="block text-[var(--text)]">روزهای کاری</strong>{fa.format(analysis.details.records.additions)} جدید / {fa.format(analysis.details.records.conflicts)} موجود</span>
-            <span><strong className="block text-[var(--text)]">کسب‌وکار و مالی</strong>{fa.format(analysis.details.clients.additions + analysis.details.projects.additions + analysis.details.expenses.additions + analysis.details.invoices.additions)} مورد جدید</span>
-            <span><strong className="block text-[var(--text)]">تنظیمات متفاوت</strong>{fa.format(analysis.settingsChanged)} بخش</span>
-          </div>
-          <div className="rounded-xl border border-[color-mix(in_srgb,var(--info)_25%,var(--border))] bg-[var(--info-soft)] p-3 text-[11px] leading-6 text-[var(--text-muted)]"><ShieldCheck className="me-1 inline size-4 text-[var(--info)]" /> «افزودن امن» فقط موارد جدید را اضافه می‌کند و تنظیمات و موارد متعارض فعلی را نگه می‌دارد. «جایگزینی کامل» ابتدا یک پشتیبان ایمنی دانلود می‌کند.</div>
-          <div className="flex flex-wrap gap-2"><Button type="button" disabled={busy} onClick={() => { void apply("safe"); }}>افزودن امن موارد جدید</Button><AlertDialog><AlertDialogTrigger asChild><Button type="button" variant="destructive" disabled={busy}>جایگزینی کامل</Button></AlertDialogTrigger><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>همه داده‌های فعلی جایگزین شوند؟</AlertDialogTitle><AlertDialogDescription>این عملیات کل AppData فعلی را با فایل انتخاب‌شده جایگزین می‌کند. قبل از اجرا یک Backup ایمنی دانلود می‌شود، اما بهتر است فقط وقتی مطمئن هستی ادامه بدهی.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>انصراف</AlertDialogCancel><AlertDialogAction className="border border-[var(--danger)] bg-[var(--danger-soft)] text-[var(--danger)] hover:brightness-95" onClick={() => { void apply("replace"); }}>بله، جایگزین شود</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog></div>
-        </div>
-      )}
-    </section>
-  );
+export function BackupImportPanel({ data, commitImport }: { data: AppData; commitImport: (next: AppData, message: string, options?: { safetyBackup?: boolean }) => Promise<boolean> }) {
+  const { s, number } = useSystemUi(); const [analysis, setAnalysis] = useState<BackupImportAnalysis | null>(null); const [error, setError] = useState(""); const [busy, setBusy] = useState(false);
+  async function onFile(file?: File) { if (!file) return; setError(""); setAnalysis(null); try { const parsed = parseBackupEnvelope(JSON.parse(await file.text())); const incoming = normaliseData(parsed, defaultSettings); setAnalysis(analyzeBackupImport(data, incoming)); } catch { setError(s("The selected file is not a valid Saatyar backup.")); } }
+  async function apply(mode: "safe" | "replace") { if (!analysis || busy) return; setBusy(true); const next = mode === "replace" ? analysis.incoming : mergeBackupKeepingCurrent(data, analysis.incoming); await commitImport(next, mode === "replace" ? s("Backup replaced successfully") : s("New backup items were added without overwriting current data"), { safetyBackup: mode === "replace" }); setBusy(false); }
+  return <section className="dashboard-card rounded-[var(--card-radius)] border border-[var(--dashboard-border)] p-4 sm:p-5"><PanelHead icon={<DatabaseBackup />} title={s("Import Saatyar backup")} /><p className="mb-4 text-[11px] leading-6 text-[var(--text-muted)]">{s("The file is only read and analyzed first. Nothing changes until you press Apply.")}</p><FileDropField accept=".json,application/json" title={s("Select a Saatyar JSON file")} description={s("Supported older backups are migrated according to the schema contract.")} onFile={(file) => { void onFile(file); }} />{error && <p className="mt-3 rounded-xl border border-[color-mix(in_srgb,var(--danger)_30%,var(--border))] bg-[var(--danger-soft)] p-3 text-xs text-[var(--danger)]">{error}</p>}{analysis && <div className="mt-4 grid gap-4" data-import-backup-preview><div className="flex flex-wrap gap-2"><StatusBadge tone="success"><CheckCircle2 className="me-1 size-3" /> {s("Valid file")}</StatusBadge><StatusBadge tone={analysis.conflicts ? "warning" : "neutral"}>{number(analysis.conflicts)} {s("Conflicts")}</StatusBadge><StatusBadge tone="info">{s("{count} new items", { count: number(analysis.additions) })}</StatusBadge></div><div className="grid gap-2 rounded-xl border border-[var(--dashboard-border)] bg-[var(--surface-2)] p-3 text-[11px] text-[var(--text-muted)] sm:grid-cols-3"><span><strong className="block text-[var(--text)]">{s("Work records")}</strong>{s("{count} new / {existing} existing", { count: number(analysis.details.records.additions), existing: number(analysis.details.records.conflicts) })}</span><span><strong className="block text-[var(--text)]">{s("Business and finance")}</strong>{s("{count} new items", { count: number(analysis.details.clients.additions + analysis.details.projects.additions + analysis.details.expenses.additions + analysis.details.invoices.additions) })}</span><span><strong className="block text-[var(--text)]">{s("Different settings")}</strong>{s("{count} sections", { count: number(analysis.settingsChanged) })}</span></div><div className="rounded-xl border border-[color-mix(in_srgb,var(--info)_25%,var(--border))] bg-[var(--info-soft)] p-3 text-[11px] leading-6 text-[var(--text-muted)]"><ShieldCheck className="me-1 inline size-4 text-[var(--info)]" /> {s("Safe add only inserts new items and keeps current settings and conflicts. Full replace downloads a safety backup first.")}</div><div className="flex flex-wrap gap-2"><Button type="button" disabled={busy} onClick={() => { void apply("safe"); }}>{s("Add new items safely")}</Button><AlertDialog><AlertDialogTrigger asChild><Button type="button" variant="destructive" disabled={busy}>{s("Full replace")}</Button></AlertDialogTrigger><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>{s("Replace all current data?")}</AlertDialogTitle><AlertDialogDescription>{s("This replaces the entire current AppData with the selected file. A safety backup is downloaded first, but only continue when you are sure.")}</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>{s("Cancel")}</AlertDialogCancel><AlertDialogAction className="border border-[var(--danger)] bg-[var(--danger-soft)] text-[var(--danger)] hover:brightness-95" onClick={() => { void apply("replace"); }}>{s("Yes, replace")}</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog></div></div>}</section>;
 }

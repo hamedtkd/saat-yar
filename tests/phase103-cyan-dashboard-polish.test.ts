@@ -13,9 +13,13 @@ test("cyan is the default brand palette while alternate themes remain available"
   assert.equal(themePresets.emerald, "#10b981");
   assert.equal(themePresets.ocean, "#0ea5e9");
   const card = read("components/pages/settings/appearance/appearance-settings-card.tsx");
-  assert.match(card, /spotify: "فیروزه‌ای"/);
-  assert.match(card, /emerald: "سبز"/);
-  assert.match(card, /ocean: "آبی"/);
+  assert.match(card, /spotify: "Turquoise"/);
+  assert.match(card, /emerald: "Green"/);
+  assert.match(card, /ocean: "Blue"/);
+  const system = read("lib/i18n/system.ts");
+  assert.match(system, /"Turquoise": "فیروزه‌ای"/);
+  assert.match(system, /"Green": "سبز"/);
+  assert.match(system, /"Blue": "آبی"/);
 });
 
 test("zero-target days never masquerade as one hundred percent complete", () => {

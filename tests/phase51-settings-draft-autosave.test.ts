@@ -30,12 +30,12 @@ test("notification settings use edit save and cancel actions", async () => {
   assert.match(card, /EditableCardActions/);
   assert.match(card, /useSettingsDraft/);
   assert.match(card, /fieldset disabled=\{!canEdit\}/);
-  assert.match(card, /تنظیمات اعلان ذخیره شد/);
+  assert.match(card, /s\("Notification settings were saved"\)/);
 });
 
 test("general settings expose optional autosave control", async () => {
   const card = await read("components/pages/settings/settings-behavior-card.tsx");
   assert.match(card, /autoSaveSettings/);
-  assert.match(card, /ذخیره خودکار تغییرات تنظیمات/);
-  assert.match(card, /به‌صورت پیش‌فرض خاموش است/);
+  assert.match(card, /s\("Automatically save settings changes"\)/);
+  assert.match(card, /s\("Off by default\. This control always changes with an explicit save\. In manual mode, each card has its own draft; in automatic mode, valid changes are saved immediately\."\)/);
 });
