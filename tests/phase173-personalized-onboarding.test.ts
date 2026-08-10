@@ -79,6 +79,19 @@ test("onboarding import reuses Phase 171 panels while preserving completion stat
   assert.match(route, /commitImport=\{controller\.commitImport\}/);
 });
 
+test("embedded import actions cannot submit the onboarding form before the explicit final action", async () => {
+  const [backupPanel, csvPanel] = await Promise.all([
+    read("components/pages/import/backup-import-panel.tsx"),
+    read("components/pages/import/csv-import-panel.tsx"),
+  ]);
+  assert.match(backupPanel, /<Button type="button" disabled=\{busy\}/);
+  assert.match(backupPanel, /<Button type="button" variant="destructive"/);
+  assert.match(csvPanel, /<Button type="button" size="sm" variant="outline"/);
+  assert.match(csvPanel, /<Button type="button" size="sm" variant="ghost"/);
+  assert.match(csvPanel, /<Button type="button" data-import-apply/);
+  assert.match(csvPanel, /<Button type="button" variant="ghost" disabled=\{busy\}/);
+});
+
 test("final onboarding step is seven and media/browser flows follow it", async () => {
   const [onboarding, footer, smoke, media] = await Promise.all([
     read("components/layout/onboarding.tsx"),

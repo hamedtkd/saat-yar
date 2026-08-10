@@ -57,3 +57,7 @@ Production Browser Smoke بعد از Journey آنبوردینگ و Import:
 ## مرحله بعد
 
 Phase 175 پوشش Catalog را به Today/Month/Reports و جریان‌های Employee/Freelancer گسترش می‌دهد و سپس Validation/Toast/Print/CSV/PWA metadata به‌صورت مرحله‌ای سیاست‌گذاری می‌شوند.
+
+## Revision 2 — حفظ Hotfix مرحله Import آنبوردینگ
+
+بسته اولیه Phase 174 ناخواسته از Artifact قدیمی Phase 173 ساخته شده بود و Hotfix محلی `b2ee6b1` را که دکمه‌های Import داخلی را `type="button"` می‌کرد، بازگردانده بود. در نتیجه `data-import-apply` داخل فرم Onboarding می‌توانست Submit والد را زودتر از دکمه نهایی اجرا کند و Browser Smoke با `Button not found: شروع ساعت‌یار` متوقف شود. Revision 2 همه Actionهای Import قابل‌استفاده داخل فرم را صریحاً non-submit می‌کند و تست رگرسیون Phase 173 را برمی‌گرداند. قرارداد i18n Phase 174 تغییری نکرده است.
