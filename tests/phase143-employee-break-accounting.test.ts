@@ -35,7 +35,7 @@ test("break editor exposes an explicit paid toggle for every break", async () =>
 test("employee browser journey pins the created break to the unpaid contract", async () => {
   const source = await read("scripts/employee-browser-ux-smoke.mjs");
   assert.match(source, /ensureFirstBreakUnpaid/);
-  assert.match(source, /وقفه 1 با حقوق/);
+  assert.match(source, /data-break-paid-toggle/);
   assert.match(source, /NET_DURATION = "۸:۱۵"/);
 });
 

@@ -150,3 +150,13 @@ test("Phase 175 is documented and wired without schema dependency or release-ver
   assert.match(docs, /PHASE_175_NOTES_FA\.md/);
   assert.match(schema, /APP_DATA_SCHEMA_VERSION = 17/);
 });
+
+test("employee break smoke uses structural hooks instead of localized paid-checkbox copy", async () => {
+  const editor = await read("components/pages/today/time-strip/breaks-editor.tsx");
+  const smoke = await read("scripts/employee-browser-ux-smoke.mjs");
+  assert.match(editor, /data-breaks-editor/);
+  assert.match(editor, /data-break-row/);
+  assert.match(editor, /data-break-paid-toggle/);
+  assert.match(smoke, /data-break-paid-toggle/);
+  assert.doesNotMatch(smoke, /aria-label="وقفه 1 با حقوق"/);
+});

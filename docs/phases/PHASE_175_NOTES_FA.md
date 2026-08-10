@@ -60,3 +60,7 @@ Production Browser Smoke پس از سوییچ به English/LTR و Reload، سه 
 - قرارداد Domain، AppData، Scheduler و Locale persistence تغییری نکرده است.
 - یک regression test صریح اضافه شد تا پایداری referential این facade در refactorهای بعدی حفظ شود.
 
+## Revision 4 — Employee smoke selector hardening
+
+پس از سبز شدن 722 تست و Production/Freelancer smoke، Employee smoke روی selector متنی `وقفه 1 با حقوق` شکست خورد؛ چون i18n رقم پویا را در فارسی به `۱` تبدیل می‌کند. رفتار محصول صحیح بود و مشکل از coupling تست مرورگر به متن/رقم محلی‌شده بود. برای حفظ قدرت Gate بدون وابستگی به copy، Break editor اکنون hookهای ساختاری `data-breaks-editor`، `data-break-row`، `data-break-field` و `data-break-paid-toggle` دارد و smoke از همان contract استفاده می‌کند.
+
