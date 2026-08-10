@@ -108,7 +108,8 @@ test("Phase 172 is documented, browser-covered and moves personalized onboarding
   assert.match(smoke, /Active employee work clock advances live without a reload/);
   assert.match(roadmap, /\[x\] فاز ۱۷۲: Live Runtime Clock & Low-Power Refresh/);
   assert.match(roadmap, /\[x\] فاز ۱۷۳: Onboarding شخصی‌شده/);
-  assert.match(roadmap, /\[ \] فاز ۱۷۴: i18n/);
+  assert.match(roadmap, /\[x\] فاز ۱۷۴:.*i18n/);
+  assert.match(roadmap, /\[ \] فاز ۱۷۵:/);
   assert.match(notes, /visibilitychange/);
   assert.match(notes, /هیچ Tick زمان، IndexedDB، BroadcastChannel، Network، Service Worker یا Heartbeat را نمی‌نویسد/);
   assert.match(phase171, /آنبوردینگ شخصی‌شده فاز ۱۷۳/);

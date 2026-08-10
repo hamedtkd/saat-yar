@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import "@fontsource-variable/vazirmatn/wght.css";
 import { PwaRegister } from "@/app/pwa-register";
+import { LocaleBootstrap } from "@/components/i18n/locale-bootstrap";
+import { LocaleProvider } from "@/components/i18n/locale-provider";
+import { LocaleRuntime } from "@/components/i18n/locale-runtime";
 import { SaatyarShell } from "@/components/saatyar-shell";
 import { ThemeBootstrap } from "@/components/theme/theme-bootstrap";
 import { absoluteUrl, SITE_DESCRIPTION, SITE_NAME, SOCIAL_IMAGE_PATH } from "@/lib/site-metadata";
@@ -54,12 +57,16 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="fa" dir="rtl" suppressHydrationWarning className="scroll-smooth">
       <head>
         <meta name="saatyar-base" content={basePath} />
+        <LocaleBootstrap />
         <meta name="theme-color" content="#06b6d4" data-saatyar-theme-color />
         <ThemeBootstrap />
       </head>
       <body className="m-0 min-h-screen bg-[var(--page)] font-[Vazirmatn_Variable,Tahoma,sans-serif] font-normal text-[var(--text)] antialiased [font-feature-settings:'ss01'] transition-colors">
         <PwaRegister />
-        <SaatyarShell>{children}</SaatyarShell>
+        <LocaleProvider>
+          <LocaleRuntime />
+          <SaatyarShell>{children}</SaatyarShell>
+        </LocaleProvider>
       </body>
     </html>
   );

@@ -1,3 +1,5 @@
+"use client";
+
 import { CalendarClock, Database, ShieldCheck, SlidersHorizontal } from "lucide-react";
 import { PageHeading } from "@/components/common/page-heading";
 import type { AppData, StorageInfo } from "@/lib/types";
@@ -25,6 +27,8 @@ import { RecordRecycleBinCard } from "./record-recycle-bin-card";
 import { SettingsSection } from "./settings-section";
 import { SettingsSearch } from "./settings-search";
 import { OnboardingReentryCard } from "./onboarding-reentry-card";
+import { LanguageSettingsCard } from "./language-settings-card";
+import { useLocale } from "@/components/i18n/locale-provider";
 
 export function SettingsPage({ data, setData, storage, exportBackup, previewImport, importPreview, applyImport, requestPersistence, requestNotificationPermission, setToast, financialsHidden, saveState, lastSavedAt, saveError, recoverySnapshot, retrySave, createRecovery, restoreRecovery, clearRecovery, multiTabSyncStatus, clearMultiTabSyncHistory, startOnboardingReentry }: {
   data: AppData;
@@ -50,22 +54,24 @@ export function SettingsPage({ data, setData, storage, exportBackup, previewImpo
   clearMultiTabSyncHistory: () => void;
   startOnboardingReentry: () => void;
 }) {
+  const { t } = useLocale();
   return <>
-    <PageHeading autosave={false} title="تنظیمات و داده‌ها" description="ظاهر، برنامه کاری، رفتار ذخیره و داده‌های محلی ساعت‌یار را از یک مرکز منظم مدیریت کن." />
+    <PageHeading autosave={false} title={t("settings.title")} description={t("settings.description")} />
     <SettingsSearch />
     <section className={cn("grid grid-cols-[250px_minmax(0,1fr)] gap-5 max-[900px]:grid-cols-1") }>
       <SettingsNav />
       <div className="grid min-w-0 gap-5">
         <span id="settings-general" className="block scroll-mt-24" aria-hidden="true" />
-        <SettingsSection icon={<SlidersHorizontal />} eyebrow="شخصی‌سازی" title="عمومی و ظاهر" description="هویت کاربر، تم، رنگ و رفتار ذخیره تنظیمات.">
+        <SettingsSection icon={<SlidersHorizontal />} eyebrow={t("settings.general.eyebrow")} title={t("settings.general.title")} description={t("settings.general.description")}>
           <OnboardingReentryCard startOnboardingReentry={startOnboardingReentry} />
           <ProfileSettingsCard data={data} setData={setData} setToast={setToast} />
+          <LanguageSettingsCard />
           <AppearanceSettingsCard data={data} setData={setData} setToast={setToast} />
           <SettingsBehaviorCard data={data} setData={setData} setToast={setToast} />
         </SettingsSection>
 
         <span id="settings-data" className="block scroll-mt-24" aria-hidden="true" />
-        <SettingsSection icon={<Database />} eyebrow="Local-first" title="داده و پشتیبان" description="سلامت داده، فضای ذخیره‌سازی، بازیابی و فایل‌های پشتیبان.">
+        <SettingsSection icon={<Database />} eyebrow={t("settings.data.eyebrow")} title={t("settings.data.title")} description={t("settings.data.description")}>
           <DataHealthCard records={data.records} syncStatus={multiTabSyncStatus} clearSyncHistory={clearMultiTabSyncHistory} />
           <RecordRecycleBinCard data={data} setData={setData} setToast={setToast} />
           <StorageCard storage={storage} requestPersistence={requestPersistence} />
@@ -76,7 +82,7 @@ export function SettingsPage({ data, setData, storage, exportBackup, previewImpo
         </SettingsSection>
 
         <span id="settings-work" className="block scroll-mt-24" aria-hidden="true" />
-        <SettingsSection icon={<CalendarClock />} eyebrow="قوانین کار" title="برنامه کاری و حقوق" description="هدف‌ها، تقویم، مزایا و اعلان‌های مرتبط با روز کاری.">
+        <SettingsSection icon={<CalendarClock />} eyebrow={t("settings.work.eyebrow")} title={t("settings.work.title")} description={t("settings.work.description")}>
           <WorkSettingsCard data={data} setData={setData} setToast={setToast} />
           <HolidayOverridesCard data={data} setData={setData} setToast={setToast} />
           <PayrollPolicyCard data={data} setData={setData} setToast={setToast} financialsHidden={financialsHidden} />
@@ -85,7 +91,7 @@ export function SettingsPage({ data, setData, storage, exportBackup, previewImpo
         </SettingsSection>
 
         <span id="settings-about" className="block scroll-mt-24" aria-hidden="true" />
-        <SettingsSection icon={<ShieldCheck />} eyebrow="ایمنی" title="عملیات حساس" description="ابزارهای بازنشانی داده با تأیید صریح و کنترل‌شده.">
+        <SettingsSection icon={<ShieldCheck />} eyebrow={t("settings.safety.eyebrow")} title={t("settings.safety.title")} description={t("settings.safety.description")}>
           <DangerZone setData={setData} setToast={setToast} />
         </SettingsSection>
       </div>

@@ -1,18 +1,28 @@
 import { BarChart3, CalendarDays, CircleHelp, Folder, LayoutDashboard, ReceiptText, Settings, Umbrella, Users } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import type { MessageKey } from "@/lib/i18n";
 import type { Mode, Tab } from "@/lib/types";
 
-export const appNavItems = [
-  { id: "today" as Tab, label: "امروز", icon: CalendarDays, href: "/today" },
-  { id: "month" as Tab, label: "ماه من", icon: LayoutDashboard, href: "/month" },
-  { id: "clients" as Tab, label: "مشتری‌ها", icon: Users, href: "/clients" },
-  { id: "projects" as Tab, label: "پروژه‌ها", icon: Folder, href: "/projects" },
-  { id: "invoices" as Tab, label: "فاکتورها", icon: ReceiptText, href: "/invoices" },
-  { id: "leave" as Tab, label: "مرخصی‌ها", icon: Umbrella, href: "/leave" },
-  { id: "reports" as Tab, label: "گزارش‌ها", icon: BarChart3, href: "/reports" },
+type NavItem = {
+  id: Tab;
+  label: string;
+  labelKey: MessageKey;
+  icon: LucideIcon;
+  href: string;
+};
+
+export const appNavItems: readonly NavItem[] = [
+  { id: "today" as Tab, label: "امروز", labelKey: "nav.today", icon: CalendarDays, href: "/today" },
+  { id: "month" as Tab, label: "ماه من", labelKey: "nav.month", icon: LayoutDashboard, href: "/month" },
+  { id: "clients" as Tab, label: "مشتری‌ها", labelKey: "nav.clients", icon: Users, href: "/clients" },
+  { id: "projects" as Tab, label: "پروژه‌ها", labelKey: "nav.projects", icon: Folder, href: "/projects" },
+  { id: "invoices" as Tab, label: "فاکتورها", labelKey: "nav.invoices", icon: ReceiptText, href: "/invoices" },
+  { id: "leave" as Tab, label: "مرخصی‌ها", labelKey: "nav.leave", icon: Umbrella, href: "/leave" },
+  { id: "reports" as Tab, label: "گزارش‌ها", labelKey: "nav.reports", icon: BarChart3, href: "/reports" },
 ];
 
-export const settingsNavItem = { id: "settings", label: "تنظیمات", icon: Settings, href: "/settings" } as const;
-export const aboutNavItem = { id: "about", label: "درباره و راهنما", icon: CircleHelp, href: "/about" } as const;
+export const settingsNavItem = { id: "settings", label: "تنظیمات", labelKey: "nav.settings" as MessageKey, icon: Settings, href: "/settings" } as const;
+export const aboutNavItem = { id: "about", label: "درباره و راهنما", labelKey: "nav.about" as MessageKey, icon: CircleHelp, href: "/about" } as const;
 
 const mobilePrimaryIds: Record<Mode, string[]> = {
   employee: ["today", "month", "leave", "reports"],

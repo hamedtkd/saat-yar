@@ -288,12 +288,13 @@
 - [x] فاز ۱۷۱: Import Wizard؛ Route مستقل `/import` با Preview بدون تغییر داده، بازیابی امن Backup، CSV با تشخیص و Mapping ستون‌ها، پشتیبانی تاریخ شمسی/میلادی و اعداد فارسی، ورود روزهای کاری/مشتری/پروژه/هزینه، خطای ردیفی و Conflict Strategy صریح Skip/Replace.
 - [x] فاز ۱۷۲: Live Runtime Clock & Low-Power Refresh؛ یک Scheduler مشترک و visibility-aware برای تایمرهای زنده، Refresh ثانیه‌ای فقط برای تایمر اصلی، Refresh دقیقه‌ای برای Summary/Metric/Project، توقف کامل Tick در تب مخفی و Sync فوری روی focus/pageshow بدون Persistence یا Network Tick.
 - [x] فاز ۱۷۳: Onboarding شخصی‌شده بر اساس Employee/Freelancer/Hybrid؛ مراحل ۳ و ۴ متناسب با Workspace، ساخت اختیاری مشتری/پروژه برای Freelancer، درآمد ترکیبی برای Hybrid و Import داخلی امن در مرحله ۷ با حفظ وضعیت تکمیل تا Submit نهایی.
-- [ ] فاز ۱۷۴: i18n واقعی رابط کاربری؛ Catalog/Dictionary تایپ‌شده، فارسی RTL و انگلیسی LTR، انتخاب زبان Local-first و Regression/Browser Smoke دوطرفه.
+- [x] فاز ۱۷۴: زیرساخت i18n واقعی (Foundation)؛ Catalog/Dictionary تایپ‌شده، Locale مستقل Local-first، سوییچ بدون Reload، Shell/Navigation/Settings دوطرفه فارسی RTL و انگلیسی LTR و Browser Smoke ماندگاری Locale.
+- [ ] فاز ۱۷۵: گسترش ترجمه به صفحه‌های اصلی Today/Month/Reports و جریان‌های Employee/Freelancer، همراه با Validation/Toastهای پرکاربرد و Browser Smoke دو Locale.
 
 ## بین‌المللی‌سازی آینده — پس از Patch بعدی
 
-- [ ] استخراج متن‌های رابط از Componentها به Catalog/Dictionary تایپ‌شده بدون تغییر رفتار دامنه.
-- [ ] افزودن Locale انگلیسی با Layout کامل LTR، در حالی که فارسی RTL و تقویم/اعداد فارسی به‌عنوان تجربه درجه‌یک حفظ شوند.
-- [ ] ذخیره Locale انتخابی به‌صورت Local-first و امکان تغییر زبان از Settings بدون Reload مخرب یا از دست‌رفتن Draft.
-- [ ] افزودن Regression و Browser Smoke جدا برای `fa-IR / RTL` و `en / LTR` روی Today، Month، Reports، Settings و جریان‌های کارمند/فریلنسر.
+- [x] ایجاد Catalog/Dictionary تایپ‌شده و استخراج متن‌های Shell/Navigation/Settings بدون تغییر رفتار دامنه؛ پوشش صفحه‌های محتوایی در فاز ۱۷۵ ادامه دارد.
+- [x] افزودن Locale انگلیسی و قرارداد LTR برای Shell/Navigation/Settings؛ ترجمه کامل صفحه‌های دامنه و سیاست تقویم/اعداد در فاز ۱۷۵ ادامه دارد.
+- [x] ذخیره Locale انتخابی به‌صورت Local-first خارج از AppData و تغییر آن از Settings بدون Reload مخرب یا دست‌زدن به Draftهای AppData.
+- [ ] گسترش Regression و Browser Smoke دوطرفه `fa-IR / RTL` و `en / LTR` از Shell/Settings فاز ۱۷۴ به Today، Month، Reports و جریان‌های کارمند/فریلنسر در فاز ۱۷۵.
 - [ ] تعیین سیاست ترجمه برای متن‌های سیستم، Toastها، Validation، PWA metadata و خروجی‌های CSV/Print پیش از فعال‌کردن زبان دوم در Production.

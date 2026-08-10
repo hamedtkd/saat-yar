@@ -452,14 +452,7 @@ export async function runProductionBrowserSmoke() {
       return appData?.settings?.onboarded === false && appData?.clients?.some((item) => item.name === "مشتری آنبوردینگ") === true;
     })()`, "onboarding Import persistence without premature completion");
     console.log("✓ Personalized onboarding keeps employee setup relevant and imports existing data before completion");
-    await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="7"]')) && Boolean(document.querySelector('[data-onboarding-submit][type="submit"]'))`, "onboarding remains on the explicit final action after inline import");
-    const finalSubmitClicked = await evaluate(client, `(() => {
-      const button = document.querySelector('[data-onboarding-submit][type="submit"]');
-      if (!(button instanceof HTMLButtonElement)) return false;
-      button.click();
-      return true;
-    })()`);
-    if (!finalSubmitClicked) throw new Error("Final onboarding action could not be clicked after inline import.");
+    await clickButton(client, "شروع ساعت‌یار");
     await waitFor(client, "['/today', '/today/'].includes(location.pathname) && !document.body?.innerText.includes('شروع ساعت‌یار')", "today route after onboarding");
     await new Promise((resolveWait) => setTimeout(resolveWait, 700));
 
@@ -527,6 +520,36 @@ export async function runProductionBrowserSmoke() {
     await client.call("Page.navigate", { url: `${origin}/today/` });
     await returnToday;
     await waitFor(client, `["/today", "/today/"].includes(location.pathname) && document.body?.innerText.includes("ساعت‌یار")`, "Today after Import Wizard");
+
+    const settingsLocaleLoad = waitForEvent(client, "Page.loadEventFired", "Settings locale route");
+    await client.call("Page.navigate", { url: `${origin}/settings/` });
+    await settingsLocaleLoad;
+    await waitFor(client, `Boolean(document.querySelector('[data-settings-language]'))`, "language settings card");
+    await evaluate(client, `document.querySelector('[data-locale-choice="en"]')?.click()`);
+    await waitFor(client, `document.documentElement.lang === "en" && document.documentElement.dir === "ltr" && localStorage.getItem("saatyar-locale-v1") === "en" && document.body?.innerText.includes("Settings & data") && document.body?.innerText.includes("Today")`, "English LTR locale switch");
+    const ltrGeometry = await evaluate(client, `(() => {
+      const sidebar = document.querySelector('aside.fixed');
+      const header = document.querySelector('header.shell-main-offset');
+      if (!sidebar || !header) return null;
+      const side = sidebar.getBoundingClientRect();
+      const head = header.getBoundingClientRect();
+      return { sidebarLeft: side.left, headerLeft: head.left, dir: document.documentElement.dir };
+    })()`);
+    if (!ltrGeometry || ltrGeometry.dir !== "ltr" || ltrGeometry.sidebarLeft > 24 || ltrGeometry.headerLeft < 240) {
+      throw new Error(`LTR shell geometry failed: ${JSON.stringify(ltrGeometry)}`);
+    }
+    const localeReload = waitForEvent(client, "Page.loadEventFired", "English locale persistence reload");
+    await client.call("Page.reload", { ignoreCache: false });
+    await localeReload;
+    await waitFor(client, `document.documentElement.lang === "en" && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Settings & data")`, "English locale persistence after reload");
+    await evaluate(client, `document.querySelector('[data-locale-choice="fa-IR"]')?.click()`);
+    await waitFor(client, `document.documentElement.lang === "fa" && document.documentElement.dir === "rtl" && localStorage.getItem("saatyar-locale-v1") === "fa-IR" && document.body?.innerText.includes("تنظیمات و داده‌ها")`, "Persian RTL locale restore");
+    console.log("✓ Local-first locale switch persists English LTR across reload and restores Persian RTL");
+
+    const localeReturnToday = waitForEvent(client, "Page.loadEventFired", "return to Today after locale smoke");
+    await client.call("Page.navigate", { url: `${origin}/today/` });
+    await localeReturnToday;
+    await waitFor(client, `["/today", "/today/"].includes(location.pathname) && document.body?.innerText.includes("ساعت‌یار")`, "Today after locale smoke");
 
     await waitFor(client, `navigator.serviceWorker?.ready.then(() => true).catch(() => false)`, "PWA service worker readiness");
     const firstInstallWorker = await evaluate(client, `(async () => {

@@ -36,7 +36,7 @@ test("PWA experience covers offline install iOS and safe update flows", () => {
 test("shell exposes the PWA experience and footer does not overclaim offline readiness", () => {
   assert.match(read("components/saatyar-shell.tsx"), /<PwaExperience \/>/);
   const footer = read("components/layout/app-footer.tsx");
-  assert.match(footer, /داده‌ها روی همین دستگاه نگه‌داری می‌شوند/);
+  assert.match(footer, /t\("footer\.online"\)/);
   assert.doesNotMatch(footer, /برنامه آماده استفاده آفلاین است/);
 });
 

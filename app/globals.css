@@ -92,6 +92,11 @@
     margin-right: calc(var(--shell-content-offset) + max(0px, (100% - var(--shell-content-offset) - var(--shell-content-max)) / 2));
     margin-left: auto;
   }
+
+  :root[dir="ltr"] .shell-main-offset {
+    margin-right: auto;
+    margin-left: calc(var(--shell-content-offset) + max(0px, (100% - var(--shell-content-offset) - var(--shell-content-max)) / 2));
+  }
 }
 
 @media (min-width: 1920px) {

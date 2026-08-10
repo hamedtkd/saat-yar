@@ -126,6 +126,7 @@
 - [فاز ۱۶۲: CI گیت‌هاب همسو با Vercel](./phases/PHASE_162_NOTES_FA.md)
 - [فاز ۱۶۳: بازیابی نشست و کنتراست Accent](./phases/PHASE_163_NOTES_FA.md)
 - [فاز ۱۶۴: README اصلی انگلیسی و نقشه راه i18n](./phases/PHASE_164_NOTES_FA.md)
+- [فاز ۱۷۴: زیرساخت i18n و Locale Local-first](./phases/PHASE_174_NOTES_FA.md)
 
 - [فاز ۱۶۵: Final Release 2.3.2](./phases/PHASE_165_NOTES_FA.md)
 - [فاز ۱۶۶: Route مستقل آنبوردینگ](./phases/PHASE_166_NOTES_FA.md)

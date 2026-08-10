@@ -1,15 +1,19 @@
+"use client";
+
 import { AlertCircle, CheckCircle2, LoaderCircle } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { useLocale } from "@/components/i18n/locale-provider";
 
 type SaveState = "idle" | "saving" | "saved" | "error";
 
 export function HeaderSaveStatus({ state }: { state: SaveState }) {
+  const { t } = useLocale();
   if (state === "idle") return null;
 
   const saving = state === "saving";
   const error = state === "error";
   const Icon = saving ? LoaderCircle : error ? AlertCircle : CheckCircle2;
-  const label = saving ? "در حال ذخیره…" : error ? "خطای ذخیره" : "ذخیره شد";
+  const label = saving ? t("header.save.saving") : error ? t("header.save.error") : t("header.save.saved");
 
   return (
     <span

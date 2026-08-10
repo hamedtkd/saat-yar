@@ -7,6 +7,7 @@ import type { AppearanceSettings, Mode, ThemeMode } from "@/lib/types";
 import { HeaderActions } from "./app-header/header-actions";
 import { getRouteNavItem } from "./app-header/nav-items";
 import { ProfileMenu } from "./app-header/profile-menu";
+import { useLocale } from "@/components/i18n/locale-provider";
 
 type Props = {
   name: string;
@@ -23,6 +24,7 @@ type Props = {
 
 export function AppHeader(props: Props) {
   const router = useRouter();
+  const { t } = useLocale();
   const { requestNavigation } = useUnsavedNavigation();
   const currentPath = usePathname() || props.pathname || "/today";
   const routeItem = getRouteNavItem(currentPath);
@@ -55,8 +57,8 @@ export function AppHeader(props: Props) {
           <RouteIcon aria-hidden="true" className="size-[18px]" />
         </span>
         <div className="min-w-0">
-          <p className="hidden text-[9px] font-semibold text-[var(--text-muted)] sm:block">فضای کاری شخصی</p>
-          <strong className="block max-w-[82px] truncate text-[11px] text-[var(--text)] sm:max-w-[140px] sm:text-[12px]">{routeItem.label}</strong>
+          <p className="hidden text-[9px] font-semibold text-[var(--text-muted)] sm:block">{t("app.personalWorkspace")}</p>
+          <strong className="block max-w-[82px] truncate text-[11px] text-[var(--text)] sm:max-w-[140px] sm:text-[12px]">{t(routeItem.labelKey)}</strong>
         </div>
       </div>
 

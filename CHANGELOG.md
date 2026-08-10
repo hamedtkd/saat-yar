@@ -2,6 +2,10 @@
 
 ### افزوده شد
 
+- Phase 174: Foundation واقعی i18n اضافه شد؛ Catalog تایپ‌شده فارسی/انگلیسی، Locale مستقل Local-first، سوییچ زنده زبان از Settings و Bootstrap پیش از Hydration برای جلوگیری از پرش جهت صفحه.
+- Shell، Header، Sidebar، Mobile Navigation، Profile Menu، Footer و سطح اصلی Settings اکنون بر اساس Locale مشترک فارسی RTL یا انگلیسی LTR رندر می‌شوند.
+- Production Browser Smoke ماندگاری `en/LTR` در Reload و بازگشت امن به `fa-IR/RTL` را قبل از ادامه Journeyهای قدیمی بررسی می‌کند.
+
 - Phase 173: آنبوردینگ بر اساس Employee/Freelancer/Hybrid شخصی می‌شود؛ فریلنسر می‌تواند مشتری و پروژه اول را بسازد، Hybrid شروع سریع هر دو جریان درآمد را دارد و Import امن Phase 171 داخل مرحله نهایی Onboarding در دسترس است.
 
 ### تغییر کرد
