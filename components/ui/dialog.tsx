@@ -3,6 +3,7 @@
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
+import { useLocale } from "@/components/i18n/locale-provider";
 import { cn } from "@/lib/cn";
 
 const Dialog = DialogPrimitive.Root;
@@ -29,15 +30,17 @@ DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
+>(({ className, children, ...props }, ref) => {
+  const { direction, t } = useLocale();
+  return (
   <DialogPortal>
     <DialogOverlay />
     <DialogPrimitive.Content
       ref={ref}
-      dir="rtl"
+      dir={direction}
       className={cn(
         "fixed left-1/2 top-1/2 z-50 grid w-[min(92vw,520px)] max-h-[88dvh] -translate-x-1/2 -translate-y-1/2 gap-4 overflow-y-auto",
-        "rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-1)] p-5 text-right text-[var(--text)]",
+        "rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-1)] p-5 text-start text-[var(--text)]",
         "shadow-[0_24px_70px_rgba(0,0,0,.22)] outline-none",
         "data-[state=closed]:scale-95 data-[state=closed]:opacity-0 data-[state=open]:scale-100 data-[state=open]:opacity-100",
         "motion-safe:transition-[opacity,transform]",
@@ -47,18 +50,19 @@ const DialogContent = React.forwardRef<
     >
       {children}
       <DialogPrimitive.Close
-        className="absolute left-3 top-3 grid size-9 place-items-center rounded-xl text-[var(--text-muted)] transition-colors hover:bg-[var(--surface-2)] hover:text-[var(--text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]"
-        aria-label="بستن"
+        className="absolute end-3 top-3 grid size-9 place-items-center rounded-xl text-[var(--text-muted)] transition-colors hover:bg-[var(--surface-2)] hover:text-[var(--text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]"
+        aria-label={t("common.close")}
       >
         <X aria-hidden="true" className="size-4" />
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>
   </DialogPortal>
-));
+  );
+});
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 
 function DialogHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("grid gap-1.5 pl-10", className)} {...props} />;
+  return <div className={cn("grid gap-1.5 pe-10", className)} {...props} />;
 }
 
 function DialogFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {

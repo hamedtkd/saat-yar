@@ -40,7 +40,9 @@ test("color and file native controls are hidden behind explicit design-system wr
     read("components/pages/settings/restore-card.tsx"),
   ]);
   assert.match(color, /type="color"[\s\S]*opacity-0/);
-  assert.match(color, /انتخاب رنگ/);
+  assert.match(color, /useSystemUi/);
+  assert.match(color, /s\("Choose color"\)/);
+  assert.doesNotMatch(color, /[\u0600-\u06FF]/);
   assert.match(appearance, /<ColorField/);
   assert.doesNotMatch(appearance, /type="color"/);
   assert.match(file, /type="file"[\s\S]*opacity-0/);

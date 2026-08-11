@@ -5,6 +5,7 @@ import { Camera, CheckCircle2, X } from "lucide-react";
 import { useSystemUi } from "@/components/i18n/use-system-ui";
 import { Button } from "@/components/ui/button";
 import { addDevicePairingQrFrame, getDevicePairingQrProgress, type DevicePairingQrCollection } from "@/lib/device-pairing-qr";
+import { localizeSystemRuntimeError } from "@/lib/i18n/runtime-error";
 
 type DetectedBarcode = { rawValue?: string };
 type BarcodeDetectorLike = { detect(source: HTMLVideoElement): Promise<DetectedBarcode[]> };
@@ -35,13 +36,13 @@ export function DevicePairingQrScanner({ onCode, onClose }: { onCode: (code: str
           try {
             if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
               const codes = await detector.detect(video); const rawValue = codes.find((item) => item.rawValue)?.rawValue;
-              if (rawValue) setCollection((current) => { try { const result = addDevicePairingQrFrame(current, rawValue, locale); if (result.completeCode) window.setTimeout(() => onCodeRef.current(result.completeCode as string), 0); return result.collection; } catch (value) { window.setTimeout(() => setError(value instanceof Error ? value.message : s("QR could not be read.")), 0); return current; } });
+              if (rawValue) setCollection((current) => { try { const result = addDevicePairingQrFrame(current, rawValue, locale); if (result.completeCode) window.setTimeout(() => onCodeRef.current(result.completeCode as string), 0); return result.collection; } catch (value) { window.setTimeout(() => setError(localizeSystemRuntimeError(locale, value, "QR could not be read.")), 0); return current; } });
             }
           } catch { /* transient decode miss */ }
           if (active) timer = window.setTimeout(() => void scan(), 180);
         };
         void scan();
-      } catch (value) { if (active) setError(value instanceof Error ? s("Camera could not open: {error}", { error: value.message }) : s("Camera access was not granted.")); }
+      } catch (value) { if (active) setError(s("Camera could not open: {error}", { error: localizeSystemRuntimeError(locale, value, "Camera access was not granted.") })); }
     }
     void start();
     return () => { active = false; window.clearTimeout(timer); stream?.getTracks().forEach((track) => track.stop()); if (videoElement) videoElement.srcObject = null; };

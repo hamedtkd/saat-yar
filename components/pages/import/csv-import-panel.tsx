@@ -14,6 +14,7 @@ import {
   type CsvMapping, type ParsedCsv,
 } from "@/lib/import-wizard";
 import type { SystemMessageKey } from "@/lib/i18n/system";
+import { localizeSystemRuntimeError } from "@/lib/i18n/runtime-error";
 import type { AppData } from "@/lib/types";
 import { CsvMappingGrid } from "./csv-mapping-grid";
 import { CsvPreviewTable } from "./csv-preview-table";
@@ -47,7 +48,7 @@ export function CsvImportPanel({ data, commitImport }: { data: AppData; commitIm
     if (!file) return;
     setError("");
     try { const nextParsed = parseCsvText(await file.text()); setParsed(nextParsed); setMapping(createAutoMapping(kind, nextParsed.headers)); }
-    catch (caught) { setParsed(null); setMapping({}); setError(caught instanceof Error ? caught.message : s("Could not read the CSV file.")); }
+    catch (caught) { setParsed(null); setMapping({}); setError(localizeSystemRuntimeError(locale, caught, "Could not read the CSV file.")); }
   }
   async function apply() {
     if (!preview || busy || preview.readyCount + preview.conflictCount === 0) return;

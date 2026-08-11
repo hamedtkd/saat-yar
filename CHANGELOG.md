@@ -2,6 +2,10 @@
 
 ### افزوده شد
 
+- Phase 178: Closure نهایی i18n با `audit:i18n` سراسری روی Runtime UI، Allowlist محدود و مستند برای Metadata/Parser/Tone classifier و Regression contract مستقل اضافه شد.
+- Shared Dialog/AlertDialog/Select/Table/Picker geometry از RTL فیزیکی به Direction و Logical CSS تبدیل شد؛ Runtime errorهای Import/Device Pairing نیز از Bridge Locale عبور می‌کنند تا متن low-level زبان مقابل در UI نشت نکند.
+- Excel Report اکنون `lang/dir` را از Locale فعال می‌گیرد؛ Metadata و Manifest استاتیک Release 2.3.2 عمداً Canonical فارسی باقی می‌مانند و Runtime title/lang/dir در مرورگر از Locale کاربر پیروی می‌کند.
+
 - Phase 177: i18n در Settings، Onboarding، Import، About، Device Transfer، PWA Experience و پیام‌های System/Persistence/Notification تکمیل شد؛ Runtime title نیز از Locale فعال پیروی می‌کند.
 - Production Browser Smoke اکنون Settings/Import/About و Re-entry واقعی Onboarding را در English/LTR پیش از Restore فارسی بررسی می‌کند؛ Static metadata و Manifest منتشرشده برای سازگاری Release 2.3.2 فعلاً Canonical فارسی باقی مانده‌اند.
 

@@ -73,6 +73,7 @@ export function useReportActions({ data, filteredEntries, filteredMonthRecords, 
         translate(locale, employeeMode ? "reports.export.employeeTitle" : "reports.export.freelancerTitle"),
         headers,
         rows,
+        locale,
       );
     } else {
       exportCsv(`${fileBase}-${localDateKey()}.csv`, headers, rows);

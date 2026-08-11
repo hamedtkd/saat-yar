@@ -3,6 +3,7 @@
 import * as React from "react";
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import { buttonVariants } from "@/components/ui/button";
+import { useLocale } from "@/components/i18n/locale-provider";
 import { cn } from "@/lib/cn";
 
 const AlertDialog = AlertDialogPrimitive.Root;
@@ -28,15 +29,17 @@ AlertDialogOverlay.displayName = AlertDialogPrimitive.Overlay.displayName;
 const AlertDialogContent = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content>
->(({ className, ...props }, ref) => (
+>(({ className, ...props }, ref) => {
+  const { direction } = useLocale();
+  return (
   <AlertDialogPortal>
     <AlertDialogOverlay />
     <AlertDialogPrimitive.Content
       ref={ref}
-      dir="rtl"
+      dir={direction}
       className={cn(
         "fixed left-1/2 top-1/2 z-50 grid w-[min(92vw,460px)] -translate-x-1/2 -translate-y-1/2 gap-4",
-        "rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-1)] p-5 text-right text-[var(--text)]",
+        "rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-1)] p-5 text-start text-[var(--text)]",
         "shadow-[0_24px_70px_rgba(0,0,0,.22)] outline-none",
         "data-[state=closed]:scale-95 data-[state=closed]:opacity-0 data-[state=open]:scale-100 data-[state=open]:opacity-100",
         "motion-safe:transition-[opacity,transform]",
@@ -45,7 +48,8 @@ const AlertDialogContent = React.forwardRef<
       {...props}
     />
   </AlertDialogPortal>
-));
+  );
+});
 AlertDialogContent.displayName = AlertDialogPrimitive.Content.displayName;
 
 function AlertDialogHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
@@ -53,7 +57,7 @@ function AlertDialogHeader({ className, ...props }: React.HTMLAttributes<HTMLDiv
 }
 
 function AlertDialogFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("flex flex-row-reverse flex-wrap gap-2", className)} {...props} />;
+  return <div className={cn("flex flex-row flex-wrap gap-2", className)} {...props} />;
 }
 
 const AlertDialogTitle = React.forwardRef<

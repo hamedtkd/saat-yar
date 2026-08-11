@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useSystemUi } from "@/components/i18n/use-system-ui";
+import { localizeSystemRuntimeError } from "@/lib/i18n/runtime-error";
 import {
   createPairingLink,
   decodeDevicePairingSignal,
@@ -71,10 +72,9 @@ export function useDeviceTransferPairing({ data, setData, setToast }: {
   const stopListenerRef = React.useRef<(() => void) | null>(null);
 
   const fail = React.useCallback((value: unknown) => {
-    const message = value instanceof Error ? value.message : s("Device connection failed.");
-    setError(message);
+    setError(localizeSystemRuntimeError(locale, value, "Device connection failed."));
     setState("error");
-  }, [s]);
+  }, [locale]);
 
   const attachChannel = React.useCallback((channel: RTCDataChannel, sessionKey: DeviceTransferSessionKey) => {
     channelRef.current = channel;

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useLocale } from "@/components/i18n/locale-provider";
 import { createTabId } from "@/lib/multi-tab-sync";
 import {
   createLiveTimerLock, describeTimerDevice, isOwnedByAnotherTab, LIVE_TIMER_CHANNEL,
@@ -8,6 +9,7 @@ import {
 } from "@/lib/live-timer-lock";
 
 export function useLiveTimerOwnership(active: boolean) {
+  const { locale } = useLocale();
   const tabIdRef = useRef(createTabId());
   const channelRef = useRef<BroadcastChannel | null>(null);
   const [owner, setOwner] = useState<LiveTimerLock | null>(null);
@@ -19,12 +21,12 @@ export function useLiveTimerOwnership(active: boolean) {
   }, []);
 
   const publish = useCallback(() => {
-    const deviceName = describeTimerDevice(window.navigator.userAgent, window.navigator.platform);
+    const deviceName = describeTimerDevice(window.navigator.userAgent, window.navigator.platform, locale);
     const lock = createLiveTimerLock(tabIdRef.current, new Date(), deviceName);
     window.localStorage.setItem(LIVE_TIMER_LOCK_KEY, JSON.stringify(lock));
     channelRef.current?.postMessage(lock);
     setOwner(null);
-  }, []);
+  }, [locale]);
 
   const ensureOwnership = useCallback(() => {
     const lock = parseLiveTimerLock(window.localStorage.getItem(LIVE_TIMER_LOCK_KEY));

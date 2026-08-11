@@ -292,7 +292,7 @@
 - [x] فاز ۱۷۵: گسترش i18n به Today/Month/Reports؛ متن‌ها، تقویم شمسی، اعداد، مدت، پول، Pickerها، جدول/نمودار و Browser Smoke واقعی English/LTR → Persian/RTL بدون تغییر Schema یا AppData.
 - [x] فاز ۱۷۶: گسترش i18n به Clients/Projects/Invoices/Leave و سطوح تجاری، همراه با Validation/Toast/Print/CSV و Browser Journey دو Locale.
 - [x] فاز ۱۷۷: تکمیل i18n در Settings/Onboarding/Import/About و Surfaceهای System/PWA، پیام‌های Runtime و Browser Smoke دو Locale بدون تغییر Schema یا Dependency.
-- [ ] فاز ۱۷۸: Closure/Audit نهایی i18n؛ Hard-coded UI audit سراسری، RTL/LTR geometry، Metadata/PWA policy، CSV/Print و Release readiness پیش از Merge کنترل‌شده.
+- [x] فاز ۱۷۸: Closure/Audit نهایی i18n؛ Hard-coded UI audit سراسری، RTL/LTR geometry، Metadata/PWA policy، CSV/Print و Release readiness پیش از Merge کنترل‌شده.
 
 ## بین‌المللی‌سازی آینده — پس از Patch بعدی
 
@@ -303,4 +303,4 @@
 - [x] گسترش همین قرارداد به Clients/Projects/Invoices/Leave و Journeyهای تجاری در فاز ۱۷۶.
 - [x] ترجمه Validation/Toastهای تجاری و خروجی CSV/Excel/سطح چاپ مرتبط در فاز ۱۷۶، بدون تغییر داده دامنه.
 - [x] تکمیل متن‌های System/PWA و سطوح باقی‌مانده Settings/Onboarding/Import/About در فاز ۱۷۷؛ Metadata استاتیک فعلاً Canonical فارسی و Runtime title دو Locale است.
-- [ ] فاز ۱۷۸: Audit نهایی Hard-coded UI، Metadata/PWA، Print/CSV و هندسه دو جهت پیش از تصمیم Rollout زبان دوم.
+- [x] فاز ۱۷۸: Audit نهایی Hard-coded UI، Metadata/PWA، Print/CSV و هندسه دو جهت پیش از تصمیم Rollout زبان دوم؛ Audit اجرایی به Quality Gate متصل شد.

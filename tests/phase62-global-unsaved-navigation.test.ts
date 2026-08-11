@@ -41,7 +41,8 @@ test("dirty draft labels are exposed in the confirmation dialog", async () => {
   const dialog = await read("components/pages/settings/unsaved-settings-guard.tsx");
 
   assert.match(registry, /getUnsavedSettingsDraftLabels/);
-  assert.match(hook, /label = "تنظیمات"/);
+  assert.match(hook, /label: string;/);
+  assert.doesNotMatch(hook, /label = /);
   assert.match(dialog, /dirtyLabels\.map/);
   assert.match(dialog, /• \{label\}/);
 });

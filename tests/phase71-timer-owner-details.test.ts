@@ -17,13 +17,15 @@ test("timer locks preserve privacy-safe device information", () => {
 test("heartbeat age is presented in a readable relative format", () => {
   const now = new Date("2026-08-06T10:00:30.000Z").getTime();
   assert.equal(formatTimerHeartbeat("2026-08-06T10:00:30.000Z", now), "همین حالا");
-  assert.equal(formatTimerHeartbeat("2026-08-06T10:00:18.000Z", now), "12 ثانیه پیش");
-  assert.equal(formatTimerHeartbeat("2026-08-06T09:58:00.000Z", now), "2 دقیقه پیش");
+  assert.equal(formatTimerHeartbeat("2026-08-06T10:00:18.000Z", now), "۱۲ ثانیه پیش");
+  assert.equal(formatTimerHeartbeat("2026-08-06T09:58:00.000Z", now), "۲ دقیقه پیش");
+  assert.equal(formatTimerHeartbeat("2026-08-06T10:00:18.000Z", now, "en"), "12 seconds ago");
 });
 
 test("ownership hook exposes the remote owner and publishes device details", async () => {
   const source = await read("hooks/use-live-timer-ownership.ts");
   assert.match(source, /describeTimerDevice\(window\.navigator\.userAgent/);
+  assert.match(source, /window\.navigator\.platform, locale/);
   assert.match(source, /const \[owner, setOwner\]/);
   assert.match(source, /return \{ blocked, owner, ensureOwnership, takeOver \}/);
 });
@@ -32,8 +34,9 @@ test("takeover confirmation shows device and last heartbeat", async () => {
   const banner = await read("components/layout/live-timer-ownership-banner.tsx");
   const shell = await read("components/saatyar-shell.tsx");
   assert.match(banner, /AlertDialog/);
-  assert.match(banner, /آخرین Heartbeat/);
-  assert.match(banner, /بله، انتقال کنترل/);
+  assert.match(banner, /last heartbeat was/);
+  assert.match(banner, /Yes, transfer control/);
+  assert.doesNotMatch(banner, /[\u0600-\u06FF]/);
   assert.match(banner, /owner\.deviceName/);
   assert.match(shell, /owner=\{controller\.liveTimerOwnership\.owner\}/);
 });
