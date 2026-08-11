@@ -74,9 +74,10 @@ test("runtime scheduler is shared visibility-aware and uses timeout instead of i
 });
 
 test("live surfaces share second and minute cadences instead of owning local timers", async () => {
-  const [duration, workDuration, focus, summary, metrics, timeline, detail, list] = await Promise.all([
+  const [duration, workDuration, flipClock, focus, summary, metrics, timeline, detail, list] = await Promise.all([
     read("components/common/live-duration.tsx"),
     read("components/common/live-work-duration.tsx"),
+    read("components/ui/flip-clock.tsx"),
     read("components/pages/today/today-focus-card.tsx"),
     read("components/pages/today/today-smart-summary.tsx"),
     read("components/pages/today/today-metrics.tsx"),
@@ -86,6 +87,11 @@ test("live surfaces share second and minute cadences instead of owning local tim
   ]);
   assert.match(duration, /useRuntimeNow\("second"/);
   assert.match(workDuration, /useRuntimeNow\("second"/);
+  assert.match(duration, /<FlipClock/);
+  assert.match(workDuration, /<FlipClock/);
+  assert.doesNotMatch(duration, /formatDigit=/);
+  assert.doesNotMatch(workDuration, /formatDigit=/);
+  assert.doesNotMatch(flipClock, /setInterval/);
   assert.match(focus, /data-live-work-duration|LiveWorkDuration/);
   assert.match(focus, /motion-safe:animate-pulse/);
   assert.match(summary, /useLiveWorkCalc/);

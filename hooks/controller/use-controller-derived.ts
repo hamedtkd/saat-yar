@@ -1,13 +1,14 @@
 import { useMemo } from "react";
-import { emptyRecord, entryMinutes, localDateKey } from "@/lib/format";
+import { calendarMonthCells, emptyRecord, entryMinutes, localDateKey } from "@/lib/format";
 import { getHolidayInfo } from "@/lib/holidays";
 import { recordMatchesReportFilter } from "@/lib/report-filters";
+import type { CalendarSystem } from "@/lib/i18n";
 import { calc, minutesToTime } from "@/lib/time-engine";
 import { getDailyTargetMinutes, getWorkScheduleDay } from "@/lib/work-schedule";
 import { calculateLeaveEntitlementSummary } from "@/lib/leave-entitlement";
 import type { AppData, ReportFilter } from "@/lib/types";
 
-export function useControllerDerived(data: AppData, selectedDate: string, selectedProjectId: string, reportFilter: ReportFilter) {
+export function useControllerDerived(data: AppData, selectedDate: string, selectedProjectId: string, reportFilter: ReportFilter, calendar: CalendarSystem = "persian") {
   const selectedSchedule = getWorkScheduleDay(selectedDate, data.settings);
   const dailyTarget = getDailyTargetMinutes(selectedDate, data.settings);
   const storedRecord = data.records[selectedDate] ?? {
@@ -23,15 +24,17 @@ export function useControllerDerived(data: AppData, selectedDate: string, select
   const record = { ...storedRecord, holiday: selectedHoliday.isHoliday };
   const todayCalc = calc(record, dailyTarget);
   const suggestedExit = minutesToTime(calc({ ...record, start: record.start || selectedSchedule.start }, dailyTarget).plannedExit);
-  const selectedMonth = selectedDate.slice(0, 7);
+  const selectedMonthDates = useMemo(() => new Set(calendarMonthCells(selectedDate, calendar)
+    .filter((cell) => cell.inMonth)
+    .map((cell) => cell.key)), [calendar, selectedDate]);
   const monthRecords = useMemo(() => Object.values(data.records)
-    .filter((item) => item.date.startsWith(selectedMonth))
+    .filter((item) => selectedMonthDates.has(item.date))
     .map((item) => ({ ...item, holiday: getHolidayInfo(item.date, {
       mode: data.settings.mode, manualHoliday: item.holiday,
       includeOfficialHolidays: data.settings.autoOfficialHolidays,
       includeWeeklyHoliday: data.settings.autoWeeklyHoliday, overrides: data.holidayOverrides,
     }).isHoliday }))
-    .sort((a, b) => b.date.localeCompare(a.date)), [data, selectedMonth]);
+    .sort((a, b) => b.date.localeCompare(a.date)), [data, selectedMonthDates]);
   const monthStats = useMemo(() => monthRecords.reduce((acc, item) => {
     const target = getDailyTargetMinutes(item.date, data.settings);
     const result = calc(item, target);

@@ -34,7 +34,7 @@ export type SettingsNavItem = {
 export const settingsNavItems: readonly SettingsNavItem[] = [
   { id: "settings-onboarding", labelKey: "settings.nav.onboarding", groupId: "settings-general", icon: RotateCcw, keywords: "onboarding setup initial wizard restart" },
   { id: "settings-profile", labelKey: "settings.nav.profile", groupId: "settings-general", icon: UserRound, keywords: "name profile account user greeting" },
-  { id: "settings-language", labelKey: "settings.language.nav", groupId: "settings-general", icon: Globe2, keywords: "language locale english persian rtl ltr direction" },
+  { id: "settings-language", labelKey: "settings.language.nav", groupId: "settings-general", icon: Globe2, keywords: "language locale english persian rtl ltr direction calendar gregorian jalali solar hijri date" },
   { id: "settings-appearance", labelKey: "settings.nav.appearance", groupId: "settings-general", icon: Palette, keywords: "theme dark light appearance color surface" },
   { id: "settings-behavior", labelKey: "settings.nav.behavior", groupId: "settings-general", icon: Save, keywords: "save autosave draft persistence" },
 

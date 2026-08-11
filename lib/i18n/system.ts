@@ -341,6 +341,7 @@ export const faSystemCatalog = {
   "No record": "بدون رکورد",
   "Clock-in time is missing.": "ساعت ورود ثبت نشده است.",
   "Clock-out time is still missing.": "ساعت خروج هنوز ثبت نشده است.",
+  "Clock-out must be later than clock-in.": "ساعت خروج باید بعد از ساعت ورود باشد.",
   "Lunch start or end is incomplete.": "شروع یا پایان ناهار ناقص است.",
   "Lunch interval is invalid.": "بازه ناهار معتبر نیست.",
   "Break {index} is still open.": "وقفه شماره {index} هنوز پایان نیافته است.",

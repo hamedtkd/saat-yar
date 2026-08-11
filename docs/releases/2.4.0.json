@@ -1,0 +1,48 @@
+{
+  "product": "Saatyar",
+  "package": "saatyar-worklog",
+  "version": "2.4.0",
+  "releaseDate": "2026-08-11",
+  "status": "release-candidate",
+  "dataSchemaVersion": 17,
+  "nodeEngine": "22.x",
+  "verifiedBaselineCommitPrefix": "887158c",
+  "verifiedBaselineTestCount": 758,
+  "expectedCandidateTestCount": 764,
+  "expectedFinalTestCount": 770,
+  "qualityCommand": "npm run check:release",
+  "browserGate": "scripts/production-browser-smoke.mjs",
+  "freelancerBrowserGate": "scripts/freelancer-browser-ux-smoke.mjs",
+  "employeeBrowserGate": "scripts/employee-browser-ux-smoke.mjs",
+  "pairingBrowserGate": "scripts/device-pairing-browser-smoke.mjs",
+  "pairingCommand": "npm run test:browser:pairing",
+  "i18nAuditCommand": "npm run audit:i18n",
+  "productionAuditCommand": "npm run audit:production",
+  "vercelAuditCommand": "npm run audit:vercel",
+  "mediaCaptureCommand": "npm run media:capture",
+  "releaseNotes": {
+    "fa": "docs/releases/RELEASE_NOTES_2.4.0_FA.md",
+    "en": "docs/releases/RELEASE_NOTES_2.4.0_EN.md"
+  },
+  "tag": "v2.4.0",
+  "releaseCommit": null,
+  "releaseEvidence": {
+    "baselinePhase": 178,
+    "productionBrowserSmoke": "passed",
+    "freelancerBrowserSmoke": "passed",
+    "employeeBrowserSmoke": "passed",
+    "pairingBrowserSmoke": "passed",
+    "pairingEncryptedChunks": 4,
+    "vercelStaticExportAudit": "passed",
+    "i18nClosureAudit": "passed",
+    "staticRoutes": 22,
+    "pwaPrecacheBuildAssets": 44,
+    "phase178FinalTestCount": 758
+  },
+  "rollout": {
+    "branch": "dev",
+    "mainMerge": "pending",
+    "productionAudit": "pending",
+    "annotatedTag": "pending"
+  }
+}

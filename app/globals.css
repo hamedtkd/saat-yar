@@ -157,3 +157,29 @@
   0%, 100% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 0 color-mix(in srgb, var(--accent) 0%, transparent)); }
   50% { transform: scale(1.025) rotate(.6deg); filter: drop-shadow(0 5px 12px color-mix(in srgb, var(--accent) 24%, transparent)); }
 }
+
+/* The official Vazirmatn npm package ships a dedicated Farsi-Digits build.
+   Persian UI uses Vazirmatn FD so ASCII digits are drawn with Persian glyphs by
+   the font itself; English keeps regular Vazirmatn. No JavaScript digit swap is needed. */
+.saatyar-app-font {
+  font-family: Vazirmatn, Tahoma, sans-serif;
+}
+
+:root[lang="fa"] .saatyar-app-font {
+  font-family: "Vazirmatn FD", Vazirmatn, Tahoma, sans-serif;
+}
+
+.saatyar-timer-countdown {
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-family: Vazirmatn, Tahoma, sans-serif;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+  font-synthesis: none;
+}
+
+:root[lang="fa"] .saatyar-timer-countdown {
+  font-family: "Vazirmatn FD", Vazirmatn, Tahoma, sans-serif;
+}

@@ -1,12 +1,12 @@
 import { exportCsv, exportExcel } from "@/lib/exporters";
 import { entryMinutes, localDateKey } from "@/lib/format";
-import { getBrowserLocale, translate, type Locale, type MessageKey } from "@/lib/i18n";
+import { getBrowserLocale, translate, type CalendarSystem, type Locale, type MessageKey } from "@/lib/i18n";
 import { formatLocaleDate } from "@/lib/i18n/formatters";
 import { calc } from "@/lib/time-engine";
 import { getDailyTargetMinutes } from "@/lib/work-schedule";
 import type { AppData, TimeEntry, WorkRecord } from "@/lib/types";
 
-type Args = { data: AppData; filteredEntries: TimeEntry[]; filteredMonthRecords: WorkRecord[]; setToast: (message: string) => void };
+type Args = { data: AppData; filteredEntries: TimeEntry[]; filteredMonthRecords: WorkRecord[]; calendar: CalendarSystem; setToast: (message: string) => void };
 
 const EMPLOYEE_HEADERS: MessageKey[] = [
   "reports.export.employee.date",
@@ -30,14 +30,14 @@ const FREELANCER_HEADERS: MessageKey[] = [
   "reports.export.freelancer.billable",
 ];
 
-export function useReportActions({ data, filteredEntries, filteredMonthRecords, setToast }: Args) {
+export function useReportActions({ data, filteredEntries, filteredMonthRecords, calendar, setToast }: Args) {
   function freelancerRows(locale: Locale) {
     return filteredEntries.map((entry) => {
       const project = data.projects.find((item) => item.id === entry.projectId);
       const client = data.clients.find((item) => item.id === entry.clientId);
       const minutes = entryMinutes(entry);
       return [
-        formatLocaleDate(locale, entry.startedAt, { year: "numeric", month: "2-digit", day: "2-digit" }),
+        formatLocaleDate(locale, entry.startedAt, { year: "numeric", month: "2-digit", day: "2-digit" }, calendar),
         client?.name ?? "",
         project?.name ?? "",
         entry.note,
@@ -56,7 +56,7 @@ export function useReportActions({ data, filteredEntries, filteredMonthRecords, 
     const rows = employeeMode ? filteredMonthRecords.map((item) => {
       const result = calc(item, getDailyTargetMinutes(item.date, data.settings));
       return [
-        formatLocaleDate(locale, item.date, { year: "numeric", month: "2-digit", day: "2-digit" }),
+        formatLocaleDate(locale, item.date, { year: "numeric", month: "2-digit", day: "2-digit" }, calendar),
         item.start,
         item.end,
         result.worked,

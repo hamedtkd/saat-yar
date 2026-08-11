@@ -2,10 +2,15 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import {
+  CALENDAR_STORAGE_KEY,
+  DEFAULT_CALENDAR_PREFERENCE,
   DEFAULT_LOCALE,
   LOCALE_STORAGE_KEY,
   getHtmlLang,
   getLocaleDirection,
+  normalizeCalendarPreference,
+  readStoredCalendarPreference,
+  resolveCalendarSystem,
   normalizeLocale,
   readStoredLocale,
   translate,
@@ -23,6 +28,13 @@ test("locale normalization keeps Persian as the safe default and English as the 
   assert.equal(getLocaleDirection("en"), "ltr");
   assert.equal(getHtmlLang("fa-IR"), "fa");
   assert.equal(getHtmlLang("en"), "en");
+  assert.equal(DEFAULT_CALENDAR_PREFERENCE, "auto");
+  assert.equal(normalizeCalendarPreference("gregory"), "gregory");
+  assert.equal(normalizeCalendarPreference("persian"), "persian");
+  assert.equal(normalizeCalendarPreference("unknown"), "auto");
+  assert.equal(resolveCalendarSystem("en", "auto"), "gregory");
+  assert.equal(resolveCalendarSystem("fa-IR", "auto"), "persian");
+  assert.equal(resolveCalendarSystem("en", "persian"), "persian");
 });
 
 test("typed catalogs translate shared shell messages and interpolate parameters", () => {
@@ -39,11 +51,20 @@ test("locale persistence is a separate local-first preference outside AppData", 
   const store = read("lib/i18n/locale-store.ts");
   assert.match(store, /localStorage\.setItem\(LOCALE_STORAGE_KEY, locale\)/);
   assert.doesNotMatch(store, /AppData|setData|schemaVersion/);
+
+  assert.equal(CALENDAR_STORAGE_KEY, "saatyar-calendar-v1");
+  const calendarStorage = { getItem: (key: string) => key === CALENDAR_STORAGE_KEY ? "gregory" : null };
+  assert.equal(readStoredCalendarPreference(calendarStorage), "gregory");
+  const calendarStore = read("lib/i18n/calendar-store.ts");
+  assert.match(calendarStore, /localStorage\.setItem\(CALENDAR_STORAGE_KEY, preference\)/);
+  assert.doesNotMatch(calendarStore, /AppData|setData|schemaVersion/);
 });
 
 test("locale provider uses one external store without polling or persistence side effects", () => {
   const provider = read("components/i18n/locale-provider.tsx");
   assert.match(provider, /useSyncExternalStore\(subscribeBrowserLocale, getBrowserLocale/);
+  assert.match(provider, /subscribeBrowserCalendarPreference/);
+  assert.match(provider, /resolveCalendarSystem\(locale, calendarPreference\)/);
   assert.doesNotMatch(provider, /setInterval|setTimeout|indexedDB|fetch\(/);
 });
 
@@ -58,6 +79,8 @@ test("bootstrap and runtime apply html language and direction before and after h
   assert.match(bootstrap, /r\.dir=e\?'ltr':'rtl'/);
   assert.match(runtime, /root\.lang = getHtmlLang\(locale\)/);
   assert.match(runtime, /root\.dir = direction/);
+  assert.match(runtime, /root\.dataset\.calendar = calendar/);
+  assert.match(bootstrap, /CALENDAR_STORAGE_KEY/);
 });
 
 test("shell navigation translates shared labels and flips desktop geometry with document direction", () => {
@@ -77,11 +100,22 @@ test("settings exposes an immediate language control without touching settings d
   const card = read("components/pages/settings/language-settings-card.tsx");
   const page = read("components/pages/settings/settings-page.tsx");
   const model = read("components/pages/settings/settings-navigation-model.ts");
+  const quick = read("components/layout/language-switcher.tsx");
+  const actions = read("components/layout/app-header/header-actions.tsx");
+  const sidebar = read("components/layout/navigation/sidebar-nav.tsx");
   assert.match(card, /data-locale-choice=\{choice\.locale\}/);
   assert.match(card, /setLocale\(choice\.locale\)/);
+  assert.match(card, /data-calendar-choice=\{choice\.preference\}/);
+  assert.match(card, /setCalendarPreference\(choice\.preference\)/);
   assert.doesNotMatch(card, /useSettingsDraft|setData|AppData/);
   assert.match(page, /<LanguageSettingsCard \/>/);
   assert.match(model, /id: "settings-language"/);
+  assert.match(quick, /setLocale\(value as Locale\)/);
+  assert.match(quick, /data-quick-locale-choice=\{choice\.locale\}/);
+  assert.match(quick, /header\.languageCurrent/);
+  assert.doesNotMatch(quick, /useSettingsDraft|setData|AppData/);
+  assert.match(actions, /<LanguageSwitcher variant="compact" className="xl:hidden" \/>/);
+  assert.match(sidebar, /<LanguageSwitcher variant="sidebar" \/>/);
 });
 
 test("production smoke proves English LTR persistence then restores Persian before legacy journeys continue", () => {

@@ -12,11 +12,11 @@ test("shell sizes only lucide SVG icons instead of every custom visualization", 
   assert.match(shell, /\[&_svg\.lucide\]:h-\[18px\]/);
 });
 
-test("today progress arc keeps an independent layout box", () => {
+test("today progress arc keeps an independent responsive layout box", () => {
   const source = read("components/pages/today/today-progress-arc.tsx");
-  assert.match(source, /h-\[170px\]/);
+  assert.match(source, /aspect-square w-full max-w-\[320px\]/);
   assert.match(source, /data-dashboard-visual="progress-arc"/);
-  assert.match(source, /style=\{\{ width: "100%", height: "auto" \}\}/);
+  assert.match(source, /className="absolute inset-0 block h-full w-full overflow-visible"/);
 });
 
 test("static favicon SVG uses a tight viewBox without the oversized halo", () => {

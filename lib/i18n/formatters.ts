@@ -1,13 +1,9 @@
+import { getCalendarLocale, type CalendarSystem } from "./calendars.ts";
 import type { Locale } from "./locales.ts";
 
 const numberFormatters: Record<Locale, Intl.NumberFormat> = {
   "fa-IR": new Intl.NumberFormat("fa-IR"),
   en: new Intl.NumberFormat("en-US"),
-};
-
-const calendarLocales: Record<Locale, string> = {
-  "fa-IR": "fa-IR-u-ca-persian",
-  en: "en-US-u-ca-persian",
 };
 
 export function formatLocaleNumber(locale: Locale, value: number, options?: Intl.NumberFormatOptions) {
@@ -61,14 +57,19 @@ export function formatLocalePercent(locale: Locale, value: number) {
   }).format(value / 100);
 }
 
-export function formatLocaleDate(locale: Locale, value: Date | string | number, options?: Intl.DateTimeFormatOptions) {
+export function formatLocaleDate(
+  locale: Locale,
+  value: Date | string | number,
+  options?: Intl.DateTimeFormatOptions,
+  calendar: CalendarSystem = "persian",
+) {
   const date = value instanceof Date
     ? value
     : typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)
       ? new Date(`${value}T12:00:00`)
       : new Date(value);
   return new Intl.DateTimeFormat(
-    calendarLocales[locale],
+    getCalendarLocale(locale, calendar),
     options ?? { year: "numeric", month: "2-digit", day: "2-digit" },
   ).format(date);
 }

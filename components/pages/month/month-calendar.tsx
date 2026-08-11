@@ -5,7 +5,7 @@ import { SurfaceCard } from "@/components/common/surface-card";
 import { useLocaleUi } from "@/components/i18n/use-locale-ui";
 import { Button } from "@/components/ui/button";
 import { calc } from "@/lib/time-engine";
-import { jalaliMonthCells, localDateKey } from "@/lib/format";
+import { calendarMonthCells, localDateKey } from "@/lib/format";
 import { getHolidayInfo } from "@/lib/holidays";
 import type { AppData } from "@/lib/types";
 import { getDailyTargetMinutes } from "@/lib/work-schedule";
@@ -20,8 +20,8 @@ export function MonthCalendar({ data, selectedDate, setSelectedDate, monthRecord
   monthRecordCount: number;
   moveMonth: (amount: number) => void;
 }) {
-  const { t, date, duration, number, locale, direction } = useLocaleUi();
-  const cells = jalaliMonthCells(selectedDate);
+  const { t, date, duration, number, locale, direction, calendar } = useLocaleUi();
+  const cells = calendarMonthCells(selectedDate, calendar);
   const monthLabel = date(selectedDate, { year: "numeric", month: "long" });
   const PreviousIcon = direction === "rtl" ? ChevronRight : ChevronLeft;
   const NextIcon = direction === "rtl" ? ChevronLeft : ChevronRight;
@@ -35,7 +35,7 @@ export function MonthCalendar({ data, selectedDate, setSelectedDate, monthRecord
       <div className={cn("mb-[7px] grid grid-cols-7 gap-[7px] [&_span]:text-center [&_span]:text-[11px] [&_span]:font-bold [&_span]:text-[var(--text-muted)] max-[620px]:gap-1")}>
         {weekdayKeys.map((day) => <span key={day}>{t(`weekday.${day}.short`)}</span>)}
       </div>
-      <div className={cn("grid grid-cols-7 gap-[7px] [&_button]:relative [&_button]:flex [&_button]:min-h-[68px] [&_button]:flex-col [&_button]:items-start [&_button]:justify-between [&_button]:rounded-[14px] [&_button]:border [&_button]:border-[var(--dashboard-border)] [&_button]:bg-[var(--surface-2)] [&_button]:p-2 [&_button]:text-[var(--text)] [&_button:hover]:border-[color-mix(in_srgb,var(--accent)_40%,var(--border))] [&_button:hover]:bg-[var(--accent-soft)] [&_button[aria-pressed=true]]:border-[color-mix(in_srgb,var(--accent)_55%,var(--dashboard-border))] [&_button[aria-pressed=true]]:bg-[var(--surface-accent)] [&_button.outside]:opacity-30 [&_button.today]:shadow-[inset_0_0_0_2px_var(--accent)] [&_button_small]:text-[9px] [&_button_small]:text-[var(--text-muted)] [&_button>i]:absolute [&_button>i]:left-2 [&_button>i]:top-[9px] [&_button>i]:h-[7px] [&_button>i]:w-[7px] [&_button>i]:rounded-full max-[620px]:gap-1 max-[620px]:[&_button]:min-h-[52px] max-[620px]:[&_button]:p-1.5 max-[620px]:[&_button_small]:hidden")}>
+      <div className={cn("grid grid-cols-7 gap-[7px] [&_button]:relative [&_button]:flex [&_button]:min-h-[68px] [&_button]:flex-col [&_button]:items-start [&_button]:justify-between [&_button]:rounded-[14px] [&_button]:border [&_button]:border-[var(--dashboard-border)] [&_button]:bg-[var(--surface-2)] [&_button]:p-2 [&_button]:text-[var(--text)] [&_button:hover]:border-[color-mix(in_srgb,var(--accent)_40%,var(--border))] [&_button:hover]:bg-[var(--accent-soft)] [&_button[aria-pressed=true]]:border-[color-mix(in_srgb,var(--accent)_55%,var(--dashboard-border))] [&_button[aria-pressed=true]]:bg-[var(--surface-accent)] [&_button.outside]:opacity-30 [&_button.today]:shadow-[inset_0_0_0_2px_var(--accent)] [&_button_small]:text-[9px] [&_button_small]:text-[var(--text-muted)] [&_button>i]:absolute [&_button>i]:end-2 [&_button>i]:top-[9px] [&_button>i]:h-[7px] [&_button>i]:w-[7px] [&_button>i]:rounded-full max-[620px]:gap-1 max-[620px]:[&_button]:min-h-[52px] max-[620px]:[&_button]:p-1.5 max-[620px]:[&_button_small]:hidden")}>
         {cells.map((cell) => {
           const item = data.records[cell.key];
           const hasLeave = data.leaves.some((entry) => entry.startDate <= cell.key && entry.endDate >= cell.key);

@@ -160,7 +160,7 @@ export function SettingsNav() {
       </div>
 
       <div className="hidden gap-1.5 rounded-[18px] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] p-1.5 shadow-[0_6px_20px_rgba(0,0,0,.035)] backdrop-blur-xl max-[900px]:grid">
-        <div className="flex gap-1 overflow-x-auto pb-0.5">
+        <div className="flex gap-1 overflow-x-auto pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-[520px]:grid max-[520px]:grid-cols-2 max-[520px]:overflow-visible max-[520px]:pb-0">
           {settingsNavGroups.map((group) => {
             const isActiveGroup = activeGroup === group.id;
             return (
@@ -181,7 +181,7 @@ export function SettingsNav() {
             );
           })}
         </div>
-        <div className="flex gap-1 overflow-x-auto">
+        <div className="flex snap-x snap-mandatory gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {getSettingsGroupItems(activeGroup).map(({ id, labelKey, icon: Icon }) => {
             const isActive = active === id;
             return (
@@ -192,7 +192,7 @@ export function SettingsNav() {
                 aria-current={isActive ? "location" : undefined}
                 onClick={() => requestNavigation(() => navigateTo(id as SettingsItemId))}
                 className={cn(
-                  "flex min-h-9 min-w-max shrink-0 items-center gap-2 rounded-xl px-3 text-[9px] font-bold text-[var(--text-muted)] transition-colors",
+                  "flex min-h-9 min-w-max shrink-0 snap-start items-center gap-2 rounded-xl px-3 text-[9px] font-bold text-[var(--text-muted)] transition-colors",
                   "hover:bg-[var(--surface-2)] hover:text-[var(--text)]",
                   isActive && "bg-[var(--surface-raised)] text-[var(--accent-strong)]",
                 )}

@@ -4,6 +4,7 @@ import { Settings } from "lucide-react";
 import { Brand } from "@/components/common/brand";
 import { useLocale } from "@/components/i18n/locale-provider";
 import { cn } from "@/lib/cn";
+import { LanguageSwitcher } from "../language-switcher";
 import type { Mode } from "@/lib/types";
 import { getVisibleNavItems } from "../app-header/nav-items";
 import { GuardedLink } from "./guarded-link";
@@ -60,6 +61,9 @@ export function SidebarNav({ mode, currentPath, name }: Props) {
       </nav>
 
       <div className="mt-auto border-t border-[var(--dashboard-border)] pt-3">
+        <div className="mb-1.5">
+          <LanguageSwitcher variant="sidebar" />
+        </div>
         <GuardedLink
           href="/settings"
           aria-current={normalizedPath === "/settings" ? "page" : undefined}

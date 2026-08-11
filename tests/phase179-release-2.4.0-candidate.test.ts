@@ -1,0 +1,166 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import test from "node:test";
+import { APP_DATA_SCHEMA_VERSION } from "../lib/data/version.ts";
+import { collectReleaseAuditFailures } from "../scripts/release-audit.mjs";
+
+const read = (path: string) => readFileSync(path, "utf8");
+const packageJson = JSON.parse(read("package.json")) as { version: string; engines: { node: string }; scripts: Record<string, string>; dependencies: Record<string, string>; devDependencies: Record<string, string> };
+const packageLock = JSON.parse(read("package-lock.json")) as { version: string; packages: Record<string, { version?: string }> };
+const manifest = JSON.parse(read("docs/releases/2.4.0.json")) as {
+  version: string; releaseDate: string; status: string; dataSchemaVersion: number; nodeEngine: string;
+  verifiedBaselineCommitPrefix: string; verifiedBaselineTestCount: number; expectedCandidateTestCount: number; expectedFinalTestCount: number;
+  releaseCommit: string | null; tag: string; qualityCommand: string; pairingCommand: string; i18nAuditCommand: string;
+  productionAuditCommand: string; vercelAuditCommand: string; releaseNotes: { fa: string; en: string };
+  releaseEvidence: Record<string, unknown>; rollout: Record<string, unknown>;
+};
+
+test("2.4.0 candidate version Node schema date and tag are aligned", () => {
+  assert.equal(packageJson.version, "2.4.0");
+  assert.equal(packageLock.version, "2.4.0");
+  assert.equal(packageLock.packages[""]?.version, "2.4.0");
+  assert.equal(manifest.version, "2.4.0");
+  assert.equal(manifest.releaseDate, "2026-08-11");
+  assert.equal(manifest.status, "release-candidate");
+  assert.equal(manifest.nodeEngine, packageJson.engines.node);
+  assert.equal(manifest.dataSchemaVersion, APP_DATA_SCHEMA_VERSION);
+  assert.equal(manifest.tag, "v2.4.0");
+  assert.equal(manifest.releaseCommit, null);
+});
+
+test("2.4.0 candidate preserves the green Phase 178 baseline and rollout boundary", () => {
+  assert.equal(manifest.verifiedBaselineCommitPrefix, "887158c");
+  assert.equal(manifest.verifiedBaselineTestCount, 758);
+  assert.equal(manifest.expectedCandidateTestCount, 764);
+  assert.equal(manifest.expectedFinalTestCount, 770);
+  assert.deepEqual(manifest.releaseEvidence, {
+    baselinePhase: 178, productionBrowserSmoke: "passed", freelancerBrowserSmoke: "passed", employeeBrowserSmoke: "passed",
+    pairingBrowserSmoke: "passed", pairingEncryptedChunks: 4, vercelStaticExportAudit: "passed", i18nClosureAudit: "passed",
+    staticRoutes: 22, pwaPrecacheBuildAssets: 44, phase178FinalTestCount: 758,
+  });
+  assert.deepEqual(manifest.rollout, { branch: "dev", mainMerge: "pending", productionAudit: "pending", annotatedTag: "pending" });
+});
+
+test("2.4.0 candidate packages Phases 166 through 178 with bilingual release notes", () => {
+  const fa = read(manifest.releaseNotes.fa);
+  const en = read(manifest.releaseNotes.en);
+  assert.match(fa, /ساعت‌یار ۲\.۴\.۰/);
+  assert.match(en, /Saatyar 2\.4\.0/);
+  assert.match(fa, /۱۶۶ تا ۱۷۸/);
+  assert.match(en, /166 through 178/);
+  assert.match(en, /quick language/i);
+  assert.match(fa, /تغییر سریع زبان/);
+  assert.match(en, /Automatic uses Gregorian for English/i);
+  assert.match(fa, /حالت خودکار برای English تقویم میلادی/);
+  assert.match(en, /browser-safe ESM entry point/i);
+  assert.match(fa, /Schema: \*\*v17\*\*/);
+  assert.match(en, /schema: \*\*v17\*\*/i);
+  assert.ok(read("CHANGELOG.md").split(/\r?\n/).includes("## [2.4.0] - 2026-08-11"));
+  assert.match(read("README.md"), /RELEASE_NOTES_2\.4\.0_EN\.md/);
+  assert.match(read("README_FA.md"), /RELEASE_NOTES_2\.4\.0_FA\.md/);
+});
+
+test("2.4.0 candidate keeps 2.3.2 historical and every release gate explicit", () => {
+  const historical = JSON.parse(read("docs/releases/2.3.2.json")) as { version: string; status: string; tag: string; expectedFinalTestCount: number };
+  assert.deepEqual(historical, { ...historical, version: "2.3.2", status: "released", tag: "v2.3.2", expectedFinalTestCount: 639 });
+  assert.equal(manifest.qualityCommand, "npm run check:release");
+  assert.equal(manifest.pairingCommand, "npm run test:browser:pairing");
+  assert.equal(manifest.i18nAuditCommand, "npm run audit:i18n");
+  assert.equal(manifest.vercelAuditCommand, "npm run audit:vercel");
+  assert.equal(manifest.productionAuditCommand, "npm run audit:production");
+});
+
+test("Phase 179 checklist freezes candidate actions and leaves Phase 180 open", () => {
+  const checklist = read("RELEASE_CHECKLIST_FA.md");
+  const backlog = read("docs/roadmap/BACKLOG_FA.md");
+  assert.match(checklist, /npm run release:prepare:2\.4\.0/);
+  assert.match(checklist, /764\/764/);
+  assert.match(checklist, /Merge نمی‌شود/);
+  assert.match(checklist, /Tag `v2\.4\.0` ساخته یا Push نمی‌شود/);
+  assert.match(backlog, /## آمادگی انتشار ۲\.۴\.۰/);
+  assert.match(backlog, /- \[x\] فاز ۱۷۹:/);
+  assert.match(backlog, /- \[ \] فاز ۱۸۰:/);
+  const phaseNotes = read("docs/phases/PHASE_179_NOTES_FA.md");
+  assert.match(phaseNotes, /764 tests/);
+  assert.match(phaseNotes, /Revision 6 — timer motion \+ responsive header cleanup/);
+  assert.match(read("components/pages/settings/language-settings-card.tsx"), /data-calendar-choice/);
+  assert.match(read("lib/local-qr.ts"), /vendor\/qrcode\/browser\.mjs/);
+  assert.equal(packageJson.scripts.dev, "next dev");
+  assert.equal(packageJson.scripts["dev:vinext"], "vite");
+  assert.match(read("components/common/page-heading.tsx"), /DescriptionTooltip/);
+  assert.match(read("components/common/section-heading.tsx"), /DescriptionTooltip/);
+  assert.match(read("components/pages/month/month-day-details.tsx"), /<bdi dir="ltr">/);
+  assert.match(read("lib/record-health.ts"), /invalid-work-span/);
+  assert.match(read("components/pages/settings/data-health-card.tsx"), /"invalid-work-span": "Clock-out must be later than clock-in\."/);
+  const languageSwitcher = read("components/layout/language-switcher.tsx");
+  assert.doesNotMatch(languageSwitcher, /M13 7\.1c/);
+  assert.match(read("lib/i18n/fa.ts"), /"settings\.language\.nav": "زبان"/);
+  assert.match(read("lib/i18n/en.ts"), /"settings\.language\.nav": "Language"/);
+  assert.equal(packageJson.dependencies["framer-motion"], "^12.42.2");
+  assert.equal(Object.keys(packageJson.dependencies).length + Object.keys(packageJson.devDependencies).length, 33);
+  const flipClock = read("components/ui/flip-clock.tsx");
+  assert.match(flipClock, /data-flip-clock/);
+  assert.match(flipClock, /function Digit/);
+  assert.match(flipClock, /AnimatePresence/);
+  assert.match(flipClock, /key=\{value\}/);
+  assert.match(flipClock, /initial=\{reducedMotion \? false : \{ y: "-0\.8em", opacity: 0 \}\}/);
+  assert.match(flipClock, /exit=\{reducedMotion \? undefined : \{ y: "0\.8em", opacity: 0 \}\}/);
+  assert.match(flipClock, /text-\[20px\]/);
+  assert.match(flipClock, /saatyar-timer-countdown/);
+  assert.doesNotMatch(flipClock, /bg-zinc|rounded-md|border/);
+  assert.doesNotMatch(flipClock, /setInterval/);
+  const liveWorkDuration = read("components/common/live-work-duration.tsx");
+  assert.match(liveWorkDuration, /<FlipClock/);
+  assert.doesNotMatch(liveWorkDuration, /formatDigit=/);
+  const layout = read("app/layout.tsx");
+  const globals = read("app/globals.css");
+  assert.equal(packageJson.dependencies["vazirmatn"], "33.0.3");
+  assert.equal(packageJson.dependencies["@fontsource-variable/vazirmatn"], undefined);
+  assert.equal(packageLock.packages["node_modules/vazirmatn"]?.version, "33.0.3");
+  assert.equal(packageLock.packages["node_modules/@fontsource-variable/vazirmatn"], undefined);
+  assert.match(layout, /vazirmatn\/Vazirmatn-font-face\.css/);
+  assert.match(layout, /vazirmatn\/misc\/Farsi-Digits\/Vazirmatn-FD-font-face\.css/);
+  assert.match(layout, /saatyar-app-font/);
+  assert.match(globals, /font-family: Vazirmatn, Tahoma, sans-serif/);
+  assert.match(globals, /font-family: "Vazirmatn FD", Vazirmatn, Tahoma, sans-serif/);
+  assert.match(globals, /:root\[lang="fa"\] \.saatyar-timer-countdown/);
+  assert.doesNotMatch(globals, /font-feature-settings: "ss01"/);
+  const breaksEditor = read("components/pages/today/time-strip/breaks-editor.tsx");
+  assert.match(breaksEditor, /data-break-field="paid"/);
+  assert.match(breaksEditor, /self-end/);
+  assert.match(read("scripts/production-browser-smoke.mjs"), /workspace mode \${mode} persistence/);
+  assert.match(read("components/pages/today/time-strip/time-inputs.tsx"), /md:col-span-2 xl:col-span-2/);
+  const headerActions = read("components/layout/app-header/header-actions.tsx");
+  assert.match(headerActions, /data-header-privacy-control/);
+  assert.doesNotMatch(headerActions, /gap-0\.5 p-1/);
+  const mobileSettingsNav = read("components/pages/settings/settings-nav.tsx");
+  assert.match(mobileSettingsNav, /scrollbar-width:none/);
+  assert.match(mobileSettingsNav, /max-\[520px\]:grid-cols-2/);
+  const dialog = read("components/ui/dialog.tsx");
+  assert.match(dialog, /useSyncExternalStore/);
+  assert.match(dialog, /window\.visualViewport/);
+  assert.match(dialog, /offsetLeft: viewport\?\.offsetLeft/);
+  assert.match(dialog, /layoutWidth: window\.innerWidth/);
+  assert.match(dialog, /rtlLayoutCompensation/);
+  assert.match(dialog, /viewport\.layoutWidth - viewport\.width - viewport\.offsetLeft/);
+  assert.match(dialog, /left: visualCenterX/);
+  assert.match(dialog, /top: viewport\.offsetTop \+ gutter/);
+  assert.match(dialog, /transform: "translateX\(-50%\)"/);
+  assert.match(dialog, /transform: "translate\(-50%, -50%\)"/);
+  assert.doesNotMatch(dialog, /calc\(100vw-1\.5rem\)/);
+  const freelancerSmoke = read("scripts/freelancer-browser-ux-smoke.mjs");
+  assert.match(freelancerSmoke, /window\.visualViewport/);
+  assert.match(freelancerSmoke, /rect\.bottom <= visibleBottom \+ 1/);
+  assert.match(freelancerSmoke, /visualViewport:/);
+  assert.match(freelancerSmoke, /pageLeft:/);
+  assert.match(freelancerSmoke, /rootLeft:/);
+  assert.match(freelancerSmoke, /dialogRect:/);
+  assert.match(freelancerSmoke, /dialogStyle:/);
+  assert.match(freelancerSmoke, /stable mobile visual viewport/);
+});
+
+test("active 2.4.0 candidate audit passes and Phase 179 is wired into npm test", () => {
+  assert.deepEqual(collectReleaseAuditFailures(), []);
+  assert.match(packageJson.scripts.test, /tests\/phase179-release-2\.4\.0-candidate\.test\.ts/);
+  assert.equal(packageJson.scripts["release:prepare:2.4.0"], "node scripts/prepare-release-2.4.0.mjs");
+});

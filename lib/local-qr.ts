@@ -1,5 +1,4 @@
-import QRCode from "./vendor/qrcode/index.cjs";
-import QRErrorCorrectLevel from "./vendor/qrcode/QRErrorCorrectLevel.cjs";
+import { QRCode, QRErrorCorrectLevel } from "./vendor/qrcode/browser.mjs";
 
 type LocalQrInstance = {
   addData(value: string): void;

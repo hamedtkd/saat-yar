@@ -7,6 +7,8 @@ const obsoletePaths = [
   // Phase 178 R1 compatibility experiment; superseded by the system i18n closure.
   "lib/i18n/live-timer.ts",
   "tests/phase178-i18n-final-closure.test.ts",
+  // npm/package-lock.json is the canonical package-manager contract for Saatyar.
+  "pnpm-lock.yaml",
 ];
 
 await Promise.all(obsoletePaths.map((path) => rm(path, { force: true })));

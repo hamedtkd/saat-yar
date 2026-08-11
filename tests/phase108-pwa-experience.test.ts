@@ -11,6 +11,10 @@ test("PWA registration captures install availability and checks for updates", ()
   assert.match(source, /registration\?\.update\(\)/);
   assert.match(source, /updatefound/);
   assert.match(source, /PWA_EVENT\.updateAvailable/);
+  assert.match(source, /process\.env\.NODE_ENV !== "production"/);
+  assert.match(source, /clearDevelopmentPwaState/);
+  assert.match(source, /getRegistrations\(\)/);
+  assert.match(source, /name\.startsWith\("saatyar-"\)/);
 });
 
 test("service worker waits for explicit approval before activating an update", () => {

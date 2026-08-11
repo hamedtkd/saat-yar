@@ -16,6 +16,7 @@ const toneByState: Record<DataHealthItem["state"], StatusBadgeTone> = { invalid:
 const issueKeys: Record<RecordIssue["code"], SystemMessageKey> = {
   "missing-start": "Clock-in time is missing.",
   "missing-end": "Clock-out time is still missing.",
+  "invalid-work-span": "Clock-out must be later than clock-in.",
   "partial-lunch": "Lunch start or end is incomplete.",
   "open-break": "Break {index} is still open.",
   "invalid-lunch": "Lunch interval is invalid.",

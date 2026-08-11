@@ -24,12 +24,12 @@ function DetailRow({ label, value }: { label: string; value: string }) {
 }
 
 export function LeaveMobileCards({ entries, onEdit, onDelete }: LeaveMobileCardsProps) {
-  const { b, locale } = useBusinessUi();
+  const { b, calendar, locale } = useBusinessUi();
   return (
     <div className="grid gap-3 p-4 md:hidden">
       {entries.map((entry) => {
         const sameDate = entry.startDate === entry.endDate;
-        const range = b("leave.table.rangeValue", { start: formatLeaveDate(entry.startDate, locale), end: formatLeaveDate(entry.endDate, locale) });
+        const range = b("leave.table.rangeValue", { start: formatLeaveDate(entry.startDate, locale, calendar), end: formatLeaveDate(entry.endDate, locale, calendar) });
         return (
           <article key={entry.id} className={cn("rounded-2xl border border-[var(--border)]", "bg-[var(--surface-2)] p-4")}>
             <div className="flex items-start justify-between gap-3">
@@ -38,13 +38,13 @@ export function LeaveMobileCards({ entries, onEdit, onDelete }: LeaveMobileCards
                   <strong className="text-sm font-extrabold text-[var(--text)]">{getLeaveTypeLabel(entry.type, locale)}</strong>
                   <StatusBadge success>{getLeaveDurationLabel(entry, locale)}</StatusBadge>
                 </div>
-                <p className="mt-2 text-[10px] leading-6 text-[var(--text-muted)]">{sameDate ? formatLeaveDate(entry.startDate, locale) : range}</p>
+                <p className="mt-2 text-[10px] leading-6 text-[var(--text-muted)]">{sameDate ? formatLeaveDate(entry.startDate, locale, calendar) : range}</p>
               </div>
               <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[var(--accent-soft)] text-[var(--accent-strong)]"><Umbrella className="size-5" /></span>
             </div>
             <div className="mt-4 grid gap-2">
-              <DetailRow label={b("common.start")} value={formatLeaveDate(entry.startDate, locale)} />
-              {!sameDate && <DetailRow label={b("common.end")} value={formatLeaveDate(entry.endDate, locale)} />}
+              <DetailRow label={b("common.start")} value={formatLeaveDate(entry.startDate, locale, calendar)} />
+              {!sameDate && <DetailRow label={b("common.end")} value={formatLeaveDate(entry.endDate, locale, calendar)} />}
               <DetailRow label={b("common.duration")} value={getLeaveDurationLabel(entry, locale)} />
             </div>
             {entry.note && (

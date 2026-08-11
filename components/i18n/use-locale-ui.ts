@@ -16,7 +16,7 @@ import {
 
 export function useLocaleUi() {
   const context = useLocale();
-  const locale = context.locale;
+  const { calendar, locale } = context;
 
   return useMemo(() => ({
     ...context,
@@ -27,7 +27,7 @@ export function useLocaleUi() {
     durationSeconds: (value: number) => formatLocaleDurationSeconds(locale, value),
     money: (value: number) => formatLocaleMoney(locale, value),
     percent: (value: number) => formatLocalePercent(locale, value),
-    date: (value: Date | string | number, options?: Intl.DateTimeFormatOptions) => formatLocaleDate(locale, value, options),
+    date: (value: Date | string | number, options?: Intl.DateTimeFormatOptions) => formatLocaleDate(locale, value, options, calendar),
     time: (value: Date | string | number) => formatLocaleTime(locale, value),
-  }), [context, locale]);
+  }), [calendar, context, locale]);
 }

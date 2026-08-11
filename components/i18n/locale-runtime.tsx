@@ -27,13 +27,14 @@ function normalizePathname(pathname: string) {
 
 export function LocaleRuntime() {
   const pathname = normalizePathname(usePathname() || "/");
-  const { locale, direction, t } = useLocale();
+  const { locale, direction, calendar, t } = useLocale();
 
   useEffect(() => {
     const root = document.documentElement;
     root.lang = getHtmlLang(locale);
     root.dir = direction;
     root.dataset.locale = locale;
+    root.dataset.calendar = calendar;
 
     const routeKey = routeTitleKeys[pathname];
     const routeTitle = routeKey
@@ -56,7 +57,7 @@ export function LocaleRuntime() {
     const titleObserver = new MutationObserver(syncTitle);
     titleObserver.observe(document.head, { childList: true, subtree: true, characterData: true });
     return () => titleObserver.disconnect();
-  }, [direction, locale, pathname, t]);
+  }, [calendar, direction, locale, pathname, t]);
 
   return null;
 }

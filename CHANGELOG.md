@@ -1,6 +1,24 @@
 ## [Unreleased]
 
+## [2.4.0] - 2026-08-11
+
+- Phase 179 final visual lock: Hero Flip Clock برای خوانایی Vazirmatn FD روی 20px قفل شد و کارت یادداشت روز کاری کارمند با فضای مفیدتر و نسبت متعادل‌تر نسبت به Timer آماده Release شد.
+
 ### افزوده شد
+
+- Phase 179 R3: تغییر سریع زبان با پرچم به‌صورت Responsive اضافه شد؛ در Desktop داخل Utility سایدبار و زیر breakpoint سایدبار به‌صورت کنترل فشرده در Header نمایش داده می‌شود تا دسترسی Global باشد بدون اینکه Workspace/Profile alignment شلوغ شود.
+- Release audit دوباره Manifestهای تاریخی 2.2.0 و 2.1.0 را صریحاً در قرارداد فایل‌های الزامی نگه می‌دارد تا Regression تاریخی Phase 112 با Candidate جدید سازگار بماند.
+- Phase 179 R4: Preference تقویم `auto / persian / gregory` اضافه شد؛ English در حالت خودکار Gregorian و فارسی Persian/Jalali است و Override مستقل از زبان داخل Settings ممکن است.
+- Month calendar اکنون از تقویم فعال برای grid و حرکت ماه استفاده می‌کند و Dotهای وضعیت با logical `end` از عدد روز فاصله می‌گیرند.
+- Payroll breakdown از Labelهای فارسی Domain جدا شد و در UI از Catalog Locale فعال ترجمه می‌شود.
+- QR vendored با ESM browser entry امن شد تا Runtime Error صفحه Settings در Dev/Vite بدون افزودن Dependency برطرف شود.
+- Phase 179 R5: مسیر پیش‌فرض `npm run dev` از Vite/Vinext به `next dev` منتقل شد و `dev:vinext` به‌عنوان مسیر اختیاری باقی ماند تا خطای Dev-only HMR/RSC مشاهده‌شده در Visual QA ویندوز مسیر توسعه معمول را متوقف نکند.
+- توضیحات Page/Section heading به Info tooltip فشرده منتقل شدند، در حالی که Hintهای عملیاتی و هشدارهای ضروری Inline باقی ماندند.
+- نمایش بازه ورود/خروج ماه با Bidi isolation اصلاح شد و Record Health بازه صفرطول را invalid می‌داند؛ پرچم ایران نیز بدون نشان مرکزی رندر می‌شود.
+- Phase 179 R6: تایمر زنده Today با Flip Clock مبتنی بر `framer-motion` بازطراحی شد و همچنان از Runtime Clock مشترک فاز ۱۷۲ استفاده می‌کند؛ Interval مستقل جدیدی اضافه نشده است.
+- Grid ورود/خروج اصلاح شد تا Attendance در Tablet/Desktop دو ستون والد را بگیرد و Lunch/Break فضای مستقل داشته باشند؛ فشردگی TimePickerها برطرف شد.
+- Privacy، Language و Theme از Shell گروهی مشترک جدا شدند؛ Mobile header همه Actionها را نگه می‌دارد و با جمع‌کردن Route/Workspace label در breakpointهای باریک Overflow نمی‌سازد.
+- Mobile Settings navigation scrollbar بصری را حذف می‌کند و Groupها در عرض باریک دو ستونه می‌شوند؛ Label تنظیمات زبان نیز از «زبان و جهت» به «زبان» کوتاه شد.
 
 - Phase 178: Closure نهایی i18n با `audit:i18n` سراسری روی Runtime UI، Allowlist محدود و مستند برای Metadata/Parser/Tone classifier و Regression contract مستقل اضافه شد.
 - Shared Dialog/AlertDialog/Select/Table/Picker geometry از RTL فیزیکی به Direction و Logical CSS تبدیل شد؛ Runtime errorهای Import/Device Pairing نیز از Bridge Locale عبور می‌کنند تا متن low-level زبان مقابل در UI نشت نکند.

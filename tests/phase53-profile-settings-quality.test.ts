@@ -30,7 +30,7 @@ test("report print surfaces use semantic theme colors", async () => {
 
 test("today regression follows the current employee textarea layout", async () => {
   const regression = await read("tests/today-polish-regression.test.ts");
-  assert.match(regression, /grid content-center gap-3/);
-  assert.match(regression, /Textarea rows/);
+  assert.match(regression, /grid content-start gap-4/);
+  assert.match(regression, /rows=\\\{6\\\}/);
   assert.doesNotMatch(regression, /flex min-h-52 items-center/);
 });

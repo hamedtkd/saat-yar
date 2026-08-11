@@ -16,7 +16,7 @@ function TimeBlock({ icon, title, meta, picker, action }: { icon: React.ReactNod
 
 export function TimeInputs({ data, record, suggestedExit, scheduledDayOff, startWork, finishWork, updateRecord }: Pick<TodayTimeStripViewProps, "data" | "record" | "suggestedExit" | "scheduledDayOff" | "startWork" | "finishWork" | "updateRecord">) {
   const { t } = useLocaleUi();
-  return <div className="grid grid-cols-2 gap-3 max-[700px]:grid-cols-1">
+  return <div className="grid grid-cols-2 gap-3 md:col-span-2 xl:col-span-2 max-[700px]:grid-cols-1">
     <TimeBlock
       icon={<LogIn />}
       title={t("common.clockIn")}

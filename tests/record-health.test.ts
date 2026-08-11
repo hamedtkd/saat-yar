@@ -14,8 +14,11 @@ function record(patch: Partial<WorkRecord> = {}): WorkRecord {
   });
 }
 
-test("marks a complete record as complete", () => {
+test("marks a complete record as complete and rejects a zero-length work span", () => {
   assert.equal(getRecordStatus(record()).state, "complete");
+  const invalid = getRecordStatus(record({ start: "10:32", end: "10:32" }));
+  assert.equal(invalid.state, "invalid");
+  assert.ok(invalid.issues.some((item) => item.code === "invalid-work-span"));
 });
 
 test("detects a missing work end", () => {

@@ -1,6 +1,7 @@
 import { cn } from "@/lib/cn";
 import { formatLocaleDate, formatLocaleDigits } from "@/lib/i18n/formatters";
 import { translate } from "@/lib/i18n/catalog";
+import type { CalendarSystem } from "@/lib/i18n/calendars";
 import type { Locale } from "@/lib/i18n/locales";
 import { getHolidayInfo } from "@/lib/holidays";
 import { isScheduledDayOff } from "@/lib/work-schedule";
@@ -9,6 +10,7 @@ import type { CalendarDayCell, HolidayOptions } from "./types";
 
 type CalendarDayProps = {
   locale: Locale;
+  calendar: CalendarSystem;
   cell: CalendarDayCell;
   value: string;
   today: string;
@@ -19,6 +21,7 @@ type CalendarDayProps = {
 
 export function CalendarDay({
   locale,
+  calendar,
   cell,
   value,
   today,
@@ -54,7 +57,7 @@ export function CalendarDay({
         day: "numeric",
         month: "long",
         year: "numeric",
-      })}
+      }, calendar)}
       aria-pressed={isSelected}
       title={holidayTitle}
       className={cn(

@@ -30,8 +30,8 @@ export function useSaatyarContext() {
 }
 
 export function SaatyarShell({ children }: { children: React.ReactNode }) {
-  const controller = useSaatyarController();
-  const { direction, t } = useLocale();
+  const { calendar, direction, t } = useLocale();
+  const controller = useSaatyarController(calendar);
   const pathname = usePathname() || "/today";
   const { ready, selectedDate, setSelectedDate, data } = controller;
   const mode = data.settings.mode;

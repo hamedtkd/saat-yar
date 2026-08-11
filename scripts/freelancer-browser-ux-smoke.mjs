@@ -361,6 +361,7 @@ async function main() {
 
     await client.call("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true, screenWidth: 390, screenHeight: 844 });
     await navigate(client, `${server.origin}/invoices`, CLIENT_NAME);
+    await waitFor(client, `Boolean(window.visualViewport) && window.visualViewport.width <= 400 && window.visualViewport.height <= 900`, "stable mobile visual viewport");
     await waitFor(client, `document.body?.innerText.includes("INV-")`, "persisted invoice after hard reload");
     console.log("✓ Hard reload restores the persisted freelancer invoice");
     await clickButton(client, "فاکتور جدید");
@@ -371,9 +372,27 @@ async function main() {
     const mobileContract = await evaluate(client, `(() => {
       const dialog = document.querySelector('[role="dialog"]');
       const rect = dialog?.getBoundingClientRect();
+      const visualViewport = window.visualViewport;
+      const visibleLeft = visualViewport?.offsetLeft ?? 0;
+      const visibleTop = visualViewport?.offsetTop ?? 0;
+      const visibleWidth = visualViewport?.width ?? window.innerWidth;
+      const visibleHeight = visualViewport?.height ?? window.innerHeight;
+      const visibleRight = visibleLeft + visibleWidth;
+      const visibleBottom = visibleTop + visibleHeight;
       return {
         pageFits: document.documentElement.scrollWidth <= window.innerWidth + 2,
-        dialogFits: Boolean(rect && rect.left >= -1 && rect.right <= window.innerWidth + 1 && rect.top >= -1),
+        dialogFits: Boolean(
+          rect &&
+          rect.left >= visibleLeft - 1 &&
+          rect.right <= visibleRight + 1 &&
+          rect.top >= visibleTop - 1 &&
+          rect.bottom <= visibleBottom + 1
+        ),
+        dialogRect: rect ? { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, width: rect.width, height: rect.height } : null,
+        viewport: { width: window.innerWidth, height: window.innerHeight },
+        visualViewport: visualViewport ? { offsetLeft: visualViewport.offsetLeft, offsetTop: visualViewport.offsetTop, pageLeft: visualViewport.pageLeft, pageTop: visualViewport.pageTop, width: visualViewport.width, height: visualViewport.height, scale: visualViewport.scale } : null,
+        scroll: { x: window.scrollX, y: window.scrollY, rootLeft: document.documentElement.getBoundingClientRect().left, rootWidth: document.documentElement.getBoundingClientRect().width },
+        dialogStyle: dialog instanceof HTMLElement ? { left: dialog.style.left, top: dialog.style.top, width: dialog.style.width, transform: dialog.style.transform, direction: getComputedStyle(dialog).direction } : null,
         focusTrapped: Boolean(dialog?.contains(document.activeElement)),
       };
     })()`);

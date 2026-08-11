@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
 
-import { jalaliMonthCells, localDateKey, shiftJalaliMonth } from "@/lib/format";
+import { calendarMonthCells, localDateKey, shiftCalendarMonth } from "@/lib/format";
 import { formatLocaleDate } from "@/lib/i18n/formatters";
+import type { CalendarSystem } from "@/lib/i18n/calendars";
 import type { Locale } from "@/lib/i18n/locales";
 
 import type { JalaliDatePickerProps } from "./types";
@@ -9,7 +10,7 @@ import type { JalaliDatePickerProps } from "./types";
 type PickerStateProps = Pick<
   JalaliDatePickerProps,
   "value" | "onChange" | "recordedDates" | "placeholder"
-> & { locale: Locale };
+> & { locale: Locale; calendar: CalendarSystem };
 
 export function useJalaliDatePicker({
   value,
@@ -17,21 +18,22 @@ export function useJalaliDatePicker({
   recordedDates = [],
   placeholder = "",
   locale,
+  calendar,
 }: PickerStateProps) {
   const today = localDateKey();
   const [open, setOpen] = useState(false);
   const [viewDate, setViewDate] = useState(value || today);
 
-  const cells = useMemo(() => jalaliMonthCells(viewDate), [viewDate]);
+  const cells = useMemo(() => calendarMonthCells(viewDate, calendar), [calendar, viewDate]);
   const recorded = useMemo(() => new Set(recordedDates), [recordedDates]);
-  const title = formatLocaleDate(locale, viewDate, { month: "long", year: "numeric" });
+  const title = formatLocaleDate(locale, viewDate, { month: "long", year: "numeric" }, calendar);
   const selectedLabel = value
     ? formatLocaleDate(locale, value, {
         weekday: "long",
         day: "numeric",
         month: "long",
         year: "numeric",
-      })
+      }, calendar)
     : placeholder;
 
   const openPicker = () => {
@@ -40,8 +42,8 @@ export function useJalaliDatePicker({
   };
 
   const closePicker = () => setOpen(false);
-  const showPreviousMonth = () => setViewDate((current) => shiftJalaliMonth(current, -1));
-  const showNextMonth = () => setViewDate((current) => shiftJalaliMonth(current, 1));
+  const showPreviousMonth = () => setViewDate((current) => shiftCalendarMonth(current, -1, calendar));
+  const showNextMonth = () => setViewDate((current) => shiftCalendarMonth(current, 1, calendar));
 
   const selectDate = (date: string) => {
     onChange(date);

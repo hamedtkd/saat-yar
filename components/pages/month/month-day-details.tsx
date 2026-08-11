@@ -24,6 +24,7 @@ const healthStateKeys = {
 const healthIssueKeys: Record<string, MessageKey> = {
   "missing-start": "today.health.issue.missing-start",
   "missing-end": "today.health.issue.missing-end",
+  "invalid-work-span": "today.health.issue.invalid-work-span",
   "partial-lunch": "today.health.issue.partial-lunch",
   "open-break": "today.health.issue.open-break",
   "invalid-lunch": "today.health.issue.invalid-lunch",
@@ -70,7 +71,7 @@ export function MonthDayDetails({ data, selectedDate }: { data: AppData; selecte
 
       {record ? (
         <div className="grid grid-cols-4 gap-3 max-[900px]:grid-cols-2 max-[620px]:grid-cols-1">
-          <Detail icon={<Clock3 />} label={t("month.details.inOut")} value={t("month.details.inOutValue", { start: digits(record.start || "—"), end: digits(record.end || "—") })} />
+          <Detail icon={<Clock3 />} label={t("month.details.inOut")} value={<TimeRange start={digits(record.start || "—")} end={digits(record.end || "—")} separator={t("common.rangeTo")} />} />
           <Detail icon={<CheckCircle2 />} label={t("common.netWorked")} value={duration(result?.worked ?? 0)} />
           <Detail icon={<Coffee />} label={t("month.details.rest")} value={duration((result?.breakMinutes ?? 0) + (result?.unpaidLunchMinutes ?? 0))} />
           <Detail icon={(result?.balance ?? 0) >= 0 ? <CheckCircle2 /> : <AlertTriangle />} label={t("month.details.balance")} value={duration(result?.balance ?? 0, true)} tone={(result?.balance ?? 0) >= 0 ? "green" : "red"} />
@@ -92,11 +93,15 @@ export function MonthDayDetails({ data, selectedDate }: { data: AppData; selecte
   );
 }
 
-function Detail({ icon, label, value, tone = "default" }: { icon: ReactNode; label: string; value: string; tone?: "default" | "green" | "red" }) {
+function TimeRange({ start, end, separator }: { start: string; end: string; separator: string }) {
+  return <span className="inline-flex items-baseline gap-1.5 whitespace-nowrap"><bdi dir="ltr">{start}</bdi><span dir="auto" className="text-[.72em] font-bold text-[var(--text-muted)]">{separator}</span><bdi dir="ltr">{end}</bdi></span>;
+}
+
+function Detail({ icon, label, value, tone = "default" }: { icon: ReactNode; label: string; value: ReactNode; tone?: "default" | "green" | "red" }) {
   return (
     <div className="rounded-[15px] border border-[var(--dashboard-border)] bg-[var(--surface-2)] p-3.5">
       <div className="mb-2 flex items-center gap-2 text-[10px] text-[var(--text-muted)]">{icon}{label}</div>
-      <strong dir="ltr" className={cn("block text-start text-sm font-black text-[var(--text)]", tone === "green" && "text-[var(--accent-strong)]", tone === "red" && "text-[var(--danger)]")}>{value}</strong>
+      <strong className={cn("block text-start text-sm font-black text-[var(--text)]", tone === "green" && "text-[var(--accent-strong)]", tone === "red" && "text-[var(--danger)]")}>{value}</strong>
     </div>
   );
 }

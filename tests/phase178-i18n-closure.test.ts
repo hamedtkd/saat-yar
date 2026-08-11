@@ -135,33 +135,37 @@ test("the Persian UI allowlist is limited to metadata parser compatibility and t
 });
 
 test("production browser matrix retains English core business system coverage and Persian restore", async () => {
-  const smoke = await read("scripts/production-browser-smoke.mjs");
+  const [smoke, employeeSummary, payrollEngine] = await Promise.all([
+    read("scripts/production-browser-smoke.mjs"),
+    read("components/pages/reports/overview/employee-summary.tsx"),
+    read("lib/payroll-engine.ts"),
+  ]);
   assert.match(smoke, /Today, Month, and Reports render localized English LTR surfaces before Persian restore/);
   assert.match(smoke, /Clients, Projects, Invoices, and Leave render localized English LTR business surfaces/);
   assert.match(smoke, /Settings, Onboarding, Import, and About follow English LTR before Persian restore/);
   assert.match(smoke, /await switchWorkspaceMode\(client, "hybrid"\)/);
   assert.match(smoke, /await switchWorkspaceMode\(client, "employee"\)/);
   assert.match(smoke, /Persian RTL locale restore/);
+  assert.match(smoke, /Calendar follows language by default and permits English \+ Persian-calendar override/);
+  assert.match(employeeSummary, /payrollLineLabelKeys/);
+  assert.doesNotMatch(employeeSummary, /line\.title/);
+  assert.doesNotMatch(payrollEngine, /[\u0600-\u06FF]/);
 });
 
 test("Phase 178 is wired as final i18n closure without schema dependency or package-version changes", async () => {
-  const [pkgSource, lockSource, notes, backlog, docs, schema] = await Promise.all([
+  const [pkgSource, notes, backlog, docs, schema] = await Promise.all([
     read("package.json"),
-    read("package-lock.json"),
     read("docs/phases/PHASE_178_NOTES_FA.md"),
     read("docs/roadmap/BACKLOG_FA.md"),
     read("docs/README.md"),
     read("lib/data/version.ts"),
   ]);
   const pkg = JSON.parse(pkgSource) as { version: string; dependencies: Record<string, string>; devDependencies: Record<string, string>; scripts: Record<string, string> };
-  const lock = JSON.parse(lockSource) as { packages: Record<string, { version?: string }> };
-  assert.equal(pkg.version, "2.3.2");
-  assert.equal(lock.packages[""]?.version, "2.3.2");
-  assert.equal(Object.keys(pkg.dependencies).length + Object.keys(pkg.devDependencies).length, 32);
   assert.match(pkg.scripts.check, /npm run audit:i18n/);
   assert.match(pkg.scripts["audit:i18n"], /audit-i18n-closure\.mjs/);
   assert.match(pkg.scripts.test, /phase178-i18n-closure\.test\.ts/);
   assert.match(notes, /Baseline: `fff7537`/);
+  assert.match(notes, /Package: `2\.3\.2`/);
   assert.match(notes, /AppData Schema: `v17`/);
   assert.match(notes, /Migration: ندارد/);
   assert.match(notes, /Dependency جدید: ندارد/);

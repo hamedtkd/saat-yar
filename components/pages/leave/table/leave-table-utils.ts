@@ -1,4 +1,5 @@
 import { formatLocaleDate, formatLocaleDuration } from "@/lib/i18n/formatters";
+import type { CalendarSystem } from "@/lib/i18n/calendars";
 import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n/locales";
 import { translateBusiness } from "@/lib/i18n/business";
 import type { LeaveEntry } from "@/lib/types";
@@ -15,6 +16,6 @@ export function getLeaveDurationLabel(entry: LeaveEntry, locale: Locale = DEFAUL
   return translateBusiness(locale, "leave.duration.oneDay");
 }
 
-export function formatLeaveDate(value: string, locale: Locale = DEFAULT_LOCALE) {
-  return formatLocaleDate(locale, value, { day: "numeric", month: "long", year: "numeric" });
+export function formatLeaveDate(value: string, locale: Locale = DEFAULT_LOCALE, calendar: CalendarSystem = "persian") {
+  return formatLocaleDate(locale, value, { day: "numeric", month: "long", year: "numeric" }, calendar);
 }

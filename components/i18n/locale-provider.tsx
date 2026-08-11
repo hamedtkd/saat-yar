@@ -2,12 +2,19 @@
 
 import { createContext, useContext, useMemo, useSyncExternalStore } from "react";
 import {
+  DEFAULT_CALENDAR_PREFERENCE,
   DEFAULT_LOCALE,
+  getBrowserCalendarPreference,
   getBrowserLocale,
   getLocaleDirection,
+  resolveCalendarSystem,
+  setBrowserCalendarPreference,
   setBrowserLocale,
+  subscribeBrowserCalendarPreference,
   subscribeBrowserLocale,
   translate,
+  type CalendarPreference,
+  type CalendarSystem,
   type Locale,
   type MessageKey,
   type MessageParams,
@@ -16,7 +23,10 @@ import {
 type LocaleContextValue = {
   locale: Locale;
   direction: "rtl" | "ltr";
+  calendarPreference: CalendarPreference;
+  calendar: CalendarSystem;
   setLocale: (locale: Locale) => void;
+  setCalendarPreference: (preference: CalendarPreference) => void;
   t: (key: MessageKey, params?: MessageParams) => string;
 };
 
@@ -24,12 +34,20 @@ const LocaleContext = createContext<LocaleContextValue | null>(null);
 
 export function LocaleProvider({ children }: { children: React.ReactNode }) {
   const locale = useSyncExternalStore(subscribeBrowserLocale, getBrowserLocale, () => DEFAULT_LOCALE);
+  const calendarPreference = useSyncExternalStore(
+    subscribeBrowserCalendarPreference,
+    getBrowserCalendarPreference,
+    () => DEFAULT_CALENDAR_PREFERENCE,
+  );
   const value = useMemo<LocaleContextValue>(() => ({
     locale,
     direction: getLocaleDirection(locale),
+    calendarPreference,
+    calendar: resolveCalendarSystem(locale, calendarPreference),
     setLocale: setBrowserLocale,
+    setCalendarPreference: setBrowserCalendarPreference,
     t: (key, params) => translate(locale, key, params),
-  }), [locale]);
+  }), [calendarPreference, locale]);
 
   return <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>;
 }

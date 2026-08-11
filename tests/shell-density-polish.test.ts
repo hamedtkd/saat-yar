@@ -15,8 +15,10 @@ test("shell elevation and navigation density stay restrained", async () => {
   assert.doesNotMatch(header, /0_12px_40px/);
   assert.match(sidebar, /0_10px_32px/);
   assert.match(sidebar, /min-h-11/);
-  assert.match(actions, /headerControlShell/);
-  assert.match(actions, /gap-0\.5 p-1/);
+  assert.match(actions, /headerStandaloneIconButton/);
+  assert.match(actions, /data-header-privacy-control/);
+  assert.doesNotMatch(actions, /headerControlShell/);
+  assert.doesNotMatch(actions, /gap-0\.5 p-1/);
   assert.match(controlStyles, /bg-\[var\(--surface-1\)\]/);
   assert.match(controlStyles, /h-11 rounded-\[14px\]/);
 });

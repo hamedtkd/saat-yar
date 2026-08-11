@@ -13,6 +13,15 @@ import type { MonthStats } from "./types";
 type Payroll = ReturnType<typeof calculateMonthlyPayrollForSettings>;
 type EmployeeSummaryProps = { stats: MonthStats; records: WorkRecord[]; overtimeMinutes: number; deficitMinutes: number; payroll: Payroll; financialsHidden: boolean };
 
+const payrollLineLabelKeys = {
+  base: "common.regularPay",
+  overtime: "common.overtime",
+  holiday: "common.holidayPay",
+  earning: "common.benefits",
+  deficit: "common.deficit",
+  deduction: "common.deductions",
+} as const;
+
 function PayrollValue({ value, hidden }: { value: number; hidden: boolean }) {
   const { t } = useLocaleUi();
   return <strong><PrivateMoney value={value} hidden={hidden} /> {t("common.currency.toman")}</strong>;
@@ -44,7 +53,7 @@ export function EmployeeSummary({ stats, records, overtimeMinutes, deficitMinute
         <PayrollStat label={t("common.gross")} value={payroll.gross} hidden={financialsHidden} />
         <PayrollStat label={t("common.net")} value={payroll.net} hidden={financialsHidden} tone="dark" />
       </div>
-      <div className="mt-4 grid gap-2 border-t border-[var(--border)] pt-4"><strong className="text-xs text-[var(--text)]">{t("common.breakdown")}</strong>{payroll.breakdown.filter((line) => line.amount > 0).map((line) => <div key={line.key} className="flex items-center justify-between gap-3 text-[10px] text-[var(--text-muted)]"><span>{line.direction === "deduction" ? "−" : "+"} {line.title}</span><strong className={line.direction === "deduction" ? "text-[var(--danger)]" : "text-[var(--text)]"}><PrivateMoney value={line.amount} hidden={financialsHidden} /> {t("common.currency.toman")}</strong></div>)}</div>
+      <div className="mt-4 grid gap-2 border-t border-[var(--border)] pt-4"><strong className="text-xs text-[var(--text)]">{t("common.breakdown")}</strong>{payroll.breakdown.filter((line) => line.amount > 0).map((line) => <div key={line.key} className="flex items-center justify-between gap-3 text-[10px] text-[var(--text-muted)]"><span>{line.direction === "deduction" ? "−" : "+"} {t(payrollLineLabelKeys[line.key])}</span><strong className={line.direction === "deduction" ? "text-[var(--danger)]" : "text-[var(--text)]"}><PrivateMoney value={line.amount} hidden={financialsHidden} /> {t("common.currency.toman")}</strong></div>)}</div>
     </SurfaceCard>
   </>;
 }

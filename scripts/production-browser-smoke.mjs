@@ -232,6 +232,25 @@ async function switchWorkspaceMode(client, mode) {
   })()`);
   if (!selected) throw new Error(`Workspace option could not be selected: ${mode}`);
   await waitFor(client, `document.querySelector('[data-workspace-switch-trigger]')?.getAttribute('data-workspace-mode') === "${mode}"`, `workspace mode ${mode}`);
+  // A full static-export navigation boots RouteGuard from persisted AppData.
+  // Wait for IndexedDB durability before navigating away from the page that
+  // performed the workspace change, otherwise a fast reload can see the old mode.
+  await waitFor(client, `(async () => {
+    const db = await new Promise((resolve, reject) => {
+      const request = indexedDB.open("saatyar-db", 1);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    const stored = await new Promise((resolve, reject) => {
+      const tx = db.transaction("app-data", "readonly");
+      const request = tx.objectStore("app-data").get("current");
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+      tx.oncomplete = () => db.close();
+    });
+    const appData = stored?.format === "saatyar-app-data" && stored?.data ? stored.data : stored;
+    return appData?.settings?.mode === "${mode}";
+  })()`, `workspace mode ${mode} persistence`);
 }
 
 async function replaceInputValue(client, selector, value) {
@@ -547,7 +566,13 @@ export async function runProductionBrowserSmoke() {
     await settingsLocaleLoad;
     await waitFor(client, `Boolean(document.querySelector('[data-settings-language]'))`, "language settings card");
     await evaluate(client, `document.querySelector('[data-locale-choice="en"]')?.click()`);
-    await waitFor(client, `document.documentElement.lang === "en" && document.documentElement.dir === "ltr" && localStorage.getItem("saatyar-locale-v1") === "en" && document.body?.innerText.includes("Settings & data") && document.body?.innerText.includes("Today")`, "English LTR locale switch");
+    await waitFor(client, `document.documentElement.lang === "en" && document.documentElement.dir === "ltr" && document.documentElement.dataset.calendar === "gregory" && localStorage.getItem("saatyar-locale-v1") === "en" && document.body?.innerText.includes("Settings & data") && document.body?.innerText.includes("Today")`, "English LTR locale switch with automatic Gregorian calendar");
+    await waitFor(client, `Boolean(document.querySelector('[data-calendar-choice="persian"]'))`, "calendar preference controls");
+    await evaluate(client, `document.querySelector('[data-calendar-choice="persian"]')?.click()`);
+    await waitFor(client, `document.documentElement.dataset.calendar === "persian" && localStorage.getItem("saatyar-calendar-v1") === "persian"`, "English interface with Persian calendar override");
+    await evaluate(client, `document.querySelector('[data-calendar-choice="auto"]')?.click()`);
+    await waitFor(client, `document.documentElement.dataset.calendar === "gregory" && localStorage.getItem("saatyar-calendar-v1") === "auto"`, "automatic calendar restored for English");
+    console.log("✓ Calendar follows language by default and permits English + Persian-calendar override");
     const ltrGeometry = await evaluate(client, `(() => {
       const sidebar = document.querySelector('aside.fixed');
       const header = document.querySelector('header.shell-main-offset');
@@ -562,7 +587,7 @@ export async function runProductionBrowserSmoke() {
     const localeReload = waitForEvent(client, "Page.loadEventFired", "English locale persistence reload");
     await client.call("Page.reload", { ignoreCache: false });
     await localeReload;
-    await waitFor(client, `document.documentElement.lang === "en" && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Settings & data")`, "English locale persistence after reload");
+    await waitFor(client, `document.documentElement.lang === "en" && document.documentElement.dir === "ltr" && document.documentElement.dataset.calendar === "gregory" && document.body?.innerText.includes("Settings & data")`, "English locale persistence after reload with automatic Gregorian calendar");
 
     const englishTodayLoad = waitForEvent(client, "Page.loadEventFired", "English Today route");
     await client.call("Page.navigate", { url: `${origin}/today/` });
@@ -640,7 +665,7 @@ export async function runProductionBrowserSmoke() {
     await settingsLocaleRestoreLoad;
     await waitFor(client, `Boolean(document.querySelector('[data-locale-choice="fa-IR"]')) && document.documentElement.lang === "en"`, "language settings before Persian restore");
     await evaluate(client, `document.querySelector('[data-locale-choice="fa-IR"]')?.click()`);
-    await waitFor(client, `document.documentElement.lang === "fa" && document.documentElement.dir === "rtl" && localStorage.getItem("saatyar-locale-v1") === "fa-IR" && document.body?.innerText.includes("تنظیمات و داده‌ها")`, "Persian RTL locale restore");
+    await waitFor(client, `document.documentElement.lang === "fa" && document.documentElement.dir === "rtl" && document.documentElement.dataset.calendar === "persian" && localStorage.getItem("saatyar-locale-v1") === "fa-IR" && document.body?.innerText.includes("تنظیمات و داده‌ها")`, "Persian RTL locale restore with automatic Persian calendar");
     console.log("✓ Local-first locale switch persists English LTR across reload and restores Persian RTL");
 
     const localeReturnToday = waitForEvent(client, "Page.loadEventFired", "return to Today after locale smoke");

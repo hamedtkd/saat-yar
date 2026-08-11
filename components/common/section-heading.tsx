@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { DescriptionTooltip } from "@/components/common/description-tooltip";
 import { cn } from "@/lib/cn";
 
 export function SectionHeading({ icon, eyebrow, title, description, trailing, className }: {
@@ -19,8 +20,10 @@ export function SectionHeading({ icon, eyebrow, title, description, trailing, cl
         )}
         <div className="min-w-0">
           {eyebrow && <span className="mb-0.5 block text-[9px] font-black tracking-[.08em] text-[var(--accent-strong)]">{eyebrow}</span>}
-          <h2 className="text-[13px] font-black text-[var(--text)] sm:text-sm">{title}</h2>
-          {description && <p className="mt-0.5 text-[10px] leading-5 text-[var(--text-muted)]">{description}</p>}
+          <div className="flex min-w-0 items-center gap-1">
+            <h2 className="min-w-0 text-[13px] font-black text-[var(--text)] sm:text-sm">{title}</h2>
+            {description && <DescriptionTooltip content={description} />}
+          </div>
         </div>
       </div>
       {trailing && <div className="shrink-0">{trailing}</div>}

@@ -14,7 +14,7 @@ type LeaveDesktopTableProps = {
 };
 
 export function LeaveDesktopTable({ entries, onEdit, onDelete }: LeaveDesktopTableProps) {
-  const { b, locale } = useBusinessUi();
+  const { b, calendar, locale } = useBusinessUi();
   const headings = [b("leave.table.range"), b("leave.table.type"), b("common.duration"), b("common.description"), b("common.actions")];
   return (
     <div className="hidden w-full overflow-x-auto px-4 pb-4 pt-3 md:block sm:px-5 sm:pb-5">
@@ -29,12 +29,12 @@ export function LeaveDesktopTable({ entries, onEdit, onDelete }: LeaveDesktopTab
         <tbody>
           {entries.map((entry) => {
             const sameDate = entry.startDate === entry.endDate;
-            const range = b("leave.table.rangeValue", { start: formatLeaveDate(entry.startDate, locale), end: formatLeaveDate(entry.endDate, locale) });
+            const range = b("leave.table.rangeValue", { start: formatLeaveDate(entry.startDate, locale, calendar), end: formatLeaveDate(entry.endDate, locale, calendar) });
             return (
               <tr key={entry.id} className="transition-colors hover:bg-[var(--surface-2)]">
                 <td className="border-b border-[var(--border)] px-3 py-3">
                   <div className="grid gap-1">
-                    <strong className="text-[11px] text-[var(--text)]">{sameDate ? formatLeaveDate(entry.startDate, locale) : range}</strong>
+                    <strong className="text-[11px] text-[var(--text)]">{sameDate ? formatLeaveDate(entry.startDate, locale, calendar) : range}</strong>
                     {!sameDate && <small className="text-[9px] text-[var(--text-muted)]">{b("leave.table.multiDay")}</small>}
                   </div>
                 </td>

@@ -102,8 +102,8 @@
 
 ### تجربه کاربری
 
-- رابط کامل فارسی و RTL
-- تقویم و نمایش تاریخ شمسی
+- رابط دوزبانه فارسی/RTL و انگلیسی/LTR با تغییر سریع زبان از کنترل پرچم
+- تقویم وابسته به زبان در حالت خودکار، با امکان انتخاب مستقل شمسی/جلالی یا میلادی
 - تم روشن، تاریک و پیروی از سیستم
 - چند Accent و سطح ظاهری قابل انتخاب
 - فونت Vazirmatn به‌صورت محلی
@@ -141,31 +141,28 @@ npm ci
 npm run dev
 ```
 
-آدرس توسعه Vite/Vinext معمولاً:
-
-```text
-http://localhost:5173
-```
-
-اجرای مستقیم با Next.js:
-
-```bash
-npm run dev:next
-```
-
-آدرس پیش‌فرض Next.js:
+محیط توسعه محلی پیش‌فرض با Next.js اجرا می‌شود و معمولاً در این آدرس است:
 
 ```text
 http://localhost:3000
 ```
+
+اگر مشخصاً به محیط اختیاری Vite/Vinext نیاز داری، اجرا کن:
+
+```bash
+npm run dev:vinext
+```
+
+Vite/Vinext معمولاً روی `http://localhost:5173` اجرا می‌شود. دستور `npm run dev:next` نیز به‌عنوان نام مستعار صریح برای همان محیط پیش‌فرض Next.js باقی مانده است.
 
 ## دستورات مهم
 
 | دستور | کاربرد |
 | --- | --- |
 | `npm ci` | نصب دقیق Dependencyها از Lockfile |
-| `npm run dev` | اجرای محیط توسعه Vite/Vinext |
-| `npm run dev:next` | اجرای مستقیم Next.js |
+| `npm run dev` | اجرای پایدار محیط توسعه محلی با Next.js |
+| `npm run dev:next` | نام مستعار صریح برای محیط توسعه پیش‌فرض Next.js |
+| `npm run dev:vinext` | اجرای اختیاری محیط توسعه Vite/Vinext |
 | `npm run check:dependencies` | بررسی نصب بودن Dependencyهای مستقیم پس از دریافت فاز جدید |
 | `npm run typecheck` | بررسی TypeScript بدون تولید خروجی |
 | `npm run lint` | اجرای ESLint با صفر Warning مجاز |
@@ -278,7 +275,8 @@ tests/                         تست‌های دامنه، Regression و معم
 
 - [عیب‌یابی Windows و خطاهای npm](./docs/TROUBLESHOOTING_FA.md)
 - [جدول سازگاری مرورگر و محدودیت‌های Notification/PWA](./docs/BROWSER_COMPATIBILITY.md)
-- [یادداشت انتشار ساعت‌یار ۲.۳.۲](./docs/releases/RELEASE_NOTES_2.3.2_FA.md)
+- [یادداشت Release Candidate ساعت‌یار ۲.۴.۰](./docs/releases/RELEASE_NOTES_2.4.0_FA.md)
+- [آخرین انتشار پایدار ساعت‌یار ۲.۳.۲](./docs/releases/RELEASE_NOTES_2.3.2_FA.md)
 - [یادداشت انتشار تاریخی ۲.۳.۱](./docs/releases/RELEASE_NOTES_2.3.1_FA.md)
 - [یادداشت انتشار تاریخی ۲.۳.۰](./docs/releases/RELEASE_NOTES_2.3.0_FA.md)
 - [یادداشت انتشار تاریخی ۲.۲.۰](./docs/releases/RELEASE_NOTES_2.2.0_FA.md)
@@ -300,11 +298,11 @@ npm run test:browser:production
 
 ## نقشه راه
 
-نسخه **۲.۳.۲** Patch Release فعلی ساعت‌یار است و تغییرات فازهای ۱۶۰ تا ۱۶۴ را بسته‌بندی می‌کند: قرارداد کار خالص/ناهار، پالیش برنامه کاری، CI همسو با Vercel، Resume امن نشست و کنتراست Filled Accent، و README اصلی انگلیسی همراه Roadmap i18n آینده.
+نسخه **۲.۳.۲** همچنان آخرین Release پایدار ساعت‌یار است. **۲.۴.۰ Candidate فعال** تغییرات فازهای ۱۶۶ تا ۱۷۸ را بسته‌بندی می‌کند: آنبوردینگ مستقل و قابل‌بازیابی، اصلاح سهمیه مرخصی، بازخورد ویرایش روز تکمیل‌شده، Import Wizard، Runtime Clock مشترک و تکمیل کامل فارسی RTL / انگلیسی LTR.
 
-Baseline فاز ۱۶۴ با **۶۳۳/۶۳۳ تست**، هر سه Browser Journey، Pairing مستقیم WebRTC، `audit:vercel` و `audit:production` سبز شده است. فاز ۱۶۵ شش قرارداد Release اضافه می‌کند و Gate نهایی باید به **۶۳۹/۶۳۹** برسد. AppData همچنان Schema v17 است و Migration یا Dependency جدیدی نداریم. جزئیات در [یادداشت انتشار ۲.۳.۲](./docs/releases/RELEASE_NOTES_2.3.2_FA.md)، [چک‌لیست انتشار](./RELEASE_CHECKLIST_FA.md) و [نقشه راه](./docs/roadmap/BACKLOG_FA.md) ثبت شده‌اند.
+Baseline فاز ۱۷۸ روی `887158c` با **۷۵۸/۷۵۸ تست**، هر سه Browser Journey، Pairing مستقیم WebRTC، `audit:vercel`، Audit نهایی i18n، Build استاتیک ۲۲ Route و PWA precache با ۴۴ asset سبز شده است. فاز ۱۷۹ شش قرارداد Candidate اضافه می‌کند و Gate باید به **۷۶۴/۷۶۴** برسد. AppData همچنان Schema v17 است و در Candidate Migration یا Dependency جدید نداریم. جزئیات در [یادداشت Candidate ۲.۴.۰](./docs/releases/RELEASE_NOTES_2.4.0_FA.md)، [چک‌لیست Candidate](./RELEASE_CHECKLIST_FA.md) و [نقشه راه](./docs/roadmap/BACKLOG_FA.md) ثبت شده‌اند.
 
-Manifest و Tagهای تاریخی ۲.۳.۱ و قبل‌تر تغییر نمی‌کنند. Manifest ۲.۳.۲ عمداً `releaseCommit` ندارد؛ پس از Commit/Push نهایی، Ready شدن Vercel و سبز شدن `npm run audit:production`، Tag annotated `v2.3.2` روی همان Commit ساخته می‌شود.
+Manifest ۲.۴.۰ عمداً در وضعیت `release-candidate` و بدون Commit نهایی باقی می‌ماند. فاز ۱۷۹ فقط روی `dev` بسته می‌شود؛ فاز ۱۸۰ SHA Candidate را ثبت می‌کند، rollout کنترل‌شده روی `main` و `audit:production` را انجام می‌دهد و فقط بعد از آن Tag annotated `v2.4.0` ساخته می‌شود. Manifest و Tagهای ۲.۳.۲ و قدیمی‌تر تاریخی و immutable باقی می‌مانند.
 
 ## حمایت مالی
 

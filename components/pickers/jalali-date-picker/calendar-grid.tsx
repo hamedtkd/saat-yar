@@ -1,4 +1,5 @@
 import { translate, type MessageKey } from "@/lib/i18n/catalog";
+import type { CalendarSystem } from "@/lib/i18n/calendars";
 import type { Locale } from "@/lib/i18n/locales";
 import { CalendarDay } from "./calendar-day";
 import type { CalendarDayCell, HolidayOptions } from "./types";
@@ -15,6 +16,7 @@ const WEEK_DAY_KEYS: MessageKey[] = [
 
 type CalendarGridProps = {
   locale: Locale;
+  calendar: CalendarSystem;
   cells: CalendarDayCell[];
   value: string;
   today: string;
@@ -25,6 +27,7 @@ type CalendarGridProps = {
 
 export function CalendarGrid({
   locale,
+  calendar,
   cells,
   value,
   today,
@@ -49,6 +52,7 @@ export function CalendarGrid({
           <CalendarDay
             key={cell.key}
             locale={locale}
+            calendar={calendar}
             cell={cell}
             value={value}
             today={today}

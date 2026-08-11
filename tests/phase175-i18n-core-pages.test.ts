@@ -39,7 +39,7 @@ test("Today Month and Reports catalogs stay typed and bilingual", () => {
   }
 });
 
-test("locale formatters keep Persian calendar semantics while switching digits and copy", () => {
+test("locale formatters support Persian and Gregorian calendars while switching digits and copy", () => {
   assert.equal(formatLocaleDigits("fa-IR", "08:30"), "۰۸:۳۰");
   assert.equal(formatLocaleDigits("en", "۰۸:۳۰"), "08:30");
   assert.equal(formatLocaleDuration("fa-IR", 125), "۲:۰۵");
@@ -47,10 +47,12 @@ test("locale formatters keep Persian calendar semantics while switching digits a
   assert.match(formatLocaleMoney("fa-IR", 1250000), /۱/);
   assert.match(formatLocaleMoney("en", 1250000), /1/);
   const persianDate = formatLocaleDate("fa-IR", "2026-08-10", { year: "numeric", month: "long", day: "numeric" });
-  const englishDate = formatLocaleDate("en", "2026-08-10", { year: "numeric", month: "long", day: "numeric" });
+  const englishPersianDate = formatLocaleDate("en", "2026-08-10", { year: "numeric", month: "long", day: "numeric" }, "persian");
+  const englishGregorianDate = formatLocaleDate("en", "2026-08-10", { year: "numeric", month: "long", day: "numeric" }, "gregory");
   assert.match(persianDate, /[۰-۹]/);
-  assert.doesNotMatch(englishDate, /[۰-۹]/);
-  assert.match(englishDate, /1405/);
+  assert.doesNotMatch(englishPersianDate, /[۰-۹]/);
+  assert.match(englishPersianDate, /1405/);
+  assert.match(englishGregorianDate, /2026/);
 });
 
 test("Today surfaces consume locale UI instead of embedding Persian interface copy", async () => {
@@ -65,12 +67,18 @@ test("Today surfaces consume locale UI instead of embedding Persian interface co
   assert.doesNotMatch(joined, /[\u0600-\u06FF]/);
 });
 
-test("Month surfaces consume locale UI and localized Persian-calendar formatters", async () => {
+test("Month surfaces consume locale UI and the active calendar system", async () => {
   const sources = await readSourceTree("components/pages/month");
+  const derived = await read("hooks/controller/use-controller-derived.ts");
   const joined = sources.map((item) => item.source).join("\n");
   assert.match(joined, /useLocaleUi/);
   assert.match(joined, /month\.section\.overviewTitle/);
   assert.match(joined, /month\.weekly\.title/);
+  assert.match(joined, /calendarMonthCells/);
+  assert.match(joined, /shiftCalendarMonth/);
+  assert.match(joined, /\[&_button>i\]:end-2/);
+  assert.match(derived, /calendarMonthCells\(selectedDate, calendar\)/);
+  assert.match(derived, /selectedMonthDates\.has\(item\.date\)/);
   assert.doesNotMatch(joined, /[\u0600-\u06FF]/);
 });
 
@@ -93,6 +101,8 @@ test("shared date and time pickers are locale-aware while preserving normalized 
   ]);
   assert.match(calendar, /translate\(locale, key\)/);
   assert.match(day, /formatLocaleDigits\(locale, cell\.day\)/);
+  assert.match(day, /formatLocaleDate\(locale, cell\.key[\s\S]*calendar/);
+  assert.match(calendar, /calendar=\{calendar\}/);
   assert.match(timePicker, /useLocaleUi\(\)/);
   assert.match(state, /parseTimeInput\(inputValue\)/);
   assert.match(state, /onChange\(parsed\.value\)/);
@@ -116,7 +126,7 @@ test("locale UI formatter callbacks stay referentially stable across ordinary re
   const source = await read("components/i18n/use-locale-ui.ts");
   assert.match(source, /import \{ useMemo \} from "react"/);
   assert.match(source, /return useMemo\(\(\) => \(\{/);
-  assert.match(source, /\}\), \[context, locale\]\);/);
+  assert.match(source, /\}\), \[calendar, context, locale\]\);/);
 
   const completedEditor = await read("components/pages/today/completed-day-editor.tsx");
   assert.match(completedEditor, /registerSettingsDraft/);
@@ -141,8 +151,8 @@ test("Phase 175 is documented and wired without schema dependency or release-ver
     read("lib/data/version.ts"),
   ]);
   const pkg = JSON.parse(pkgSource) as { version: string; scripts: Record<string, string> };
-  assert.equal(pkg.version, "2.3.2");
   assert.match(pkg.scripts.test, /phase175-i18n-core-pages\.test\.ts/);
+  assert.match(notes, /Package: `2\.3\.2`/);
   assert.match(notes, /AppData Schema: v17/);
   assert.match(notes, /Migration: ندارد/);
   assert.match(notes, /Dependency جدید: ندارد/);

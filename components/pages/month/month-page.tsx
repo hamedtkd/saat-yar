@@ -9,7 +9,7 @@ import { JalaliDatePicker } from "@/components/pickers";
 import { Button } from "@/components/ui/button";
 import { exportCsv } from "@/lib/exporters";
 import { calc } from "@/lib/time-engine";
-import { shiftJalaliMonth } from "@/lib/format";
+import { shiftCalendarMonth } from "@/lib/format";
 import type { AppData, WorkRecord } from "@/lib/types";
 import { getDailyTargetMinutes } from "@/lib/work-schedule";
 import { MonthCalendar } from "./month-calendar";
@@ -24,7 +24,7 @@ export function MonthPage({ data, selectedDate, setSelectedDate, monthRecords, m
   monthRecords: WorkRecord[];
   monthStats: { worked: number; target: number; balance: number; breaks: number };
 }) {
-  const { t, duration, date, number } = useLocaleUi();
+  const { t, duration, date, number, calendar } = useLocaleUi();
   const weekValues = Array.from({ length: 7 }, (_, weekday) => monthRecords
     .filter((item) => (new Date(`${item.date}T12:00:00`).getDay() + 1) % 7 === weekday)
     .reduce((sum, item) => sum + calc(item, getDailyTargetMinutes(item.date, data.settings)).worked, 0));
@@ -56,7 +56,7 @@ export function MonthPage({ data, selectedDate, setSelectedDate, monthRecords, m
     <section className="mb-5">
       <SectionHeading icon={<CalendarRange />} eyebrow={t("month.section.overviewEyebrow")} title={t("month.section.overviewTitle")} description={t("month.section.overviewDescription")} trailing={<span className="rounded-full border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-3 py-1.5 text-[9px] font-bold text-[var(--text-muted)]">{t("month.calendar.withRecords", { count: number(monthRecords.length) })}</span>} />
       <div className="grid grid-cols-[minmax(0,1.55fr)_minmax(300px,.45fr)] gap-4 max-[980px]:grid-cols-1">
-        <MonthCalendar data={data} selectedDate={selectedDate} setSelectedDate={setSelectedDate} monthRecordCount={monthRecords.length} moveMonth={(amount) => setSelectedDate(shiftJalaliMonth(selectedDate, amount))} />
+        <MonthCalendar data={data} selectedDate={selectedDate} setSelectedDate={setSelectedDate} monthRecordCount={monthRecords.length} moveMonth={(amount) => setSelectedDate(shiftCalendarMonth(selectedDate, amount, calendar))} />
         <WeeklyChart values={weekValues} />
       </div>
     </section>

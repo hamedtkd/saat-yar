@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { createLeaveDraft } from "@/lib/constants";
 import { localDateKey } from "@/lib/format";
-import { getBrowserLocale } from "@/lib/i18n";
+import { getBrowserLocale, type CalendarSystem } from "@/lib/i18n";
 import { translateSystem } from "@/lib/i18n/system";
 import type { AppData, ClientDraft, LeaveEntry, ProjectDraft, ReportFilter, TimerDraft } from "@/lib/types";
 import { usePersistedAppData } from "./use-persisted-app-data.ts";
@@ -17,7 +17,7 @@ import { useLiveTimerOwnership } from "./use-live-timer-ownership";
 import { useReportActions } from "./controller/use-report-actions";
 import { useOnboardingSession } from "./use-onboarding-session";
 
-export function useSaatyarController() {
+export function useSaatyarController(calendar: CalendarSystem = "persian") {
   const persisted = usePersistedAppData();
   const { data, setData, setToast, storage } = persisted;
   const [selectedDate, setSelectedDateState] = useState(localDateKey());
@@ -40,7 +40,7 @@ export function useSaatyarController() {
     setEditingEntry("");
   }
 
-  const derived = useControllerDerived(data, selectedDate, selectedProjectId, reportFilter);
+  const derived = useControllerDerived(data, selectedDate, selectedProjectId, reportFilter, calendar);
   const liveTimerActive = Boolean(derived.activeEntry || Object.values(data.records).some((item) =>
     (item.start && !item.end) || (item.lunchStart && !item.lunchEnd) || item.breaks.some((entry) => !entry.end),
   ));
@@ -59,7 +59,7 @@ export function useSaatyarController() {
   const backup = useBackupActions({ data, setData, setToast, importPreview, setImportPreview, storage });
   const reports = useReportActions({
     data, filteredEntries: derived.filteredEntries,
-    filteredMonthRecords: derived.filteredMonthRecords, setToast,
+    filteredMonthRecords: derived.filteredMonthRecords, calendar, setToast,
   });
   const notifications = useNotificationReminders({
     settings: data.settings.notificationSettings, selectedDate, record: derived.record,

@@ -35,10 +35,12 @@ test("zero-target days never masquerade as one hundred percent complete", () => 
   assert.match(read("components/pages/today/today-smart-summary.tsx"), /t\("today\.summary\.noTargetWorkday"\)/);
 });
 
-test("today progress arc uses a stable dash-offset contract", () => {
+test("today progress arc uses a stable circumference dash-offset contract", () => {
   const source = read("components/pages/today/today-progress-arc.tsx");
-  assert.match(source, /strokeDasharray="100"/);
-  assert.match(source, /strokeDashoffset=\{100 - progress\}/);
+  assert.match(source, /const circumference = 2 \* Math\.PI \* radius/);
+  assert.match(source, /const dashOffset = circumference \* \(1 - progress \/ 100\)/);
+  assert.match(source, /strokeDasharray=\{circumference\}/);
+  assert.match(source, /strokeDashoffset=\{dashOffset\}/);
   assert.doesNotMatch(source, /strokeDasharray=\{`\$\{progress\}/);
 });
 

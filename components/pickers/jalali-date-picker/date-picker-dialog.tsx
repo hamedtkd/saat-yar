@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useDialogAccessibility } from "@/hooks/accessibility/use-dialog-accessibility";
 import { cn } from "@/lib/cn";
 import { translate } from "@/lib/i18n/catalog";
+import type { CalendarSystem } from "@/lib/i18n/calendars";
 import type { Locale } from "@/lib/i18n/locales";
 
 import { CalendarGrid } from "./calendar-grid";
@@ -13,6 +14,7 @@ import type { CalendarDayCell, HolidayOptions } from "./types";
 
 type DatePickerDialogProps = {
   locale: Locale;
+  calendar: CalendarSystem;
   title: string;
   cells: CalendarDayCell[];
   value: string;
@@ -69,6 +71,7 @@ export function DatePickerDialog(props: DatePickerDialogProps) {
         />
         <CalendarGrid
           locale={props.locale}
+          calendar={props.calendar}
           cells={props.cells}
           value={props.value}
           today={props.today}

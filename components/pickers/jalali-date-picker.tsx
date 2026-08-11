@@ -17,7 +17,7 @@ export function JalaliDatePicker({
   weeklySchedule,
   placeholder,
 }: JalaliDatePickerProps) {
-  const { locale, t } = useLocaleUi();
+  const { calendar, locale, t } = useLocaleUi();
   const localizedPlaceholder = placeholder ?? t("picker.date.placeholder");
   const picker = useJalaliDatePicker({
     value,
@@ -25,6 +25,7 @@ export function JalaliDatePicker({
     recordedDates,
     placeholder: localizedPlaceholder,
     locale,
+    calendar,
   });
 
   return (
@@ -38,6 +39,7 @@ export function JalaliDatePicker({
       {picker.open && (
         <DatePickerDialog
           locale={locale}
+          calendar={calendar}
           title={picker.title}
           cells={picker.cells}
           value={value}

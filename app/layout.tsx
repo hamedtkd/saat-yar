@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import "@fontsource-variable/vazirmatn/wght.css";
+import "vazirmatn/Vazirmatn-font-face.css";
+import "vazirmatn/misc/Farsi-Digits/Vazirmatn-FD-font-face.css";
 import { PwaRegister } from "@/app/pwa-register";
 import { LocaleBootstrap } from "@/components/i18n/locale-bootstrap";
 import { LocaleProvider } from "@/components/i18n/locale-provider";
@@ -61,7 +62,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <meta name="theme-color" content="#06b6d4" data-saatyar-theme-color />
         <ThemeBootstrap />
       </head>
-      <body className="m-0 min-h-screen bg-[var(--page)] font-[Vazirmatn_Variable,Tahoma,sans-serif] font-normal text-[var(--text)] antialiased [font-feature-settings:'ss01'] transition-colors">
+      <body className="saatyar-app-font m-0 min-h-screen bg-[var(--page)] font-normal text-[var(--text)] antialiased transition-colors">
         <PwaRegister />
         <LocaleProvider>
           <LocaleRuntime />
