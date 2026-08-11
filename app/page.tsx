@@ -2,11 +2,13 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useLocale } from "@/components/i18n/locale-provider";
 
 const FALLBACK_ROUTE = "/today";
 const ALLOWED_ROUTES = new Set(["/today", "/month", "/leave", "/reports", "/clients", "/projects", "/invoices", "/settings"]);
 
 export default function HomePage() {
+  const { t } = useLocale();
   const router = useRouter();
 
   useEffect(() => {
@@ -14,5 +16,5 @@ export default function HomePage() {
     router.replace(ALLOWED_ROUTES.has(saved) ? saved : FALLBACK_ROUTE);
   }, [router]);
 
-  return <main className="grid min-h-screen place-items-center bg-[var(--page)] text-sm font-bold text-[var(--text-muted)]">در حال بازکردن آخرین صفحه…</main>;
+  return <main className="grid min-h-screen place-items-center bg-[var(--page)] text-sm font-bold text-[var(--text-muted)]">{t("app.openingLastPage")}</main>;
 }

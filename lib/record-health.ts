@@ -4,6 +4,7 @@ import { spanMinutes } from "./time-engine.ts";
 export type RecordIssueCode =
   | "missing-start"
   | "missing-end"
+  | "invalid-work-span"
   | "partial-lunch"
   | "open-break"
   | "invalid-lunch"
@@ -43,6 +44,10 @@ export function getRecordIssues(record: WorkRecord): RecordIssue[] {
 
   if (record.start && !record.end) {
     issues.push({ code: "missing-end", message: "ساعت خروج هنوز ثبت نشده است.", severity: "warning" });
+  }
+
+  if (record.start && record.end && invalidSpan(record.start, record.end)) {
+    issues.push({ code: "invalid-work-span", message: "ساعت خروج باید بعد از ساعت ورود باشد.", severity: "error" });
   }
 
   if (isPartial(record.lunchStart, record.lunchEnd)) {

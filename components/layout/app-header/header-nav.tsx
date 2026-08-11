@@ -1,9 +1,13 @@
+"use client";
+
 import Link from "next/link";
+import { useLocale } from "@/components/i18n/locale-provider";
 import { cn } from "@/lib/cn";
 import type { Mode } from "@/lib/types";
 import { getVisibleNavItems } from "./nav-items";
 
 export function HeaderNav({ mode, currentPath }: { mode: Mode; currentPath: string }) {
+  const { t } = useLocale();
   return (
     <nav className={cn(
       "flex h-[71px] justify-center gap-5 max-[1180px]:gap-[5px]",
@@ -12,10 +16,10 @@ export function HeaderNav({ mode, currentPath }: { mode: Mode; currentPath: stri
       "[&_a_svg]:h-5 [&_a_svg]:w-5 [&_a_svg]:shrink-0 [&_a_svg]:stroke-[1.8] [&_a.active]:text-[var(--accent-strong)]",
       "[&_a]:after:absolute [&_a]:after:inset-x-3 [&_a]:after:bottom-0 [&_a]:after:h-[3px] [&_a]:after:rounded-t-lg [&_a]:after:bg-transparent [&_a]:after:content-[''] [&_a.active]:after:bg-[var(--accent)]",
       "max-[1180px]:[&_a]:min-w-[72px] max-[900px]:[&_a]:min-w-[55px] max-[900px]:[&_a]:flex-1 max-[900px]:[&_a]:flex-col max-[900px]:[&_a]:gap-[3px] max-[900px]:[&_a]:rounded-xl max-[900px]:[&_a]:px-1 max-[900px]:[&_a]:py-1 max-[900px]:[&_a]:text-[9px] max-[900px]:[&_a]:leading-none max-[900px]:[&_a_svg]:h-[21px] max-[900px]:[&_a_svg]:w-[21px] max-[900px]:[&_a]:after:bottom-[-4px]"
-    )} aria-label="ناوبری اصلی">
-      {getVisibleNavItems(mode).map(({ label, icon: Icon, href }) => {
+    )} aria-label={t("nav.primaryAria")}>
+      {getVisibleNavItems(mode).map(({ labelKey, icon: Icon, href }) => {
         const active = currentPath === href;
-        return <Link key={href} href={href} className={active ? "active" : undefined} aria-current={active ? "page" : undefined}><Icon aria-hidden="true" /><span>{label}</span></Link>;
+        return <Link key={href} href={href} className={active ? "active" : undefined} aria-current={active ? "page" : undefined}><Icon aria-hidden="true" /><span>{t(labelKey)}</span></Link>;
       })}
     </nav>
   );

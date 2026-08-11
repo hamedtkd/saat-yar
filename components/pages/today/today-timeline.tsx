@@ -5,9 +5,10 @@ import { EmptyState } from "@/components/common/empty-state";
 import { PanelHead } from "@/components/common/panel-head";
 import { SurfaceCard } from "@/components/common/surface-card";
 import { StatusBadge } from "@/components/common/status-badge";
+import { useLocaleUi } from "@/components/i18n/use-locale-ui";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { duration, entryMinutes, faDigits, localDateKey } from "@/lib/format";
+import { entryMinutes, localDateKey } from "@/lib/format";
 import { useRuntimeNow } from "@/hooks/use-runtime-now";
 import type { TodayPageProps } from "./types.ts";
 import { cn } from "@/lib/cn";
@@ -24,6 +25,7 @@ export function TodayTimeline(
     | "setTab"
   >,
 ) {
+  const { t, duration, time, direction } = useLocaleUi();
   const entries = props.data.timeEntries.filter(
     (entry) => localDateKey(new Date(entry.startedAt)) === props.selectedDate,
   );
@@ -39,7 +41,7 @@ export function TodayTimeline(
       )}
     >
       <SurfaceCard className="dashboard-card min-w-0 p-3 shadow-[0_5px_16px_rgba(0,0,0,.03)]">
-        <PanelHead icon={<Clock3 />} title="خط زمانی امروز">
+        <PanelHead icon={<Clock3 />} title={t("today.timeline.title")}>
           {props.data.settings.mode !== "employee" && (
             <Button
               variant="ghost"
@@ -48,24 +50,25 @@ export function TodayTimeline(
                 props.setEditingEntry(props.editingEntry ? "" : "manual")
               }
             >
-              <Plus /> افزودن ورودی زمان
+              <Plus /> {t("today.timeline.addEntry")}
             </Button>
           )}
         </PanelHead>
         <div
           className={cn(
-            "w-full overflow-x-auto [&_table]:w-full [&_table]:border-collapse [&_table]:text-[11px] [&_th]:h-[39px] [&_th]:whitespace-nowrap [&_th]:border-y [&_th]:border-[var(--border)] [&_th]:bg-[var(--surface-2)] [&_th]:px-3 [&_th]:py-2 [&_th]:text-right [&_th]:font-semibold [&_th]:text-[var(--text-muted)] [&_td]:min-h-[46px] [&_td]:whitespace-nowrap [&_td]:border-b [&_td]:border-[var(--border)] [&_td]:px-3 [&_td]:py-[9px] [&_td]:text-[var(--text)] [&_td_strong]:flex [&_td_strong]:items-center [&_td_strong]:gap-[7px] [&_td_strong]:text-[11px] [&_td_strong]:text-[var(--text)] [&_td_strong>i]:size-[7px] [&_td_strong>i]:rounded-full [&_td_small]:mt-[3px] [&_td_small]:block [&_td_small]:text-[9px] [&_td_small]:text-[var(--text-muted)] [&_td_input]:min-w-[175px]",
+            "w-full overflow-x-auto [&_table]:w-full [&_table]:border-collapse [&_table]:text-[11px] [&_th]:h-[39px] [&_th]:whitespace-nowrap [&_th]:border-y [&_th]:border-[var(--border)] [&_th]:bg-[var(--surface-2)] [&_th]:px-3 [&_th]:py-2 [&_th]:font-semibold [&_th]:text-[var(--text-muted)] [&_td]:min-h-[46px] [&_td]:whitespace-nowrap [&_td]:border-b [&_td]:border-[var(--border)] [&_td]:px-3 [&_td]:py-[9px] [&_td]:text-[var(--text)] [&_td_strong]:flex [&_td_strong]:items-center [&_td_strong]:gap-[7px] [&_td_strong]:text-[11px] [&_td_strong]:text-[var(--text)] [&_td_strong>i]:size-[7px] [&_td_strong>i]:rounded-full [&_td_small]:mt-[3px] [&_td_small]:block [&_td_small]:text-[9px] [&_td_small]:text-[var(--text-muted)] [&_td_input]:min-w-[175px]",
+            direction === "rtl" ? "[&_th]:text-right" : "[&_th]:text-left",
           )}
         >
           <table>
             <thead>
               <tr>
-                <th>وظیفه</th>
-                <th>شروع</th>
-                <th>پایان</th>
-                <th>مدت زمان</th>
-                <th>قابل صورتحساب</th>
-                <th>عملیات</th>
+                <th>{t("common.task")}</th>
+                <th>{t("common.start")}</th>
+                <th>{t("common.end")}</th>
+                <th>{t("today.timeline.duration")}</th>
+                <th>{t("common.billable")}</th>
+                <th>{t("common.actions")}</th>
               </tr>
             </thead>
             <tbody>
@@ -78,7 +81,7 @@ export function TodayTimeline(
                     <td>
                       <strong>
                         <i style={{ background: project?.color }} />
-                        {entry.task || project?.name || "بدون عنوان"}
+                        {entry.task || project?.name || t("common.noTitle")}
                       </strong>
                       <small>{entry.note}</small>
                     </td>
@@ -104,28 +107,14 @@ export function TodayTimeline(
                           }
                         />
                       ) : (
-                        faDigits(
-                          new Date(entry.startedAt).toLocaleTimeString(
-                            "fa-IR",
-                            { hour: "2-digit", minute: "2-digit" },
-                          ),
-                        )
+                        time(entry.startedAt)
                       )}
                     </td>
-                    <td>
-                      {entry.endedAt
-                        ? faDigits(
-                            new Date(entry.endedAt).toLocaleTimeString(
-                              "fa-IR",
-                              { hour: "2-digit", minute: "2-digit" },
-                            ),
-                          )
-                        : "در حال اجرا"}
-                    </td>
+                    <td>{entry.endedAt ? time(entry.endedAt) : t("common.running")}</td>
                     <td>{duration(entryMinutes(entry, now))}</td>
                     <td>
                       <StatusBadge success={entry.billable}>
-                        {entry.billable ? "بله" : "خیر"}
+                        {entry.billable ? t("common.yes") : t("common.no")}
                       </StatusBadge>
                     </td>
                     <td>
@@ -137,7 +126,7 @@ export function TodayTimeline(
                             props.editingEntry === entry.id ? "" : entry.id,
                           )
                         }
-                        aria-label="ویرایش"
+                        aria-label={t("common.edit")}
                       >
                         <Edit3 />
                       </Button>
@@ -150,8 +139,8 @@ export function TodayTimeline(
                   <td colSpan={6}>
                     <EmptyState
                       icon={<Clock3 />}
-                      title="هنوز رکورد پروژه‌ای برای امروز نداری"
-                      description="تایمر پروژه را شروع کن یا یک ورودی دستی اضافه کن."
+                      title={t("today.timeline.emptyTitle")}
+                      description={t("today.timeline.emptyDescription")}
                     />
                   </td>
                 </tr>
@@ -165,18 +154,14 @@ export function TodayTimeline(
           )}
         >
           <span>
-            جمع کل:{" "}
-            <strong>
-              {duration(
-                entries.reduce((sum, entry) => sum + entryMinutes(entry, now), 0),
-              )}
-            </strong>
+            {t("today.timeline.total")} {" "}
+            <strong>{duration(entries.reduce((sum, entry) => sum + entryMinutes(entry, now), 0))}</strong>
           </span>
         </div>
       </SurfaceCard>
       {props.data.settings.mode !== "employee" && (
         <SurfaceCard as="aside" className="dashboard-card p-4 shadow-[0_5px_16px_rgba(0,0,0,.03)] max-[900px]:order-first [&>button]:mt-3">
-          <PanelHead icon={<Info />} title="پروژه‌های اخیر" />
+          <PanelHead icon={<Info />} title={t("today.timeline.recentProjects")} />
           {recentProjects.map((project) => (
             <div
               className={cn(
@@ -187,36 +172,18 @@ export function TodayTimeline(
               <span style={{ background: project.color }} />
               <div>
                 <strong>{project.name}</strong>
-                <small>
-                  {
-                    props.data.clients.find(
-                      (item) => item.id === project.clientId,
-                    )?.name
-                  }
-                </small>
+                <small>{props.data.clients.find((item) => item.id === project.clientId)?.name}</small>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => props.toggleProjectTimer(project.id)}
-              >
-                <Play /> شروع
+              <Button variant="outline" size="sm" onClick={() => props.toggleProjectTimer(project.id)}>
+                <Play /> {t("common.start")}
               </Button>
             </div>
           ))}
           {recentProjects.length === 0 && (
-            <EmptyState
-              compact
-              icon={<Folder />}
-              description="از صفحه پروژه‌ها اولین پروژه را بساز."
-            />
+            <EmptyState compact icon={<Folder />} description={t("today.timeline.createFirstProject")} />
           )}
-          <Button
-            variant="ghost"
-            className={cn("w-full")}
-            onClick={() => props.setTab("projects")}
-          >
-            مشاهده همه پروژه‌ها
+          <Button variant="ghost" className={cn("w-full")} onClick={() => props.setTab("projects")}>
+            {t("today.timeline.viewAllProjects")}
           </Button>
         </SurfaceCard>
       )}

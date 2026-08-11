@@ -1,3 +1,4 @@
+import type { CalendarSystem } from "./i18n/calendars.ts";
 import type { Settings, TimeEntry, WorkRecord } from "./types.ts";
 
 export const fa = new Intl.NumberFormat("fa-IR");
@@ -68,7 +69,10 @@ export function jalali(value: string, options?: Intl.DateTimeFormatOptions) {
   ).format(new Date(`${value}T12:00:00`));
 }
 
-export function jalaliParts(date: Date) {
+export function calendarParts(date: Date, calendar: CalendarSystem = "persian") {
+  if (calendar === "gregory") {
+    return { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() };
+  }
   const parts = new Intl.DateTimeFormat("fa-IR-u-ca-persian-nu-latn", {
     year: "numeric",
     month: "numeric",
@@ -78,17 +82,21 @@ export function jalaliParts(date: Date) {
   return { year: read("year"), month: read("month"), day: read("day") };
 }
 
-export function jalaliMonthCells(value: string) {
+export function jalaliParts(date: Date) {
+  return calendarParts(date, "persian");
+}
+
+export function calendarMonthCells(value: string, calendar: CalendarSystem = "persian") {
   const pivot = new Date(`${value}T12:00:00`);
-  const target = jalaliParts(pivot);
+  const target = calendarParts(pivot, calendar);
   const first = new Date(pivot);
-  while (jalaliParts(first).day !== 1) first.setDate(first.getDate() - 1);
+  while (calendarParts(first, calendar).day !== 1) first.setDate(first.getDate() - 1);
   const gridStart = new Date(first);
   gridStart.setDate(gridStart.getDate() - ((gridStart.getDay() + 1) % 7));
   return Array.from({ length: 42 }, (_, index) => {
     const date = new Date(gridStart);
     date.setDate(date.getDate() + index);
-    const parts = jalaliParts(date);
+    const parts = calendarParts(date, calendar);
     return {
       date,
       key: localDateKey(date),
@@ -98,13 +106,21 @@ export function jalaliMonthCells(value: string) {
   });
 }
 
-export function shiftJalaliMonth(value: string, delta: number) {
+export function jalaliMonthCells(value: string) {
+  return calendarMonthCells(value, "persian");
+}
+
+export function shiftCalendarMonth(value: string, delta: number, calendar: CalendarSystem = "persian") {
   const current = new Date(`${value}T12:00:00`);
-  const currentParts = jalaliParts(current);
+  const currentParts = calendarParts(current, calendar);
   const cursor = new Date(current);
-  do cursor.setDate(cursor.getDate() + delta); while (jalaliParts(cursor).month === currentParts.month);
-  while (jalaliParts(cursor).day !== 1) cursor.setDate(cursor.getDate() - 1);
+  do cursor.setDate(cursor.getDate() + delta); while (calendarParts(cursor, calendar).month === currentParts.month);
+  while (calendarParts(cursor, calendar).day !== 1) cursor.setDate(cursor.getDate() - 1);
   return localDateKey(cursor);
+}
+
+export function shiftJalaliMonth(value: string, delta: number) {
+  return shiftCalendarMonth(value, delta, "persian");
 }
 
 export function entryMinutes(entry: TimeEntry, now = Date.now()) {

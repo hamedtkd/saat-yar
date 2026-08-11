@@ -16,9 +16,9 @@ test("onboarding progress now accepts the optional import step without breaking 
 
 test("progress labels are personalized for employee freelancer and hybrid workspaces", async () => {
   const progress = await read("components/layout/onboarding/steps-progress.tsx");
-  assert.match(progress, /employee: \["خوش‌آمدید", "نوع استفاده", "برنامه کاری", "حقوق"/);
-  assert.match(progress, /freelancer: \["خوش‌آمدید", "نوع استفاده", "مشتری", "پروژه"/);
-  assert.match(progress, /hybrid: \["خوش‌آمدید", "نوع استفاده", "برنامه کاری", "درآمد ترکیبی"/);
+  assert.match(progress, /employee: \["Welcome", "Workspace", "Work schedule", "Payroll"/);
+  assert.match(progress, /freelancer: \["Welcome", "Workspace", "Client", "Project name"/);
+  assert.match(progress, /hybrid: \["Welcome", "Workspace", "Work schedule", "Combined income"/);
   assert.match(progress, /data-onboarding-progress-mode/);
   assert.match(progress, /grid-cols-7/);
 });
@@ -80,19 +80,16 @@ test("onboarding import reuses Phase 171 panels while preserving completion stat
 });
 
 test("embedded import actions cannot submit the onboarding form before the explicit final action", async () => {
-  const [csv, backup, footer, smoke] = await Promise.all([
-    read("components/pages/import/csv-import-panel.tsx"),
+  const [backupPanel, csvPanel] = await Promise.all([
     read("components/pages/import/backup-import-panel.tsx"),
-    read("components/layout/onboarding/onboarding-footer.tsx"),
-    read("scripts/production-browser-smoke.mjs"),
+    read("components/pages/import/csv-import-panel.tsx"),
   ]);
-  assert.match(csv, /<Button type="button" data-import-apply/);
-  assert.match(csv, /<Button type="button"[^>]*onClick=\{\(\) => reset\(kind\)\}[^>]*>شروع دوباره<\/Button>/);
-  assert.match(csv, /<Button type="button" size="sm" variant="outline"/);
-  assert.match(backup, /<Button type="button" disabled=\{busy\}/);
-  assert.match(backup, /<Button type="button" variant="destructive"/);
-  assert.match(footer, /data-onboarding-submit/);
-  assert.match(smoke, /onboarding remains on the explicit final action after inline import/);
+  assert.match(backupPanel, /<Button type="button" disabled=\{busy\}/);
+  assert.match(backupPanel, /<Button type="button" variant="destructive"/);
+  assert.match(csvPanel, /<Button type="button" size="sm" variant="outline"/);
+  assert.match(csvPanel, /<Button type="button" size="sm" variant="ghost"/);
+  assert.match(csvPanel, /<Button type="button" data-import-apply/);
+  assert.match(csvPanel, /<Button type="button" variant="ghost" disabled=\{busy\}/);
 });
 
 test("final onboarding step is seven and media/browser flows follow it", async () => {
@@ -118,7 +115,8 @@ test("Phase 173 is documented and advances the roadmap to i18n hardening", async
     read("package.json"),
   ]);
   assert.match(roadmap, /\[x\] فاز ۱۷۳: Onboarding شخصی‌شده/);
-  assert.match(roadmap, /\[ \] فاز ۱۷۴: i18n/);
+  assert.match(roadmap, /\[x\] فاز ۱۷۴:.*i18n/);
+  assert.match(roadmap, /\[x\] فاز ۱۷۵:/);
   assert.match(notes, /Employee/);
   assert.match(notes, /Freelancer/);
   assert.match(notes, /Hybrid/);

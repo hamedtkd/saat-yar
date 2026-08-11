@@ -49,8 +49,8 @@ test("current schema persists configurable break reminders", () => {
 test("notification settings and runtime include break reminder controls", async () => {
   const card = await read("components/pages/settings/notification-settings-card.tsx");
   const hook = await read("hooks/controller/use-notification-reminders.ts");
-  assert.match(card, /یادآوری استراحت/);
+  assert.match(card, /s\("Break reminder"\)/);
   assert.match(card, /intervalMinutes/);
-  assert.match(hook, /وقت یک استراحت کوتاهه/);
+  assert.match(hook, /translateSystem\(getBrowserLocale\(\), "Time for a short break"\)/);
   assert.match(hook, /break-\$\{bucket\}/);
 });

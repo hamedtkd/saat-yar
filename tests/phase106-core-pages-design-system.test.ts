@@ -7,16 +7,16 @@ const read = (path: string) => readFileSync(path, "utf8");
 test("month page exposes the final dashboard hierarchy without removing month workflows", () => {
   const source = read("components/pages/month/month-page.tsx");
   assert.match(source, /SectionHeading/);
-  assert.match(source, /تقویم و روند هفتگی/);
-  assert.match(source, /جزئیات روز/);
-  assert.match(source, /جدول کارکرد/);
+  assert.match(source, /t\("month\.section\.overviewTitle"\)/);
+  assert.match(source, /t\("month\.section\.selectedTitle"\)/);
+  assert.match(source, /t\("month\.section\.recordsTitle"\)/);
   assert.match(source, /exportMonth/);
   assert.match(source, /MonthDayDetails/);
 });
 
 test("reports page separates filter summary charts and records while preserving exports", () => {
   const source = read("components/pages/reports/reports-page.tsx");
-  for (const label of ["فیلترها", "نمودارهای تحلیلی", "رکوردهای گزارش"]) assert.match(source, new RegExp(label));
+  for (const key of ["reports.filtersTitle", "reports.chartsTitle", "reports.recordsTitle"]) assert.match(source, new RegExp(`t\\(\"${key.replaceAll(".", "\\.")}\"\\)`));
   assert.match(source, /ReportActions/);
   assert.match(source, /ReportCharts/);
   assert.match(source, /ReportTable/);

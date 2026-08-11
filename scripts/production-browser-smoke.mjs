@@ -146,7 +146,8 @@ async function browserStateSnapshot(client) {
       return {
         url: location.href,
         readyState: document.readyState,
-        body: (document.body?.innerText || "").replace(/\s+/g, " ").trim().slice(0, 500),
+        body: (document.body?.innerText || "").replace(/\\s+/g, " ").trim().slice(0, 500),
+        title: document.title,
         onboardingStep: document.querySelector("[data-onboarding-step]")?.getAttribute("data-onboarding-step-index") || null,
         loading: document.body?.innerText.includes("\u062f\u0631 \u062d\u0627\u0644 \u0622\u0645\u0627\u062f\u0647") || false,
         serviceWorker: registration ? {
@@ -211,6 +212,45 @@ async function clickButton(client, text) {
     return true;
   })()`);
   if (!clicked) throw new Error(`Button not found: ${text}`);
+}
+
+async function switchWorkspaceMode(client, mode) {
+  const opened = await evaluate(client, `(() => {
+    const trigger = document.querySelector('[data-workspace-switch-trigger]');
+    if (!(trigger instanceof HTMLButtonElement)) return false;
+    trigger.click();
+    return true;
+  })()`);
+  if (!opened) throw new Error(`Workspace switch trigger not found for mode: ${mode}`);
+  await waitFor(client, `Boolean(document.querySelector('[data-workspace-mode-option="${mode}"]'))`, `workspace option ${mode}`);
+  const selected = await evaluate(client, `(() => {
+    const marker = document.querySelector('[data-workspace-mode-option="${mode}"]');
+    const option = marker?.closest('[role="option"]') || marker?.parentElement;
+    if (!(option instanceof HTMLElement)) return false;
+    option.click();
+    return true;
+  })()`);
+  if (!selected) throw new Error(`Workspace option could not be selected: ${mode}`);
+  await waitFor(client, `document.querySelector('[data-workspace-switch-trigger]')?.getAttribute('data-workspace-mode') === "${mode}"`, `workspace mode ${mode}`);
+  // A full static-export navigation boots RouteGuard from persisted AppData.
+  // Wait for IndexedDB durability before navigating away from the page that
+  // performed the workspace change, otherwise a fast reload can see the old mode.
+  await waitFor(client, `(async () => {
+    const db = await new Promise((resolve, reject) => {
+      const request = indexedDB.open("saatyar-db", 1);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    const stored = await new Promise((resolve, reject) => {
+      const tx = db.transaction("app-data", "readonly");
+      const request = tx.objectStore("app-data").get("current");
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+      tx.oncomplete = () => db.close();
+    });
+    const appData = stored?.format === "saatyar-app-data" && stored?.data ? stored.data : stored;
+    return appData?.settings?.mode === "${mode}";
+  })()`, `workspace mode ${mode} persistence`);
 }
 
 async function replaceInputValue(client, selector, value) {
@@ -452,14 +492,7 @@ export async function runProductionBrowserSmoke() {
       return appData?.settings?.onboarded === false && appData?.clients?.some((item) => item.name === "مشتری آنبوردینگ") === true;
     })()`, "onboarding Import persistence without premature completion");
     console.log("✓ Personalized onboarding keeps employee setup relevant and imports existing data before completion");
-    await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="7"]')) && Boolean(document.querySelector('[data-onboarding-submit][type="submit"]'))`, "onboarding remains on the explicit final action after inline import");
-    const finalSubmitClicked = await evaluate(client, `(() => {
-      const button = document.querySelector('[data-onboarding-submit][type="submit"]');
-      if (!(button instanceof HTMLButtonElement)) return false;
-      button.click();
-      return true;
-    })()`);
-    if (!finalSubmitClicked) throw new Error("Final onboarding action could not be clicked after inline import.");
+    await clickButton(client, "شروع ساعت‌یار");
     await waitFor(client, "['/today', '/today/'].includes(location.pathname) && !document.body?.innerText.includes('شروع ساعت‌یار')", "today route after onboarding");
     await new Promise((resolveWait) => setTimeout(resolveWait, 700));
 
@@ -527,6 +560,118 @@ export async function runProductionBrowserSmoke() {
     await client.call("Page.navigate", { url: `${origin}/today/` });
     await returnToday;
     await waitFor(client, `["/today", "/today/"].includes(location.pathname) && document.body?.innerText.includes("ساعت‌یار")`, "Today after Import Wizard");
+
+    const settingsLocaleLoad = waitForEvent(client, "Page.loadEventFired", "Settings locale route");
+    await client.call("Page.navigate", { url: `${origin}/settings/` });
+    await settingsLocaleLoad;
+    await waitFor(client, `Boolean(document.querySelector('[data-settings-language]'))`, "language settings card");
+    await evaluate(client, `document.querySelector('[data-locale-choice="en"]')?.click()`);
+    await waitFor(client, `document.documentElement.lang === "en" && document.documentElement.dir === "ltr" && document.documentElement.dataset.calendar === "gregory" && localStorage.getItem("saatyar-locale-v1") === "en" && document.body?.innerText.includes("Settings & data") && document.body?.innerText.includes("Today")`, "English LTR locale switch with automatic Gregorian calendar");
+    await waitFor(client, `Boolean(document.querySelector('[data-calendar-choice="persian"]'))`, "calendar preference controls");
+    await evaluate(client, `document.querySelector('[data-calendar-choice="persian"]')?.click()`);
+    await waitFor(client, `document.documentElement.dataset.calendar === "persian" && localStorage.getItem("saatyar-calendar-v1") === "persian"`, "English interface with Persian calendar override");
+    await evaluate(client, `document.querySelector('[data-calendar-choice="auto"]')?.click()`);
+    await waitFor(client, `document.documentElement.dataset.calendar === "gregory" && localStorage.getItem("saatyar-calendar-v1") === "auto"`, "automatic calendar restored for English");
+    console.log("✓ Calendar follows language by default and permits English + Persian-calendar override");
+    const ltrGeometry = await evaluate(client, `(() => {
+      const sidebar = document.querySelector('aside.fixed');
+      const header = document.querySelector('header.shell-main-offset');
+      if (!sidebar || !header) return null;
+      const side = sidebar.getBoundingClientRect();
+      const head = header.getBoundingClientRect();
+      return { sidebarLeft: side.left, headerLeft: head.left, dir: document.documentElement.dir };
+    })()`);
+    if (!ltrGeometry || ltrGeometry.dir !== "ltr" || ltrGeometry.sidebarLeft > 24 || ltrGeometry.headerLeft < 240) {
+      throw new Error(`LTR shell geometry failed: ${JSON.stringify(ltrGeometry)}`);
+    }
+    const localeReload = waitForEvent(client, "Page.loadEventFired", "English locale persistence reload");
+    await client.call("Page.reload", { ignoreCache: false });
+    await localeReload;
+    await waitFor(client, `document.documentElement.lang === "en" && document.documentElement.dir === "ltr" && document.documentElement.dataset.calendar === "gregory" && document.body?.innerText.includes("Settings & data")`, "English locale persistence after reload with automatic Gregorian calendar");
+
+    const englishTodayLoad = waitForEvent(client, "Page.loadEventFired", "English Today route");
+    await client.call("Page.navigate", { url: `${origin}/today/` });
+    await englishTodayLoad;
+    await waitFor(client, `["/today", "/today/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Today summary") && document.body?.innerText.includes("Daily target")`, "English Today core surface");
+
+    const englishMonthLoad = waitForEvent(client, "Page.loadEventFired", "English Month route");
+    await client.call("Page.navigate", { url: `${origin}/month/` });
+    await englishMonthLoad;
+    await waitFor(client, `["/month", "/month/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("My month") && document.body?.innerText.includes("Calendar and weekly trend")`, "English Month core surface");
+
+    const englishReportsLoad = waitForEvent(client, "Page.loadEventFired", "English Reports route");
+    await client.call("Page.navigate", { url: `${origin}/reports/` });
+    await englishReportsLoad;
+    await waitFor(client, `["/reports", "/reports/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Work and payroll report") && document.body?.innerText.includes("Analytics charts")`, "English Reports core surface");
+    console.log("✓ Today, Month, and Reports render localized English LTR surfaces before Persian restore");
+
+    // Employee mode intentionally cannot access freelancer-only business routes.
+    // Exercise the real workspace switcher before the business-route matrix so
+    // RouteGuard remains authoritative instead of bypassing the product contract.
+    await switchWorkspaceMode(client, "hybrid");
+
+    const englishClientsLoad = waitForEvent(client, "Page.loadEventFired", "English Clients route");
+    await client.call("Page.navigate", { url: `${origin}/clients/` });
+    await englishClientsLoad;
+    await waitFor(client, `["/clients", "/clients/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Clients") && document.body?.innerText.includes("Business status")`, "English Clients business surface");
+
+    const englishProjectsLoad = waitForEvent(client, "Page.loadEventFired", "English Projects route");
+    await client.call("Page.navigate", { url: `${origin}/projects/` });
+    await englishProjectsLoad;
+    await waitFor(client, `["/projects", "/projects/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Projects") && document.body?.innerText.includes("Your projects")`, "English Projects business surface");
+
+    const englishInvoicesLoad = waitForEvent(client, "Page.loadEventFired", "English Invoices route");
+    await client.call("Page.navigate", { url: `${origin}/invoices/` });
+    await englishInvoicesLoad;
+    await waitFor(client, `["/invoices", "/invoices/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Invoices") && document.body?.innerText.includes("Invoice list")`, "English Invoices business surface");
+
+    const englishLeaveLoad = waitForEvent(client, "Page.loadEventFired", "English Leave route");
+    await client.call("Page.navigate", { url: `${origin}/leave/` });
+    await englishLeaveLoad;
+    await waitFor(client, `["/leave", "/leave/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("My leave") && document.body?.innerText.includes("Leave overview")`, "English Leave business surface");
+    console.log("✓ Clients, Projects, Invoices, and Leave render localized English LTR business surfaces");
+
+    // Restore the onboarding-selected Employee workspace before system/PWA
+    // checks so the historical production journey keeps its original mode.
+    await switchWorkspaceMode(client, "employee");
+
+    const englishSystemSettingsLoad = waitForEvent(client, "Page.loadEventFired", "English Settings system route");
+    await client.call("Page.navigate", { url: `${origin}/settings/` });
+    await englishSystemSettingsLoad;
+    await waitFor(client, `document.documentElement.dir === "ltr" && document.querySelector('#settings-onboarding')?.textContent.includes("Initial setup") && document.querySelector('#settings-device-transfer')?.textContent.includes("Connect phone and laptop") && document.title === "Settings | Saatyar"`, "English Settings deep system surface");
+
+    const englishImportLoad = waitForEvent(client, "Page.loadEventFired", "English Import system route");
+    await client.call("Page.navigate", { url: `${origin}/import/` });
+    await englishImportLoad;
+    await waitFor(client, `["/import", "/import/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Import files") && document.body?.innerText.includes("Safe, local-first import") && document.title === "Import files | Saatyar"`, "English Import system surface");
+
+    const englishAboutLoad = waitForEvent(client, "Page.loadEventFired", "English About system route");
+    await client.call("Page.navigate", { url: `${origin}/about/` });
+    await englishAboutLoad;
+    await waitFor(client, `["/about", "/about/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("About and guide") && document.body?.innerText.includes("What is Saatyar?") && document.title === "About & help | Saatyar"`, "English About system surface");
+
+    const englishReentrySettingsLoad = waitForEvent(client, "Page.loadEventFired", "English Settings onboarding reentry route");
+    await client.call("Page.navigate", { url: `${origin}/settings/` });
+    await englishReentrySettingsLoad;
+    await waitFor(client, `document.documentElement.dir === "ltr" && Boolean(document.querySelector('[data-onboarding-reentry-action]'))`, "English onboarding reentry action");
+    await evaluate(client, `document.querySelector('[data-onboarding-reentry-action]')?.click()`);
+    await waitFor(client, `["/onboarding", "/onboarding/"].includes(location.pathname) && document.documentElement.dir === "ltr" && Boolean(document.querySelector('[data-onboarding-step-index="1"]')) && document.body?.innerText.includes("Welcome to Saatyar") && document.title === "Initial setup | Saatyar"`, "English onboarding reentry surface");
+    await evaluate(client, `document.querySelector('[data-onboarding-back-settings]')?.click()`);
+    await waitFor(client, `["/settings", "/settings/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Settings & data")`, "return from English onboarding reentry");
+    console.log("✓ Settings, Onboarding, Import, and About follow English LTR before Persian restore");
+
+    const settingsLocaleRestoreLoad = waitForEvent(client, "Page.loadEventFired", "Settings locale restore route");
+    await client.call("Page.navigate", { url: `${origin}/settings/` });
+    await settingsLocaleRestoreLoad;
+    await waitFor(client, `Boolean(document.querySelector('[data-locale-choice="fa-IR"]')) && document.documentElement.lang === "en"`, "language settings before Persian restore");
+    await evaluate(client, `document.querySelector('[data-locale-choice="fa-IR"]')?.click()`);
+    await waitFor(client, `document.documentElement.lang === "fa" && document.documentElement.dir === "rtl" && document.documentElement.dataset.calendar === "persian" && localStorage.getItem("saatyar-locale-v1") === "fa-IR" && document.body?.innerText.includes("تنظیمات و داده‌ها")`, "Persian RTL locale restore with automatic Persian calendar");
+    console.log("✓ Local-first locale switch persists English LTR across reload and restores Persian RTL");
+
+    const localeReturnToday = waitForEvent(client, "Page.loadEventFired", "return to Today after locale smoke");
+    await client.call("Page.navigate", { url: `${origin}/today/` });
+    await localeReturnToday;
+    await waitFor(client, `["/today", "/today/"].includes(location.pathname) && document.body?.innerText.includes("ساعت‌یار")`, "Today after locale smoke");
 
     await waitFor(client, `navigator.serviceWorker?.ready.then(() => true).catch(() => false)`, "PWA service worker readiness");
     const firstInstallWorker = await evaluate(client, `(async () => {

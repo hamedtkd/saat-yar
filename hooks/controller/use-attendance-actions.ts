@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { minutesToTime, spanMinutes, timeToMinutes } from "@/lib/time-engine";
 import { localDateKey, nowTime } from "@/lib/format";
+import { getBrowserLocale } from "@/lib/i18n";
+import { formatLocaleNumber } from "@/lib/i18n/formatters";
+import { translateSystem } from "@/lib/i18n/system";
 import { closePreviousRecordForNewDay, findPreviousOpenRecord } from "@/lib/previous-day-session";
 import type { Dispatch, SetStateAction } from "react";
 import type { AppData, WorkRecord, WorkRecordPatch } from "@/lib/types";
@@ -62,7 +65,7 @@ export function useAttendanceActions({ data, record, selectedDate, activeBreak, 
       delete records[selectedDate];
       return { ...previous, records, deletedRecords: [deleted, ...previous.deletedRecords] };
     });
-    setToast("رکورد این روز به سطل بازیابی منتقل شد؛ بازگردانی سریع فعال است");
+    setToast(translateSystem(getBrowserLocale(), "Today's record was moved to the recycle bin; quick restore is available."));
   }
   function undoResetRecord() {
     if (!resetUndo) return;
@@ -74,14 +77,14 @@ export function useAttendanceActions({ data, record, selectedDate, activeBreak, 
     }));
     setSelectedDate(resetUndo.date);
     dismissResetUndo();
-    setToast("رکورد حذف‌شده بازگردانی شد");
+    setToast(translateSystem(getBrowserLocale(), "Deleted record was restored."));
   }
   function beginCurrentDay() {
     updateRecord({ start: nowTime(), end: "", startedAt: new Date().toISOString(), endedAt: undefined });
-    setToast("شروع روز ثبت شد");
+    setToast(translateSystem(getBrowserLocale(), "Workday started."));
   }
   function startWork() {
-    if (!ensureLiveTimerOwnership()) return setToast("کنترل تایمر در تب دیگری فعال است");
+    if (!ensureLiveTimerOwnership()) return setToast(translateSystem(getBrowserLocale(), "Timer control is active in another tab."));
     const previousOpen = findPreviousOpenRecord(data.records, selectedDate);
     if (previousOpen) return setPendingPreviousRecord(previousOpen);
     beginCurrentDay();
@@ -95,7 +98,7 @@ export function useAttendanceActions({ data, record, selectedDate, activeBreak, 
     }));
     setPendingPreviousRecord(undefined);
     beginCurrentDay();
-    setToast("خروج روز قبل با ساعت برنامه ثبت شد؛ لطفاً آن را بررسی کنید");
+    setToast(translateSystem(getBrowserLocale(), "Previous-day clock-out was recorded from the schedule; please review it."));
   }
   function reviewPreviousRecord() {
     if (!pendingPreviousRecord) return;
@@ -104,8 +107,8 @@ export function useAttendanceActions({ data, record, selectedDate, activeBreak, 
     setSelectedDate(date);
   }
   function resumeAutoClosedWork() {
-    if (selectedDate !== localDateKey()) return setToast("از سرگیری فقط برای روز جاری در دسترس است");
-    if (!ensureLiveTimerOwnership()) return setToast("کنترل تایمر در تب دیگری فعال است");
+    if (selectedDate !== localDateKey()) return setToast(translateSystem(getBrowserLocale(), "Resume is available only for the current day."));
+    if (!ensureLiveTimerOwnership()) return setToast(translateSystem(getBrowserLocale(), "Timer control is active in another tab."));
     setData((previous) => {
       const current = previous.records[selectedDate] ?? record;
       const resumed = resumeAutoClosedRecord(current);
@@ -118,38 +121,38 @@ export function useAttendanceActions({ data, record, selectedDate, activeBreak, 
         },
       };
     });
-    setToast("روز دوباره فعال شد؛ فاصله قطع ارتباط در صورت وجود به عنوان وقفه بدون حقوق ثبت شد");
+    setToast(translateSystem(getBrowserLocale(), "The day is active again; any disconnect gap was recorded as an unpaid break."));
   }
 
   function finishWork() {
-    if (!ensureLiveTimerOwnership()) return setToast("کنترل تایمر در تب دیگری فعال است");
-    if (activeBreak || lunchRunning) return setToast("ابتدا تایمر ناهار یا وقفه را پایان دهید");
-    updateRecord({ end: nowTime(), endedAt: new Date().toISOString() }); setToast("ساعت خروج ثبت شد");
+    if (!ensureLiveTimerOwnership()) return setToast(translateSystem(getBrowserLocale(), "Timer control is active in another tab."));
+    if (activeBreak || lunchRunning) return setToast(translateSystem(getBrowserLocale(), "Finish the lunch or break timer first."));
+    updateRecord({ end: nowTime(), endedAt: new Date().toISOString() }); setToast(translateSystem(getBrowserLocale(), "Clock-out was recorded."));
   }
   function startLunch() {
-    if (!ensureLiveTimerOwnership()) return setToast("کنترل تایمر در تب دیگری فعال است");
-    if (activeBreak) return setToast("ابتدا وقفه در حال اجرا را پایان دهید");
-    updateRecord({ lunchStart: nowTime(), lunchEnd: "", lunchStartedAt: new Date().toISOString(), lunchEndedAt: undefined }); setToast("تایمر ناهار شروع شد");
+    if (!ensureLiveTimerOwnership()) return setToast(translateSystem(getBrowserLocale(), "Timer control is active in another tab."));
+    if (activeBreak) return setToast(translateSystem(getBrowserLocale(), "Finish the active break first."));
+    updateRecord({ lunchStart: nowTime(), lunchEnd: "", lunchStartedAt: new Date().toISOString(), lunchEndedAt: undefined }); setToast(translateSystem(getBrowserLocale(), "Lunch timer started."));
   }
   function finishLunch() {
-    if (!ensureLiveTimerOwnership()) return setToast("کنترل تایمر در تب دیگری فعال است");
+    if (!ensureLiveTimerOwnership()) return setToast(translateSystem(getBrowserLocale(), "Timer control is active in another tab."));
     const end = nowTime();
     updateRecord({ lunchEnd: end, lunchEndedAt: new Date().toISOString(), lunchMinutes: spanMinutes(record.lunchStart ?? end, end) });
-    setToast("ناهار ثبت شد");
+    setToast(translateSystem(getBrowserLocale(), "Lunch was recorded."));
   }
   function startBreak() {
-    if (!ensureLiveTimerOwnership()) return setToast("کنترل تایمر در تب دیگری فعال است");
-    if (activeBreak || lunchRunning) return setToast("یک تایمر دیگر در حال اجراست");
-    updateRecord((current) => ({ breaks: [...current.breaks, { id: crypto.randomUUID(), start: nowTime(), end: "", startedAt: new Date().toISOString(), title: "وقفه شخصی", paid: false }] }));
-    setToast("تایمر وقفه شروع شد");
+    if (!ensureLiveTimerOwnership()) return setToast(translateSystem(getBrowserLocale(), "Timer control is active in another tab."));
+    if (activeBreak || lunchRunning) return setToast(translateSystem(getBrowserLocale(), "Another timer is already running."));
+    updateRecord((current) => ({ breaks: [...current.breaks, { id: crypto.randomUUID(), start: nowTime(), end: "", startedAt: new Date().toISOString(), title: translateSystem(getBrowserLocale(), "Personal break"), paid: false }] }));
+    setToast(translateSystem(getBrowserLocale(), "Break timer started."));
   }
   function finishBreak(minutes?: number) {
-    if (!ensureLiveTimerOwnership()) return setToast("کنترل تایمر در تب دیگری فعال است");
+    if (!ensureLiveTimerOwnership()) return setToast(translateSystem(getBrowserLocale(), "Timer control is active in another tab."));
     if (!activeBreak) return;
     const end = minutes ? minutesToTime(timeToMinutes(activeBreak.start) + minutes) : nowTime();
     updateRecord((current) => ({ breaks: current.breaks.map((item) => item.id === activeBreak.id ? { ...item, end,
       endedAt: minutes && item.startedAt ? new Date(new Date(item.startedAt).getTime() + minutes * 60_000).toISOString() : new Date().toISOString() } : item) }));
-    setToast(minutes ? `وقفه ${minutes.toLocaleString("fa-IR")} دقیقه‌ای ثبت شد` : "وقفه پایان یافت");
+    setToast(minutes ? translateSystem(getBrowserLocale(), "{minutes}-minute break was recorded.", { minutes: formatLocaleNumber(getBrowserLocale(), minutes) }) : translateSystem(getBrowserLocale(), "Break ended."));
   }
   return { updateRecord, resetRecord, undoResetRecord, dismissResetUndo, resetUndoDate: resetUndo?.date, startWork, resumeAutoClosedWork, finishWork, startLunch, finishLunch, startBreak, finishBreak,
     pendingPreviousRecord, closePreviousAndStart, reviewPreviousRecord, dismissPreviousRecord: () => setPendingPreviousRecord(undefined) };

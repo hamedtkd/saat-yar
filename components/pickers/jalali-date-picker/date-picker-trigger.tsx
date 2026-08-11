@@ -25,7 +25,7 @@ export function DatePickerTrigger({
       aria-expanded={open}
       className={cn(
         "grid h-13 w-full min-w-0 grid-cols-[auto_minmax(0,1fr)_auto]",
-        "items-center gap-2.5 rounded-xl border-[var(--border)] bg-[var(--surface-2)] px-3 text-right",
+        "items-center gap-2.5 rounded-xl border-[var(--border)] bg-[var(--surface-2)] px-3 text-start",
         "shadow-none hover:bg-[var(--surface-1)] focus-visible:border-[var(--accent)]",
         "focus-visible:ring-[var(--accent-soft)]",
       )}

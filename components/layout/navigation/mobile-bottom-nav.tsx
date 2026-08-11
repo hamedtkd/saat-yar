@@ -2,6 +2,7 @@
 
 import { MoreHorizontal, Settings, X } from "lucide-react";
 import { useState } from "react";
+import { useLocale } from "@/components/i18n/locale-provider";
 import { cn } from "@/lib/cn";
 import type { Mode } from "@/lib/types";
 import { getMobilePrimaryNavItems, getVisibleNavItems } from "../app-header/nav-items";
@@ -13,6 +14,7 @@ const mobileNavCell = "flex min-h-[54px] items-center justify-center rounded-[16
 const mobileNavCapsule = "flex min-w-[54px] flex-col items-center justify-center gap-0.5 rounded-[13px] px-2 py-1.5 transition-[background-color,color,box-shadow]";
 
 export function MobileBottomNav({ mode, currentPath }: { mode: Mode; currentPath: string }) {
+  const { t } = useLocale();
   const [open, setOpen] = useState(false);
   const normalizedPath = normalizePath(currentPath);
   const visible = getVisibleNavItems(mode);
@@ -27,22 +29,22 @@ export function MobileBottomNav({ mode, currentPath }: { mode: Mode; currentPath
         <div className="fixed inset-0 z-40 bg-[var(--overlay)] backdrop-blur-sm xl:hidden" onClick={() => setOpen(false)}>
           <section
             id="mobile-more-menu"
-            aria-label="سایر بخش‌ها"
+            aria-label={t("nav.moreTitle")}
             className="absolute bottom-[calc(82px+env(safe-area-inset-bottom))] left-1/2 w-[calc(100%-16px)] max-w-[520px] -translate-x-1/2 rounded-[24px] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] p-3 shadow-[0_18px_48px_rgba(0,0,0,.24)] backdrop-blur-2xl"
             onClick={(event) => event.stopPropagation()}
           >
             <div aria-hidden="true" className="mx-auto mb-2 h-1 w-10 rounded-full bg-[var(--border)]" />
             <div className="mb-2 flex items-center justify-between px-1">
               <div>
-                <strong className="text-sm">سایر بخش‌ها</strong>
-                <p className="mt-0.5 text-[10px] text-[var(--text-muted)]">دسترسی سریع به ابزارهای دیگر ساعت‌یار</p>
+                <strong className="text-sm">{t("nav.moreTitle")}</strong>
+                <p className="mt-0.5 text-[10px] text-[var(--text-muted)]">{t("nav.moreDescription")}</p>
               </div>
-              <button type="button" onClick={() => setOpen(false)} aria-label="بستن منو" className="grid size-10 place-items-center rounded-xl hover:bg-[var(--accent-soft)]">
+              <button type="button" onClick={() => setOpen(false)} aria-label={t("nav.closeMenu")} className="grid size-10 place-items-center rounded-xl hover:bg-[var(--accent-soft)]">
                 <X aria-hidden="true" />
               </button>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              {overflow.map(({ href, label, icon: Icon }) => {
+              {overflow.map(({ href, labelKey, icon: Icon }) => {
                 const active = normalizedPath === href;
                 return (
                   <GuardedLink
@@ -56,7 +58,7 @@ export function MobileBottomNav({ mode, currentPath }: { mode: Mode; currentPath
                     )}
                   >
                     <Icon aria-hidden="true" className="size-5 text-[var(--accent-strong)]" />
-                    {label}
+                    {t(labelKey)}
                   </GuardedLink>
                 );
               })}
@@ -70,7 +72,7 @@ export function MobileBottomNav({ mode, currentPath }: { mode: Mode; currentPath
                 )}
               >
                 <Settings aria-hidden="true" className="size-5 text-[var(--accent-strong)]" />
-                تنظیمات
+                {t("nav.settings")}
               </GuardedLink>
             </div>
           </section>
@@ -78,10 +80,10 @@ export function MobileBottomNav({ mode, currentPath }: { mode: Mode; currentPath
       )}
 
       <nav
-        aria-label="ناوبری موبایل"
+        aria-label={t("nav.mobileAria")}
         className="fixed bottom-[calc(8px+env(safe-area-inset-bottom))] left-1/2 z-50 grid w-[calc(100%-16px)] max-w-[520px] -translate-x-1/2 grid-cols-5 rounded-[21px] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] p-1 shadow-[0_10px_30px_rgba(0,0,0,.16)] backdrop-blur-2xl xl:hidden"
       >
-        {primary.map(({ href, label, icon: Icon }) => {
+        {primary.map(({ href, labelKey, icon: Icon }) => {
           const active = normalizedPath === href;
           return (
             <GuardedLink key={href} href={href} aria-current={active ? "page" : undefined} className={mobileNavCell}>
@@ -92,7 +94,7 @@ export function MobileBottomNav({ mode, currentPath }: { mode: Mode; currentPath
                 )}
               >
                 <Icon aria-hidden="true" className="size-[19px]" />
-                <span className="leading-4">{label}</span>
+                <span className="leading-4">{t(labelKey)}</span>
               </span>
             </GuardedLink>
           );
@@ -111,7 +113,7 @@ export function MobileBottomNav({ mode, currentPath }: { mode: Mode; currentPath
             )}
           >
             <MoreHorizontal aria-hidden="true" className="size-[19px]" />
-            <span className="leading-4">بیشتر</span>
+            <span className="leading-4">{t("nav.more")}</span>
           </span>
         </button>
       </nav>

@@ -79,11 +79,11 @@ test("settings exposes send receive preview and safe merge flows", () => {
   const card = read("components/pages/settings/device-transfer-card.tsx");
   const preview = read("components/pages/settings/device-transfer-preview.tsx");
   assert.match(page, /<DeviceTransferCard data=\{data\}/);
-  assert.match(card, /ارسال از این دستگاه/);
-  assert.match(card, /دریافت روی این دستگاه/);
-  assert.match(card, /ارسال داده رمزنگاری‌شده/);
-  assert.match(preview, /ادغام امن/);
-  assert.match(preview, /جایگزینی کامل/);
+  assert.match(card, /s\("Send from this device"\)/);
+  assert.match(card, /s\("Receive on this device"\)/);
+  assert.match(card, /s\("Send encrypted data"\)/);
+  assert.match(preview, /s\("Safe merge"\)/);
+  assert.match(preview, /s\("Full replacement"\)/);
 });
 
 test("phase 114 is wired into quality and QR camera UX stays explicit in the roadmap", () => {

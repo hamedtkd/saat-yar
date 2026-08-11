@@ -10,3 +10,9 @@ export const headerIconButton = [
   "size-9 rounded-[10px] border-0 bg-transparent p-0 shadow-none",
   "hover:bg-[var(--accent-soft)] hover:text-[var(--accent-strong)]",
 ].join(" ");
+
+export const headerStandaloneIconButton = [
+  headerControlShell,
+  "size-11 min-w-11 justify-center px-0 py-0",
+  "hover:bg-[var(--accent-soft)] hover:text-[var(--accent-strong)]",
+].join(" ");

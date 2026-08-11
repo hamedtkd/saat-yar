@@ -1,5 +1,8 @@
 import { useEffect } from "react";
 import { localDateKey, nowTime } from "@/lib/format";
+import { getBrowserLocale } from "@/lib/i18n";
+import { formatLocaleNumber } from "@/lib/i18n/formatters";
+import { translateSystem } from "@/lib/i18n/system";
 import {
   activeTrackingMinutes,
   breakReminderSnoozeKey,
@@ -32,7 +35,7 @@ export function useNotificationReminders({ settings, selectedDate, record, daily
 
   async function requestNotificationPermission() {
     if (typeof window === "undefined" || !("Notification" in window)) {
-      setToast("مرورگر از اعلان پشتیبانی نمی‌کند");
+      setToast(translateSystem(getBrowserLocale(), "This browser does not support notifications."));
       return false;
     }
     if (Notification.permission === "granted") return true;
@@ -59,13 +62,13 @@ export function useNotificationReminders({ settings, selectedDate, record, daily
       );
 
       if (tracking && elapsed >= settings.openTimerReminderMinutes) {
-        notifyOnce("open-timer", "تایمر ساعت‌یار هنوز باز است", `بیش از ${settings.openTimerReminderMinutes.toLocaleString("fa-IR")} دقیقه کار فعال ثبت شده است.`);
+        notifyOnce("open-timer", translateSystem(getBrowserLocale(), "Saatyar timer is still running"), translateSystem(getBrowserLocale(), "More than {minutes} minutes of active work have been recorded.", { minutes: formatLocaleNumber(getBrowserLocale(), settings.openTimerReminderMinutes) }));
       }
       if (settings.dailyTargetReminder && dailyTarget > 0 && credited >= dailyTarget) {
-        notifyOnce("target", "هدف روزانه تکمیل شد", "ساعت موظفی امروز کامل شده است.");
+        notifyOnce("target", translateSystem(getBrowserLocale(), "Daily target completed"), translateSystem(getBrowserLocale(), "Today's required work is complete."));
       }
       if (settings.endOfDayReminder && suggestedExit && nowTime() >= suggestedExit) {
-        notifyOnce("exit", "زمان ثبت خروج رسیده است", `خروج پیشنهادی امروز ${suggestedExit} است.`);
+        notifyOnce("exit", translateSystem(getBrowserLocale(), "It's time to clock out"), translateSystem(getBrowserLocale(), "Today's suggested exit is {time}.", { time: suggestedExit }));
       }
 
       const reminder = settings.breakReminder;
@@ -75,7 +78,7 @@ export function useNotificationReminders({ settings, selectedDate, record, daily
       const interval = Math.max(15, reminder.intervalMinutes);
       const bucket = Math.floor(elapsed / interval);
       if (bucket < 1) return;
-      notifyOnce(`break-${bucket}`, "وقت یک استراحت کوتاهه", `حدود ${interval.toLocaleString("fa-IR")} دقیقه کار فعال داشتی. چند دقیقه از پشت میز بلند شو و بعد ادامه بده.`);
+      notifyOnce(`break-${bucket}`, translateSystem(getBrowserLocale(), "Time for a short break"), translateSystem(getBrowserLocale(), "You have had about {minutes} minutes of active work. Step away for a few minutes, then continue.", { minutes: formatLocaleNumber(getBrowserLocale(), interval) }));
     };
 
     check();

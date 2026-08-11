@@ -33,6 +33,12 @@ test("browser UX smoke exercises keyboard focus validation and mobile viewport c
   assert.match(source, /focusTrapped/);
   assert.match(source, /width: 390, height: 844/);
   assert.match(source, /dialogFits/);
+  assert.match(source, /window\.visualViewport/);
+  const dialog = read("components/ui/dialog.tsx");
+  assert.match(dialog, /layoutWidth: window\.innerWidth/);
+  assert.match(dialog, /rtlLayoutCompensation/);
+  assert.match(dialog, /viewport\.layoutWidth - viewport\.width - viewport\.offsetLeft/);
+  assert.match(dialog, /left: visualCenterX/);
 });
 
 test("phase 134 is documented and wired into quality without schema or dependency changes", () => {

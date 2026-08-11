@@ -60,9 +60,9 @@ test("payroll settings use the shared draft and destructive confirmation contrac
   const source = await readFile("components/pages/settings/payroll-settings-card.tsx", "utf8");
   assert.match(source, /useSettingsDraft/);
   assert.match(source, /EditableCardActions/);
-  assert.match(source, /prepare: normalizePayrollComponents/);
+  assert.match(source, /prepare: \(items\) => normalizePayrollComponents\(items, locale\)/);
   assert.match(source, /fieldset disabled=\{!editor\.editing\}/);
-  assert.match(source, /AlertDialogTitle>این آیتم حقوقی حذف شود/);
-  assert.match(source, /آیتم از پیش‌نویس حذف شد/);
+  assert.match(source, /AlertDialogTitle>\{s\("Delete this payroll item\?"\)\}<\/AlertDialogTitle>/);
+  assert.match(source, /s\("Item was removed from the draft; save to apply"\)/);
   assert.doesNotMatch(source, /function updateItems/);
 });

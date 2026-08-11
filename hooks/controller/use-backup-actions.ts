@@ -4,6 +4,8 @@ import { createBackupEnvelope, mergeAppData, parseBackupEnvelope } from "@/lib/b
 import { defaultSettings } from "@/lib/constants";
 import { normaliseData } from "@/lib/data/normalise";
 import { localDateKey } from "@/lib/format";
+import { getBrowserLocale } from "@/lib/i18n";
+import { translateSystem } from "@/lib/i18n/system";
 import type { AppData } from "@/lib/types";
 
 type StorageLike = { save: (data: AppData) => Promise<void> };
@@ -21,7 +23,7 @@ function backupBlob(source: AppData) {
 }
 
 export function useBackupActions({ data, setData, setToast, importPreview, setImportPreview, storage }: Args) {
-  function exportBackup() { downloadBlob(backupBlob(data), `saatyar-backup-${localDateKey()}.json`); setToast("فایل پشتیبان دانلود شد"); }
+  function exportBackup() { downloadBlob(backupBlob(data), `saatyar-backup-${localDateKey()}.json`); setToast(translateSystem(getBrowserLocale(), "Backup file downloaded.")); }
   function previewImport(file?: File) {
     if (!file) return;
     const reader = new FileReader();
@@ -29,8 +31,8 @@ export function useBackupActions({ data, setData, setToast, importPreview, setIm
       try {
         const parsed = parseBackupEnvelope(JSON.parse(String(reader.result)));
         if (!isValidAppData(parsed)) throw new Error("invalid");
-        setImportPreview(normaliseData(parsed, defaultSettings)); setToast("فایل معتبر است؛ روش بازیابی را انتخاب کنید");
-      } catch { setImportPreview(null); setToast("ساختار فایل پشتیبان معتبر نیست"); }
+        setImportPreview(normaliseData(parsed, defaultSettings)); setToast(translateSystem(getBrowserLocale(), "File is valid; choose a restore method."));
+      } catch { setImportPreview(null); setToast(translateSystem(getBrowserLocale(), "Backup file structure is invalid.")); }
     };
     reader.readAsText(file);
   }
@@ -43,14 +45,14 @@ export function useBackupActions({ data, setData, setToast, importPreview, setIm
       setToast(message);
       return true;
     } catch {
-      setToast("ذخیره واردسازی ناموفق بود؛ داده‌های فعلی تغییر نکردند");
+      setToast(translateSystem(getBrowserLocale(), "Import save failed; current data was not changed."));
       return false;
     }
   }
   async function applyImport(mode: "merge" | "replace") {
     if (!importPreview) return;
     const next = mode === "replace" ? importPreview : mergeAppData(data, importPreview);
-    await commitImport(next, mode === "replace" ? "داده‌ها با موفقیت جایگزین شدند" : "داده‌ها با موفقیت ادغام شدند", { safetyBackup: mode === "replace" });
+    await commitImport(next, mode === "replace" ? translateSystem(getBrowserLocale(), "Data was replaced successfully.") : translateSystem(getBrowserLocale(), "Data was merged successfully."), { safetyBackup: mode === "replace" });
   }
   return { exportBackup, previewImport, applyImport, commitImport };
 }

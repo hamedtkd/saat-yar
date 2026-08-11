@@ -29,10 +29,13 @@ test("manual dialog state and escape handlers are removed", async () => {
   assert.doesNotMatch(source, /aria-label="بستن پنجره"/);
 });
 
-test("the shared wrapper preserves RTL styling and accessible action variants", async () => {
+test("the shared wrapper follows active direction and preserves accessible action variants", async () => {
   const source = await read("components/ui/alert-dialog.tsx");
 
-  assert.match(source, /dir="rtl"/);
+  assert.match(source, /useLocale/);
+  assert.match(source, /dir=\{direction\}/);
+  assert.match(source, /text-start/);
+  assert.doesNotMatch(source, /dir="rtl"|text-right|flex-row-reverse/);
   assert.match(source, /outline-none/);
   assert.match(source, /buttonVariants\(\)/);
   assert.match(source, /buttonVariants\(\{ variant: "outline" \}\)/);

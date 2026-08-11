@@ -69,9 +69,9 @@ test("sync settings expose session state, transfer history and a clear retry pat
   const hook = read("hooks/use-device-transfer-pairing.ts");
   assert.match(card, /data-device-transfer-session-status/);
   assert.match(card, /<DeviceTransferHistory entries=\{pairing\.history\}/);
-  assert.match(card, /پایان نشست و شروع دوباره/);
-  assert.match(history, /آخرین انتقال‌ها/);
-  assert.match(history, /کلید Session/);
+  assert.match(card, /s\("End session and start over"\)/);
+  assert.match(history, /s\("Recent transfers"\)/);
+  assert.match(history, /s\("This history stores only transfer metadata on this device; data content and session keys are never stored in it\."\)/);
   assert.match(hook, /useSyncExternalStore/);
   assert.match(hook, /appendDeviceTransferHistory/);
 });

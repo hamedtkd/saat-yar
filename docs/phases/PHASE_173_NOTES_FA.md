@@ -30,8 +30,3 @@ Backup و CSV داخل خود Route آنبوردینگ Preview می‌شوند �
 ## Browser contract
 
 Production Browser Smoke مسیر Employee را تا Schedule/Payroll/Appearance ادامه می‌دهد، مرحله Import داخلی را باز می‌کند، یک CSV مشتری را Preview و Apply می‌کند، تأیید می‌کند که قبل از Submit نهایی `onboarded=false` باقی مانده و سپس Onboarding را کامل می‌کند. Phase 171 همچنان Route مستقل `/import` را جداگانه تست می‌کند.
-
-
-## Revision 2 — جلوگیری از submit ناخواسته داخل Import
-
-در Gate واقعی Windows مشخص شد دکمه‌های داخلی پنل Import چون `type="button"` صریح نداشتند، هنگام reuse شدن داخل فرم Onboarding می‌توانستند submit پیش‌فرض HTML را فعال کنند و مرحله نهایی را زودتر از کلیک کاربر روی «شروع ساعت‌یار» تمام کنند. تمام actionهای داخلی Backup/CSV اکنون `type="button"` دارند و فقط CTA نهایی Onboarding با `type="submit"` و `data-onboarding-submit` فرم را تکمیل می‌کند. Browser smoke نیز پس از Import صریحاً باقی‌ماندن روی Step 7 و وجود CTA نهایی را بررسی می‌کند.

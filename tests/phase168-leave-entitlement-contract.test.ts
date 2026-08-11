@@ -92,11 +92,16 @@ test("annual summary counts only entries in the current Jalali year and keeps ca
 
 test("leave overview no longer creates the old 42-hour total and explains the legal baseline", () => {
   const source = readFileSync(join(root, "components/pages/leave/leave-page.tsx"), "utf8");
+  const catalog = readFileSync(join(root, "lib/i18n/business.ts"), "utf8");
   assert.doesNotMatch(source, /leaveBalanceMinutes\s*\+\s*data\.settings\.monthlyLeaveMinutes/);
-  assert.match(source, /سهمیه ماهانه/);
-  assert.match(source, /سهمیه سالانه/);
-  assert.match(source, /۲۶ روز × ۷:۲۰ = ۱۹۰:۴۰/);
-  assert.match(source, /تعطیلات رسمی، جمعه و روزهای غیرفعال برنامه کاری/);
+  assert.match(source, /b\("leave\.metrics\.monthly"\)/);
+  assert.match(source, /b\("leave\.metrics\.annual"\)/);
+  assert.match(source, /b\("leave\.overview\.description"\)/);
+  assert.match(source, /b\("leave\.overview\.note"\)/);
+  assert.match(catalog, /"leave\.metrics\.monthly": "سهمیه ماهانه"/);
+  assert.match(catalog, /"leave\.metrics\.annual": "سهمیه سالانه"/);
+  assert.match(catalog, /۲۶ روز × ۷:۲۰ = ۱۹۰:۴۰/);
+  assert.match(catalog, /تعطیلات رسمی، جمعه و روزهای غیرفعال برنامه کاری/);
 });
 
 test("Phase 168 is documented and wired into the main test command", () => {

@@ -1,6 +1,7 @@
 "use client";
 
 import { Palette } from "lucide-react";
+import { useSystemUi } from "@/components/i18n/use-system-ui";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/cn";
 import { isHexColor } from "@/lib/theme";
@@ -14,6 +15,7 @@ type ColorFieldProps = {
 };
 
 export function ColorField({ value, fallback, disabled = false, invalid = false, onChange }: ColorFieldProps) {
+  const { s } = useSystemUi();
   const safeColor = isHexColor(value) ? value : fallback;
 
   return (
@@ -27,9 +29,9 @@ export function ColorField({ value, fallback, disabled = false, invalid = false,
       >
         <span className="size-5 rounded-full border border-[var(--border)] shadow-[inset_0_0_0_1px_rgb(255_255_255_/_12%)]" style={{ backgroundColor: safeColor }} />
         <Palette aria-hidden="true" className="size-4 text-[var(--text-muted)]" />
-        <span>انتخاب رنگ</span>
+        <span>{s("Choose color")}</span>
         <input
-          aria-label="انتخاب رنگ سفارشی"
+          aria-label={s("Choose custom color")}
           type="color"
           disabled={disabled}
           value={safeColor}
@@ -41,7 +43,7 @@ export function ColorField({ value, fallback, disabled = false, invalid = false,
         dir="ltr"
         disabled={disabled}
         value={value}
-        aria-label="کد رنگ سفارشی"
+        aria-label={s("Custom color code")}
         aria-invalid={invalid}
         spellCheck={false}
         onChange={(event) => onChange(event.target.value)}

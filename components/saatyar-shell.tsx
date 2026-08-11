@@ -19,6 +19,7 @@ import { RouteSync } from "@/components/layout/route-sync";
 import { useSaatyarController } from "@/hooks/use-saatyar-controller";
 import { cn } from "@/lib/cn";
 import { normalizePathname } from "@/lib/navigation";
+import { useLocale } from "@/components/i18n/locale-provider";
 
 const SaatyarContext = createContext<ReturnType<typeof useSaatyarController> | null>(null);
 
@@ -29,7 +30,8 @@ export function useSaatyarContext() {
 }
 
 export function SaatyarShell({ children }: { children: React.ReactNode }) {
-  const controller = useSaatyarController();
+  const { calendar, direction, t } = useLocale();
+  const controller = useSaatyarController(calendar);
   const pathname = usePathname() || "/today";
   const { ready, selectedDate, setSelectedDate, data } = controller;
   const mode = data.settings.mode;
@@ -42,9 +44,9 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
         )}
       >
         <span className="grid w-full place-items-center">
-          <BrandMark size={58} label="لوگوی ساعت‌یار" />
+          <BrandMark size={58} label={t("app.logoLabel")} />
         </span>
-        در حال آماده‌سازی ساعت‌یار…
+        {t("app.loading")}
       </main>
     );
 
@@ -64,7 +66,7 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
       {onboardingRoute ? (
         <>
           <SkipLink />
-          <main id="main-content" role="main" tabIndex={-1} className="min-h-screen bg-[var(--page)]" dir="rtl">
+          <main id="main-content" role="main" tabIndex={-1} className="min-h-screen bg-[var(--page)]" dir={direction}>
             {controller.toast && <AppToast message={controller.toast} />}
             {children}
           </main>
@@ -79,7 +81,7 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
             className={cn(
               "dashboard-shell min-h-screen w-full bg-[var(--page)] p-2 pb-28 sm:p-3 sm:pb-28 xl:px-0 xl:pb-3 [&_label]:grid [&_label]:gap-[7px] [&_label]:text-[11px] [&_label]:font-semibold [&_label]:text-[var(--text-muted)] [&_button]:cursor-pointer [&_svg.lucide]:h-[18px] [&_svg.lucide]:w-[18px] [&_svg.lucide]:stroke-[1.85]",
             )}
-            dir="rtl"
+            dir={direction}
           >
             {controller.toast && <AppToast message={controller.toast} />}
 

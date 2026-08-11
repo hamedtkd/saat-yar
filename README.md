@@ -101,8 +101,8 @@ Regenerate the media with `npm run media:capture`. See [docs/assets/README.md](.
 
 ### User experience
 
-- Persian and RTL interface
-- Jalali calendar and Persian date formatting
+- Bilingual Persian/RTL and English/LTR interface with a quick flag language switcher
+- Language-aware calendar: Auto follows the interface language, with explicit Persian/Jalali or Gregorian override
 - Light, dark, and system themes
 - Configurable accent, surface, and radius options
 - Locally bundled Vazirmatn font
@@ -140,23 +140,19 @@ npm ci
 npm run dev
 ```
 
-The Vite/Vinext development server normally starts at:
-
-```text
-http://localhost:5173
-```
-
-To run the Next.js development server directly:
-
-```bash
-npm run dev:next
-```
-
-The default Next.js URL is:
+The default local development server uses Next.js and normally starts at:
 
 ```text
 http://localhost:3000
 ```
+
+If you specifically need the optional Vite/Vinext environment, run:
+
+```bash
+npm run dev:vinext
+```
+
+Vite/Vinext normally uses `http://localhost:5173`. `npm run dev:next` remains an explicit alias for the default Next.js server.
 
 Installation problems are documented in:
 
@@ -168,8 +164,9 @@ Installation problems are documented in:
 | Command | Purpose |
 | --- | --- |
 | `npm ci` | Install the exact dependency tree from the lockfile |
-| `npm run dev` | Start the Vite/Vinext development server |
-| `npm run dev:next` | Start Next.js directly |
+| `npm run dev` | Start the stable local Next.js development server |
+| `npm run dev:next` | Explicit alias for the default Next.js development server |
+| `npm run dev:vinext` | Start the optional Vite/Vinext development server |
 | `npm run check:dependencies` | Verify direct dependencies after replacing a phase package |
 | `npm run typecheck` | Run TypeScript validation without emitting files |
 | `npm run lint` | Run ESLint with zero warnings allowed |
@@ -289,7 +286,8 @@ The Persian deployment guide covers Windows, macOS, Linux, Docker, GitHub Pages,
 
 [Run and deployment guide](./RUN_AND_DEPLOY_FA.md)
 
-- [Saatyar 2.3.2 release notes](./docs/releases/RELEASE_NOTES_2.3.2_EN.md)
+- [Saatyar 2.4.0 release candidate notes](./docs/releases/RELEASE_NOTES_2.4.0_EN.md)
+- [Latest stable Saatyar 2.3.2 release notes](./docs/releases/RELEASE_NOTES_2.3.2_EN.md)
 - [Historical Saatyar 2.3.1 release notes](./docs/releases/RELEASE_NOTES_2.3.1_EN.md)
 - [Historical Saatyar 2.3.0 release notes](./docs/releases/RELEASE_NOTES_2.3.0_EN.md)
 - [Historical Saatyar 2.2.0 release notes](./docs/releases/RELEASE_NOTES_2.2.0_EN.md)
@@ -303,11 +301,11 @@ Before opening a pull request, read [CONTRIBUTING.md](./CONTRIBUTING.md) and the
 
 ## Roadmap
 
-Version **2.3.2** is the current Saatyar patch release. It packages the post-2.3.1 work from Phases 160–164: the net-work/lunch contract, work-schedule layout polish, Vercel-aligned GitHub CI, safe session resume with accessible accent fills, and the English-first GitHub README with a future i18n roadmap.
+Version **2.3.2** remains the latest stable Saatyar release. **2.4.0 is the current release candidate** and packages Phases 166–178: dedicated recoverable onboarding, corrected leave entitlement, completed-day editing feedback, the Import Wizard, the shared live runtime clock, and full Persian RTL / English LTR i18n hardening.
 
-The verified Phase 164 baseline passed **633/633 tests**, all three production browser journeys, direct WebRTC pairing, the Vercel static-export audit, and the post-deploy production audit. Phase 165 adds six release-contract tests, so the final source gate is expected to reach **639/639**. AppData remains on schema v17 with no new migration or dependency. See the [2.3.2 release notes](./docs/releases/RELEASE_NOTES_2.3.2_EN.md), the Persian [release checklist](./RELEASE_CHECKLIST_FA.md), and the [roadmap](./docs/roadmap/BACKLOG_FA.md).
+The verified Phase 178 baseline at `887158c` passed **758/758 tests**, all three production browser journeys, direct WebRTC pairing, the Vercel static-export audit, the i18n closure audit, a 22-route static build, and a 44-asset PWA precache. Phase 179 adds six candidate-contract tests, so the candidate gate is expected to reach **764/764**. AppData remains on schema v17 with no migration or new dependency in the candidate phase. See the [2.4.0 candidate notes](./docs/releases/RELEASE_NOTES_2.4.0_EN.md), the Persian [candidate checklist](./RELEASE_CHECKLIST_FA.md), and the [roadmap](./docs/roadmap/BACKLOG_FA.md).
 
-Historical 2.3.1 and earlier manifests/tags remain immutable. The 2.3.2 manifest intentionally has no `releaseCommit`; after the final commit is pushed, Vercel is Ready, and `npm run audit:production` passes, the annotated `v2.3.2` tag is created on that same commit and becomes the release source of truth.
+The 2.4.0 manifest intentionally remains `release-candidate` with no final release commit. Phase 179 stays on `dev`; Phase 180 will capture the candidate SHA, control the `main` rollout, require the post-deploy production audit, and only then create the annotated `v2.4.0` tag. Historical 2.3.2 and earlier manifests/tags remain immutable.
 
 ## Support development
 

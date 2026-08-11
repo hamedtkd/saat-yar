@@ -23,8 +23,8 @@ test("employee notes use a textarea and the today title greets the user", async 
   const focus = await readFile("components/pages/today/today-focus-card.tsx", "utf8");
   const hero = await readFile("components/pages/today/today-hero.tsx", "utf8");
   assert.match(focus, /<Textarea/);
-  assert.match(focus, /یادداشت روز کاری/);
-  assert.match(hero, /buildGreeting\(data\.settings\.name\)/);
+  assert.match(focus, /t\("today\.focus\.employeeNote"\)/);
+  assert.match(hero, /buildLocalizedGreeting\(data\.settings\.name, locale\)/);
 });
 
 test("printed reports hide interactive charts and use A4-safe layout", async () => {

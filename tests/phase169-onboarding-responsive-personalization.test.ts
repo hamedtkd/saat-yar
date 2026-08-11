@@ -108,7 +108,7 @@ test("onboarding now covers profile mode schedule payroll appearance and privacy
   ]);
   assert.match(session, /1 \| 2 \| 3 \| 4 \| 5 \| 6/);
   for (const step of [1, 2, 3, 4, 5, 6, 7]) assert.match(onboarding, new RegExp(`step === ${step}`));
-  assert.match(progress, /"حقوق", "ظاهر", "حریم داده", "ورود داده"/);
+  assert.match(progress, /"Payroll", "Appearance", "Data privacy", "Import data"/);
   assert.match(schedule, /WorkScheduleEditor/);
   assert.match(payroll, /data-onboarding-salary/);
   assert.match(appearance, /data-onboarding-theme/);

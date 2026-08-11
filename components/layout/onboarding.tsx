@@ -4,6 +4,7 @@ import { CheckCircle2 } from "lucide-react";
 import type { FormEvent, KeyboardEvent } from "react";
 
 import { Brand } from "@/components/common/brand";
+import { useSystemUi } from "@/components/i18n/use-system-ui";
 import { cn } from "@/lib/cn";
 import { AppearanceStep } from "./onboarding/appearance-step";
 import { FreelancerClientStep } from "./onboarding/freelancer-client-step";
@@ -23,6 +24,7 @@ import { WelcomeStep } from "./onboarding/welcome-step";
 const FINAL_STEP = 7;
 
 export function Onboarding({ data, setData, commitImport, step, setStep, reentry, onComplete, onExit }: OnboardingProps) {
+  const { s } = useSystemUi();
   const { setSetting, updateSettings } = useOnboardingSettings(setData);
   const canContinue = step !== 1 || Boolean(data.settings.name.trim());
   const mode = data.settings.mode;
@@ -58,7 +60,7 @@ export function Onboarding({ data, setData, commitImport, step, setStep, reentry
     <div className={cn("min-h-screen bg-[var(--page)] text-[var(--text)]")}>
       <header className={cn("flex min-h-[72px] items-center justify-between border-b border-[var(--border)] bg-[var(--surface-1)] px-5 py-3 sm:px-8")}>
         <Brand />
-        <span className={cn("inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--accent-strong)] [&_svg]:h-[15px] [&_svg]:w-[15px] max-[620px]:hidden")}><CheckCircle2 /> ذخیره خودکار</span>
+        <span className={cn("inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--accent-strong)] [&_svg]:h-[15px] [&_svg]:w-[15px] max-[620px]:hidden")}><CheckCircle2 /> {s("Autosave")}</span>
       </header>
 
       <form onSubmit={submitStep} onKeyDown={handleKeyDown} className={cn("mx-auto my-7 max-w-[1320px] px-5 max-[620px]:mt-[16px] max-[620px]:px-[12px]")}>

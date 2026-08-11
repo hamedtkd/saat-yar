@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { NumberField } from "@/components/common/number-field";
+import { useLocaleUi } from "@/components/i18n/use-locale-ui";
 import {
   Select,
   SelectContent,
@@ -9,7 +10,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { fa } from "@/lib/format";
 import { cn } from "@/lib/cn";
 
 const DEFAULT_PRESETS = [20, 30, 45, 60];
@@ -34,6 +34,7 @@ export function MinuteDurationField({
   className,
   disabled = false,
 }: MinuteDurationFieldProps) {
+  const { number, t } = useLocaleUi();
   const options = useMemo(
     () =>
       [...new Set(presets)]
@@ -68,16 +69,16 @@ export function MinuteDurationField({
           onValueChange(Number(nextValue));
         }}
       >
-        <SelectTrigger aria-label="مدت زمان به دقیقه">
+        <SelectTrigger aria-label={t("common.durationMinutesAria")}>
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
           {options.map((option) => (
             <SelectItem value={String(option)} key={option}>
-              {fa.format(option)} دقیقه
+              {t("common.minutesCount", { count: number(option) })}
             </SelectItem>
           ))}
-          <SelectItem value={CUSTOM_VALUE}>مقدار دلخواه…</SelectItem>
+          <SelectItem value={CUSTOM_VALUE}>{t("common.customValue")}</SelectItem>
         </SelectContent>
       </Select>
 
@@ -90,11 +91,11 @@ export function MinuteDurationField({
             step={1}
             value={Number.isFinite(value) ? value : min}
             onValueChange={(nextValue) => updateCustomValue(String(nextValue))}
-            className="pl-16"
-            aria-label="مدت زمان دلخواه به دقیقه"
+            className="ps-16"
+            aria-label={t("common.customDurationMinutesAria")}
           />
-          <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-[11px] font-medium text-[var(--text-muted)]">
-            دقیقه
+          <span className="pointer-events-none absolute inset-y-0 start-3 flex items-center text-[11px] font-medium text-[var(--text-muted)]">
+            {t("common.minuteUnit")}
           </span>
         </div>
       )}

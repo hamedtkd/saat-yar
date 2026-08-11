@@ -2,7 +2,9 @@
 
 import { Settings } from "lucide-react";
 import { Brand } from "@/components/common/brand";
+import { useLocale } from "@/components/i18n/locale-provider";
 import { cn } from "@/lib/cn";
+import { LanguageSwitcher } from "../language-switcher";
 import type { Mode } from "@/lib/types";
 import { getVisibleNavItems } from "../app-header/nav-items";
 import { GuardedLink } from "./guarded-link";
@@ -12,23 +14,25 @@ type Props = { mode: Mode; currentPath: string; name: string };
 const normalizePath = (path: string) => path.replace(/\/+$/, "") || "/";
 
 export function SidebarNav({ mode, currentPath, name }: Props) {
+  const { t } = useLocale();
   const items = getVisibleNavItems(mode);
   const normalizedPath = normalizePath(currentPath);
+  const subtitle = name ? t("app.personalSpace", { name }) : t("app.brandSubtitle");
   return (
-    <aside className="fixed inset-y-2 right-2 z-40 hidden w-[var(--shell-sidebar-width)] flex-col overflow-hidden rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[linear-gradient(180deg,var(--surface-1),var(--surface-raised))] p-3 shadow-[0_10px_32px_rgba(0,0,0,.055)] xl:flex dark:shadow-[0_14px_38px_rgba(0,0,0,.24)]">
+    <aside className="fixed inset-y-2 start-2 z-40 hidden w-[var(--shell-sidebar-width)] flex-col overflow-hidden rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[linear-gradient(180deg,var(--surface-1),var(--surface-raised))] p-3 shadow-[0_10px_32px_rgba(0,0,0,.055)] xl:flex dark:shadow-[0_14px_38px_rgba(0,0,0,.24)]">
       <div className="border-b border-[var(--dashboard-border)] px-2 pb-4 pt-2">
         <GuardedLink
           href="/today"
-          aria-label="رفتن به صفحه امروز"
+          aria-label={t("nav.goToday")}
           className="inline-flex rounded-[14px] outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]"
         >
-          <Brand subtitle={name ? `فضای شخصی ${name}` : "حساب کار، بدون حساب‌وکتاب"} />
+          <Brand subtitle={subtitle} />
         </GuardedLink>
       </div>
 
-      <p className="mb-2 mt-4 px-3 text-[9px] font-black tracking-[.08em] text-[var(--text-muted)]">منوی اصلی</p>
-      <nav aria-label="ناوبری اصلی" className="grid gap-1.5">
-        {items.map(({ href, label, icon: Icon }) => {
+      <p className="mb-2 mt-4 px-3 text-[9px] font-black tracking-[.08em] text-[var(--text-muted)]">{t("nav.main")}</p>
+      <nav aria-label={t("nav.primaryAria")} className="grid gap-1.5">
+        {items.map(({ href, labelKey, icon: Icon }) => {
           const active = normalizedPath === href;
           return (
             <GuardedLink
@@ -49,14 +53,17 @@ export function SidebarNav({ mode, currentPath, name }: Props) {
               >
                 <Icon aria-hidden="true" />
               </span>
-              <span>{label}</span>
-              {active && <span aria-hidden="true" className="mr-auto size-1.5 rounded-full bg-[var(--accent-foreground)]/70" />}
+              <span>{t(labelKey)}</span>
+              {active && <span aria-hidden="true" className="ms-auto size-1.5 rounded-full bg-[var(--accent-foreground)]/70" />}
             </GuardedLink>
           );
         })}
       </nav>
 
       <div className="mt-auto border-t border-[var(--dashboard-border)] pt-3">
+        <div className="mb-1.5">
+          <LanguageSwitcher variant="sidebar" />
+        </div>
         <GuardedLink
           href="/settings"
           aria-current={normalizedPath === "/settings" ? "page" : undefined}
@@ -68,14 +75,14 @@ export function SidebarNav({ mode, currentPath, name }: Props) {
           <span className="grid size-8 place-items-center rounded-[10px] bg-[var(--surface-2)]">
             <Settings aria-hidden="true" />
           </span>
-          تنظیمات
+          {t("nav.settings")}
         </GuardedLink>
         <div className="mt-3 rounded-[16px] border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-3 py-3 text-[10px] text-[var(--text-muted)]">
           <div className="flex items-center gap-2 font-black text-[var(--text)]">
             <span className="size-2 rounded-full bg-[var(--success)] shadow-[0_0_0_4px_var(--success-soft)]" />
-            ساعت‌یار آماده است
+            {t("app.ready")}
           </div>
-          <p className="mt-1.5 leading-5">اطلاعات روی همین دستگاه ذخیره می‌شود.</p>
+          <p className="mt-1.5 leading-5">{t("app.localStorageReady")}</p>
         </div>
       </div>
     </aside>

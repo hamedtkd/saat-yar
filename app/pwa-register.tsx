@@ -14,6 +14,21 @@ function announceWaitingWorker(registration: ServiceWorkerRegistration) {
   }
 }
 
+async function clearDevelopmentPwaState() {
+  if (!("serviceWorker" in navigator)) return;
+
+  const registrations = await navigator.serviceWorker.getRegistrations();
+  await Promise.all(registrations.map((registration) => registration.unregister()));
+
+  if (!("caches" in window)) return;
+  const cacheNames = await window.caches.keys();
+  await Promise.all(
+    cacheNames
+      .filter((name) => name.startsWith("saatyar-"))
+      .map((name) => window.caches.delete(name)),
+  );
+}
+
 export function PwaRegister() {
   useEffect(() => {
     const captureInstallPrompt = (event: Event) => {
@@ -28,6 +43,17 @@ export function PwaRegister() {
 
     window.addEventListener("beforeinstallprompt", captureInstallPrompt);
     window.addEventListener("appinstalled", markInstalled);
+
+    if (process.env.NODE_ENV !== "production") {
+      // A production service worker controlling localhost can cache Next dev assets and
+      // trigger repeated full reloads/HMR mismatches. Development is intentionally
+      // service-worker-free; production PWA behavior is still exercised by browser smoke.
+      void clearDevelopmentPwaState().catch(() => undefined);
+      return () => {
+        window.removeEventListener("beforeinstallprompt", captureInstallPrompt);
+        window.removeEventListener("appinstalled", markInstalled);
+      };
+    }
 
     if (!("serviceWorker" in navigator) || !window.isSecureContext) {
       return () => {

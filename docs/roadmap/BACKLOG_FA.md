@@ -288,12 +288,28 @@
 - [x] فاز ۱۷۱: Import Wizard؛ Route مستقل `/import` با Preview بدون تغییر داده، بازیابی امن Backup، CSV با تشخیص و Mapping ستون‌ها، پشتیبانی تاریخ شمسی/میلادی و اعداد فارسی، ورود روزهای کاری/مشتری/پروژه/هزینه، خطای ردیفی و Conflict Strategy صریح Skip/Replace.
 - [x] فاز ۱۷۲: Live Runtime Clock & Low-Power Refresh؛ یک Scheduler مشترک و visibility-aware برای تایمرهای زنده، Refresh ثانیه‌ای فقط برای تایمر اصلی، Refresh دقیقه‌ای برای Summary/Metric/Project، توقف کامل Tick در تب مخفی و Sync فوری روی focus/pageshow بدون Persistence یا Network Tick.
 - [x] فاز ۱۷۳: Onboarding شخصی‌شده بر اساس Employee/Freelancer/Hybrid؛ مراحل ۳ و ۴ متناسب با Workspace، ساخت اختیاری مشتری/پروژه برای Freelancer، درآمد ترکیبی برای Hybrid و Import داخلی امن در مرحله ۷ با حفظ وضعیت تکمیل تا Submit نهایی.
-- [ ] فاز ۱۷۴: i18n واقعی رابط کاربری؛ Catalog/Dictionary تایپ‌شده، فارسی RTL و انگلیسی LTR، انتخاب زبان Local-first و Regression/Browser Smoke دوطرفه.
+- [x] فاز ۱۷۴: زیرساخت i18n واقعی (Foundation)؛ Catalog/Dictionary تایپ‌شده، Locale مستقل Local-first، سوییچ بدون Reload، Shell/Navigation/Settings دوطرفه فارسی RTL و انگلیسی LTR و Browser Smoke ماندگاری Locale.
+- [x] فاز ۱۷۵: گسترش i18n به Today/Month/Reports؛ متن‌ها، تقویم شمسی، اعداد، مدت، پول، Pickerها، جدول/نمودار و Browser Smoke واقعی English/LTR → Persian/RTL بدون تغییر Schema یا AppData.
+- [x] فاز ۱۷۶: گسترش i18n به Clients/Projects/Invoices/Leave و سطوح تجاری، همراه با Validation/Toast/Print/CSV و Browser Journey دو Locale.
+- [x] فاز ۱۷۷: تکمیل i18n در Settings/Onboarding/Import/About و Surfaceهای System/PWA، پیام‌های Runtime و Browser Smoke دو Locale بدون تغییر Schema یا Dependency.
+- [x] فاز ۱۷۸: Closure/Audit نهایی i18n؛ Hard-coded UI audit سراسری، RTL/LTR geometry، Metadata/PWA policy، CSV/Print و Release readiness پیش از Merge کنترل‌شده.
+
+
+## آمادگی انتشار ۲.۴.۰
+
+- [x] فاز ۱۷۹: Release Candidate 2.4.0؛ افزایش Package/Lockfile به ۲.۴.۰، Manifest Candidate، Release Notes فارسی/انگلیسی، Release Audit فعال و ثبت Baseline فاز ۱۷۸ روی `887158c` با ۷۵۸/۷۵۸ تست. Candidate Gate با شش Contract Test جدید باید ۷۶۴/۷۶۴ باشد.
+- [ ] فاز ۱۸۰: Final Release 2.4.0؛ ثبت SHA Candidate فاز ۱۷۹، Merge کنترل‌شده `dev` به `main`، Deployment، `audit:production`، Final Manifest و Tag annotated `v2.4.0` فقط پس از Gate کامل. هدف Gate نهایی ۷۷۰/۷۷۰ است.
+- [x] AppData Schema روی v17 باقی می‌ماند و Phase 179 Migration یا Dependency جدید ندارد.
+- [x] Manifestهای ۲.۳.۲ و قدیمی‌تر تاریخی و immutable باقی می‌مانند.
+- [x] Static metadata/PWA در Candidate همچنان Canonical فارسی است و Runtime Locale فارسی RTL / انگلیسی LTR را اعمال می‌کند.
 
 ## بین‌المللی‌سازی آینده — پس از Patch بعدی
 
-- [ ] استخراج متن‌های رابط از Componentها به Catalog/Dictionary تایپ‌شده بدون تغییر رفتار دامنه.
-- [ ] افزودن Locale انگلیسی با Layout کامل LTR، در حالی که فارسی RTL و تقویم/اعداد فارسی به‌عنوان تجربه درجه‌یک حفظ شوند.
-- [ ] ذخیره Locale انتخابی به‌صورت Local-first و امکان تغییر زبان از Settings بدون Reload مخرب یا از دست‌رفتن Draft.
-- [ ] افزودن Regression و Browser Smoke جدا برای `fa-IR / RTL` و `en / LTR` روی Today، Month، Reports، Settings و جریان‌های کارمند/فریلنسر.
-- [ ] تعیین سیاست ترجمه برای متن‌های سیستم، Toastها، Validation، PWA metadata و خروجی‌های CSV/Print پیش از فعال‌کردن زبان دوم در Production.
+- [x] ایجاد Catalog/Dictionary تایپ‌شده و استخراج متن‌های Shell/Navigation/Settings بدون تغییر رفتار دامنه؛ پوشش صفحه‌های محتوایی در فاز ۱۷۵ ادامه دارد.
+- [x] افزودن Locale انگلیسی و قرارداد LTR برای Shell/Navigation/Settings؛ ترجمه کامل صفحه‌های دامنه و سیاست تقویم/اعداد در فاز ۱۷۵ ادامه دارد.
+- [x] ذخیره Locale انتخابی به‌صورت Local-first خارج از AppData و تغییر آن از Settings بدون Reload مخرب یا دست‌زدن به Draftهای AppData.
+- [x] گسترش Regression و Browser Smoke دوطرفه `fa-IR / RTL` و `en / LTR` از Shell/Settings به Today، Month و Reports در فاز ۱۷۵.
+- [x] گسترش همین قرارداد به Clients/Projects/Invoices/Leave و Journeyهای تجاری در فاز ۱۷۶.
+- [x] ترجمه Validation/Toastهای تجاری و خروجی CSV/Excel/سطح چاپ مرتبط در فاز ۱۷۶، بدون تغییر داده دامنه.
+- [x] تکمیل متن‌های System/PWA و سطوح باقی‌مانده Settings/Onboarding/Import/About در فاز ۱۷۷؛ Metadata استاتیک فعلاً Canonical فارسی و Runtime title دو Locale است.
+- [x] فاز ۱۷۸: Audit نهایی Hard-coded UI، Metadata/PWA، Print/CSV و هندسه دو جهت پیش از تصمیم Rollout زبان دوم؛ Audit اجرایی به Quality Gate متصل شد.

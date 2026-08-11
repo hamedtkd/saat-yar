@@ -1,4 +1,4 @@
-import { jalaliMonthCells } from "@/lib/format";
+import { calendarMonthCells } from "@/lib/format";
 import type { HolidayOverride, Mode, Settings } from "@/lib/types";
 
 export type JalaliDatePickerProps = {
@@ -13,7 +13,7 @@ export type JalaliDatePickerProps = {
   placeholder?: string;
 };
 
-export type CalendarDayCell = ReturnType<typeof jalaliMonthCells>[number];
+export type CalendarDayCell = ReturnType<typeof calendarMonthCells>[number];
 
 export type HolidayOptions = {
   mode: Mode;

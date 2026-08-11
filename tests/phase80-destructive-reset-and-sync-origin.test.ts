@@ -10,8 +10,8 @@ const read = (path: string) => readFile(new URL(path, root), "utf8");
 test("daily record reset requires an explicit destructive confirmation", async () => {
   const banner = await read("components/pages/today/record-health-banner.tsx");
   assert.match(banner, /setConfirmOpen\(true\)/);
-  assert.match(banner, /رکورد این روز پاک شود؟/);
-  assert.match(banner, /بله، رکورد پاک شود/);
+  assert.match(banner, /t\("today\.health\.dialogTitle"\)/);
+  assert.match(banner, /t\("today\.health\.confirm"\)/);
   assert.match(banner, /onClick=\{confirmReset\}/);
   assert.doesNotMatch(banner, /onClick=\{onReset\}/);
 });
@@ -29,6 +29,6 @@ test("sync history presents a Persian source page label", async () => {
   assert.equal(formatSyncSourcePath("/unknown"), "/unknown");
   const panel = await read("components/pages/settings/multi-tab-health-panel.tsx");
   const sync = await read("hooks/use-multi-tab-data-sync.ts");
-  assert.match(panel, /formatSyncSourcePath\(event\.sourcePath\)/);
+  assert.match(panel, /pathKeys\[event\.sourcePath\] \? s\(pathKeys\[event\.sourcePath\]\) : event\.sourcePath/);
   assert.match(sync, /window\.location\.pathname/);
 });

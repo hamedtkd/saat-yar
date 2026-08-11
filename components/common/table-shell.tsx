@@ -7,7 +7,7 @@ export function TableShell({ children, className }: { children: ReactNode; class
 }
 
 export function TableHead({ className, ...props }: HTMLAttributes<HTMLTableSectionElement>) {
-  return <thead className={cn("border-y border-[var(--border)] bg-[var(--surface-2)] text-right text-[var(--text-muted)] [&_th]:whitespace-nowrap [&_th]:px-3 [&_th]:py-3 [&_th]:font-semibold", className)} {...props} />;
+  return <thead className={cn("border-y border-[var(--border)] bg-[var(--surface-2)] text-start text-[var(--text-muted)] [&_th]:whitespace-nowrap [&_th]:px-3 [&_th]:py-3 [&_th]:font-semibold", className)} {...props} />;
 }
 
 export function TableBody({ className, ...props }: HTMLAttributes<HTMLTableSectionElement>) {

@@ -6,6 +6,9 @@ import { AppDataStorageAdapter } from "@/lib/storage";
 import type { RecoverySnapshot } from "@/lib/recovery";
 import type { AppData, StorageInfo } from "@/lib/types";
 import { localDateKey } from "@/lib/format";
+import { getBrowserLocale } from "@/lib/i18n";
+import { formatLocaleNumber } from "@/lib/i18n/formatters";
+import { translateSystem } from "@/lib/i18n/system";
 import {
   applyPendingClose, applyStaleHeartbeat, createSessionHeartbeat,
   parsePendingClose, parseSessionHeartbeat, SESSION_CLOSE_KEY, SESSION_HEARTBEAT_INTERVAL_MS,
@@ -53,8 +56,8 @@ export function usePersistedAppData() {
           setData(restored);
           if (restored !== value) {
             setToast(pending
-              ? "خروج آخر هنگام بستن صفحه ثبت شد؛ لطفاً زمان را بررسی کنید"
-              : "نشست باز پس از قطع ناگهانی تا آخرین زمان فعال ثبت شد؛ لطفاً آن را بررسی کنید");
+              ? translateSystem(getBrowserLocale(), "Last clock-out was recovered from page close; please review the time.")
+              : translateSystem(getBrowserLocale(), "An open session was recovered to the last active time after an interruption; please review it."));
           }
           window.localStorage.removeItem(SESSION_CLOSE_KEY);
           if (restored !== value || !heartbeat) window.localStorage.removeItem(SESSION_HEARTBEAT_KEY);
@@ -63,13 +66,13 @@ export function usePersistedAppData() {
         if (migrated) {
           setToast(
             migratedFrom
-              ? `اطلاعات نسخه ${migratedFrom.toLocaleString("fa-IR")} با موفقیت منتقل شد`
-              : "اطلاعات نسخه قبلی با موفقیت منتقل شد",
+              ? translateSystem(getBrowserLocale(), "Data from version {version} was migrated successfully.", { version: formatLocaleNumber(getBrowserLocale(), migratedFrom) })
+              : translateSystem(getBrowserLocale(), "Data from the previous version was migrated successfully."),
           );
         }
         setStorageInfo(await storage.estimate());
       } catch {
-        setToast("خواندن اطلاعات قبلی ممکن نشد؛ از نسخه بازیابی یا فایل پشتیبان استفاده کنید");
+        setToast(translateSystem(getBrowserLocale(), "Previous data could not be read; use local recovery or a backup file."));
       } finally {
         setReady(true);
       }
@@ -102,8 +105,8 @@ export function usePersistedAppData() {
       if (failedRecovery) setRecoverySnapshot(failedRecovery);
       setSaveState("error");
       setSaveError(failedRecovery
-        ? "ذخیره اصلی ناموفق بود؛ یک نسخه بازیابی اضطراری در مرورگر نگه داشته شد."
-        : "ذخیره اصلی و نسخه بازیابی هر دو ناموفق بودند؛ همین حالا فایل پشتیبان دانلود کنید.");
+        ? translateSystem(getBrowserLocale(), "Primary save failed; an emergency recovery copy was kept in the browser.")
+        : translateSystem(getBrowserLocale(), "Primary save and recovery both failed; download a backup now."));
       return false;
     }
   }, [publishSaved, storage]);
@@ -168,16 +171,16 @@ export function usePersistedAppData() {
 
   const retrySave = useCallback(async () => {
     const saved = await persistData(latestDataRef.current);
-    setToast(saved ? "ذخیره دوباره انجام شد" : "ذخیره دوباره ناموفق بود");
+    setToast(saved ? translateSystem(getBrowserLocale(), "Save retry succeeded.") : translateSystem(getBrowserLocale(), "Save retry failed."));
   }, [persistData, setToast]);
 
   const createManualRecovery = useCallback(() => {
     const snapshot = storage.saveRecovery(latestDataRef.current, "manual");
     if (snapshot) {
       setRecoverySnapshot(snapshot);
-      setToast("نسخه بازیابی محلی ساخته شد");
+      setToast(translateSystem(getBrowserLocale(), "Local recovery snapshot was created."));
     } else {
-      setToast("ساخت نسخه بازیابی ممکن نشد؛ فایل پشتیبان دانلود کنید");
+      setToast(translateSystem(getBrowserLocale(), "Recovery snapshot could not be created; download a backup file."));
     }
     return snapshot;
   }, [setToast, storage]);
@@ -185,18 +188,18 @@ export function usePersistedAppData() {
   const restoreRecovery = useCallback(() => {
     const recovered = storage.restoreRecovery();
     if (!recovered) {
-      setToast("نسخه بازیابی معتبری پیدا نشد");
+      setToast(translateSystem(getBrowserLocale(), "No valid recovery snapshot was found."));
       return false;
     }
     setData(recovered);
-    setToast("نسخه بازیابی برگردانده شد");
+    setToast(translateSystem(getBrowserLocale(), "Recovery snapshot was restored."));
     return true;
   }, [setToast, storage]);
 
   const clearRecovery = useCallback(() => {
     storage.clearRecovery();
     setRecoverySnapshot(null);
-    setToast("نسخه بازیابی محلی حذف شد");
+    setToast(translateSystem(getBrowserLocale(), "Local recovery snapshot was deleted."));
   }, [setToast, storage]);
 
   return {

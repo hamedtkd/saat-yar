@@ -20,6 +20,13 @@
 - [Windows and npm troubleshooting — English](./TROUBLESHOOTING_EN.md)
 - [سازگاری مرورگر / Browser compatibility](./BROWSER_COMPATIBILITY.md)
 
+## کاندید انتشار ۲.۴.۰
+
+- [یادداشت Candidate ۲.۴.۰ فارسی](./releases/RELEASE_NOTES_2.4.0_FA.md)
+- [Saatyar 2.4.0 release candidate notes](./releases/RELEASE_NOTES_2.4.0_EN.md)
+- [Release candidate manifest 2.4.0](./releases/2.4.0.json)
+- [چک‌لیست Candidate](../RELEASE_CHECKLIST_FA.md)
+
 ## انتشار ۲.۳.۲
 
 - [یادداشت انتشار ۲.۳.۲ فارسی](./releases/RELEASE_NOTES_2.3.2_FA.md)
@@ -126,6 +133,12 @@
 - [فاز ۱۶۲: CI گیت‌هاب همسو با Vercel](./phases/PHASE_162_NOTES_FA.md)
 - [فاز ۱۶۳: بازیابی نشست و کنتراست Accent](./phases/PHASE_163_NOTES_FA.md)
 - [فاز ۱۶۴: README اصلی انگلیسی و نقشه راه i18n](./phases/PHASE_164_NOTES_FA.md)
+- [فاز ۱۷۴: زیرساخت i18n و Locale Local-first](./phases/PHASE_174_NOTES_FA.md)
+- [فاز ۱۷۵: i18n صفحات Today / Month / Reports](./phases/PHASE_175_NOTES_FA.md)
+- [فاز ۱۷۶: i18n جریان‌های تجاری Clients / Projects / Invoices / Leave](./phases/PHASE_176_NOTES_FA.md)
+- [فاز ۱۷۷: تکمیل i18n در Setup / Settings / System Surfaces](./phases/PHASE_177_NOTES_FA.md)
+- [فاز ۱۷۸: Closure و Hardening نهایی i18n](./phases/PHASE_178_NOTES_FA.md)
+- [فاز ۱۷۹: Release Candidate 2.4.0](./phases/PHASE_179_NOTES_FA.md)
 
 - [فاز ۱۶۵: Final Release 2.3.2](./phases/PHASE_165_NOTES_FA.md)
 - [فاز ۱۶۶: Route مستقل آنبوردینگ](./phases/PHASE_166_NOTES_FA.md)

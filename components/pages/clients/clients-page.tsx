@@ -1,10 +1,12 @@
+"use client";
+
 import { CircleDollarSign, Clock3, Folder, Plus, Sparkles, Users } from "lucide-react";
 import { MetricCard } from "@/components/common/metric-card";
 import { PageHeading } from "@/components/common/page-heading";
 import { PrivateMoney } from "@/components/common/private-money";
 import { SectionHeading } from "@/components/common/section-heading";
+import { useBusinessUi } from "@/components/i18n/use-business-ui";
 import { Button } from "@/components/ui/button";
-import { duration, fa } from "@/lib/format";
 import type { AppData, ClientDraft, ProjectDraft, Tab } from "@/lib/types";
 import { ClientForm } from "./client-form";
 import { ClientsTable } from "./clients-table";
@@ -23,28 +25,29 @@ export function ClientsPage({ data, setData, showForm, setShowForm, draft, setDr
   setTab: (tab: Tab) => void;
   financialsHidden: boolean;
 }) {
+  const { b, duration, number } = useBusinessUi();
   const metrics = useClientMetrics(data);
 
   return (
     <>
-      <PageHeading title="مشتری‌ها" description="مشتری‌ها، پروژه‌ها، زمان و درآمد را با یک نمای منسجم مدیریت کن.">
-        <Button onClick={() => setShowForm(!showForm)}><Plus /> مشتری جدید</Button>
+      <PageHeading title={b("clients.title")} description={b("clients.description")}>
+        <Button onClick={() => setShowForm(!showForm)}><Plus /> {b("clients.new")}</Button>
       </PageHeading>
 
       {showForm && <ClientForm draft={draft} setDraft={setDraft} onSave={addClient} onCancel={() => setShowForm(false)} />}
 
       <section className="mb-5">
-        <SectionHeading icon={<Sparkles />} eyebrow="نمای کلی" title="وضعیت کسب‌وکار" description="شاخص‌های مهم مشتری‌ها و پروژه‌های فعال را یک‌جا ببین." />
+        <SectionHeading icon={<Sparkles />} eyebrow={b("clients.overview.eyebrow")} title={b("clients.overview.title")} description={b("clients.overview.description")} />
         <div className="grid grid-cols-4 gap-3 max-[1180px]:grid-cols-2 max-[620px]:grid-cols-1">
-          <MetricCard icon={<Users />} label="مشتری فعال" value={fa.format(metrics.activeClients)} suffix="مشتری" />
-          <MetricCard icon={<Folder />} label="پروژه فعال" value={fa.format(metrics.activeProjects)} suffix="پروژه" />
-          <MetricCard icon={<Clock3 />} label="زمان این ماه" value={duration(metrics.trackedMinutes)} suffix="ساعت" tone="blue" />
-          <MetricCard icon={<CircleDollarSign />} label="مبلغ قابل صورتحساب" value={<PrivateMoney value={metrics.billableAmount} hidden={financialsHidden} />} suffix="تومان" />
+          <MetricCard icon={<Users />} label={b("clients.metrics.activeClients")} value={number(metrics.activeClients)} suffix={b("clients.metrics.clientSuffix")} />
+          <MetricCard icon={<Folder />} label={b("clients.metrics.activeProjects")} value={number(metrics.activeProjects)} suffix={b("clients.metrics.projectSuffix")} />
+          <MetricCard icon={<Clock3 />} label={b("clients.metrics.monthTime")} value={duration(metrics.trackedMinutes)} suffix={b("common.hour")} tone="blue" />
+          <MetricCard icon={<CircleDollarSign />} label={b("clients.metrics.billable")} value={<PrivateMoney value={metrics.billableAmount} hidden={financialsHidden} />} suffix={b("common.toman")} />
         </div>
       </section>
 
       <section>
-        <SectionHeading icon={<Users />} eyebrow="مدیریت ارتباط" title="فهرست و مشتری‌های برتر" description="وضعیت هر مشتری را مرور کن و سریع به پروژه‌های مرتبط برس." />
+        <SectionHeading icon={<Users />} eyebrow={b("clients.management.eyebrow")} title={b("clients.management.title")} description={b("clients.management.description")} />
         <div className="grid grid-cols-[minmax(0,1fr)_365px] gap-[14px] max-[1180px]:grid-cols-[minmax(0,1fr)_280px] max-[900px]:grid-cols-1">
           <ClientsTable data={data} setData={setData} createProject={createProject} onCreate={() => setShowForm(true)} financialsHidden={financialsHidden} />
           <TopClients data={data} setTab={setTab} />

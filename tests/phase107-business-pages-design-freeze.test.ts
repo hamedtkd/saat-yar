@@ -16,10 +16,16 @@ test("leave clients projects and invoices share the final section hierarchy", as
     assert.match(source, /SectionHeading/);
     assert.match(source, /PageHeading/);
   }
-  assert.match(leave, /وضعیت سهمیه/);
-  assert.match(clients, /وضعیت کسب‌وکار/);
-  assert.match(projects, /پرتفوی پروژه/);
-  assert.match(invoices, /فهرست فاکتورها/);
+  assert.match(leave, /b\("leave\.overview\.eyebrow"\)/);
+  assert.match(clients, /b\("clients\.overview\.title"\)/);
+  assert.match(projects, /b\("projects\.section\.eyebrow"\)/);
+  assert.match(invoices, /b\("invoices\.section\.title"\)/);
+
+  const catalog = await read("lib/i18n/business.ts");
+  assert.match(catalog, /"leave\.overview\.eyebrow": "وضعیت سهمیه"/);
+  assert.match(catalog, /"clients\.overview\.title": "وضعیت کسب‌وکار"/);
+  assert.match(catalog, /"projects\.section\.eyebrow": "پرتفوی پروژه"/);
+  assert.match(catalog, /"invoices\.section\.title": "فهرست فاکتورها"/);
 });
 
 test("business forms and project detail use shared semantic dashboard surfaces", async () => {

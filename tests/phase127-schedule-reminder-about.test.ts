@@ -31,22 +31,22 @@ test("work schedule shows exact hour and minute wording instead of a misleading 
   const editor = await read("components/pages/settings/work-schedule-editor.tsx");
   assert.equal(durationWords(636), "۱۰ ساعت و ۳۶ دقیقه");
   assert.match(editor, /durationWords\(getScheduleTargetMinutes\(schedule\)\)/);
-  assert.match(editor, /کار خالص روز/);
+  assert.match(editor, /s\("Net work for the day"\)/);
   assert.match(editor, /weeklyMinutes: getWeeklyTargetMinutes/);
 });
 
 test("time picker remounts when a parent recalculates its controlled value", async () => {
   const picker = await read("components/pickers/time-picker.tsx");
   assert.match(picker, /<TimePickerSession key=\{props\.value\}/);
-  assert.match(picker, /useTimePicker\(value, onChange\)/);
+  assert.match(picker, /useTimePicker\(value, onChange, locale\)/);
 });
 
 test("break reminder toggle stays aligned with its own title instead of floating over the coffee icon", async () => {
   const card = await read("components/pages/settings/notification-settings-card.tsx");
-  assert.match(card, /فعال‌کردن یادآوری استراحت/);
+  assert.match(card, /aria-label=\{s\("Enable break reminder"\)\}/);
   assert.match(card, /justify-between/);
   assert.match(card, /<Coffee/);
-  assert.match(card, /فقط هنگام ثبت کار/);
+  assert.match(card, /title=\{s\("Only while tracking work"\)\}/);
 });
 
 test("about page documents local-first usage and exposes the requested contact links", async () => {

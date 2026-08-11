@@ -39,6 +39,9 @@ test("vendored local QR encoder creates a scannable matrix contract without a ne
   assert.equal(matrix.size % 4, 1);
   assert.equal(matrix.cells.length, matrix.size);
   assert.ok(createQrSvgPath(matrix).startsWith("M"));
+  const localQr = read("lib/local-qr.ts");
+  assert.match(localQr, /vendor\/qrcode\/browser\.mjs/);
+  assert.doesNotMatch(localQr, /vendor\/qrcode\/index\.cjs/);
   const packageJson = JSON.parse(read("package.json"));
   assert.doesNotMatch(JSON.stringify(packageJson.dependencies), /qrcode|zxing|qr-scanner/i);
 });
@@ -60,12 +63,15 @@ test("pairing QR is generated and scanned locally with animated frame support", 
 test("QR camera flow keeps Copy/Paste as a safe fallback", () => {
   const card = read("components/pages/settings/device-transfer-card.tsx");
   const scanner = read("components/pages/settings/device-pairing-qr-scanner.tsx");
-  assert.match(card, /کپی کد/);
+  assert.ok(card.includes('s("Copy code")'));
   assert.match(card, /Copy\/Paste/);
-  assert.match(scanner, /اسکن QR داخل این مرورگر در دسترس نیست/);
+  assert.ok(scanner.includes('s("QR scanning is not available in this browser; use Copy/Paste for the connection code.")'));
 });
 
 test("phase 115 is wired into quality and closes the QR pairing roadmap", () => {
+  const localQr = read("lib/local-qr.ts");
+  assert.match(localQr, /vendor\/qrcode\/browser\.mjs/);
+  assert.doesNotMatch(localQr, /vendor\/qrcode\/index\.cjs/);
   const packageJson = JSON.parse(read("package.json"));
   const roadmap = read("docs/roadmap/BACKLOG_FA.md");
   assert.match(packageJson.scripts.test, /phase115-local-qr-pairing/);

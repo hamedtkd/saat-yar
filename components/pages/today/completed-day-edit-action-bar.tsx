@@ -1,4 +1,7 @@
+"use client";
+
 import { CheckCircle2, Pencil, RotateCcw, Save, X } from "lucide-react";
+import { useLocaleUi } from "@/components/i18n/use-locale-ui";
 import { Button } from "@/components/ui/button";
 
 const mobileDockClass =
@@ -17,12 +20,13 @@ export function CompletedDayEditActionBar({
   onReset: () => void;
   onSave: () => void;
 }) {
+  const { t, number } = useLocaleUi();
   return (
     <div
       data-completed-edit-actions
       data-dirty={dirty ? "true" : "false"}
       role="region"
-      aria-label="کنترل‌های ویرایش روز"
+      aria-label={t("today.edit.controlsAria")}
       className={`${mobileDockClass} grid gap-3 rounded-[var(--card-radius)] border border-[color-mix(in_srgb,var(--accent)_38%,var(--border))] bg-[var(--surface-glass)] px-3.5 py-3 shadow-[0_12px_32px_rgba(0,0,0,.12)] backdrop-blur-2xl sm:flex sm:items-center sm:justify-between sm:px-4 print:hidden`}
     >
       <div className="flex min-w-0 items-start gap-2.5">
@@ -31,7 +35,7 @@ export function CompletedDayEditActionBar({
         </span>
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <strong className="text-xs font-black text-[var(--text)]">در حال ویرایش این روز</strong>
+            <strong className="text-xs font-black text-[var(--text)]">{t("today.edit.editing")}</strong>
             <span
               aria-live="polite"
               className={`rounded-full border px-2 py-0.5 text-[9px] font-extrabold ${
@@ -40,26 +44,24 @@ export function CompletedDayEditActionBar({
                   : "border-[var(--border)] bg-[var(--surface-2)] text-[var(--text-muted)]"
               }`}
             >
-              {dirty ? `${changeCount} تغییر ذخیره‌نشده` : "هنوز تغییری ندادی"}
+              {dirty ? t("today.edit.unsavedCount", { count: number(changeCount) }) : t("today.edit.noChanges")}
             </span>
           </div>
           <p className="mt-1 text-[10px] leading-5 text-[var(--text-muted)]">
-            {dirty
-              ? "تغییرها فعلاً فقط در پیش‌نویس هستند؛ همین‌جا ذخیره یا لغوشان کن."
-              : "فیلدهای پایین فعال‌اند؛ بعد از اولین تغییر دکمه ذخیره فعال می‌شود."}
+            {dirty ? t("today.edit.draftHint") : t("today.edit.activeHint")}
           </p>
         </div>
       </div>
 
       <div className="grid grid-cols-[auto_auto_minmax(0,1fr)] gap-1.5 sm:flex sm:shrink-0 sm:items-center sm:gap-2">
         <Button type="button" size="sm" variant="ghost" onClick={onCancel}>
-          <X /> انصراف
+          <X /> {t("common.cancel")}
         </Button>
         <Button type="button" size="sm" variant="outline" disabled={!dirty} onClick={onReset}>
-          <RotateCcw /> بازنشانی
+          <RotateCcw /> {t("common.reset")}
         </Button>
         <Button type="button" size="sm" className="min-w-0" disabled={!dirty} onClick={onSave}>
-          <Save /> ذخیره تغییرات
+          <Save /> {t("common.saveChanges")}
         </Button>
       </div>
     </div>
@@ -67,6 +69,7 @@ export function CompletedDayEditActionBar({
 }
 
 export function CompletedDayEditSavedNotice() {
+  const { t } = useLocaleUi();
   return (
     <div
       data-completed-edit-feedback
@@ -78,8 +81,8 @@ export function CompletedDayEditSavedNotice() {
         <CheckCircle2 aria-hidden="true" className="size-5" />
       </span>
       <div className="grid gap-0.5">
-        <strong className="text-xs font-black">تغییرات این روز ذخیره شد</strong>
-        <span className="text-[10px] leading-5 text-[var(--text-muted)]">نسخه اصلی رکورد به‌روزرسانی شد و حالت ویرایش بسته شد.</span>
+        <strong className="text-xs font-black">{t("today.edit.saved")}</strong>
+        <span className="text-[10px] leading-5 text-[var(--text-muted)]">{t("today.edit.savedDetail")}</span>
       </div>
     </div>
   );

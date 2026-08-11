@@ -1,3 +1,5 @@
+import { translateSystem } from "./i18n/system.ts";
+import type { Locale } from "./i18n/locales.ts";
 import type { PayrollComponent } from "./types.ts";
 
 export type PayrollBaseMode = "monthly-prorated" | "monthly-fixed" | "hourly" | "daily";
@@ -131,15 +133,15 @@ export function normalizePayrollPolicy(policy: PayrollCalculationPolicy): Payrol
   };
 }
 
-export function validatePayrollPolicy(policy: PayrollCalculationPolicy) {
-  if (!policy.title.trim()) return "برای روش محاسبه حقوق یک عنوان وارد کنید.";
-  if (!Number.isFinite(policy.baseAmount) || policy.baseAmount < 0) return "مبلغ پایه حقوق نامعتبر است.";
-  if (!Number.isFinite(policy.standardDayMinutes) || policy.standardDayMinutes <= 0) return "ساعت استاندارد روز کاری باید بیشتر از صفر باشد.";
-  if (policy.overtime.mode === "multiplier" && policy.overtime.multiplier < 0) return "ضریب اضافه‌کاری نامعتبر است.";
-  if (policy.overtime.mode === "fixed-hourly" && policy.overtime.hourlyRate < 0) return "نرخ ساعتی اضافه‌کاری نامعتبر است.";
-  if (policy.holiday.mode === "multiplier" && policy.holiday.multiplier < 0) return "ضریب تعطیل‌کاری نامعتبر است.";
-  if (policy.holiday.mode === "fixed-hourly" && policy.holiday.hourlyRate < 0) return "نرخ ساعتی تعطیل‌کاری نامعتبر است.";
-  if (policy.deficit.multiplier < 0) return "ضریب کسر کار نامعتبر است.";
-  if (!Number.isFinite(policy.rounding.increment) || policy.rounding.increment <= 0) return "گام گردکردن باید بیشتر از صفر باشد.";
+export function validatePayrollPolicy(policy: PayrollCalculationPolicy, locale: Locale = "fa-IR") {
+  if (!policy.title.trim()) return translateSystem(locale, "Enter a title for the payroll calculation method.");
+  if (!Number.isFinite(policy.baseAmount) || policy.baseAmount < 0) return translateSystem(locale, "Base payroll amount is invalid.");
+  if (!Number.isFinite(policy.standardDayMinutes) || policy.standardDayMinutes <= 0) return translateSystem(locale, "Standard workday hours must be greater than zero.");
+  if (policy.overtime.mode === "multiplier" && policy.overtime.multiplier < 0) return translateSystem(locale, "Overtime multiplier is invalid.");
+  if (policy.overtime.mode === "fixed-hourly" && policy.overtime.hourlyRate < 0) return translateSystem(locale, "Overtime hourly rate is invalid.");
+  if (policy.holiday.mode === "multiplier" && policy.holiday.multiplier < 0) return translateSystem(locale, "Holiday-work multiplier is invalid.");
+  if (policy.holiday.mode === "fixed-hourly" && policy.holiday.hourlyRate < 0) return translateSystem(locale, "Holiday-work hourly rate is invalid.");
+  if (policy.deficit.multiplier < 0) return translateSystem(locale, "Deficit multiplier is invalid.");
+  if (!Number.isFinite(policy.rounding.increment) || policy.rounding.increment <= 0) return translateSystem(locale, "Rounding increment must be greater than zero.");
   return null;
 }

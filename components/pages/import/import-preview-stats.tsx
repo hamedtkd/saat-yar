@@ -1,12 +1,6 @@
+import { useSystemUi } from "@/components/i18n/use-system-ui";
 import { StatusBadge } from "@/components/common/status-badge";
-import { fa } from "@/lib/format";
-
 export function ImportPreviewStats({ ready, conflicts, invalid }: { ready: number; conflicts: number; invalid: number }) {
-  return (
-    <div className="flex flex-wrap gap-2" data-import-preview>
-      <StatusBadge tone="success">{fa.format(ready)} آماده ورود</StatusBadge>
-      <StatusBadge tone={conflicts ? "warning" : "neutral"}>{fa.format(conflicts)} تعارض</StatusBadge>
-      <StatusBadge tone={invalid ? "danger" : "neutral"}>{fa.format(invalid)} ردیف نامعتبر</StatusBadge>
-    </div>
-  );
+  const { s, number } = useSystemUi();
+  return <div className="flex flex-wrap gap-2" data-import-preview><StatusBadge tone="success">{number(ready)} {s("Ready to import")}</StatusBadge><StatusBadge tone={conflicts ? "warning" : "neutral"}>{number(conflicts)} {s("Conflicts")}</StatusBadge><StatusBadge tone={invalid ? "danger" : "neutral"}>{number(invalid)} {s("Invalid rows")}</StatusBadge></div>;
 }

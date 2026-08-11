@@ -11,6 +11,10 @@ test("PWA registration captures install availability and checks for updates", ()
   assert.match(source, /registration\?\.update\(\)/);
   assert.match(source, /updatefound/);
   assert.match(source, /PWA_EVENT\.updateAvailable/);
+  assert.match(source, /process\.env\.NODE_ENV !== "production"/);
+  assert.match(source, /clearDevelopmentPwaState/);
+  assert.match(source, /getRegistrations\(\)/);
+  assert.match(source, /name\.startsWith\("saatyar-"\)/);
 });
 
 test("service worker waits for explicit approval before activating an update", () => {
@@ -24,10 +28,13 @@ test("service worker waits for explicit approval before activating an update", (
 
 test("PWA experience covers offline install iOS and safe update flows", () => {
   const source = read("components/pwa/pwa-experience.tsx");
-  assert.match(source, /ساعت‌یار آفلاین است/);
-  assert.match(source, /ساعت‌یار را مثل یک اپ نصب کن/);
+  assert.match(source, /s\("Saatyar is offline"\)/);
+  assert.match(source, /s\("Install Saatyar like an app"\)/);
   assert.match(source, /Add to Home Screen/);
-  assert.match(source, /نسخه جدید ساعت‌یار آماده است/);
+  assert.match(source, /s\("A new Saatyar version is ready"\)/);
+  const system = read("lib/i18n/system.ts");
+  assert.match(system, /"Saatyar is offline": "ساعت‌یار آفلاین است"/);
+  assert.match(system, /"Install Saatyar like an app": "ساعت‌یار را مثل یک اپ نصب کن"/);
   assert.match(source, /requestNavigation/);
   assert.match(source, /SKIP_WAITING/);
   assert.match(source, /controllerchange/);
@@ -36,7 +43,7 @@ test("PWA experience covers offline install iOS and safe update flows", () => {
 test("shell exposes the PWA experience and footer does not overclaim offline readiness", () => {
   assert.match(read("components/saatyar-shell.tsx"), /<PwaExperience \/>/);
   const footer = read("components/layout/app-footer.tsx");
-  assert.match(footer, /داده‌ها روی همین دستگاه نگه‌داری می‌شوند/);
+  assert.match(footer, /t\("footer\.online"\)/);
   assert.doesNotMatch(footer, /برنامه آماده استفاده آفلاین است/);
 });
 

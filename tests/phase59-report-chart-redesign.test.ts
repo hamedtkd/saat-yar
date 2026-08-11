@@ -4,13 +4,12 @@ import { readFile } from "node:fs/promises";
 
 const read = (path: string) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
-test("employee report chart uses Persian day labels and tap-friendly details", async () => {
-  const utils = await read("components/pages/reports/charts/chart-utils.ts");
+test("employee report chart uses locale-aware Persian-calendar day labels and tap-friendly details", async () => {
   const data = await read("components/pages/reports/charts/use-employee-chart-data.ts");
   const chart = await read("components/pages/reports/charts/employee-daily-chart.tsx");
-  assert.match(utils, /formatPersianDayNumber/);
-  assert.match(data, /day: formatPersianDayNumber\(date\)/);
-  assert.match(chart, /روی ستون بزن/);
+  assert.match(data, /useLocaleUi/);
+  assert.match(data, /day: date\(record\.date, \{ day: "numeric" \}\)/);
+  assert.match(chart, /t\("reports\.charts\.employeeDailyDescription"\)/);
   assert.match(chart, /min-w-\[620px\]/);
   assert.doesNotMatch(chart, /<Legend/);
 });
@@ -24,7 +23,7 @@ test("report charts use shared legends and explicit empty states", async () => {
   assert.match(employee, /ChartEmptyState/);
   assert.match(freelancer, /ChartEmptyState/);
   assert.match(donut, /total > 0/);
-  assert.match(donut, /داده کافی وجود ندارد/);
+  assert.match(donut, /t\("reports\.charts\.notEnough"\)/);
 });
 
 test("chart grid remains responsive and excluded from print", async () => {

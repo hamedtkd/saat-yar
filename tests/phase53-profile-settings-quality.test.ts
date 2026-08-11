@@ -10,14 +10,14 @@ test("profile settings edit and persist the user display name", async () => {
   assert.match(card, /useSettingsDraft/);
   assert.match(card, /settings: \{ \.\.\.previous\.settings, name: normalized \}/);
   assert.match(card, /EditableCardActions/);
-  assert.match(card, /صبح بخیر،/);
+  assert.match(card, /s\("Good morning, \{name\}"/);
   assert.match(page, /<ProfileSettingsCard/);
 });
 
 test("profile name validation is localized and bounded", async () => {
   const card = await read("components/pages/settings/profile-settings-card.tsx");
   assert.match(card, /MAX_NAME_LENGTH = 50/);
-  assert.match(card, /نام باید حداقل یک نویسه/);
+  assert.match(card, /s\("Name must be between 1 and \{max\} characters\."/);
   assert.match(card, /aria-invalid/);
   assert.match(card, /autoComplete="name"/);
 });
@@ -30,7 +30,7 @@ test("report print surfaces use semantic theme colors", async () => {
 
 test("today regression follows the current employee textarea layout", async () => {
   const regression = await read("tests/today-polish-regression.test.ts");
-  assert.match(regression, /grid content-center gap-3/);
-  assert.match(regression, /Textarea rows/);
+  assert.match(regression, /grid content-start gap-4/);
+  assert.match(regression, /rows=\\\{6\\\}/);
   assert.doesNotMatch(regression, /flex min-h-52 items-center/);
 });

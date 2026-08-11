@@ -56,12 +56,12 @@ export function calculatePayrollWithPolicy(rawPolicy: PayrollCalculationPolicy, 
   const totalDeductions = deficitDeduction + deductions;
   const net = Math.max(0, gross - totalDeductions);
   const breakdown = [
-    { key: "base", title: "حقوق پایه", amount: regularPay, direction: "earning" },
-    { key: "overtime", title: "اضافه‌کاری", amount: overtimePay, direction: "earning" },
-    { key: "holiday", title: "تعطیل‌کاری", amount: holidayPay, direction: "earning" },
-    { key: "earning", title: "مزایا", amount: earnings, direction: "earning" },
-    { key: "deficit", title: "کسر کار", amount: deficitDeduction, direction: "deduction" },
-    { key: "deduction", title: "کسورات", amount: deductions, direction: "deduction" },
+    { key: "base", amount: regularPay, direction: "earning" },
+    { key: "overtime", amount: overtimePay, direction: "earning" },
+    { key: "holiday", amount: holidayPay, direction: "earning" },
+    { key: "earning", amount: earnings, direction: "earning" },
+    { key: "deficit", amount: deficitDeduction, direction: "deduction" },
+    { key: "deduction", amount: deductions, direction: "deduction" },
   ] as const;
 
   return { regularPay, overtimePay, holidayPay, deficitDeduction, earnings, deductions, gross, totalDeductions, net, baseMinuteRate, breakdown };

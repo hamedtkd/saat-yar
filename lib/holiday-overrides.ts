@@ -1,3 +1,5 @@
+import { translateSystem } from "./i18n/system.ts";
+import type { Locale } from "./i18n/locales.ts";
 import type { HolidayOverride } from "./types.ts";
 
 export type HolidayOverrideInput = Omit<HolidayOverride, "id">;
@@ -45,14 +47,15 @@ export function validateHolidayOverrideInput(
   input: HolidayOverrideInput,
   items: HolidayOverride[],
   editingId: string | null = null,
+  locale: Locale = "fa-IR",
 ): string | null {
   if (!isValidDateKey(input.date)) {
-    return "تاریخ استثنا معتبر نیست";
+    return translateSystem(locale, "Exception date is invalid");
   }
-  if (!input.title.trim()) return "عنوان تعطیلی را وارد کنید";
-  if (input.title.trim().length > 100) return "عنوان تعطیلی حداکثر می‌تواند ۱۰۰ نویسه باشد";
+  if (!input.title.trim()) return translateSystem(locale, "Enter a holiday title");
+  if (input.title.trim().length > 100) return translateSystem(locale, "Holiday title can be at most 100 characters");
   if (editingId && items.some((item) => item.id !== editingId && item.date === input.date)) {
-    return "برای این تاریخ قبلاً یک استثنا ثبت شده است";
+    return translateSystem(locale, "An exception already exists for this date");
   }
   return null;
 }

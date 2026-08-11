@@ -3,6 +3,7 @@
 import { FilePlus2, ReceiptText } from "lucide-react";
 import { PageHeading } from "@/components/common/page-heading";
 import { SectionHeading } from "@/components/common/section-heading";
+import { useBusinessUi } from "@/components/i18n/use-business-ui";
 import { Button } from "@/components/ui/button";
 import type { AppData, ClientDraft, ProjectDraft } from "@/lib/types";
 import { InvoiceForm } from "./form/invoice-form";
@@ -16,12 +17,13 @@ export function InvoicesPage({ data, setData, financialsHidden, createClient, cr
   createClient: (draft: ClientDraft) => string | undefined;
   createProject: (draft: ProjectDraft) => string | undefined;
 }) {
+  const { b } = useBusinessUi();
   const invoices = useInvoices(data, setData);
 
   return (
     <>
-      <PageHeading title="فاکتورها" description="فاکتور بساز، سررسیدها را پیگیری کن و نسخه قابل چاپ تحویل بده.">
-        <Button onClick={() => invoices.setShowForm(!invoices.showForm)}><FilePlus2 /> فاکتور جدید</Button>
+      <PageHeading title={b("invoices.title")} description={b("invoices.description")}>
+        <Button onClick={() => invoices.setShowForm(!invoices.showForm)}><FilePlus2 /> {b("invoices.new")}</Button>
       </PageHeading>
       {invoices.showForm && (
         <InvoiceForm
@@ -35,7 +37,7 @@ export function InvoicesPage({ data, setData, financialsHidden, createClient, cr
           onCancel={() => invoices.setShowForm(false)}
         />
       )}
-      <SectionHeading icon={<ReceiptText />} eyebrow="صورتحساب‌ها" title="فهرست فاکتورها" description="وضعیت پرداخت، سررسید و مبلغ فاکتورها را یک‌جا مرور کن." />
+      <SectionHeading icon={<ReceiptText />} eyebrow={b("invoices.section.eyebrow")} title={b("invoices.section.title")} description={b("invoices.section.description")} />
       <InvoicesTable invoices={invoices.invoices} clients={data.clients} financialsHidden={financialsHidden} onStatusChange={invoices.updateStatus} onRemove={invoices.removeInvoice} onCreate={() => invoices.setShowForm(true)} />
     </>
   );

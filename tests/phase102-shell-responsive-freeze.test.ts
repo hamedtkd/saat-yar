@@ -27,7 +27,7 @@ test("header keeps route context, profile identity and theme-aware workspace con
   ]);
   assert.match(header, /getRouteNavItem/);
   assert.match(header, /<ProfileMenu/);
-  assert.match(profile, /پروفایل محلی/);
+  assert.match(profile, /t\("profile\.local"\)/);
   assert.match(actions, /<WorkspaceSwitcher/);
   assert.match(switcher, /max-\[520px\]:min-w-\[108px\]/);
 });

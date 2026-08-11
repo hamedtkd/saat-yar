@@ -5,9 +5,10 @@ import { MetricCard } from "@/components/common/metric-card";
 import { PrivateMoney } from "@/components/common/private-money";
 import { ProgressRing } from "@/components/common/progress-ring";
 import { SurfaceCard } from "@/components/common/surface-card";
-import { duration, entryMinutes, fa, localDateKey } from "@/lib/format";
+import { useLocaleUi } from "@/components/i18n/use-locale-ui";
 import { useLiveWorkCalc } from "@/hooks/use-live-work-calc";
 import { useRuntimeNow } from "@/hooks/use-runtime-now";
+import { entryMinutes, localDateKey } from "@/lib/format";
 import { calculateEmployeeDayPayForSettings } from "@/lib/payroll";
 import type { ReturnTypeCalc } from "@/lib/type-helpers";
 import type { AppData, WorkRecord } from "@/lib/types";
@@ -21,6 +22,7 @@ export function TodayMetrics({ data, record, selectedDate, result, dailyTarget, 
   financialsHidden: boolean;
   scheduledDayOff: boolean;
 }) {
+  const { duration, percent, t } = useLocaleUi();
   const hasTarget = dailyTarget > 0;
   const liveResult = useLiveWorkCalc(record, dailyTarget, result);
   const todayEntries = data.timeEntries.filter((entry) => localDateKey(new Date(entry.startedAt)) === selectedDate);
@@ -38,12 +40,19 @@ export function TodayMetrics({ data, record, selectedDate, result, dailyTarget, 
 
   return (
     <section className="mb-4 grid grid-cols-4 gap-2.5 max-[1180px]:grid-cols-2 max-[620px]:grid-cols-1 [&>article]:min-h-[104px] [&>article]:shadow-[0_5px_16px_rgba(0,0,0,.03)]">
-      <MetricCard icon={<Clock3 />} label="کارکرد خالص امروز" value={duration(liveResult.worked)} suffix="ساعت" />
-      <MetricCard icon={<Tag />} label={isEmployee ? "زمان قابل محاسبه" : "قابل صورتحساب"} value={duration(isEmployee ? liveResult.credited : billableMinutes)} suffix="ساعت" tone="amber" />
-      <MetricCard icon={<WalletCards />} label={isEmployee ? "حقوق امروز" : isHybrid ? "درآمد ترکیبی امروز" : "درآمد پروژه امروز"} value={<PrivateMoney value={income} hidden={financialsHidden} />} suffix="تومان" tone="green" />
+      <MetricCard icon={<Clock3 />} label={t("today.metrics.netWorked")} value={duration(liveResult.worked)} suffix={t("common.hour")} />
+      <MetricCard icon={<Tag />} label={isEmployee ? t("today.metrics.calculable") : t("common.billable")} value={duration(isEmployee ? liveResult.credited : billableMinutes)} suffix={t("common.hour")} tone="amber" />
+      <MetricCard icon={<WalletCards />} label={isEmployee ? t("today.metrics.salaryToday") : isHybrid ? t("today.metrics.hybridIncome") : t("today.metrics.projectIncome")} value={<PrivateMoney value={income} hidden={financialsHidden} />} suffix={t("common.currency.toman")} tone="green" />
       <SurfaceCard as="article" className="dashboard-card flex min-h-[104px] items-center justify-center gap-4 p-4">
-        <ProgressRing value={progress} size="sm"><strong className="text-sm font-black">{hasTarget ? `${fa.format(progress)}٪` : "—"}</strong></ProgressRing>
-        <div><small className="block text-[10px] text-[var(--text-muted)]">{scheduledDayOff ? "تعطیل طبق برنامه" : hasTarget ? "هدف روزانه" : "روز بدون هدف"}</small><strong className="mt-1 block text-lg font-black">{duration(liveResult.credited)}</strong><span className="text-[10px] text-[var(--text-muted)]">{scheduledDayOff ? "ساعت موظفی صفر" : hasTarget ? `از ${duration(dailyTarget)}` : "بدون ساعت موظفی"}{!isEmployee ? ` · پروژه ${duration(projectMinutes)}` : ""}</span></div>
+        <ProgressRing value={progress} size="sm"><strong className="text-sm font-black">{hasTarget ? percent(progress) : "—"}</strong></ProgressRing>
+        <div>
+          <small className="block text-[10px] text-[var(--text-muted)]">{scheduledDayOff ? t("today.summary.scheduledOff") : hasTarget ? t("today.metrics.dailyTarget") : t("today.metrics.noTarget")}</small>
+          <strong className="mt-1 block text-lg font-black">{duration(liveResult.credited)}</strong>
+          <span className="text-[10px] text-[var(--text-muted)]">
+            {scheduledDayOff ? t("today.metrics.zeroRequired") : hasTarget ? t("today.metrics.ofTarget", { duration: duration(dailyTarget) }) : t("today.metrics.noRequired")}
+            {!isEmployee ? ` ${t("today.metrics.projectTime", { duration: duration(projectMinutes) })}` : ""}
+          </span>
+        </div>
       </SurfaceCard>
     </section>
   );

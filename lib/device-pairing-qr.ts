@@ -1,3 +1,5 @@
+import { translateSystem } from "./i18n/system.ts";
+import type { Locale } from "./i18n/locales.ts";
 const QR_FRAME_PREFIX = "SYQR1";
 export const DEVICE_PAIRING_QR_CHUNK_SIZE = 620;
 
@@ -29,9 +31,9 @@ function batchIdFor(value: string): string {
   return `${fnv1a(value.slice(0, 1024))}${value.length.toString(36)}`.slice(0, 12);
 }
 
-export function createDevicePairingQrFrames(code: string, chunkSize = DEVICE_PAIRING_QR_CHUNK_SIZE): string[] {
+export function createDevicePairingQrFrames(code: string, chunkSize = DEVICE_PAIRING_QR_CHUNK_SIZE, locale: Locale = "fa-IR"): string[] {
   if (!code) return [];
-  if (!Number.isInteger(chunkSize) || chunkSize < 120) throw new Error("اندازه قطعه QR معتبر نیست.");
+  if (!Number.isInteger(chunkSize) || chunkSize < 120) throw new Error(translateSystem(locale, "QR chunk size is invalid."));
   const checksum = fnv1a(code);
   const batchId = batchIdFor(code);
   const total = Math.ceil(code.length / chunkSize);
@@ -41,16 +43,16 @@ export function createDevicePairingQrFrames(code: string, chunkSize = DEVICE_PAI
   });
 }
 
-export function parseDevicePairingQrFrame(value: string): DevicePairingQrFrame | null {
+export function parseDevicePairingQrFrame(value: string, locale: Locale = "fa-IR"): DevicePairingQrFrame | null {
   if (!value.startsWith(`${QR_FRAME_PREFIX}|`)) return null;
   const parts = value.split("|");
-  if (parts.length < 6) throw new Error("فریم QR اتصال ناقص است.");
+  if (parts.length < 6) throw new Error(translateSystem(locale, "Connection QR frame is incomplete."));
   const [, batchId, rawIndex, rawTotal, checksum, ...chunkParts] = parts;
   const index = Number(rawIndex);
   const total = Number(rawTotal);
   const chunk = chunkParts.join("|");
   if (!batchId || !checksum || !Number.isInteger(index) || !Number.isInteger(total) || index < 1 || total < 1 || index > total || total > 99) {
-    throw new Error("فریم QR اتصال معتبر نیست.");
+    throw new Error(translateSystem(locale, "Connection QR frame is invalid."));
   }
   return { batchId, index, total, checksum, chunk };
 }
@@ -58,8 +60,9 @@ export function parseDevicePairingQrFrame(value: string): DevicePairingQrFrame |
 export function addDevicePairingQrFrame(
   collection: DevicePairingQrCollection | null,
   rawValue: string,
+  locale: Locale = "fa-IR",
 ): { collection: DevicePairingQrCollection | null; completeCode: string | null; added: boolean } {
-  const frame = parseDevicePairingQrFrame(rawValue);
+  const frame = parseDevicePairingQrFrame(rawValue, locale);
   if (!frame) return { collection, completeCode: rawValue, added: true };
   if (collection && (collection.batchId !== frame.batchId || collection.total !== frame.total || collection.checksum !== frame.checksum)) {
     collection = null;
@@ -75,7 +78,7 @@ export function addDevicePairingQrFrame(
   const updated = { ...next, chunks };
   if (Object.keys(chunks).length !== updated.total) return { collection: updated, completeCode: null, added };
   const completeCode = Array.from({ length: updated.total }, (_, index) => chunks[index + 1] ?? "").join("");
-  if (fnv1a(completeCode) !== updated.checksum) throw new Error("QR کامل شد اما Checksum کد اتصال معتبر نیست.");
+  if (fnv1a(completeCode) !== updated.checksum) throw new Error(translateSystem(locale, "QR is complete but the connection-code checksum is invalid."));
   return { collection: updated, completeCode, added };
 }
 

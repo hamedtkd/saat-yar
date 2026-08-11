@@ -14,8 +14,8 @@ test("work schedule overview uses a balanced responsive three-card grid", async 
 
 test("lunch defaults separate duration and paid-state controls cleanly", async () => {
   const editor = await read("components/pages/settings/work-schedule-editor.tsx");
-  assert.match(editor, /مدت ناهار/);
-  assert.match(editor, /نحوه محاسبه/);
+  assert.match(editor, /s\("Lunch duration"\)/);
+  assert.match(editor, /s\("How it is counted"\)/);
   assert.match(editor, /justify-between gap-2/);
   assert.doesNotMatch(editor, /min-w-\[250px\]/);
 });
@@ -23,7 +23,7 @@ test("lunch defaults separate duration and paid-state controls cleanly", async (
 test("weekly net target keeps the field and unit on one aligned row", async () => {
   const editor = await read("components/pages/settings/work-schedule-editor.tsx");
   assert.match(editor, /grid-cols-\[minmax\(0,1fr\)_auto\] items-center gap-2/);
-  assert.match(editor, />ساعت<\/span>/);
+  assert.match(editor, /s\("Hours"\)/);
   assert.doesNotMatch(editor, /min-w-\[190px\]/);
 });
 

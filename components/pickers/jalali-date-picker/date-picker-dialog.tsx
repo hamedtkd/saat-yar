@@ -4,12 +4,17 @@ import { useId } from "react";
 import { Button } from "@/components/ui/button";
 import { useDialogAccessibility } from "@/hooks/accessibility/use-dialog-accessibility";
 import { cn } from "@/lib/cn";
+import { translate } from "@/lib/i18n/catalog";
+import type { CalendarSystem } from "@/lib/i18n/calendars";
+import type { Locale } from "@/lib/i18n/locales";
 
 import { CalendarGrid } from "./calendar-grid";
 import { CalendarHeader } from "./calendar-header";
 import type { CalendarDayCell, HolidayOptions } from "./types";
 
 type DatePickerDialogProps = {
+  locale: Locale;
+  calendar: CalendarSystem;
   title: string;
   cells: CalendarDayCell[];
   value: string;
@@ -26,12 +31,13 @@ type DatePickerDialogProps = {
 export function DatePickerDialog(props: DatePickerDialogProps) {
   const titleId = useId();
   const dialogRef = useDialogAccessibility(props.onClose);
+  const closeLabel = translate(props.locale, "picker.date.close");
 
   return (
     <>
       <button
         type="button"
-        aria-label="بستن تقویم"
+        aria-label={closeLabel}
         className="fixed inset-0 z-[700] border-0 bg-[var(--overlay)] backdrop-blur-[2px]"
         onClick={props.onClose}
       />
@@ -41,7 +47,7 @@ export function DatePickerDialog(props: DatePickerDialogProps) {
         aria-modal="true"
         aria-labelledby={titleId}
         tabIndex={-1}
-        dir="rtl"
+        dir={props.locale === "fa-IR" ? "rtl" : "ltr"}
         className={cn(
           "fixed top-1/2 left-1/2 z-[750] w-[min(430px,calc(100vw-24px))]",
           "max-h-[calc(100dvh-24px)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto",
@@ -51,18 +57,21 @@ export function DatePickerDialog(props: DatePickerDialogProps) {
       >
         <div className="mb-2 flex items-center justify-between gap-3">
           <h2 id={titleId} className="text-sm font-extrabold text-[var(--text)]">
-            انتخاب تاریخ
+            {translate(props.locale, "picker.date.title")}
           </h2>
-          <Button type="button" variant="ghost" size="icon" aria-label="بستن تقویم" onClick={props.onClose}>
+          <Button type="button" variant="ghost" size="icon" aria-label={closeLabel} onClick={props.onClose}>
             <X aria-hidden="true" />
           </Button>
         </div>
         <CalendarHeader
+          locale={props.locale}
           title={props.title}
           onPreviousMonth={props.onPreviousMonth}
           onNextMonth={props.onNextMonth}
         />
         <CalendarGrid
+          locale={props.locale}
+          calendar={props.calendar}
           cells={props.cells}
           value={props.value}
           today={props.today}
@@ -76,7 +85,7 @@ export function DatePickerDialog(props: DatePickerDialogProps) {
           className="mt-4 h-12 w-full rounded-xl bg-[var(--accent-fill)] text-sm font-extrabold text-[var(--accent-foreground)] shadow-none hover:brightness-110"
         >
           <Check aria-hidden="true" className="size-4.5" />
-          امروز
+          {translate(props.locale, "picker.date.today")}
         </Button>
       </div>
     </>

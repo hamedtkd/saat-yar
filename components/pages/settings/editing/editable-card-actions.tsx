@@ -1,14 +1,10 @@
+"use client";
+
 import { Check, Pencil, X } from "lucide-react";
+import { useSystemUi } from "@/components/i18n/use-system-ui";
 import { Button } from "@/components/ui/button";
 
-export function EditableCardActions({
-  editing,
-  dirty,
-  autoSave,
-  onEdit,
-  onSave,
-  onCancel,
-}: {
+export function EditableCardActions({ editing, dirty, autoSave, onEdit, onSave, onCancel }: {
   editing: boolean;
   dirty: boolean;
   autoSave: boolean;
@@ -16,18 +12,8 @@ export function EditableCardActions({
   onSave: () => void;
   onCancel: () => void;
 }) {
-  if (autoSave) {
-    return <span className="rounded-full bg-[var(--success-soft)] px-2.5 py-1 text-[9px] font-bold text-[var(--success)]">ذخیره خودکار</span>;
-  }
-
-  if (!editing) {
-    return <Button type="button" size="sm" variant="outline" onClick={onEdit}><Pencil /> ویرایش</Button>;
-  }
-
-  return (
-    <div className="flex flex-wrap items-center gap-2">
-      <Button type="button" size="sm" variant="ghost" onClick={onCancel}><X /> انصراف</Button>
-      <Button type="button" size="sm" onClick={onSave} disabled={!dirty}><Check /> ذخیره</Button>
-    </div>
-  );
+  const { s } = useSystemUi();
+  if (!editing) return <Button type="button" variant="outline" size="sm" onClick={onEdit}><Pencil /> {s("Edit")}</Button>;
+  if (autoSave) return <Button type="button" variant="ghost" size="sm" onClick={onCancel}><X /> {s("Cancel")}</Button>;
+  return <div className="flex flex-wrap items-center gap-2"><Button type="button" size="sm" disabled={!dirty} onClick={onSave}><Check /> {s("Save")}</Button><Button type="button" variant="ghost" size="sm" onClick={onCancel}><X /> {s("Cancel")}</Button></div>;
 }

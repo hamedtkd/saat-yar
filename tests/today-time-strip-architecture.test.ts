@@ -15,8 +15,10 @@ test("today time strip modules stay below 250 lines", () => {
 
 test("today time strip delegates UI and logic", () => {
   const source = readFileSync(join(root, "today-time-strip.tsx"), "utf8");
+  const inputs = readFileSync(join(root, "time-strip", "time-inputs.tsx"), "utf8");
   assert.match(source, /<TimeInputs/);
   assert.match(source, /<QuickControls/);
   assert.match(source, /<AdvancedEditor/);
+  assert.match(inputs, /md:col-span-2 xl:col-span-2/);
   assert.doesNotMatch(source, /crypto\.randomUUID/);
 });

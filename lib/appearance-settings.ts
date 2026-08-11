@@ -4,6 +4,8 @@ import {
   resolveAccentTokens,
   themePresets,
 } from "./theme.ts";
+import { translateSystem } from "./i18n/system.ts";
+import type { Locale } from "./i18n/locales.ts";
 import type {
   AppearanceSettings,
   RadiusScale,
@@ -71,14 +73,12 @@ export function cloneAppearanceSettings(value: AppearanceSettings): AppearanceSe
   return { ...value };
 }
 
-export function validateAppearanceSettings(value: AppearanceSettings): string | null {
-  if (!themeModes.includes(value.mode)) return "حالت نمایش انتخاب‌شده معتبر نیست.";
-  if (!themePresetsList.includes(value.preset)) return "پالت رنگ انتخاب‌شده معتبر نیست.";
-  if (!radiusScales.includes(value.radius)) return "گردی گوشه‌های انتخاب‌شده معتبر نیست.";
-  if (!surfaceStyles.includes(value.surface)) return "سطح کارت‌های انتخاب‌شده معتبر نیست.";
-  if (value.preset === "custom" && !isHexColor(value.accent)) {
-    return "رنگ سفارشی باید یک کد شش‌رقمی مانند #06b6d4 باشد.";
-  }
+export function validateAppearanceSettings(value: AppearanceSettings, locale: Locale = "fa-IR"): string | null {
+  if (!themeModes.includes(value.mode)) return translateSystem(locale, "Selected display mode is invalid.");
+  if (!themePresetsList.includes(value.preset)) return translateSystem(locale, "Selected color palette is invalid.");
+  if (!radiusScales.includes(value.radius)) return translateSystem(locale, "Selected corner radius is invalid.");
+  if (!surfaceStyles.includes(value.surface)) return translateSystem(locale, "Selected card surface is invalid.");
+  if (value.preset === "custom" && !isHexColor(value.accent)) return translateSystem(locale, "Custom color must be a six-digit hex value such as #06b6d4.");
   return null;
 }
 

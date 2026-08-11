@@ -18,6 +18,7 @@ const eslintConfig = defineConfig([
     ".next/**",
     "out/**",
     "build/**",
+    "lib/vendor/qrcode/browser.mjs",
     "next-env.d.ts",
   ]),
 ]);

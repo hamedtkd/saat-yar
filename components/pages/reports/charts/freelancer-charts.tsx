@@ -1,6 +1,7 @@
-import { WalletCards } from "lucide-react";
+"use client";
 
-import { duration } from "@/lib/format";
+import { WalletCards } from "lucide-react";
+import { useLocaleUi } from "@/components/i18n/use-locale-ui";
 import type { TimeEntry } from "@/lib/types";
 import { ChartsGrid } from "./chart-shell";
 import { DonutSummary } from "./donut-summary";
@@ -8,20 +9,7 @@ import { FreelancerWeeklyChart } from "./freelancer-weekly-chart";
 import { useFreelancerChartData } from "./use-freelancer-chart-data";
 
 export function FreelancerCharts({ entries, reportBillable }: { entries: TimeEntry[]; reportBillable: number }) {
+  const { t, duration } = useLocaleUi();
   const { weekly, billing, allMinutes, ratio, hasWeeklyData } = useFreelancerChartData(entries, reportBillable);
-  return (
-    <ChartsGrid>
-      <FreelancerWeeklyChart data={weekly} hasData={hasWeeklyData} />
-      <DonutSummary
-        icon={<WalletCards />}
-        title="خلاصه صورتحساب"
-        description="سهم زمان قابل‌صورتحساب از کل زمان پروژه‌ها"
-        data={billing}
-        ratio={ratio}
-        ratioLabel="قابل صورتحساب"
-        footerLabel="مجموع زمان پروژه‌ها"
-        footerValue={duration(allMinutes)}
-      />
-    </ChartsGrid>
-  );
+  return <ChartsGrid><FreelancerWeeklyChart data={weekly} hasData={hasWeeklyData} /><DonutSummary icon={<WalletCards />} title={t("reports.charts.billableSummary")} description={t("reports.charts.billableDescription")} data={billing} ratio={ratio} ratioLabel={t("common.billable")} footerLabel={t("reports.charts.projectTimeTotal")} footerValue={duration(allMinutes)} /></ChartsGrid>;
 }

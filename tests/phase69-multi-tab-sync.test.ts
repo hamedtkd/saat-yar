@@ -32,7 +32,7 @@ test("shell exposes an actionable semantic multi-tab conflict banner", async () 
   const shell = await read("components/saatyar-shell.tsx");
   const banner = await read("components/layout/multi-tab-sync-banner.tsx");
   assert.match(shell, /<MultiTabSyncBanner/);
-  assert.match(banner, /اطلاعات در تب دیگری تغییر کرده است/);
-  assert.match(banner, /بارگذاری نسخه جدید/);
+  assert.match(banner, /s\("Data changed in another tab"\)/);
+  assert.match(banner, /s\("Load new version"\)/);
   assert.match(banner, /var\(--warning-soft\)/);
 });

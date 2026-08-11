@@ -22,10 +22,10 @@ test("completed days are read only until explicit edit", async () => {
   const actions = await read("components/pages/today/completed-day-edit-action-bar.tsx");
   assert.match(source, /completed = Boolean\(record\.start && record\.end\)/);
   assert.match(source, /disabled=\{locked\}/);
-  assert.match(source, /ویرایش این روز/);
+  assert.match(source, /t\("today\.edit\.start"\)/);
   assert.match(source, /CompletedDayEditActionBar/);
-  assert.match(actions, /ذخیره تغییرات/);
-  assert.match(actions, /انصراف/);
+  assert.match(actions, /t\("common\.saveChanges"\)/);
+  assert.match(actions, /t\("common\.cancel"\)/);
 });
 
 test("day editor state resets when selected date changes", async () => {

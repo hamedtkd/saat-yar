@@ -19,5 +19,5 @@ test("today page renders an accessible undo action after reset", async () => {
   const banner = await read("components/pages/today/record-reset-undo.tsx");
   assert.match(page, /<RecordResetUndo date=\{props\.resetUndoDate\}/);
   assert.match(banner, /role="status" aria-live="polite"/);
-  assert.match(banner, /بازگردانی رکورد/);
+  assert.match(banner, /t\("today\.undo\.restore"\)/);
 });

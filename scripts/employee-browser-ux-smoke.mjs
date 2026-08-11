@@ -257,20 +257,15 @@ async function setSectionTimeValue(client, sectionTitle, fieldTitle, value, occu
 
 async function assertFirstBreakEditorContract(client) {
   const contract = await evaluate(client, `(() => {
-    const norm = (value) => (value || "").replace(/\s+/g," ").trim();
-    const heading = [...document.querySelectorAll("strong")].find((item) => norm(item.textContent) === "وقفه‌ها");
-    const section = heading?.closest("section") || null;
-    if (!section) return { found: false };
-    const readTime = (label) => {
-      const owner = [...section.querySelectorAll("label")].find((node) =>
-        [...node.querySelectorAll("span")].some((span) => norm(span.textContent) === label));
-      return owner?.querySelector('input[aria-label="زمان"]')?.value || "";
-    };
-    const checkbox = section.querySelector('input[type="checkbox"][aria-label="وقفه 1 با حقوق"]');
+    const section = document.querySelector("[data-breaks-editor]");
+    const row = section?.querySelector("[data-break-row]") || null;
+    if (!row) return { found: false };
+    const readTime = (field) => row.querySelector('[data-break-field="' + field + '"] input')?.value || "";
+    const checkbox = row.querySelector('input[type="checkbox"][data-break-paid-toggle]');
     return {
       found: true,
-      start: readTime("شروع"),
-      end: readTime("پایان"),
+      start: readTime("start"),
+      end: readTime("end"),
       paid: checkbox instanceof HTMLInputElement ? checkbox.checked : null,
     };
   })()`);
@@ -284,7 +279,7 @@ async function assertFirstBreakEditorContract(client) {
 }
 
 async function ensureFirstBreakUnpaid(client) {
-  const selector = 'input[type="checkbox"][aria-label="وقفه 1 با حقوق"]';
+  const selector = '[data-breaks-editor] [data-break-row] input[type="checkbox"][data-break-paid-toggle]';
   const state = await evaluate(client, `(() => {
     const checkbox = document.querySelector(${JSON.stringify(selector)});
     if (!(checkbox instanceof HTMLInputElement)) return { found: false, checked: null };

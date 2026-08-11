@@ -1,4 +1,7 @@
+"use client";
+
 import type { CSSProperties, ReactNode } from "react";
+import { useLocaleUi } from "@/components/i18n/use-locale-ui";
 import { cn } from "@/lib/cn";
 
 export function ProgressRing({ value, children, size = "md", className }: {
@@ -7,6 +10,7 @@ export function ProgressRing({ value, children, size = "md", className }: {
   size?: "sm" | "md" | "lg";
   className?: string;
 }) {
+  const { percent } = useLocaleUi();
   const progress = Math.max(0, Math.min(100, value));
   return (
     <div
@@ -18,7 +22,7 @@ export function ProgressRing({ value, children, size = "md", className }: {
         className,
       )}
       style={{ "--progress": `${progress * 3.6}deg` } as CSSProperties}
-      aria-label={`${progress} درصد`}
+      aria-label={percent(progress)}
     >
       <div className="relative z-10 text-center">{children}</div>
     </div>

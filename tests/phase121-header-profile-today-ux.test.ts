@@ -13,9 +13,9 @@ test("header promotes a real local profile menu while removing duplicate utility
   ]);
   assert.match(header, /<ProfileMenu/);
   assert.match(profile, /aria-haspopup="menu"/);
-  assert.match(profile, /پروفایل محلی/);
+  assert.match(profile, /t\("profile\.local"\)/);
   assert.match(profile, /settings-device-transfer/);
-  assert.match(profile, /دانلود پشتیبان فوری/);
+  assert.match(profile, /t\("profile\.quickBackup"\)/);
   assert.doesNotMatch(actions, /onSettings|onExport|<Settings|<Download/);
 });
 
@@ -25,17 +25,17 @@ test("save status is contextual instead of a permanent header badge", async () =
     read("hooks/use-persisted-app-data.ts"),
   ]);
   assert.match(status, /state === "idle"/);
-  assert.match(status, /در حال ذخیره/);
-  assert.match(status, /خطای ذخیره/);
+  assert.match(status, /t\("header\.save\.saving"\)/);
+  assert.match(status, /t\("header\.save\.error"\)/);
   assert.match(persistence, /setTimeout\(\(\) => \{[\s\S]*setSaveState\("idle"\)[\s\S]*2600/);
 });
 
 test("workspace switcher explains the navigation impact of each mode", async () => {
   const source = await read("components/layout/app-header/workspace-switcher.tsx");
-  assert.match(source, /فضای کاری · بخش‌های قابل دسترس را تغییر می‌دهد/);
-  assert.match(source, /حضور، مرخصی و حقوق/);
-  assert.match(source, /مشتری، پروژه و فاکتور/);
-  assert.match(source, /هر دو فضای کاری/);
+  assert.match(source, /t\("mode\.switchHint"\)/);
+  assert.match(source, /t\("mode\.employeeDescription"\)/);
+  assert.match(source, /t\("mode\.freelancerDescription"\)/);
+  assert.match(source, /t\("mode\.hybridDescription"\)/);
 });
 
 test("today hero exposes guarded previous and next day navigation", async () => {
@@ -43,9 +43,9 @@ test("today hero exposes guarded previous and next day navigation", async () => 
     read("components/pages/today/today-page.tsx"),
     read("components/pages/today/today-hero.tsx"),
   ]);
-  assert.match(page, /onDateChange=\{\(date\) => requestNavigation/);
-  assert.match(hero, /aria-label="روز قبل"/);
-  assert.match(hero, /aria-label="روز بعد"/);
+  assert.match(page, /onDateChange=\{\(nextDate\) => requestNavigation\(\(\) => props\.setSelectedDate\(nextDate\)\)\}/);
+  assert.match(hero, /aria-label=\{t\("today\.hero\.previousDay"\)\}/);
+  assert.match(hero, /aria-label=\{t\("today\.hero\.nextDay"\)\}/);
   assert.match(hero, /shiftDateKey\(selectedDate, -1\)/);
   assert.match(hero, /shiftDateKey\(selectedDate, 1\)/);
   assert.equal(shiftDateKey("2026-08-07", -1), "2026-08-06");
@@ -63,7 +63,7 @@ test("settings search and anchors shorten access to deep features", async () => 
     read("components/pages/settings/device-transfer-card.tsx"),
   ]);
   assert.match(page, /<SettingsSearch/);
-  assert.match(search, /جستجو در تنظیمات/);
+  assert.match(search, /t\("settings\.search\.placeholder"\)/);
   assert.match(search, /settingsNavItems/);
   assert.match(model, /settings-payroll/);
   assert.match(model, /settings-device-transfer/);

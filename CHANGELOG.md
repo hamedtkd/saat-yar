@@ -1,6 +1,42 @@
 ## [Unreleased]
 
+## [2.4.0] - 2026-08-11
+
+- Phase 179 final visual lock: Hero Flip Clock برای خوانایی Vazirmatn FD روی 20px قفل شد و کارت یادداشت روز کاری کارمند با فضای مفیدتر و نسبت متعادل‌تر نسبت به Timer آماده Release شد.
+
 ### افزوده شد
+
+- Phase 179 R3: تغییر سریع زبان با پرچم به‌صورت Responsive اضافه شد؛ در Desktop داخل Utility سایدبار و زیر breakpoint سایدبار به‌صورت کنترل فشرده در Header نمایش داده می‌شود تا دسترسی Global باشد بدون اینکه Workspace/Profile alignment شلوغ شود.
+- Release audit دوباره Manifestهای تاریخی 2.2.0 و 2.1.0 را صریحاً در قرارداد فایل‌های الزامی نگه می‌دارد تا Regression تاریخی Phase 112 با Candidate جدید سازگار بماند.
+- Phase 179 R4: Preference تقویم `auto / persian / gregory` اضافه شد؛ English در حالت خودکار Gregorian و فارسی Persian/Jalali است و Override مستقل از زبان داخل Settings ممکن است.
+- Month calendar اکنون از تقویم فعال برای grid و حرکت ماه استفاده می‌کند و Dotهای وضعیت با logical `end` از عدد روز فاصله می‌گیرند.
+- Payroll breakdown از Labelهای فارسی Domain جدا شد و در UI از Catalog Locale فعال ترجمه می‌شود.
+- QR vendored با ESM browser entry امن شد تا Runtime Error صفحه Settings در Dev/Vite بدون افزودن Dependency برطرف شود.
+- Phase 179 R5: مسیر پیش‌فرض `npm run dev` از Vite/Vinext به `next dev` منتقل شد و `dev:vinext` به‌عنوان مسیر اختیاری باقی ماند تا خطای Dev-only HMR/RSC مشاهده‌شده در Visual QA ویندوز مسیر توسعه معمول را متوقف نکند.
+- توضیحات Page/Section heading به Info tooltip فشرده منتقل شدند، در حالی که Hintهای عملیاتی و هشدارهای ضروری Inline باقی ماندند.
+- نمایش بازه ورود/خروج ماه با Bidi isolation اصلاح شد و Record Health بازه صفرطول را invalid می‌داند؛ پرچم ایران نیز بدون نشان مرکزی رندر می‌شود.
+- Phase 179 R6: تایمر زنده Today با Flip Clock مبتنی بر `framer-motion` بازطراحی شد و همچنان از Runtime Clock مشترک فاز ۱۷۲ استفاده می‌کند؛ Interval مستقل جدیدی اضافه نشده است.
+- Grid ورود/خروج اصلاح شد تا Attendance در Tablet/Desktop دو ستون والد را بگیرد و Lunch/Break فضای مستقل داشته باشند؛ فشردگی TimePickerها برطرف شد.
+- Privacy، Language و Theme از Shell گروهی مشترک جدا شدند؛ Mobile header همه Actionها را نگه می‌دارد و با جمع‌کردن Route/Workspace label در breakpointهای باریک Overflow نمی‌سازد.
+- Mobile Settings navigation scrollbar بصری را حذف می‌کند و Groupها در عرض باریک دو ستونه می‌شوند؛ Label تنظیمات زبان نیز از «زبان و جهت» به «زبان» کوتاه شد.
+
+- Phase 178: Closure نهایی i18n با `audit:i18n` سراسری روی Runtime UI، Allowlist محدود و مستند برای Metadata/Parser/Tone classifier و Regression contract مستقل اضافه شد.
+- Shared Dialog/AlertDialog/Select/Table/Picker geometry از RTL فیزیکی به Direction و Logical CSS تبدیل شد؛ Runtime errorهای Import/Device Pairing نیز از Bridge Locale عبور می‌کنند تا متن low-level زبان مقابل در UI نشت نکند.
+- Excel Report اکنون `lang/dir` را از Locale فعال می‌گیرد؛ Metadata و Manifest استاتیک Release 2.3.2 عمداً Canonical فارسی باقی می‌مانند و Runtime title/lang/dir در مرورگر از Locale کاربر پیروی می‌کند.
+
+- Phase 177: i18n در Settings، Onboarding، Import، About، Device Transfer، PWA Experience و پیام‌های System/Persistence/Notification تکمیل شد؛ Runtime title نیز از Locale فعال پیروی می‌کند.
+- Production Browser Smoke اکنون Settings/Import/About و Re-entry واقعی Onboarding را در English/LTR پیش از Restore فارسی بررسی می‌کند؛ Static metadata و Manifest منتشرشده برای سازگاری Release 2.3.2 فعلاً Canonical فارسی باقی مانده‌اند.
+
+- Phase 176: i18n به Clients، Projects، Project Detail/Expenses، Invoices و Leave گسترش یافت؛ Validation و Toastهای تجاری نیز از Locale فعال پیروی می‌کنند.
+- Exportهای CSV/Excel گزارش‌ها اکنون Header، تاریخ، Yes/No، نام فایل و Toast را مطابق Locale فعال تولید می‌کنند و Browser Smoke مسیرهای تجاری English/LTR را پیش از بازگشت به Persian/RTL بررسی می‌کند.
+
+- Phase 175: i18n از Shell/Settings به Today، Month و Reports گسترش یافت؛ متن‌ها، جدول‌ها، نمودارها، Pickerهای زمان/تاریخ و Empty Stateها از Catalog تایپ‌شده فارسی/انگلیسی استفاده می‌کنند.
+- نمایش تاریخ/عدد/مدت/پول Locale-aware شد؛ `fa-IR` با RTL و ارقام فارسی و `en` با LTR و ارقام لاتین، در حالی که تقویم شمسی و کلیدهای ذخیره‌شده تاریخ/زمان بدون تغییر می‌مانند.
+- Production Browser Smoke اکنون پس از ماندگاری English/LTR سه Route واقعی Today/Month/Reports را بررسی می‌کند و سپس Locale را به Persian/RTL بازمی‌گرداند.
+
+- Phase 174: Foundation واقعی i18n اضافه شد؛ Catalog تایپ‌شده فارسی/انگلیسی، Locale مستقل Local-first، سوییچ زنده زبان از Settings و Bootstrap پیش از Hydration برای جلوگیری از پرش جهت صفحه.
+- Shell، Header، Sidebar، Mobile Navigation، Profile Menu، Footer و سطح اصلی Settings اکنون بر اساس Locale مشترک فارسی RTL یا انگلیسی LTR رندر می‌شوند.
+- Production Browser Smoke ماندگاری `en/LTR` در Reload و بازگشت امن به `fa-IR/RTL` را قبل از ادامه Journeyهای قدیمی بررسی می‌کند.
 
 - Phase 173: آنبوردینگ بر اساس Employee/Freelancer/Hybrid شخصی می‌شود؛ فریلنسر می‌تواند مشتری و پروژه اول را بسازد، Hybrid شروع سریع هر دو جریان درآمد را دارد و Import امن Phase 171 داخل مرحله نهایی Onboarding در دسترس است.
 

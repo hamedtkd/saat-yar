@@ -33,9 +33,9 @@ test("data health center renders multi-tab support, source tab and conflict stat
   const panel = await read("components/pages/settings/multi-tab-health-panel.tsx");
   const route = await read("app/settings/page.tsx");
   assert.match(card, /MultiTabHealthPanel status=\{syncStatus\}/);
-  assert.match(panel, /سلامت همگام‌سازی چند تب/);
-  assert.match(panel, /آخرین تب فرستنده/);
-  assert.match(panel, /آخرین ذخیره خارجی/);
+  assert.match(panel, /s\("Multi-tab sync health"\)/);
+  assert.match(panel, /s\("Last sender tab"\)/);
+  assert.match(panel, /s\("Last external save"\)/);
   assert.match(panel, /status\.pending/);
   assert.match(route, /multiTabSyncStatus=\{controller\.multiTabSyncStatus\}/);
 });

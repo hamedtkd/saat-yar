@@ -7,13 +7,13 @@ export function useSettingsDraft<T>({
   value,
   autoSave,
   onSave,
-  label = "تنظیمات",
+  label,
   prepare,
 }: {
   value: T;
   autoSave: boolean;
   onSave: (value: T) => void;
-  label?: string;
+  label: string;
   prepare?: (value: T) => T;
 }) {
   const registryId = useId();

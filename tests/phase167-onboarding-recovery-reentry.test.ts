@@ -78,7 +78,7 @@ test("settings can reopen onboarding without resetting application data", async 
   ]);
   assert.match(card, /startOnboardingReentry\(\)/);
   assert.match(card, /router\.push\("\/onboarding"\)/);
-  assert.match(card, /پروژه‌ها، رکوردهای زمانی، مرخصی‌ها و داده‌های مالی حذف یا بازنشانی نمی‌شوند/);
+  assert.match(card, /s\("Open the wizard again to review your name, workspace, schedule, and storage guidance\. Projects, work records, leave, and financial data are not deleted or reset\."\)/);
   assert.doesNotMatch(card, /createInitialData|setData/);
   assert.match(settingsPage, /<OnboardingReentryCard/);
   assert.match(route, /finishOnboardingSession\(\)/);

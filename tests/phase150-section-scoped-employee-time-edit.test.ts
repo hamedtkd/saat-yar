@@ -16,9 +16,9 @@ test("break editor assertion reads the break section instead of a parent attenda
   const start = smoke.indexOf("async function assertFirstBreakEditorContract");
   const end = smoke.indexOf("async function ensureFirstBreakUnpaid", start);
   const block = smoke.slice(start, end);
-  assert.match(block, /norm\(item\.textContent\) === "وقفه‌ها"/);
-  assert.match(block, /heading\?\.closest\("section"\)/);
-  assert.match(block, /section\.querySelector\('input\[type="checkbox"\]\[aria-label="وقفه 1 با حقوق"\]'\)/);
+  assert.match(block, /document\.querySelector\("\[data-breaks-editor\]"\)/);
+  assert.match(block, /section\?\.querySelector\("\[data-break-row\]"\)/);
+  assert.match(block, /data-break-paid-toggle/);
 });
 
 test("phase 149 IndexedDB evidence remains the authority for lunch and break separation", async () => {

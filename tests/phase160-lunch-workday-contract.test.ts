@@ -77,8 +77,8 @@ test("settings and new daily records expose the global lunch contract", async ()
     read("hooks/controller/use-controller-derived.ts"),
     read("hooks/controller/use-attendance-actions.ts"),
   ]);
-  assert.match(editor, /ناهار پیش‌فرض برای همه روزها/);
-  assert.match(editor, /هدف کار خالص هفتگی/);
+  assert.match(editor, /s\("Default lunch for all days"\)/);
+  assert.match(editor, /s\("Weekly net-work target"\)/);
   assert.match(editor, /applyLunchMinutesToAll/);
   assert.match(editor, /applyLunchPaidToAll/);
   assert.match(derived, /lunchPaid: Boolean\(selectedSchedule\.lunchPaid\)/);

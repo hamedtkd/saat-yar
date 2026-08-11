@@ -24,8 +24,8 @@ test("completed records edit through an isolated draft with explicit save and ca
   const actions = await readFile(new URL("../components/pages/today/completed-day-edit-action-bar.tsx", import.meta.url), "utf8");
   assert.match(source, /const \[draft, setDraft\] = useState<WorkRecord>/);
   assert.match(source, /CompletedDayEditActionBar/);
-  assert.match(actions, /ذخیره تغییرات/);
-  assert.match(actions, /انصراف/);
+  assert.match(actions, /t\("common\.saveChanges"\)/);
+  assert.match(actions, /t\("common\.cancel"\)/);
   assert.match(source, /getWorkRecordChanges/);
   assert.match(source, /updateRecord\(saved\)/);
 });

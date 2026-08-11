@@ -6,10 +6,10 @@ const read = (path: string) => readFile(new URL(`../${path}`, import.meta.url), 
 
 test("today focus card keeps employee notes compact and freelancer fields aligned", async () => {
   const source = await read("components/pages/today/today-focus-card.tsx");
-  assert.match(source, /isEmployee \? "grid content-center gap-3"/);
-  assert.match(source, /<Textarea rows=\{4\}/);
+  assert.match(source, /isEmployee \? "grid content-start gap-4"/);
+  assert.match(source, /rows=\{6\}/);
   assert.match(source, /grid grid-cols-12 content-center gap-4/);
-  assert.match(source, /col-span-8 max-\[720px\]:col-span-12/);
+  assert.match(source, /col-span-8[\s\S]*max-\[720px\]:col-span-12/);
   assert.match(source, /col-span-4 flex h-11/);
 });
 
@@ -30,4 +30,5 @@ test("quality checks remove obsolete copied entrypoints before validation", asyn
   assert.match(cleanup, /app\/date-time-pickers\.tsx/);
   assert.match(cleanup, /app\/storage\.ts/);
   assert.match(cleanup, /lib\/tw\.ts/);
+  assert.match(cleanup, /pnpm-lock\.yaml/);
 });

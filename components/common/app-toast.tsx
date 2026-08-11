@@ -22,9 +22,9 @@ const toneStyles: Record<ToastTone, { shell: string; icon: string }> = {
   },
 };
 
-const successWords = ["ذخیره شد", "ثبت شد", "ساخته شد", "دانلود شد", "بارگذاری شد", "بازگردانده شد", "فعال شد", "ارسال شد", "قرار گرفت", "ادغام شد", "جایگزین شد", "پاک شد", "حذف شد", "پایان یافت"];
-const dangerWords = ["ناموفق", "ممکن نشد", "معتبر نیست", "خطا", "الزامی است", "وارد کنید", "پشتیبانی نمی‌کند"];
-const warningWords = ["ابتدا", "بررسی کنید", "تداخل", "باقی ماند", "متوقف شد", "اجازه داده نشد", "مسدود"];
+const successWords = ["ذخیره شد", "ثبت شد", "ساخته شد", "دانلود شد", "بارگذاری شد", "بازگردانده شد", "فعال شد", "ارسال شد", "قرار گرفت", "ادغام شد", "جایگزین شد", "پاک شد", "حذف شد", "پایان یافت", "saved", "created", "downloaded", "restored", "enabled", "sent", "merged", "replaced", "deleted", "completed", "imported", "ready", "copied", "granted"];
+const dangerWords = ["ناموفق", "ممکن نشد", "معتبر نیست", "خطا", "الزامی است", "وارد کنید", "پشتیبانی نمی‌کند", "failed", "invalid", "error", "required", "enter ", "unsupported", "could not", "denied"];
+const warningWords = ["ابتدا", "بررسی کنید", "تداخل", "باقی ماند", "متوقف شد", "اجازه داده نشد", "مسدود", "first", "conflict", "remaining", "stopped", "review", "waiting", "blocked"];
 
 export function resolveToastTone(message: string): ToastTone {
   if (dangerWords.some((word) => message.includes(word))) return "danger";
@@ -44,7 +44,7 @@ export function AppToast({ message }: { message: string }) {
       role={tone === "danger" ? "alert" : "status"}
       aria-live={tone === "danger" ? "assertive" : "polite"}
       className={cn(
-        "fixed left-1/2 top-4 z-[1000] flex w-[min(92vw,520px)] -translate-x-1/2 items-start gap-3 rounded-2xl border px-3.5 py-3 text-right text-xs font-bold text-[var(--text)]",
+        "fixed left-1/2 top-4 z-[1000] flex w-[min(92vw,520px)] -translate-x-1/2 items-start gap-3 rounded-2xl border px-3.5 py-3 text-start text-xs font-bold text-[var(--text)]",
         "shadow-[0_18px_55px_rgba(0,0,0,.28)] ring-1 ring-[color-mix(in_srgb,var(--text)_6%,transparent)] sm:top-5 sm:px-4",
         toneStyles[tone].shell,
       )}

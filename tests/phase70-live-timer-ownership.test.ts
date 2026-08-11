@@ -46,6 +46,7 @@ test("shell warns about another tab and offers explicit takeover", async () => {
   const banner = await read("components/layout/live-timer-ownership-banner.tsx");
   assert.match(shell, /LiveTimerOwnershipBanner/);
   assert.match(shell, /controller\.liveTimerOwnership\.blocked/);
-  assert.match(banner, /کنترل تایمر در تب دیگری فعال است/);
-  assert.match(banner, /انتقال کنترل به این تب/);
+  assert.match(banner, /s\("Timer control is active in another tab\."\)/);
+  assert.match(banner, /s\("Transfer control to this tab"\)/);
+  assert.doesNotMatch(banner, /[\u0600-\u06FF]/);
 });
