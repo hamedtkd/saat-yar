@@ -10,6 +10,7 @@ import { localDateKey } from "@/lib/format";
 import { getHolidayInfo } from "@/lib/holidays";
 import { isScheduledDayOff } from "@/lib/work-schedule";
 import { CompletedDayEditor } from "./completed-day-editor";
+import { FirstRunGuide } from "./first-run-guide";
 import { ManualEntryForm } from "./manual-entry-form";
 import { RecordHealthBanner } from "./record-health-banner";
 import { RecordResetUndo } from "./record-reset-undo";
@@ -59,6 +60,15 @@ export function TodayPage(props: TodayPageProps) {
         selectedDate={props.selectedDate}
         onDateChange={(nextDate) => requestNavigation(() => props.setSelectedDate(nextDate))}
       />
+      {isToday && (
+        <FirstRunGuide
+          mode={props.data.settings.mode}
+          hasClients={props.data.clients.some((client) => !client.archived)}
+          hasProjects={props.data.projects.some((project) => project.status === "active")}
+          hasTrackedActivity={Object.values(props.data.records).some((record) => Boolean(record.start)) || props.data.timeEntries.length > 0}
+          onStartWork={props.startWork}
+        />
+      )}
       {holiday.isHoliday && (
         <div className="mb-5 flex items-center justify-between gap-3 rounded-[var(--card-radius)] border border-red-500/20 bg-red-500/10 px-4 py-3 text-red-500">
           <div className="grid gap-0.5">

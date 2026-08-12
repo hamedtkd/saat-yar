@@ -35,7 +35,7 @@ export function TimerRelationFields({ data, timerDraft, setTimerDraft, createCli
   };
 
   return (
-    <>
+    <div className="contents" data-first-run-timer-relations>
       <div className="col-span-4 grid min-w-0 gap-2 text-xs font-bold text-[var(--text-muted)] max-[720px]:col-span-12">
         <div className="flex items-center justify-between gap-2"><span>{t("common.client")}</span><QuickClientDialog compact onCreate={createClient} onCreated={selectClient} /></div>
         {activeClients.length ? (
@@ -69,6 +69,6 @@ export function TimerRelationFields({ data, timerDraft, setTimerDraft, createCli
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }

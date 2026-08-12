@@ -427,6 +427,8 @@ export async function runProductionBrowserSmoke() {
       "onboarding mode step",
     );
     console.log("✓ Onboarding welcome step captured a user name");
+    await waitFor(client, `Boolean(document.querySelector('[data-onboarding-fast-setup]')) && Boolean(document.querySelector('[data-onboarding-skip]'))`, "onboarding fast setup and skip actions");
+    console.log("✓ Onboarding exposes Fast Setup and Skip without removing the advanced flow");
     await clickButton(client, "فریلنسر");
     await waitFor(client, `document.querySelector('[data-onboarding-progress-mode="freelancer"]') && document.querySelector('[data-onboarding-step-index="2"][data-onboarding-mode="freelancer"]')`, "freelancer personalized onboarding progress");
     await clickButton(client, "ترکیبی");
@@ -509,6 +511,9 @@ export async function runProductionBrowserSmoke() {
       && onboardingSettings.onboarded === true;
     if (!onboardingContract) throw new Error(`Persisted onboarding settings contract failed: ${JSON.stringify(onboardingSettings)}`);
     console.log("✓ Onboarding completed with schedule, payroll and appearance persisted to AppData");
+    await waitFor(client, `Boolean(document.querySelector('[data-first-run-guide]')) && Boolean(document.querySelector('[data-first-run-primary]'))`, "first-run action guide after onboarding");
+    console.log("✓ First-run guide exposes the next action immediately after onboarding");
+    await evaluate(client, `document.querySelector('[data-first-run-dismiss]')?.click()`);
 
     await client.call("Emulation.setDeviceMetricsOverride", { width: 2560, height: 1440, deviceScaleFactor: 1, mobile: false, screenWidth: 2560, screenHeight: 1440 });
     await evaluate(client, `new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))`);

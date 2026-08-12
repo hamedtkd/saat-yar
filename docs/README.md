@@ -140,6 +140,7 @@
 - [فاز ۱۷۸: Closure و Hardening نهایی i18n](./phases/PHASE_178_NOTES_FA.md)
 - [فاز ۱۷۹: Release Candidate 2.4.0](./phases/PHASE_179_NOTES_FA.md)
 - [فاز ۱۸۰: Final Release 2.4.0](./phases/PHASE_180_NOTES_FA.md)
+- [فاز ۱۸۱: Onboarding & First-run UX](./phases/PHASE_181_NOTES_FA.md)
 
 - [فاز ۱۶۵: Final Release 2.3.2](./phases/PHASE_165_NOTES_FA.md)
 - [فاز ۱۶۶: Route مستقل آنبوردینگ](./phases/PHASE_166_NOTES_FA.md)

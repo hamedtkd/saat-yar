@@ -126,6 +126,31 @@ export function applyLunchPaidToAll<T extends WeeklyScheduleSettings>(settings: 
   };
 }
 
+export function applyScheduleDayToEnabledDays<T extends WeeklyScheduleSettings>(settings: T, sourceDay: WeekdayKey): T {
+  const source = settings.weeklySchedule[sourceDay];
+  if (!source.enabled) return settings;
+
+  const weeklySchedule = Object.fromEntries(
+    weekdayOrder.map((day) => {
+      const current = settings.weeklySchedule[day];
+      if (!current.enabled) return [day, current];
+      return [day, {
+        ...current,
+        start: source.start,
+        end: source.end,
+        lunchMinutes: source.lunchMinutes,
+        lunchPaid: source.lunchPaid,
+      }];
+    }),
+  ) as Record<WeekdayKey, WorkScheduleDay>;
+
+  return {
+    ...settings,
+    weeklyMinutes: getWeeklyTargetMinutes({ ...settings, weeklySchedule }),
+    weeklySchedule,
+  };
+}
+
 export function getDailyTargetMinutes(date: string, settings: Settings): number {
   return getScheduleTargetMinutes(getWorkScheduleDay(date, settings));
 }

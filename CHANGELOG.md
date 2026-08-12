@@ -1,5 +1,15 @@
 ## [Unreleased]
 
+### افزوده شد
+
+- Phase 181: Fast Setup و Skip for now به First-run Onboarding اضافه شد تا کاربر بعد از نام و انتخاب Workspace بتواند مستقیم با Defaultهای امن وارد محصول شود و تنظیمات پیشرفته را بعداً از Settings تکمیل کند.
+- برنامه کاری اکنون می‌تواند Start/End/Lunch یک روز فعال را با یک اقدام روی همه روزهای فعال اعمال کند؛ روزهای غیرفعال تغییر نمی‌کنند.
+- اولین ورود به Today بعد از Onboarding یک CTA موقت و متناسب با Employee/Freelancer/Hybrid نشان می‌دهد تا اولین اقدام محصول روشن باشد.
+
+### تغییر کرد
+
+- Footer آنبوردینگ روی موبایل fixed و safe-area aware شد و مسیر کامل هفت‌مرحله‌ای برای Recovery/Re-entry بدون تغییر باقی ماند.
+
 ## [2.4.0] - 2026-08-12
 
 - Phase 180 Final Release: Candidate `1cabdb4` و Merge اولیه `7627e99` ثبت شدند؛ Manifest به `released` منتقل شد، Gate نهایی روی 770/770 قفل شد و Tag annotated `v2.4.0` فقط پس از Deploy نهایی و `audit:production` سبز مجاز است.

@@ -298,10 +298,22 @@
 ## آمادگی انتشار ۲.۴.۰
 
 - [x] فاز ۱۷۹: Release Candidate 2.4.0؛ افزایش Package/Lockfile به ۲.۴.۰، Manifest Candidate، Release Notes فارسی/انگلیسی، Release Audit فعال و ثبت Baseline فاز ۱۷۸ روی `887158c` با ۷۵۸/۷۵۸ تست. Candidate Gate با شش Contract Test جدید باید ۷۶۴/۷۶۴ باشد.
-- [x] فاز ۱۸۰: Final Release 2.4.0؛ Candidate `1cabdb4` و Merge اولیه `7627e99` ثبت شدند، Final Manifest/Docs و شش Contract نهایی برای Gate ۷۷۰/۷۷۰ آماده شدند؛ Merge نهایی، Deploy، `audit:production` و Tag annotated `v2.4.0` طبق Checklist و فقط روی Commit نهایی سبز انجام می‌شوند.
+- [x] فاز ۱۸۰: Final Release 2.4.0؛ Candidate فاز ۱۷۹ روی `1cabdb4` با Gate `۷۶۴/۷۶۴` حفظ شد، Merge اولیه کنترل‌شده `7627e99` ثبت شد، Gate نهایی ۷۷۰/۷۷۰ سبز شد، Merge نهایی روی `71f6732` Deploy شد، `audit:production` پاس شد و Tag annotated `v2.4.0` دقیقاً روی همان Commit منتشر شد.
 - [x] AppData Schema روی v17 باقی می‌ماند و Phase 179 Migration یا Dependency جدید ندارد.
 - [x] Manifestهای ۲.۳.۲ و قدیمی‌تر تاریخی و immutable باقی می‌مانند.
 - [x] Static metadata/PWA در Candidate همچنان Canonical فارسی است و Runtime Locale فارسی RTL / انگلیسی LTR را اعمال می‌کند.
+
+## توسعه پس از ۲.۴.۰ — First-run، انعطاف و تحلیل
+
+- [x] فاز ۱۸۱: Onboarding & First-run UX؛ Fast Setup و Skip for now بدون حذف Wizard کامل، Apply یک برنامه به همه روزهای فعال، CTA روشن اولین اقدام برای Employee/Freelancer/Hybrid و پالیش Responsive/RTL/LTR.
+- [ ] فاز ۱۸۲: Flexible Work Mode & Activity Segments؛ حالت بدون Start/End ثابت از قبل، وقفه‌های شناور و Segmentهای جلسه/یادگیری/کار عمیق/اداری/پروژه؛ پیش از اجرا نیاز Schema v18 بررسی شود.
+- [ ] فاز ۱۸۳: Notification Intelligence؛ Reminder سفارشی، Snooze و Quiet hours با محاسبه فقط بر اساس Active Work Time و بدون شمردن Lunch/Break.
+- [ ] فاز ۱۸۴: Product Analytics privacy-safe؛ Event taxonomy، Consent/Opt-out و ممنوعیت ارسال حقوق، درآمد، عنوان پروژه، یادداشت یا محتوای شخصی.
+- [ ] فاز ۱۸۵: GitHub-style Activity Graph & Month Intelligence؛ Heatmap کارکرد واقعی با Persian/Gregorian، Tooltip، keyboard accessibility، streak و توزیع deficit/overtime.
+- [ ] فاز ۱۸۶: Motion & Perceived Performance؛ animation محدود و state-driven، loading state ساعت‌یار، `prefers-reduced-motion` و بدون layout shift.
+- [ ] فاز ۱۸۷: Google Calendar Architecture + Read Integration؛ بررسی OAuth/امنیت Local-first، import فقط‌خواندنی با Preview و mapping event به activity/meeting.
+- [ ] فاز ۱۸۸: Google Calendar Write/Sync + Advanced Month؛ فقط در صورت تأیید معماری امن، export/sync انتخابی، conflict/duplicate handling و Month planning پیشرفته.
+- [ ] Technical debt پس از 2.4.0: کاهش Regex source tests و افزایش behavioral/component/browser contracts به‌صورت تدریجی.
 
 ## بین‌المللی‌سازی آینده — پس از Patch بعدی
 
