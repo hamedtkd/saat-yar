@@ -298,7 +298,7 @@
 ## آمادگی انتشار ۲.۴.۰
 
 - [x] فاز ۱۷۹: Release Candidate 2.4.0؛ افزایش Package/Lockfile به ۲.۴.۰، Manifest Candidate، Release Notes فارسی/انگلیسی، Release Audit فعال و ثبت Baseline فاز ۱۷۸ روی `887158c` با ۷۵۸/۷۵۸ تست. Candidate Gate با شش Contract Test جدید باید ۷۶۴/۷۶۴ باشد.
-- [ ] فاز ۱۸۰: Final Release 2.4.0؛ ثبت SHA Candidate فاز ۱۷۹، Merge کنترل‌شده `dev` به `main`، Deployment، `audit:production`، Final Manifest و Tag annotated `v2.4.0` فقط پس از Gate کامل. هدف Gate نهایی ۷۷۰/۷۷۰ است.
+- [x] فاز ۱۸۰: Final Release 2.4.0؛ Candidate `1cabdb4` و Merge اولیه `7627e99` ثبت شدند، Final Manifest/Docs و شش Contract نهایی برای Gate ۷۷۰/۷۷۰ آماده شدند؛ Merge نهایی، Deploy، `audit:production` و Tag annotated `v2.4.0` طبق Checklist و فقط روی Commit نهایی سبز انجام می‌شوند.
 - [x] AppData Schema روی v17 باقی می‌ماند و Phase 179 Migration یا Dependency جدید ندارد.
 - [x] Manifestهای ۲.۳.۲ و قدیمی‌تر تاریخی و immutable باقی می‌مانند.
 - [x] Static metadata/PWA در Candidate همچنان Canonical فارسی است و Runtime Locale فارسی RTL / انگلیسی LTR را اعمال می‌کند.
