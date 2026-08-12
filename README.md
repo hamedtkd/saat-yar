@@ -286,7 +286,7 @@ The Persian deployment guide covers Windows, macOS, Linux, Docker, GitHub Pages,
 
 [Run and deployment guide](./RUN_AND_DEPLOY_FA.md)
 
-- [Saatyar 2.4.0 release candidate notes](./docs/releases/RELEASE_NOTES_2.4.0_EN.md)
+- [Latest stable Saatyar 2.4.0 release notes](./docs/releases/RELEASE_NOTES_2.4.0_EN.md)
 - [Latest stable Saatyar 2.3.2 release notes](./docs/releases/RELEASE_NOTES_2.3.2_EN.md)
 - [Historical Saatyar 2.3.1 release notes](./docs/releases/RELEASE_NOTES_2.3.1_EN.md)
 - [Historical Saatyar 2.3.0 release notes](./docs/releases/RELEASE_NOTES_2.3.0_EN.md)
@@ -301,11 +301,11 @@ Before opening a pull request, read [CONTRIBUTING.md](./CONTRIBUTING.md) and the
 
 ## Roadmap
 
-Version **2.3.2** remains the latest stable Saatyar release. **2.4.0 is the current release candidate** and packages Phases 166–178: dedicated recoverable onboarding, corrected leave entitlement, completed-day editing feedback, the Import Wizard, the shared live runtime clock, and full Persian RTL / English LTR i18n hardening.
+Version **2.4.0** is the latest stable Saatyar release and packages Phases 166–180: dedicated recoverable onboarding, corrected leave entitlement, completed-day editing feedback, the Import Wizard, the shared live runtime clock, full Persian RTL / English LTR i18n hardening, and the final release contract.
 
-The verified Phase 178 baseline at `887158c` passed **758/758 tests**, all three production browser journeys, direct WebRTC pairing, the Vercel static-export audit, the i18n closure audit, a 22-route static build, and a 44-asset PWA precache. Phase 179 adds six candidate-contract tests, so the candidate gate is expected to reach **764/764**. AppData remains on schema v17 with no migration or new dependency in the candidate phase. See the [2.4.0 candidate notes](./docs/releases/RELEASE_NOTES_2.4.0_EN.md), the Persian [candidate checklist](./RELEASE_CHECKLIST_FA.md), and the [roadmap](./docs/roadmap/BACKLOG_FA.md).
+The verified Phase 178 baseline at `887158c` passed **758/758 tests**. Phase 179 candidate `1cabdb4` completed the **764/764** gate, and Phase 180 adds six finalization contracts for a **770/770** final gate. The initial controlled `dev -> main` merge is `7627e99`. AppData remains on schema v17 with no Phase 180 migration or dependency change. See the [2.4.0 release notes](./docs/releases/RELEASE_NOTES_2.4.0_EN.md), the Persian [final release checklist](./RELEASE_CHECKLIST_FA.md), and the [roadmap](./docs/roadmap/BACKLOG_FA.md).
 
-The 2.4.0 manifest intentionally remains `release-candidate` with no final release commit. Phase 179 stays on `dev`; Phase 180 will capture the candidate SHA, control the `main` rollout, require the post-deploy production audit, and only then create the annotated `v2.4.0` tag. Historical 2.3.2 and earlier manifests/tags remain immutable.
+The 2.4.0 manifest is `released` and intentionally does not embed its own final release commit. After the final `dev -> main` merge and Vercel deployment, `npm run audit:production` must pass before the annotated `v2.4.0` tag is created. That tag is the source of truth for the exact final release commit. Historical 2.3.2 and earlier manifests/tags remain immutable.
 
 ## Support development
 

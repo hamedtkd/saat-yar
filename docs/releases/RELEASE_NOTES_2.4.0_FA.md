@@ -1,8 +1,10 @@
-# یادداشت Release Candidate ساعت‌یار ۲.۴.۰
+# یادداشت انتشار ساعت‌یار ۲.۴.۰
 
 تاریخ Candidate: ۲۰ مرداد ۱۴۰۵ / 2026-08-11
 
-نسخه ۲.۴.۰ اولین Minor Release پس از ۲.۳.۲ است و تغییرات فازهای ۱۶۶ تا ۱۷۸ را بسته‌بندی می‌کند. این فایل وضعیت **Release Candidate** را مستند می‌کند؛ انتشار Production و Tag نهایی هنوز انجام نشده‌اند.
+تاریخ Final Release: ۲۱ مرداد ۱۴۰۵ / 2026-08-12
+
+نسخه ۲.۴.۰ اولین Minor Release پس از ۲.۳.۲ است و تغییرات فازهای ۱۶۶ تا ۱۷۸ را بسته‌بندی می‌کند. Candidate فاز ۱۷۹ روی `1cabdb4` بسته شد و Merge کنترل‌شده اولیه `dev -> main` روی `7627e99` انجام شد. فاز ۱۸۰ قرارداد Final Release، Gate `770/770` و الزام Audit Production پیش از Tag annotated را نهایی می‌کند.
 
 ## مهم‌ترین تغییرات
 
@@ -34,9 +36,9 @@
 
 - AppData Schema: **v17**
 - Migration جدید: **ندارد**
-- Dependency جدید در فاز Candidate: **`framer-motion@^12.42.2`** برای انیمیشن Digitهای Flip Clock
+- Dependency جدید از Candidate: **`framer-motion@^12.42.2`** برای انیمیشن Digitهای Flip Clock
 - فرمت Backup و مقادیر Domain/Storage برای i18n تغییر نکرده‌اند.
-- Metadata و Manifest استاتیک در Candidate همچنان Canonical فارسی هستند؛ Runtime `lang/dir/title` از Locale کاربر پیروی می‌کند.
+- Metadata و Manifest استاتیک در 2.4.0 همچنان Canonical فارسی هستند؛ Runtime `lang/dir/title` از Locale کاربر پیروی می‌کند.
 
 ## شواهد Baseline
 
@@ -56,8 +58,8 @@ Vercel static-export audit passed
 i18n closure audit passed
 ```
 
-فاز ۱۷۹ شش Contract Test مربوط به Candidate اضافه می‌کند؛ بنابراین Gate این فاز باید به **764/764** برسد. Gate هدف Finalization فاز ۱۸۰ برابر **770/770** است.
+فاز ۱۷۹ شش Contract Test مربوط به Candidate اضافه کرد و Gate Candidate به **764/764** رسید. فاز ۱۸۰ شش Contract Test Finalization اضافه می‌کند و Gate نهایی باید **770/770** باشد.
 
 ## Rollout
 
-این Candidate فقط روی `dev` آماده می‌شود. در فاز ۱۷۹ Merge به `main`، Audit نهایی Production و Tag `v2.4.0` انجام نمی‌شوند. پس از Commit/Push و سبزشدن Gate، فاز ۱۸۰ Candidate Commit را ثبت می‌کند، rollout کنترل‌شده را انجام می‌دهد و فقط پس از `audit:production` سبز Tag annotated نهایی ساخته می‌شود.
+Candidate فاز ۱۷۹ با SHA `1cabdb4` ثبت شده و Merge اولیه `dev -> main` با SHA `7627e99` تأیید شده است. Finalization فاز ۱۸۰ ابتدا روی `dev` با Gate `770/770` Commit می‌شود، سپس Merge نهایی به `main` و Deploy Vercel انجام می‌شود. فقط پس از `npm run audit:production` سبز، annotated tag `v2.4.0` روی همان Commit نهایی ساخته می‌شود. Tag منبع حقیقت SHA نهایی Release است و Manifest عمداً release commit خودارجاعی ذخیره نمی‌کند.

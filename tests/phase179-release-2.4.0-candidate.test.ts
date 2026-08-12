@@ -8,40 +8,51 @@ const read = (path: string) => readFileSync(path, "utf8");
 const packageJson = JSON.parse(read("package.json")) as { version: string; engines: { node: string }; scripts: Record<string, string>; dependencies: Record<string, string>; devDependencies: Record<string, string> };
 const packageLock = JSON.parse(read("package-lock.json")) as { version: string; packages: Record<string, { version?: string }> };
 const manifest = JSON.parse(read("docs/releases/2.4.0.json")) as {
-  version: string; releaseDate: string; status: string; dataSchemaVersion: number; nodeEngine: string;
-  verifiedBaselineCommitPrefix: string; verifiedBaselineTestCount: number; expectedCandidateTestCount: number; expectedFinalTestCount: number;
-  releaseCommit: string | null; tag: string; qualityCommand: string; pairingCommand: string; i18nAuditCommand: string;
+  version: string; candidateDate: string; releaseDate: string; status: string; dataSchemaVersion: number; nodeEngine: string;
+  verifiedBaselineCommitPrefix: string; verifiedBaselineTestCount: number; verifiedCandidateCommitPrefix: string; verifiedCandidateTestCount: number; expectedFinalTestCount: number;
+  tag: string; qualityCommand: string; pairingCommand: string; i18nAuditCommand: string;
   productionAuditCommand: string; vercelAuditCommand: string; releaseNotes: { fa: string; en: string };
   releaseEvidence: Record<string, unknown>; rollout: Record<string, unknown>;
 };
 
-test("2.4.0 candidate version Node schema date and tag are aligned", () => {
+test("historical Phase 179 candidate identity is preserved after 2.4.0 finalization", () => {
   assert.equal(packageJson.version, "2.4.0");
   assert.equal(packageLock.version, "2.4.0");
   assert.equal(packageLock.packages[""]?.version, "2.4.0");
   assert.equal(manifest.version, "2.4.0");
-  assert.equal(manifest.releaseDate, "2026-08-11");
-  assert.equal(manifest.status, "release-candidate");
+  assert.equal(manifest.candidateDate, "2026-08-11");
+  assert.equal(manifest.releaseDate, "2026-08-12");
+  assert.equal(manifest.status, "released");
   assert.equal(manifest.nodeEngine, packageJson.engines.node);
   assert.equal(manifest.dataSchemaVersion, APP_DATA_SCHEMA_VERSION);
   assert.equal(manifest.tag, "v2.4.0");
-  assert.equal(manifest.releaseCommit, null);
+  assert.equal(manifest.verifiedCandidateCommitPrefix, "1cabdb4");
+  assert.equal(manifest.verifiedCandidateTestCount, 764);
 });
 
-test("2.4.0 candidate preserves the green Phase 178 baseline and rollout boundary", () => {
+test("historical Phase 179 preserves the green Phase 178 baseline and candidate evidence", () => {
   assert.equal(manifest.verifiedBaselineCommitPrefix, "887158c");
   assert.equal(manifest.verifiedBaselineTestCount, 758);
-  assert.equal(manifest.expectedCandidateTestCount, 764);
+  assert.equal(manifest.verifiedCandidateCommitPrefix, "1cabdb4");
+  assert.equal(manifest.verifiedCandidateTestCount, 764);
   assert.equal(manifest.expectedFinalTestCount, 770);
-  assert.deepEqual(manifest.releaseEvidence, {
-    baselinePhase: 178, productionBrowserSmoke: "passed", freelancerBrowserSmoke: "passed", employeeBrowserSmoke: "passed",
-    pairingBrowserSmoke: "passed", pairingEncryptedChunks: 4, vercelStaticExportAudit: "passed", i18nClosureAudit: "passed",
-    staticRoutes: 22, pwaPrecacheBuildAssets: 44, phase178FinalTestCount: 758,
-  });
-  assert.deepEqual(manifest.rollout, { branch: "dev", mainMerge: "pending", productionAudit: "pending", annotatedTag: "pending" });
+  assert.equal(manifest.releaseEvidence.baselinePhase, 178);
+  assert.equal(manifest.releaseEvidence.phase178FinalTestCount, 758);
+  assert.equal(manifest.releaseEvidence.candidatePhase, 179);
+  assert.equal(manifest.releaseEvidence.phase179CandidateCommitPrefix, "1cabdb4");
+  assert.equal(manifest.releaseEvidence.phase179CandidateTestCount, 764);
+  assert.equal(manifest.releaseEvidence.productionBrowserSmoke, "passed");
+  assert.equal(manifest.releaseEvidence.freelancerBrowserSmoke, "passed");
+  assert.equal(manifest.releaseEvidence.employeeBrowserSmoke, "passed");
+  assert.equal(manifest.releaseEvidence.pairingBrowserSmoke, "passed");
+  assert.equal(manifest.releaseEvidence.pairingEncryptedChunks, 4);
+  assert.equal(manifest.releaseEvidence.vercelStaticExportAudit, "passed");
+  assert.equal(manifest.releaseEvidence.i18nClosureAudit, "passed");
+  assert.equal(manifest.releaseEvidence.staticRoutes, 22);
+  assert.equal(manifest.releaseEvidence.pwaPrecacheBuildAssets, 44);
 });
 
-test("2.4.0 candidate packages Phases 166 through 178 with bilingual release notes", () => {
+test("2.4.0 still packages the Phase 179 product lock with bilingual release notes", () => {
   const fa = read(manifest.releaseNotes.fa);
   const en = read(manifest.releaseNotes.en);
   assert.match(fa, /ساعت‌یار ۲\.۴\.۰/);
@@ -55,12 +66,12 @@ test("2.4.0 candidate packages Phases 166 through 178 with bilingual release not
   assert.match(en, /browser-safe ESM entry point/i);
   assert.match(fa, /Schema: \*\*v17\*\*/);
   assert.match(en, /schema: \*\*v17\*\*/i);
-  assert.ok(read("CHANGELOG.md").split(/\r?\n/).includes("## [2.4.0] - 2026-08-11"));
+  assert.ok(read("CHANGELOG.md").split(/\r?\n/).includes("## [2.4.0] - 2026-08-12"));
   assert.match(read("README.md"), /RELEASE_NOTES_2\.4\.0_EN\.md/);
   assert.match(read("README_FA.md"), /RELEASE_NOTES_2\.4\.0_FA\.md/);
 });
 
-test("2.4.0 candidate keeps 2.3.2 historical and every release gate explicit", () => {
+test("historical Phase 179 keeps 2.3.2 immutable and every release gate explicit", () => {
   const historical = JSON.parse(read("docs/releases/2.3.2.json")) as { version: string; status: string; tag: string; expectedFinalTestCount: number };
   assert.deepEqual(historical, { ...historical, version: "2.3.2", status: "released", tag: "v2.3.2", expectedFinalTestCount: 639 });
   assert.equal(manifest.qualityCommand, "npm run check:release");
@@ -70,16 +81,16 @@ test("2.4.0 candidate keeps 2.3.2 historical and every release gate explicit", (
   assert.equal(manifest.productionAuditCommand, "npm run audit:production");
 });
 
-test("Phase 179 checklist freezes candidate actions and leaves Phase 180 open", () => {
+test("Phase 179 notes preserve the candidate boundary while Phase 180 owns final rollout", () => {
   const checklist = read("RELEASE_CHECKLIST_FA.md");
   const backlog = read("docs/roadmap/BACKLOG_FA.md");
   assert.match(checklist, /npm run release:prepare:2\.4\.0/);
-  assert.match(checklist, /764\/764/);
-  assert.match(checklist, /Merge نمی‌شود/);
-  assert.match(checklist, /Tag `v2\.4\.0` ساخته یا Push نمی‌شود/);
+  assert.match(checklist, /Verified Phase 179 candidate: 1cabdb4/);
+  assert.match(checklist, /Expected Phase 180 final tests: 770/);
+  assert.match(checklist, /audit:production/);
   assert.match(backlog, /## آمادگی انتشار ۲\.۴\.۰/);
   assert.match(backlog, /- \[x\] فاز ۱۷۹:/);
-  assert.match(backlog, /- \[ \] فاز ۱۸۰:/);
+  assert.match(backlog, /- \[x\] فاز ۱۸۰:/);
   const phaseNotes = read("docs/phases/PHASE_179_NOTES_FA.md");
   assert.match(phaseNotes, /764 tests/);
   assert.match(phaseNotes, /Revision 6 — timer motion \+ responsive header cleanup/);
@@ -159,7 +170,7 @@ test("Phase 179 checklist freezes candidate actions and leaves Phase 180 open", 
   assert.match(freelancerSmoke, /stable mobile visual viewport/);
 });
 
-test("active 2.4.0 candidate audit passes and Phase 179 is wired into npm test", () => {
+test("final 2.4.0 audit passes while historical Phase 179 remains wired into npm test", () => {
   assert.deepEqual(collectReleaseAuditFailures(), []);
   assert.match(packageJson.scripts.test, /tests\/phase179-release-2\.4\.0-candidate\.test\.ts/);
   assert.equal(packageJson.scripts["release:prepare:2.4.0"], "node scripts/prepare-release-2.4.0.mjs");

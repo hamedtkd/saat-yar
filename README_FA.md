@@ -275,7 +275,7 @@ tests/                         تست‌های دامنه، Regression و معم
 
 - [عیب‌یابی Windows و خطاهای npm](./docs/TROUBLESHOOTING_FA.md)
 - [جدول سازگاری مرورگر و محدودیت‌های Notification/PWA](./docs/BROWSER_COMPATIBILITY.md)
-- [یادداشت Release Candidate ساعت‌یار ۲.۴.۰](./docs/releases/RELEASE_NOTES_2.4.0_FA.md)
+- [یادداشت آخرین Release پایدار ساعت‌یار ۲.۴.۰](./docs/releases/RELEASE_NOTES_2.4.0_FA.md)
 - [آخرین انتشار پایدار ساعت‌یار ۲.۳.۲](./docs/releases/RELEASE_NOTES_2.3.2_FA.md)
 - [یادداشت انتشار تاریخی ۲.۳.۱](./docs/releases/RELEASE_NOTES_2.3.1_FA.md)
 - [یادداشت انتشار تاریخی ۲.۳.۰](./docs/releases/RELEASE_NOTES_2.3.0_FA.md)
@@ -298,11 +298,11 @@ npm run test:browser:production
 
 ## نقشه راه
 
-نسخه **۲.۳.۲** همچنان آخرین Release پایدار ساعت‌یار است. **۲.۴.۰ Candidate فعال** تغییرات فازهای ۱۶۶ تا ۱۷۸ را بسته‌بندی می‌کند: آنبوردینگ مستقل و قابل‌بازیابی، اصلاح سهمیه مرخصی، بازخورد ویرایش روز تکمیل‌شده، Import Wizard، Runtime Clock مشترک و تکمیل کامل فارسی RTL / انگلیسی LTR.
+نسخه **۲.۴.۰** آخرین Release پایدار ساعت‌یار است و تغییرات فازهای ۱۶۶ تا ۱۸۰ را بسته‌بندی می‌کند: آنبوردینگ مستقل و قابل‌بازیابی، اصلاح سهمیه مرخصی، بازخورد ویرایش روز تکمیل‌شده، Import Wizard، Runtime Clock مشترک، تکمیل فارسی RTL / انگلیسی LTR و قرارداد Final Release.
 
-Baseline فاز ۱۷۸ روی `887158c` با **۷۵۸/۷۵۸ تست**، هر سه Browser Journey، Pairing مستقیم WebRTC، `audit:vercel`، Audit نهایی i18n، Build استاتیک ۲۲ Route و PWA precache با ۴۴ asset سبز شده است. فاز ۱۷۹ شش قرارداد Candidate اضافه می‌کند و Gate باید به **۷۶۴/۷۶۴** برسد. AppData همچنان Schema v17 است و در Candidate Migration یا Dependency جدید نداریم. جزئیات در [یادداشت Candidate ۲.۴.۰](./docs/releases/RELEASE_NOTES_2.4.0_FA.md)، [چک‌لیست Candidate](./RELEASE_CHECKLIST_FA.md) و [نقشه راه](./docs/roadmap/BACKLOG_FA.md) ثبت شده‌اند.
+Baseline فاز ۱۷۸ روی `887158c` با **۷۵۸/۷۵۸ تست** بسته شد. Candidate فاز ۱۷۹ روی `1cabdb4` Gate **۷۶۴/۷۶۴** را کامل کرد و فاز ۱۸۰ شش قرارداد Finalization اضافه می‌کند تا Gate نهایی **۷۷۰/۷۷۰** باشد. Merge کنترل‌شده اولیه `dev -> main` روی `7627e99` ثبت شده است. AppData همچنان Schema v17 است و Phase 180 Migration یا Dependency جدید ندارد. جزئیات در [یادداشت Release ۲.۴.۰](./docs/releases/RELEASE_NOTES_2.4.0_FA.md)، [چک‌لیست Final Release](./RELEASE_CHECKLIST_FA.md) و [نقشه راه](./docs/roadmap/BACKLOG_FA.md) ثبت شده‌اند.
 
-Manifest ۲.۴.۰ عمداً در وضعیت `release-candidate` و بدون Commit نهایی باقی می‌ماند. فاز ۱۷۹ فقط روی `dev` بسته می‌شود؛ فاز ۱۸۰ SHA Candidate را ثبت می‌کند، rollout کنترل‌شده روی `main` و `audit:production` را انجام می‌دهد و فقط بعد از آن Tag annotated `v2.4.0` ساخته می‌شود. Manifest و Tagهای ۲.۳.۲ و قدیمی‌تر تاریخی و immutable باقی می‌مانند.
+Manifest ۲.۴.۰ در وضعیت `released` است اما عمداً SHA نهایی خودش را داخل Manifest ذخیره نمی‌کند. بعد از Merge نهایی `dev -> main` و Deploy Vercel، `npm run audit:production` باید سبز شود و فقط سپس Tag annotated `v2.4.0` روی همان Commit نهایی ساخته شود. این Tag منبع حقیقت SHA Release است. Manifest و Tagهای ۲.۳.۲ و قدیمی‌تر تاریخی و immutable باقی می‌مانند.
 
 ## حمایت مالی
 

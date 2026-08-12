@@ -1,6 +1,8 @@
 ## [Unreleased]
 
-## [2.4.0] - 2026-08-11
+## [2.4.0] - 2026-08-12
+
+- Phase 180 Final Release: Candidate `1cabdb4` و Merge اولیه `7627e99` ثبت شدند؛ Manifest به `released` منتقل شد، Gate نهایی روی 770/770 قفل شد و Tag annotated `v2.4.0` فقط پس از Deploy نهایی و `audit:production` سبز مجاز است.
 
 - Phase 179 final visual lock: Hero Flip Clock برای خوانایی Vazirmatn FD روی 20px قفل شد و کارت یادداشت روز کاری کارمند با فضای مفیدتر و نسبت متعادل‌تر نسبت به Timer آماده Release شد.
 

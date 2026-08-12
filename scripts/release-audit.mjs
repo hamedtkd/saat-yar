@@ -38,7 +38,7 @@ export function collectReleaseAuditFailures() {
   const packageLock = readJson("package-lock.json");
   const manifest = readJson(RELEASE_MANIFEST_PATH);
 
-  requireCondition(packageJson.version === ACTIVE_RELEASE_VERSION, "package.json is not on the active 2.4.0 release candidate.", failures);
+  requireCondition(packageJson.version === ACTIVE_RELEASE_VERSION, "package.json is not on the active 2.4.0 release.", failures);
   requireCondition(packageJson.version === manifest.version, "package.json version does not match the active release manifest.", failures);
   requireCondition(packageLock.version === manifest.version, "package-lock.json root version does not match the active release manifest.", failures);
   requireCondition(packageLock.packages?.[""]?.version === manifest.version, "package-lock.json package version does not match the active release manifest.", failures);
@@ -46,12 +46,14 @@ export function collectReleaseAuditFailures() {
   requireCondition(packageLock.packages?.["node_modules/framer-motion"]?.version === "12.42.2", "package-lock.json must pin framer-motion 12.42.2.", failures);
   requireCondition(packageJson.engines?.node === manifest.nodeEngine, "Node engine does not match the release manifest.", failures);
   requireCondition(APP_DATA_SCHEMA_VERSION === manifest.dataSchemaVersion, "Current AppData schema must exactly match the active release manifest schema.", failures);
-  requireCondition(manifest.status === "release-candidate", "2.4.0 must remain a release-candidate during Phase 179.", failures);
-  requireCondition(manifest.tag === "v2.4.0", "2.4.0 candidate must reserve the v2.4.0 tag name.", failures);
-  requireCondition(manifest.releaseCommit === null, "2.4.0 candidate must not claim a final release commit.", failures);
+  requireCondition(manifest.status === "released", "2.4.0 must be released during Phase 180 finalization.", failures);
+  requireCondition(manifest.tag === "v2.4.0", "2.4.0 final manifest must reserve the v2.4.0 tag name.", failures);
+  requireCondition(!Object.prototype.hasOwnProperty.call(manifest, "releaseCommit"), "2.4.0 final manifest must avoid a self-referential releaseCommit field.", failures);
   requireCondition(manifest.verifiedBaselineCommitPrefix === "887158c", "2.4.0 must preserve the verified Phase 178 baseline commit 887158c.", failures);
   requireCondition(manifest.verifiedBaselineTestCount === 758, "2.4.0 must preserve the 758-test Phase 178 baseline.", failures);
-  requireCondition(manifest.expectedCandidateTestCount === 764, "2.4.0 Phase 179 candidate gate must expect 764 tests.", failures);
+  requireCondition(manifest.verifiedCandidateCommitPrefix === "1cabdb4", "2.4.0 must record the verified Phase 179 candidate commit 1cabdb4.", failures);
+  requireCondition(manifest.verifiedCandidateTestCount === 764, "2.4.0 must record the verified 764-test Phase 179 candidate gate.", failures);
+  requireCondition(manifest.verifiedMainMergeCommitPrefix === "7627e99", "2.4.0 must record the verified initial main merge 7627e99.", failures);
   requireCondition(manifest.expectedFinalTestCount === 770, "2.4.0 Phase 180 final gate target must remain 770 tests.", failures);
 
   const evidence = manifest.releaseEvidence ?? {};
@@ -66,29 +68,34 @@ export function collectReleaseAuditFailures() {
   requireCondition(evidence.i18nClosureAudit === "passed", "2.4.0 must preserve the passing i18n closure audit.", failures);
   requireCondition(evidence.staticRoutes === 22, "2.4.0 must preserve the verified 22-route static build.", failures);
   requireCondition(evidence.pwaPrecacheBuildAssets === 44, "2.4.0 must preserve the verified 44-asset PWA precache evidence.", failures);
+  requireCondition(evidence.candidatePhase === 179, "2.4.0 must identify Phase 179 as the verified candidate phase.", failures);
+  requireCondition(evidence.phase179CandidateCommitPrefix === "1cabdb4", "2.4.0 release evidence must preserve candidate commit 1cabdb4.", failures);
+  requireCondition(evidence.phase179CandidateTestCount === 764, "2.4.0 release evidence must preserve the 764-test candidate gate.", failures);
+  requireCondition(evidence.controlledMainMergeCommitPrefix === "7627e99", "2.4.0 release evidence must preserve the initial main merge 7627e99.", failures);
 
   const rollout = manifest.rollout ?? {};
-  requireCondition(rollout.branch === "dev", "2.4.0 candidate rollout must remain on dev during Phase 179.", failures);
-  requireCondition(rollout.mainMerge === "pending", "Phase 179 must not claim the main merge is complete.", failures);
-  requireCondition(rollout.productionAudit === "pending", "Phase 179 must not claim a final 2.4.0 production audit.", failures);
-  requireCondition(rollout.annotatedTag === "pending", "Phase 179 must not claim the annotated v2.4.0 tag exists.", failures);
+  requireCondition(rollout.branch === "main", "2.4.0 final rollout branch must be main.", failures);
+  requireCondition(rollout.mainMerge === "verified", "Phase 180 must record the initial controlled main merge as verified.", failures);
+  requireCondition(rollout.mainMergeCommitPrefix === "7627e99", "Phase 180 rollout must preserve the verified main merge prefix 7627e99.", failures);
+  requireCondition(rollout.productionAudit === "required-before-tag", "Phase 180 must require a post-deploy production audit before tagging.", failures);
+  requireCondition(rollout.annotatedTag === "required-after-production-audit", "Phase 180 must require the annotated tag only after the production audit.", failures);
 
   const requiredFiles = [
     RELEASE_MANIFEST_PATH, manifest.releaseNotes?.fa, manifest.releaseNotes?.en,
     "docs/releases/2.3.2.json", "docs/releases/2.3.1.json", "docs/releases/2.3.0.json",
     "docs/releases/2.2.0.json", "docs/releases/2.1.0.json",
     "RELEASE_CHECKLIST_FA.md", "CHANGELOG.md", "README.md", "README_FA.md", "README_EN.md",
-    "docs/README.md", "docs/phases/PHASE_179_NOTES_FA.md", "docs/phases/PHASE_178_NOTES_FA.md",
+    "docs/README.md", "docs/phases/PHASE_180_NOTES_FA.md", "docs/phases/PHASE_179_NOTES_FA.md", "docs/phases/PHASE_178_NOTES_FA.md",
     "docs/assets/README.md", "scripts/prepare-release-2.4.0.mjs",
   ].filter(Boolean);
   for (const path of requiredFiles) requireCondition(existsSync(resolve(ROOT, path)), `Required release file is missing: ${path}`, failures);
 
-  requireCondition(includesLine("CHANGELOG.md", "## [2.4.0] - 2026-08-11"), "CHANGELOG.md is missing the 2.4.0 candidate release heading.", failures);
-  requireCondition(includesLine("RELEASE_CHECKLIST_FA.md", "# چک‌لیست Release Candidate ساعت‌یار 2.4.0"), "Release checklist version/status is stale.", failures);
-  requireCondition(readText("README_FA.md").includes(manifest.releaseNotes.fa), "Persian README does not link to Persian 2.4.0 candidate notes.", failures);
-  requireCondition(readText("README.md").includes(manifest.releaseNotes.en), "Canonical English README does not link to English 2.4.0 candidate notes.", failures);
+  requireCondition(includesLine("CHANGELOG.md", "## [2.4.0] - 2026-08-12"), "CHANGELOG.md is missing the 2.4.0 final release heading.", failures);
+  requireCondition(includesLine("RELEASE_CHECKLIST_FA.md", "# چک‌لیست Final Release ساعت‌یار 2.4.0"), "Final release checklist version/status is stale.", failures);
+  requireCondition(readText("README_FA.md").includes(manifest.releaseNotes.fa), "Persian README does not link to Persian 2.4.0 release notes.", failures);
+  requireCondition(readText("README.md").includes(manifest.releaseNotes.en), "Canonical English README does not link to English 2.4.0 release notes.", failures);
   requireCondition(readText("README_EN.md").includes("./README.md"), "Legacy README_EN.md must keep pointing to canonical README.md.", failures);
-  requireCondition(readText("docs/README.md").includes("./releases/2.4.0.json"), "Docs index does not link to the active 2.4.0 candidate manifest.", failures);
+  requireCondition(readText("docs/README.md").includes("./releases/2.4.0.json"), "Docs index does not link to the active 2.4.0 release manifest.", failures);
 
   const historical232 = readJson("docs/releases/2.3.2.json");
   requireCondition(historical232.version === "2.3.2", "Historical 2.3.2 manifest was mutated.", failures);
@@ -115,7 +122,7 @@ export function collectReleaseAuditFailures() {
   requireCondition(releaseSteps.length === expectedReleaseSteps.length, "check:release must contain exactly the five current release-gate steps.", failures);
   for (const [index, expected] of expectedReleaseSteps.entries()) requireCondition(releaseSteps[index] === expected, `check:release step ${index + 1} must be ${expected}.`, failures);
 
-  requireCondition(packageJson.scripts?.["release:prepare:2.4.0"] === "node scripts/prepare-release-2.4.0.mjs", "2.4.0 candidate baseline verification command is missing or stale.", failures);
+  requireCondition(packageJson.scripts?.["release:prepare:2.4.0"] === "node scripts/prepare-release-2.4.0.mjs", "2.4.0 Phase 180 baseline verification command is missing or stale.", failures);
   requireCondition(packageJson.scripts?.["check:release:audit"] === "node --experimental-strip-types scripts/release-audit.mjs", "Release audit command is missing or stale.", failures);
   requireCondition(packageJson.scripts?.["audit:i18n"] === "node scripts/audit-i18n-closure.mjs", "i18n closure audit command is missing or stale.", failures);
   requireCondition(packageJson.scripts?.["test:browser:production:built"] === "node scripts/production-browser-smoke.mjs", "Production browser gate command is missing or stale.", failures);
@@ -140,13 +147,13 @@ export function collectReleaseAuditFailures() {
   for (const testPath of discoveredTests) requireCondition(declaredTests.has(testPath), `Test file is not included in npm test: ${testPath}`, failures);
 
   const releaseBacklog = sectionLines("docs/roadmap/BACKLOG_FA.md", "## آمادگی انتشار ۲.۴.۰");
-  requireCondition(releaseBacklog.length > 0, "2.4.0 release-candidate backlog section is missing.", failures);
+  requireCondition(releaseBacklog.length > 0, "2.4.0 release backlog section is missing.", failures);
   const backlogText = releaseBacklog.join("\n");
-  requireCondition(backlogText.includes("- [x] فاز ۱۷۹:"), "Phase 179 must be marked complete in the 2.4.0 candidate backlog.", failures);
-  requireCondition(backlogText.includes("- [ ] فاز ۱۸۰:"), "Phase 180 must remain open until final rollout.", failures);
-  requireCondition(backlogText.includes("887158c"), "2.4.0 backlog must preserve the verified Phase 178 baseline commit.", failures);
-  requireCondition(backlogText.includes("۷۵۸/۷۵۸"), "2.4.0 backlog must preserve the 758-test baseline.", failures);
-  requireCondition(backlogText.includes("۷۶۴/۷۶۴"), "2.4.0 backlog must declare the 764-test candidate gate.", failures);
+  requireCondition(backlogText.includes("- [x] فاز ۱۷۹:"), "Phase 179 must be marked complete in the 2.4.0 release backlog.", failures);
+  requireCondition(backlogText.includes("- [x] فاز ۱۸۰:"), "Phase 180 finalization contract must be marked complete in the 2.4.0 release backlog.", failures);
+  requireCondition(backlogText.includes("1cabdb4"), "2.4.0 backlog must preserve the verified Phase 179 candidate commit.", failures);
+  requireCondition(backlogText.includes("7627e99"), "2.4.0 backlog must preserve the verified initial main merge.", failures);
+  requireCondition(backlogText.includes("۷۶۴/۷۶۴"), "2.4.0 backlog must preserve the 764-test candidate gate.", failures);
   requireCondition(backlogText.includes("۷۷۰/۷۷۰"), "2.4.0 backlog must declare the 770-test finalization target.", failures);
 
   return failures;
@@ -161,12 +168,13 @@ export function runReleaseAudit() {
     return false;
   }
   const manifest = readJson(RELEASE_MANIFEST_PATH);
-  console.log(`Saatyar ${manifest.version} release candidate audit passed.`);
+  console.log(`Saatyar ${manifest.version} final release audit passed.`);
   console.log(`Current AppData schema: v${APP_DATA_SCHEMA_VERSION}`);
-  console.log(`Candidate status: ${manifest.status}`);
+  console.log(`Release status: ${manifest.status}`);
   console.log(`Verified Phase 178 baseline: ${manifest.verifiedBaselineCommitPrefix}`);
   console.log(`Verified baseline test count: ${manifest.verifiedBaselineTestCount}`);
-  console.log(`Expected candidate test count: ${manifest.expectedCandidateTestCount}`);
+  console.log(`Verified Phase 179 candidate: ${manifest.verifiedCandidateCommitPrefix} (${manifest.verifiedCandidateTestCount} tests)`);
+  console.log(`Verified initial main merge: ${manifest.verifiedMainMergeCommitPrefix}`);
   console.log(`Phase 180 finalization target: ${manifest.expectedFinalTestCount}`);
   return true;
 }

@@ -1,8 +1,10 @@
-# Saatyar 2.4.0 Release Candidate
+# Saatyar 2.4.0 Release Notes
 
 Candidate date: 2026-08-11
 
-Saatyar 2.4.0 is the first minor release after 2.3.2 and packages Phases 166 through 178. This document describes the **release candidate**; the production rollout and final tag have not happened yet.
+Final release date: 2026-08-12
+
+Saatyar 2.4.0 is the first minor release after 2.3.2 and packages Phases 166 through 178. Phase 179 candidate `1cabdb4` was completed and the initial controlled `dev -> main` merge is `7627e99`. Phase 180 finalizes the release contract, the 770-test gate, and the requirement for a green production audit before the annotated tag.
 
 ## Highlights
 
@@ -32,9 +34,9 @@ Saatyar 2.4.0 is the first minor release after 2.3.2 and packages Phases 166 thr
 
 - AppData schema: **v17**
 - New migration: **none**
-- New dependency in the candidate phase: **`framer-motion@^12.42.2`** for the flip-clock digit transition
+- New dependency introduced by the candidate: **`framer-motion@^12.42.2`** for the flip-clock digit transition
 - Backup and domain/storage values remain locale-neutral.
-- Static metadata and the install manifest remain canonical Persian in this candidate, while runtime `lang/dir/title` follows the selected locale.
+- Static metadata and the install manifest remain canonical Persian in 2.4.0, while runtime `lang/dir/title` follows the selected locale.
 
 ## Verified baseline
 
@@ -54,8 +56,8 @@ Vercel static-export audit passed
 i18n closure audit passed
 ```
 
-Phase 179 adds six candidate contract tests, so this candidate gate is expected to reach **764/764**. The Phase 180 finalization target is **770/770**.
+Phase 179 added six candidate contract tests and reached the **764/764** candidate gate. Phase 180 adds six finalization contracts, so the final gate must reach **770/770**.
 
 ## Rollout
 
-Phase 179 prepares the candidate on `dev` only. It does not merge to `main`, claim a production audit, or create `v2.4.0`. Phase 180 will capture the candidate commit, perform the controlled rollout, require the post-deploy production audit, and only then create the annotated final tag.
+The Phase 179 candidate is recorded as `1cabdb4`, and the initial controlled `dev -> main` merge is verified as `7627e99`. Phase 180 is committed on `dev`, merged to `main`, and deployed by Vercel. Only after `npm run audit:production` passes may the annotated `v2.4.0` tag be created on that exact final commit. The tag is the source of truth for the final release SHA; the manifest deliberately avoids a self-referential release-commit field.
