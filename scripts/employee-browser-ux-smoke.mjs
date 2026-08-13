@@ -7,6 +7,7 @@ import { findBrowserExecutable } from "./production-browser-smoke.mjs";
 import { buildAppNavigationExpression, buildRouteReadyExpression } from "./browser-route-expression.mjs";
 import { buildEmployeeBreakPersistenceProbeExpression, buildEmployeePersistenceProbeExpression } from "./employee-persistence-expression.mjs";
 import { startStaticExportServer } from "./static-export-server.mjs";
+import { APP_DATA_SCHEMA_VERSION, APP_DATA_STORAGE_FORMAT } from "../lib/data/version.ts";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const TIMEOUT = 30_000;
@@ -119,6 +120,25 @@ async function clickButton(client, text, exact = false) {
   })()`);
   if (!clicked) throw new Error(`Button not found: ${text}`);
   await settleUi(client);
+}
+
+async function startEmployeeDay(client) {
+  await waitFor(client, `(() => {
+    const norm = (value) => (value || "").replace(/\\s+/g, " ").trim();
+    const firstRun = document.querySelector("[data-first-run-primary]");
+    const startDay = [...document.querySelectorAll("button")].find((button) => !button.disabled && norm(button.textContent) === "شروع روز");
+    return Boolean((firstRun instanceof HTMLButtonElement && !firstRun.disabled) || startDay);
+  })()`, "employee first action");
+
+  const startedFromFirstRunGuide = await evaluate(client, `(() => {
+    const button = document.querySelector("[data-first-run-primary]");
+    if (!(button instanceof HTMLButtonElement) || button.disabled) return false;
+    button.click();
+    return true;
+  })()`);
+
+  if (!startedFromFirstRunGuide) await clickButton(client, "شروع روز", true);
+  else await settleUi(client);
 }
 
 async function assertLiveWorkClockAdvances(client) {
@@ -329,8 +349,14 @@ async function seedEmployeeData(client) {
   data.records = {};
   data.leaves = [];
   data.deletedRecords = [];
-  await evaluate(client, `(async () => {
-    const data = ${JSON.stringify(data)};
+  const snapshot = {
+    format: APP_DATA_STORAGE_FORMAT,
+    schemaVersion: APP_DATA_SCHEMA_VERSION,
+    savedAt: new Date().toISOString(),
+    data,
+  };
+  const seeded = await evaluate(client, `(async () => {
+    const snapshot = ${JSON.stringify(snapshot)};
     const db = await new Promise((resolve, reject) => {
       const request = indexedDB.open("saatyar-db", 1);
       request.onupgradeneeded = () => {
@@ -341,14 +367,34 @@ async function seedEmployeeData(client) {
     });
     await new Promise((resolve, reject) => {
       const tx = db.transaction("app-data", "readwrite");
-      tx.objectStore("app-data").put(data, "current");
+      tx.objectStore("app-data").put(snapshot, "current");
       tx.oncomplete = resolve;
       tx.onerror = () => reject(tx.error);
     });
+    const current = await new Promise((resolve, reject) => {
+      const tx = db.transaction("app-data", "readonly");
+      const request = tx.objectStore("app-data").get("current");
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
     db.close();
     localStorage.setItem("saatyar:last-route", "/today");
-    return true;
+    const payload = current?.format === "saatyar-app-data" ? current.data : current;
+    const weekdays = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+    const weekday = weekdays[new Date().getDay()];
+    const schedule = payload?.settings?.weeklySchedule?.[weekday];
+    return {
+      format: current?.format || "legacy",
+      schemaVersion: current?.schemaVersion ?? null,
+      weekday,
+      enabled: schedule?.enabled === true,
+      start: schedule?.start || "",
+      end: schedule?.end || "",
+    };
   })()`);
+  if (!seeded?.enabled || seeded.schemaVersion !== APP_DATA_SCHEMA_VERSION || seeded.format !== APP_DATA_STORAGE_FORMAT) {
+    throw new Error(`Employee fixture seed was not preserved as the current snapshot contract: ${JSON.stringify(seeded)}`);
+  }
 }
 
 async function currentDateKey(client) {
@@ -406,13 +452,16 @@ async function main() {
       `["/onboarding", "/onboarding/"].includes(location.pathname) && Boolean(document.querySelector('[data-onboarding-step-index="1"]'))`,
       "dedicated onboarding welcome step",
     );
+    // Stop the mounted app before writing the fixture so a pending persistence
+    // effect from the onboarding shell cannot overwrite the seeded schedule.
+    await navigate(client, `${server.origin}/robots.txt`);
     await seedEmployeeData(client);
     const date = await currentDateKey(client);
 
     await client.call("Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
     await navigate(client, `${server.origin}/today`, "یادداشت روز کاری");
 
-    await clickButton(client, "شروع روز", true);
+    await startEmployeeDay(client);
     await waitFor(client, `document.body?.innerText.includes("پایان روز")`, "employee day start");
     await assertLiveWorkClockAdvances(client);
     console.log("✓ Active employee work clock advances live without a reload");

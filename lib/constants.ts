@@ -33,6 +33,7 @@ export const defaultSettings: Settings = {
   },
   appearance: { mode: "system", preset: "spotify", accent: "#06b6d4", radius: "rounded", surface: "tinted" },
   mode: "employee",
+  workTimingMode: "scheduled",
 };
 
 export const colors = ["#0969a9", "#f4a500", "#0a9d63", "#7d55b6", "#e76f1e", "#238d9a"];

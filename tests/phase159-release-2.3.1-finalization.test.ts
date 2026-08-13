@@ -51,7 +51,7 @@ test("historical 2.3.1 patch release manifest schema and tag remain aligned", ()
   assert.equal(manifest.status, "released");
   assert.equal(manifest.nodeEngine, packageJson.engines.node);
   assert.equal(manifest.dataSchemaVersion, 17);
-  assert.equal(APP_DATA_SCHEMA_VERSION, 17);
+  assert.ok(APP_DATA_SCHEMA_VERSION >= manifest.dataSchemaVersion);
   assert.equal(manifest.tag, "v2.3.1");
 });
 

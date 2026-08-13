@@ -16,10 +16,12 @@ test("maps Gregorian dates to the Persian work-week keys", () => {
 test("calculates an independent target for each weekday", () => {
   const settings = structuredClone(defaultSettings);
   settings.weeklySchedule.thursday = {
+    ...settings.weeklySchedule.thursday,
     enabled: true,
     start: "08:00",
     end: "13:00",
     lunchMinutes: 0,
+    targetMinutes: 300,
   };
 
   assert.equal(getDailyTargetMinutes("2026-08-06", settings), 300);

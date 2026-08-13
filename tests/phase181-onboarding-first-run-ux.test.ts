@@ -46,18 +46,22 @@ test("one configured workday can be applied to every enabled day without changin
   const data = createInitialData();
   const settings = structuredClone(data.settings);
   settings.weeklySchedule.saturday = {
+    ...settings.weeklySchedule.saturday,
     enabled: true,
     start: "09:15",
     end: "18:30",
     lunchMinutes: 30,
     lunchPaid: true,
+    targetMinutes: 555,
   };
   settings.weeklySchedule.friday = {
+    ...settings.weeklySchedule.friday,
     enabled: false,
     start: "11:00",
     end: "12:00",
     lunchMinutes: 5,
     lunchPaid: false,
+    targetMinutes: 55,
   };
 
   const next = applyScheduleDayToEnabledDays(settings, "saturday");
@@ -88,10 +92,11 @@ test("first-run onboarding offers fast setup and skip without removing the advan
 });
 
 test("Today exposes one clear first action for employee freelancer and hybrid onboarding outcomes", async () => {
-  const [guide, today, relations] = await Promise.all([
+  const [guide, today, relations, employeeSmoke] = await Promise.all([
     read("components/pages/today/first-run-guide.tsx"),
     read("components/pages/today/today-page.tsx"),
     read("components/pages/today/timer-relation-fields.tsx"),
+    read("scripts/employee-browser-ux-smoke.mjs"),
   ]);
   assert.match(today, /<FirstRunGuide/);
   assert.match(guide, /mode === "employee" \|\| mode === "hybrid"/);
@@ -99,6 +104,8 @@ test("Today exposes one clear first action for employee freelancer and hybrid on
   assert.match(guide, /router\.push\("\/projects"\)/);
   assert.match(guide, /data-first-run-primary/);
   assert.match(relations, /data-first-run-timer-relations/);
+  assert.match(employeeSmoke, /data-first-run-primary/);
+  assert.match(employeeSmoke, /startEmployeeDay/);
 });
 
 test("new onboarding and first-run copy stays bilingual", () => {

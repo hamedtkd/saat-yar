@@ -53,7 +53,7 @@ function deviceData() {
   const mobile = createInitialData({ onboarded: true });
   laptop.settings.name = "لپ‌تاپ";
   mobile.settings.name = "موبایل";
-  laptop.records["2026-08-01"] = { date: "2026-08-01", start: "08:00", end: "16:00", lunchMinutes: 30, breaks: [], leaveMinutes: 0, leaveType: "none", note: "local", holiday: false };
+  laptop.records["2026-08-01"] = { date: "2026-08-01", start: "08:00", end: "16:00", lunchMinutes: 30, breaks: [], activitySegments: [], leaveMinutes: 0, leaveType: "none", note: "local", holiday: false };
   mobile.records["2026-08-01"] = { ...laptop.records["2026-08-01"], note: "incoming" };
   mobile.records["2026-08-02"] = { ...laptop.records["2026-08-01"], date: "2026-08-02", note: "mobile-only" };
   return { laptop, mobile };

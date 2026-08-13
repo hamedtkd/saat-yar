@@ -3,7 +3,7 @@ import type { AppData, DeletedWorkRecord, WorkRecord } from "./types.ts";
 export const RECORD_RECYCLE_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
 
 function cloneWorkRecord(record: WorkRecord): WorkRecord {
-  return { ...record, breaks: record.breaks.map((item) => ({ ...item })) };
+  return { ...record, breaks: record.breaks.map((item) => ({ ...item })), activitySegments: record.activitySegments.map((item) => ({ ...item })) };
 }
 
 function expiryTimestamp(item: DeletedWorkRecord): number {

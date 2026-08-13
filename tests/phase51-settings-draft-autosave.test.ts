@@ -8,7 +8,7 @@ import { APP_DATA_SCHEMA_VERSION } from "../lib/data/version.ts";
 const read = (path: string) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
 test("schema v16 preserves settings autosave to off", () => {
-  assert.equal(APP_DATA_SCHEMA_VERSION, 17);
+  assert.equal(APP_DATA_SCHEMA_VERSION, 18);
   assert.equal(initialData.settings.autoSaveSettings, false);
   const legacy = { schemaVersion: 14, data: initialData };
   const result = migrateAppData(legacy);

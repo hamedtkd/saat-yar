@@ -28,6 +28,7 @@ export function emptyRecord(date: string, settings: Settings): WorkRecord {
     end: "",
     lunchMinutes: settings.lunchMinutes,
     breaks: [],
+    activitySegments: [],
     leaveMinutes: 0,
     leaveType: "none",
     note: "",

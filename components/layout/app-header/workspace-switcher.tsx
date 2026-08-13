@@ -18,12 +18,12 @@ export function WorkspaceSwitcher({ mode, onChange }: { mode: Mode; onChange: (m
         className={cn(
           headerControlShell,
           "w-auto min-w-[132px] justify-start gap-2 py-0 ps-2.5 pe-9 text-xs font-extrabold",
-          "max-[520px]:min-w-[108px] max-[520px]:ps-2 max-[520px]:text-[10px]",
+          "max-[520px]:min-w-0 max-[520px]:max-w-[132px] max-[520px]:flex-1 max-[520px]:ps-2 max-[520px]:text-[10px]",
           "max-[380px]:size-11 max-[380px]:min-w-11 max-[380px]:justify-center max-[380px]:px-0 max-[380px]:[&>svg]:hidden",
           "[&>svg]:end-2.5",
         )}
       >
-        <span className="grid size-7 shrink-0 place-items-center rounded-[9px] bg-[var(--accent-soft)] text-[var(--accent-strong)] max-[420px]:hidden max-[380px]:grid">
+        <span className="grid size-7 shrink-0 place-items-center rounded-[9px] bg-[var(--accent-soft)] text-[var(--accent-strong)] max-[520px]:hidden max-[380px]:grid">
           <BriefcaseBusiness aria-hidden="true" className="size-4" />
         </span>
         <span className="min-w-0 max-[380px]:hidden"><SelectValue /></span>

@@ -45,7 +45,8 @@ export function collectReleaseAuditFailures() {
   requireCondition(packageJson.dependencies?.["framer-motion"] === "^12.42.2", "Phase 179 R6 must pin framer-motion ^12.42.2 for the flip clock.", failures);
   requireCondition(packageLock.packages?.["node_modules/framer-motion"]?.version === "12.42.2", "package-lock.json must pin framer-motion 12.42.2.", failures);
   requireCondition(packageJson.engines?.node === manifest.nodeEngine, "Node engine does not match the release manifest.", failures);
-  requireCondition(APP_DATA_SCHEMA_VERSION === manifest.dataSchemaVersion, "Current AppData schema must exactly match the active release manifest schema.", failures);
+  requireCondition(manifest.dataSchemaVersion === 17, "Released 2.4.0 manifest schema must remain v17.", failures);
+  requireCondition(APP_DATA_SCHEMA_VERSION >= manifest.dataSchemaVersion, "Current development schema cannot be older than the released 2.4.0 schema.", failures);
   requireCondition(manifest.status === "released", "2.4.0 must be released during Phase 180 finalization.", failures);
   requireCondition(manifest.tag === "v2.4.0", "2.4.0 final manifest must reserve the v2.4.0 tag name.", failures);
   requireCondition(!Object.prototype.hasOwnProperty.call(manifest, "releaseCommit"), "2.4.0 final manifest must avoid a self-referential releaseCommit field.", failures);
@@ -169,7 +170,8 @@ export function runReleaseAudit() {
   }
   const manifest = readJson(RELEASE_MANIFEST_PATH);
   console.log(`Saatyar ${manifest.version} final release audit passed.`);
-  console.log(`Current AppData schema: v${APP_DATA_SCHEMA_VERSION}`);
+  console.log(`Current development AppData schema: v${APP_DATA_SCHEMA_VERSION}`);
+  console.log(`Released 2.4.0 AppData schema: v${manifest.dataSchemaVersion}`);
   console.log(`Release status: ${manifest.status}`);
   console.log(`Verified Phase 178 baseline: ${manifest.verifiedBaselineCommitPrefix}`);
   console.log(`Verified baseline test count: ${manifest.verifiedBaselineTestCount}`);

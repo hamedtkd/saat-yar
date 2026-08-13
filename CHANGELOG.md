@@ -1,14 +1,9 @@
 ## [Unreleased]
 
-### افزوده شد
-
-- Phase 181: Fast Setup و Skip for now به First-run Onboarding اضافه شد تا کاربر بعد از نام و انتخاب Workspace بتواند مستقیم با Defaultهای امن وارد محصول شود و تنظیمات پیشرفته را بعداً از Settings تکمیل کند.
-- برنامه کاری اکنون می‌تواند Start/End/Lunch یک روز فعال را با یک اقدام روی همه روزهای فعال اعمال کند؛ روزهای غیرفعال تغییر نمی‌کنند.
-- اولین ورود به Today بعد از Onboarding یک CTA موقت و متناسب با Employee/Freelancer/Hybrid نشان می‌دهد تا اولین اقدام محصول روشن باشد.
-
-### تغییر کرد
-
-- Footer آنبوردینگ روی موبایل fixed و safe-area aware شد و مسیر کامل هفت‌مرحله‌ای برای Recovery/Re-entry بدون تغییر باقی ماند.
+- Phase 182 R3: Mobile shell در عرض 425px برای Month/Leave سخت‌گیری شد؛ Header باریک‌تر، Surfaceها shrink-safe و Browser Smoke دارای قرارداد صریح no-horizontal-overflow شد. Warning صفر-تحمل ESLint در Contract Test فاز ۱۸۲ نیز رفع شد.
+- Phase 182: Flexible Work Mode اضافه شد؛ کاربر می‌تواند بدون الزام Start/End ثابت، Target مستقل هر روز را نگه دارد و شروع/وقفه/پایان واقعی را در طول روز ثبت کند.
+- Activity Segments برای Deep Work، Meeting، Learning، Admin، Project و Other به Today و Reports اضافه شد؛ شروع Lunch/Break یا پایان روز Segment فعال را امن می‌بندد.
+- AppData به Schema v18 ارتقا یافت؛ Migration v17 رفتار Fixed Schedule نسخه 2.4.0 را حفظ می‌کند، targetهای روزانه را مقداردهی می‌کند و Activity Segmentهای جدید را بدون دست‌زدن به Manifest تاریخی v2.4.0 اضافه می‌کند.
 
 ## [2.4.0] - 2026-08-12
 

@@ -59,6 +59,7 @@ test("work settings stay internally consistent when onboarding edits the real we
   weeklySchedule.thursday.enabled = true;
   const draft = applyWeeklyTargetHours({
     mode: settings.mode,
+    workTimingMode: settings.workTimingMode,
     autoOfficialHolidays: settings.autoOfficialHolidays,
     autoWeeklyHoliday: settings.autoWeeklyHoliday,
     weeklyMinutes: settings.weeklyMinutes,

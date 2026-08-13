@@ -10,7 +10,7 @@ import { createPayrollPreset } from "../lib/payroll-policy.ts";
 const read = (path: string) => readFileSync(path, "utf8");
 
 test("schema v17 persists a payroll policy while migrating released v16 data", () => {
-  assert.equal(APP_DATA_SCHEMA_VERSION, 17);
+  assert.ok(APP_DATA_SCHEMA_VERSION >= 17);
   const legacy = { ...defaultSettings, payrollPolicy: undefined };
   const migrated = migrateAppData({ schemaVersion: 16, data: { settings: legacy, records: {}, leaves: [], clients: [], projects: [], timeEntries: [], expenses: [], invoices: [], holidayOverrides: [], deletedRecords: [] } }).data;
   assert.equal(migrated.settings.payrollPolicy.baseMode, "monthly-prorated");
@@ -51,7 +51,7 @@ test("released 2.1.0 manifest remains historical while the active release advanc
   assert.equal(historicalManifest.dataSchemaVersion, 16);
   assert.equal(activeManifest.dataSchemaVersion, 17);
   assert.match(audit, /docs\/releases\/2\.2\.0\.json/);
-  assert.match(audit, /APP_DATA_SCHEMA_VERSION === manifest\.dataSchemaVersion/);
+  assert.match(audit, /APP_DATA_SCHEMA_VERSION >= manifest\.dataSchemaVersion/);
 });
 
 test("stale roadmap tests no longer hard-code future phase numbering", () => {

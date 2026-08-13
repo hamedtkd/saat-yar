@@ -6,6 +6,7 @@ import type { CalendarSystem } from "@/lib/i18n";
 import { calc, minutesToTime } from "@/lib/time-engine";
 import { getDailyTargetMinutes, getWorkScheduleDay } from "@/lib/work-schedule";
 import { calculateLeaveEntitlementSummary } from "@/lib/leave-entitlement";
+import { getActiveActivitySegment } from "@/lib/activity-segments";
 import type { AppData, ReportFilter } from "@/lib/types";
 
 export function useControllerDerived(data: AppData, selectedDate: string, selectedProjectId: string, reportFilter: ReportFilter, calendar: CalendarSystem = "persian") {
@@ -44,6 +45,7 @@ export function useControllerDerived(data: AppData, selectedDate: string, select
   }, { worked: 0, target: 0, balance: 0, breaks: 0 }), [monthRecords, data.settings]);
   const activeEntry = data.timeEntries.find((entry) => !entry.endedAt);
   const activeBreak = record.breaks.find((item) => item.start && !item.end);
+  const activeActivitySegment = getActiveActivitySegment(record);
   const lunchRunning = Boolean(record.lunchStart && !record.lunchEnd);
   const leaveSummary = calculateLeaveEntitlementSummary(data, localDateKey());
   const usedLeave = leaveSummary.used;
@@ -64,6 +66,6 @@ export function useControllerDerived(data: AppData, selectedDate: string, select
   const reportBillable = filteredEntries.filter((entry) => entry.billable).reduce((sum, entry) => sum + entryMinutes(entry), 0);
   const reportIncome = filteredEntries.reduce((sum, entry) => sum + (entry.billable ? entryMinutes(entry) / 60 * entry.effectiveRate : 0), 0);
   return { selectedSchedule, dailyTarget, selectedHoliday, record, todayCalc, suggestedExit, monthRecords, monthStats,
-    activeEntry, activeBreak, lunchRunning, usedLeave, leaveAvailable, leaveSummary, selectedProject, filteredMonthRecords, filteredEntries,
+    activeEntry, activeBreak, activeActivitySegment, lunchRunning, usedLeave, leaveAvailable, leaveSummary, selectedProject, filteredMonthRecords, filteredEntries,
     reportBillable, reportIncome };
 }

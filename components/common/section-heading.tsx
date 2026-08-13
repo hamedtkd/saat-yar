@@ -26,7 +26,7 @@ export function SectionHeading({ icon, eyebrow, title, description, trailing, cl
           </div>
         </div>
       </div>
-      {trailing && <div className="shrink-0">{trailing}</div>}
+      {trailing && <div className="max-w-full shrink-0 max-[520px]:w-full max-[520px]:shrink">{trailing}</div>}
     </div>
   );
 }

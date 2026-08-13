@@ -2,7 +2,7 @@ import { defaultSettings } from "../constants.ts";
 import type { AppData } from "../types.ts";
 import { normaliseData } from "./normalise.ts";
 import { APP_DATA_SCHEMA_VERSION } from "./version.ts";
-import { createDefaultWeeklySchedule } from "../work-schedule.ts";
+import { createDefaultWeeklySchedule, getConfiguredWorkMinutes, weekdayOrder } from "../work-schedule.ts";
 import { createLegacyPayrollPolicy } from "../payroll-policy.ts";
 
 type UnknownRecord = Record<string, unknown>;
@@ -276,6 +276,49 @@ function migrateV16ToV17(value: unknown): unknown {
   };
 }
 
+
+function migrateV17ToV18(value: unknown): unknown {
+  if (!isObject(value)) return value;
+  const settings = isObject(value.settings) ? value.settings : {};
+  const defaultStart = typeof settings.defaultStart === "string" ? settings.defaultStart : defaultSettings.defaultStart;
+  const defaultEnd = typeof settings.defaultEnd === "string" ? settings.defaultEnd : defaultSettings.defaultEnd;
+  const lunchMinutes = typeof settings.lunchMinutes === "number" ? settings.lunchMinutes : defaultSettings.lunchMinutes;
+  const defaults = createDefaultWeeklySchedule(defaultStart, defaultEnd, lunchMinutes);
+  const incomingSchedule = isObject(settings.weeklySchedule) ? settings.weeklySchedule : {};
+  const weeklySchedule = Object.fromEntries(weekdayOrder.map((day) => {
+    const raw = isObject(incomingSchedule[day]) ? incomingSchedule[day] : {};
+    const schedule = {
+      ...defaults[day],
+      ...raw,
+      enabled: typeof raw.enabled === "boolean" ? raw.enabled : defaults[day].enabled,
+      start: typeof raw.start === "string" ? raw.start : defaults[day].start,
+      end: typeof raw.end === "string" ? raw.end : defaults[day].end,
+      lunchMinutes: typeof raw.lunchMinutes === "number" ? Math.max(0, raw.lunchMinutes) : defaults[day].lunchMinutes,
+      lunchPaid: Boolean(raw.lunchPaid),
+    };
+    return [day, { ...schedule, targetMinutes: getConfiguredWorkMinutes(schedule) }];
+  }));
+  const records = isObject(value.records)
+    ? Object.fromEntries(Object.entries(value.records).map(([date, rawRecord]) => {
+        const record = isObject(rawRecord) ? rawRecord : {};
+        return [date, { ...record, activitySegments: Array.isArray(record.activitySegments) ? record.activitySegments : [] }];
+      }))
+    : {};
+  const deletedRecords = Array.isArray(value.deletedRecords)
+    ? value.deletedRecords.map((rawItem) => {
+        if (!isObject(rawItem)) return rawItem;
+        const rawRecord = isObject(rawItem.record) ? rawItem.record : {};
+        return { ...rawItem, record: { ...rawRecord, activitySegments: Array.isArray(rawRecord.activitySegments) ? rawRecord.activitySegments : [] } };
+      })
+    : [];
+  return {
+    ...value,
+    settings: { ...settings, workTimingMode: "scheduled", weeklySchedule },
+    records,
+    deletedRecords,
+  };
+}
+
 const migrations: Record<number, (value: unknown) => unknown> = {
   1: migrateV1ToV2,
   2: migrateV2ToV3,
@@ -293,6 +336,7 @@ const migrations: Record<number, (value: unknown) => unknown> = {
   14: migrateV14ToV15,
   15: migrateV15ToV16,
   16: migrateV16ToV17,
+  17: migrateV17ToV18,
 };
 
 export function migrateAppData(value: unknown): MigrationResult {

@@ -8,6 +8,25 @@ const isoDateSchema = z.string().min(1);
 const timeSchema = z.string().regex(/^$|^\d{2}:\d{2}$/);
 
 
+const workScheduleDaySchema = z.object({
+  enabled: z.boolean(),
+  start: timeSchema,
+  end: timeSchema,
+  lunchMinutes: z.number().nonnegative(),
+  lunchPaid: z.boolean(),
+  targetMinutes: z.number().int().nonnegative(),
+}).passthrough();
+
+const weeklyScheduleSchema = z.object({
+  saturday: workScheduleDaySchema,
+  sunday: workScheduleDaySchema,
+  monday: workScheduleDaySchema,
+  tuesday: workScheduleDaySchema,
+  wednesday: workScheduleDaySchema,
+  thursday: workScheduleDaySchema,
+  friday: workScheduleDaySchema,
+}).passthrough();
+
 const payrollRateRuleSchema = z.object({
   mode: z.enum(["multiplier", "fixed-hourly", "ignore"]),
   multiplier: z.number().nonnegative(),
@@ -39,6 +58,7 @@ const settingsSchema = z.object({
   onboarded: z.boolean(),
   weeklyMinutes: z.number().nonnegative(),
   workDays: z.number().int().min(1).max(7),
+  weeklySchedule: weeklyScheduleSchema,
   defaultStart: timeSchema,
   defaultEnd: timeSchema,
   lunchMinutes: z.number().nonnegative(),
@@ -71,6 +91,7 @@ const settingsSchema = z.object({
     }).passthrough(),
   }).passthrough(),
   mode: modeSchema,
+  workTimingMode: z.enum(["scheduled", "flexible"]),
 }).passthrough();
 
 const breakSchema = z.object({
@@ -81,6 +102,16 @@ const breakSchema = z.object({
   paid: z.boolean(),
   startedAt: z.string().optional(),
   endedAt: z.string().optional(),
+}).passthrough();
+
+const activitySegmentSchema = z.object({
+  id: z.string(),
+  kind: z.enum(["deep-work", "meeting", "learning", "admin", "project", "other"]),
+  start: timeSchema,
+  end: timeSchema,
+  startedAt: z.string().optional(),
+  endedAt: z.string().optional(),
+  projectId: z.string().optional(),
 }).passthrough();
 
 const workRecordSchema = z.object({
@@ -96,6 +127,7 @@ const workRecordSchema = z.object({
   lunchEndedAt: z.string().optional(),
   lunchPaid: z.boolean(),
   breaks: z.array(breakSchema),
+  activitySegments: z.array(activitySegmentSchema),
   leaveMinutes: z.number().nonnegative(),
   leaveType: z.enum(["none", "hourly", "full"]),
   note: z.string(),

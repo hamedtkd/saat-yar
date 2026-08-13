@@ -139,6 +139,37 @@ async function evaluate(client, expression) {
   return response.result?.value;
 }
 
+async function assertMobileShellFits(client, label) {
+  const contract = await evaluate(client, `(() => {
+    const viewportWidth = document.documentElement.clientWidth;
+    const header = document.querySelector('header.shell-main-offset');
+    const nav = document.querySelector('[data-mobile-bottom-nav]');
+    const main = document.querySelector('#main-content');
+    const rect = (element) => {
+      const value = element?.getBoundingClientRect();
+      return value ? { left: value.left, right: value.right, width: value.width } : null;
+    };
+    const fits = (value) => !value || (value.left >= -1 && value.right <= viewportWidth + 1 && value.width <= viewportWidth + 2);
+    const headerRect = rect(header);
+    const navRect = rect(nav);
+    const mainRect = rect(main);
+    return {
+      viewportWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+      pageFits: document.documentElement.scrollWidth <= viewportWidth + 2,
+      headerFits: fits(headerRect),
+      navFits: fits(navRect),
+      mainFits: fits(mainRect),
+      headerRect,
+      navRect,
+      mainRect,
+    };
+  })()`);
+  if (!contract?.pageFits || !contract.headerFits || !contract.navFits || !contract.mainFits) {
+    throw new Error(`${label} responsive shell contract failed: ${JSON.stringify(contract)}`);
+  }
+}
+
 async function browserStateSnapshot(client) {
   try {
     return await evaluate(client, `(async () => {
@@ -319,6 +350,7 @@ async function readStoredSettings(client) {
       name: settings.name,
       workDays: settings.workDays,
       weeklyMinutes: settings.weeklyMinutes,
+      workTimingMode: settings.workTimingMode,
       defaultStart: settings.defaultStart,
       defaultEnd: settings.defaultEnd,
       thursdayEnabled: Boolean(settings.weeklySchedule?.thursday?.enabled),
@@ -437,7 +469,24 @@ export async function runProductionBrowserSmoke() {
     await waitFor(client, `document.querySelector('[data-onboarding-progress-mode="employee"]') && document.querySelector('[data-onboarding-step-index="2"][data-onboarding-mode="employee"]')`, "employee personalized onboarding progress");
     console.log("✓ Onboarding progress adapts immediately to Employee/Freelancer/Hybrid selection");
     await clickButton(client, "ادامه");
-    await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="3"] [data-work-schedule-editor]'))`, "onboarding schedule step");
+    await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="3"] [data-work-schedule-editor]')) && Boolean(document.querySelector('[data-onboarding-work-timing]'))`, "onboarding schedule step");
+    const timingOpened = await evaluate(client, `(() => {
+      const trigger = document.querySelector('[data-onboarding-work-timing]');
+      if (!(trigger instanceof HTMLButtonElement)) return false;
+      trigger.click();
+      return true;
+    })()`);
+    if (!timingOpened) throw new Error("Onboarding work-timing selector could not be opened.");
+    await waitFor(client, `Boolean(document.querySelector('[data-work-timing-option="flexible"]'))`, "flexible work-timing option");
+    const timingSelected = await evaluate(client, `(() => {
+      const marker = document.querySelector('[data-work-timing-option="flexible"]');
+      const option = marker?.closest('[role="option"]') || marker;
+      if (!(option instanceof HTMLElement)) return false;
+      option.click();
+      return true;
+    })()`);
+    if (!timingSelected) throw new Error("Flexible work timing could not be selected in onboarding.");
+    await waitFor(client, `document.querySelector('[data-onboarding-step-index="3"] [data-work-schedule-editor]')?.getAttribute('data-work-timing') === "flexible"`, "flexible onboarding schedule editor");
 
     const thursdayEnabled = await evaluate(client, `(() => {
       const input = document.querySelector('[data-onboarding-step-index="3"] [data-workday-toggle="thursday"]');
@@ -456,8 +505,9 @@ export async function runProductionBrowserSmoke() {
     const recoveredSchedule = await evaluate(client, `(() => ({
       weeklyTarget: document.querySelector('[data-onboarding-step-index="3"] [data-work-schedule-weekly-target]')?.getAttribute('aria-valuenow') || "",
       thursdayEnabled: document.querySelector('[data-onboarding-step-index="3"] [data-workday-toggle="thursday"]')?.checked === true,
+      workTiming: document.querySelector('[data-onboarding-step-index="3"] [data-work-schedule-editor]')?.getAttribute('data-work-timing') || "",
     }))()`);
-    if (recoveredSchedule?.weeklyTarget !== "44" || !recoveredSchedule?.thursdayEnabled) {
+    if (recoveredSchedule?.weeklyTarget !== "44" || !recoveredSchedule?.thursdayEnabled || recoveredSchedule?.workTiming !== "flexible") {
       throw new Error(`Onboarding schedule did not survive reload: ${JSON.stringify(recoveredSchedule)}`);
     }
     console.log("✓ Onboarding work schedule persisted across reload");
@@ -503,6 +553,7 @@ export async function runProductionBrowserSmoke() {
       && onboardingSettings.name === "کاربر تست"
       && onboardingSettings.workDays === 6
       && onboardingSettings.weeklyMinutes === 44 * 60
+      && onboardingSettings.workTimingMode === "flexible"
       && onboardingSettings.thursdayEnabled
       && onboardingSettings.salary === 42_000_000
       && onboardingSettings.payrollBaseAmount === 42_000_000
@@ -510,10 +561,22 @@ export async function runProductionBrowserSmoke() {
       && onboardingSettings.appearanceAccent?.toLowerCase() === "#0ea5e9"
       && onboardingSettings.onboarded === true;
     if (!onboardingContract) throw new Error(`Persisted onboarding settings contract failed: ${JSON.stringify(onboardingSettings)}`);
-    console.log("✓ Onboarding completed with schedule, payroll and appearance persisted to AppData");
+    console.log("✓ Onboarding completed with flexible schedule, payroll and appearance persisted to AppData");
     await waitFor(client, `Boolean(document.querySelector('[data-first-run-guide]')) && Boolean(document.querySelector('[data-first-run-primary]'))`, "first-run action guide after onboarding");
     console.log("✓ First-run guide exposes the next action immediately after onboarding");
+    await waitFor(client, `Boolean(document.querySelector('[data-activity-segments]')) && Boolean(document.querySelector('[data-activity-kind]'))`, "Today activity-segment card");
+    console.log("✓ Today exposes activity-segment tracking without requiring a separate route");
     await evaluate(client, `document.querySelector('[data-first-run-dismiss]')?.click()`);
+
+    await client.call("Emulation.setDeviceMetricsOverride", { width: 425, height: 608, deviceScaleFactor: 1, mobile: true, screenWidth: 425, screenHeight: 608 });
+    for (const [route, label] of [["month", "Month"], ["leave", "Leave"]]) {
+      const mobileLoad = waitForEvent(client, "Page.loadEventFired", `${label} mobile responsive route`);
+      await client.call("Page.navigate", { url: `${origin}/${route}/` });
+      await mobileLoad;
+      await waitFor(client, `["/${route}", "/${route}/"].includes(location.pathname) && Boolean(document.querySelector('#main-content'))`, `${label} mobile responsive render`);
+      await assertMobileShellFits(client, `${label} 425px`);
+    }
+    console.log("✓ Month and Leave stay inside a 425px mobile viewport without horizontal overflow");
 
     await client.call("Emulation.setDeviceMetricsOverride", { width: 2560, height: 1440, deviceScaleFactor: 1, mobile: false, screenWidth: 2560, screenHeight: 1440 });
     await evaluate(client, `new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))`);
@@ -569,7 +632,7 @@ export async function runProductionBrowserSmoke() {
     const settingsLocaleLoad = waitForEvent(client, "Page.loadEventFired", "Settings locale route");
     await client.call("Page.navigate", { url: `${origin}/settings/` });
     await settingsLocaleLoad;
-    await waitFor(client, `Boolean(document.querySelector('[data-settings-language]'))`, "language settings card");
+    await waitFor(client, `Boolean(document.querySelector('[data-settings-language]')) && Boolean(document.querySelector('[data-work-timing-mode]'))`, "language and work-timing settings cards");
     await evaluate(client, `document.querySelector('[data-locale-choice="en"]')?.click()`);
     await waitFor(client, `document.documentElement.lang === "en" && document.documentElement.dir === "ltr" && document.documentElement.dataset.calendar === "gregory" && localStorage.getItem("saatyar-locale-v1") === "en" && document.body?.innerText.includes("Settings & data") && document.body?.innerText.includes("Today")`, "English LTR locale switch with automatic Gregorian calendar");
     await waitFor(client, `Boolean(document.querySelector('[data-calendar-choice="persian"]'))`, "calendar preference controls");
@@ -597,7 +660,7 @@ export async function runProductionBrowserSmoke() {
     const englishTodayLoad = waitForEvent(client, "Page.loadEventFired", "English Today route");
     await client.call("Page.navigate", { url: `${origin}/today/` });
     await englishTodayLoad;
-    await waitFor(client, `["/today", "/today/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Today summary") && document.body?.innerText.includes("Daily target")`, "English Today core surface");
+    await waitFor(client, `["/today", "/today/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Today summary") && document.body?.innerText.includes("Daily target") && Boolean(document.querySelector('[data-activity-segments]'))`, "English Today core surface");
 
     const englishMonthLoad = waitForEvent(client, "Page.loadEventFired", "English Month route");
     await client.call("Page.navigate", { url: `${origin}/month/` });
@@ -607,8 +670,9 @@ export async function runProductionBrowserSmoke() {
     const englishReportsLoad = waitForEvent(client, "Page.loadEventFired", "English Reports route");
     await client.call("Page.navigate", { url: `${origin}/reports/` });
     await englishReportsLoad;
-    await waitFor(client, `["/reports", "/reports/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Work and payroll report") && document.body?.innerText.includes("Analytics charts")`, "English Reports core surface");
+    await waitFor(client, `["/reports", "/reports/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Work and payroll report") && document.body?.innerText.includes("Analytics charts") && Boolean(document.querySelector('[data-activity-breakdown]'))`, "English Reports core surface");
     console.log("✓ Today, Month, and Reports render localized English LTR surfaces before Persian restore");
+    console.log("✓ Activity segment and breakdown surfaces follow English LTR");
 
     // Employee mode intentionally cannot access freelancer-only business routes.
     // Exercise the real workspace switcher before the business-route matrix so

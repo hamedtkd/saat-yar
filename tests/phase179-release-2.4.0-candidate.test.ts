@@ -24,7 +24,8 @@ test("historical Phase 179 candidate identity is preserved after 2.4.0 finalizat
   assert.equal(manifest.releaseDate, "2026-08-12");
   assert.equal(manifest.status, "released");
   assert.equal(manifest.nodeEngine, packageJson.engines.node);
-  assert.equal(manifest.dataSchemaVersion, APP_DATA_SCHEMA_VERSION);
+  assert.equal(manifest.dataSchemaVersion, 17);
+  assert.ok(APP_DATA_SCHEMA_VERSION >= manifest.dataSchemaVersion);
   assert.equal(manifest.tag, "v2.4.0");
   assert.equal(manifest.verifiedCandidateCommitPrefix, "1cabdb4");
   assert.equal(manifest.verifiedCandidateTestCount, 764);

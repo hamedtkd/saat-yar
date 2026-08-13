@@ -1,6 +1,7 @@
 import type { PayrollCalculationPolicy } from "./payroll-policy.ts";
 
 export type Mode = "employee" | "freelancer" | "hybrid";
+export type WorkTimingMode = "scheduled" | "flexible";
 export type ThemeMode = "light" | "dark" | "system";
 export type ThemePreset = "spotify" | "emerald" | "ocean" | "violet" | "sunset" | "custom";
 export type RadiusScale = "compact" | "balanced" | "rounded";
@@ -22,6 +23,7 @@ export type WorkScheduleDay = {
   end: string;
   lunchMinutes: number;
   lunchPaid?: boolean;
+  targetMinutes: number;
 };
 
 export type PayrollComponent = {
@@ -53,6 +55,18 @@ export type BreakItem = {
   endedAt?: string;
 };
 
+export type ActivityKind = "deep-work" | "meeting" | "learning" | "admin" | "project" | "other";
+
+export type ActivitySegment = {
+  id: string;
+  kind: ActivityKind;
+  start: string;
+  end: string;
+  startedAt?: string;
+  endedAt?: string;
+  projectId?: string;
+};
+
 export type WorkRecord = {
   date: string;
   start: string;
@@ -66,6 +80,7 @@ export type WorkRecord = {
   lunchEndedAt?: string;
   lunchPaid?: boolean;
   breaks: BreakItem[];
+  activitySegments: ActivitySegment[];
   leaveMinutes: number;
   leaveType: "none" | "hourly" | "full";
   note: string;
@@ -123,6 +138,7 @@ export type Settings = {
   autoSaveSettings: boolean;
   appearance: AppearanceSettings;
   mode: Mode;
+  workTimingMode: WorkTimingMode;
 };
 
 export type LeaveEntry = {

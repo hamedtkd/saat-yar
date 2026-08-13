@@ -306,7 +306,7 @@
 ## توسعه پس از ۲.۴.۰ — First-run، انعطاف و تحلیل
 
 - [x] فاز ۱۸۱: Onboarding & First-run UX؛ Fast Setup و Skip for now بدون حذف Wizard کامل، Apply یک برنامه به همه روزهای فعال، CTA روشن اولین اقدام برای Employee/Freelancer/Hybrid و پالیش Responsive/RTL/LTR.
-- [ ] فاز ۱۸۲: Flexible Work Mode & Activity Segments؛ حالت بدون Start/End ثابت از قبل، وقفه‌های شناور و Segmentهای جلسه/یادگیری/کار عمیق/اداری/پروژه؛ پیش از اجرا نیاز Schema v18 بررسی شود.
+- [x] فاز ۱۸۲: Flexible Work Mode & Activity Segments؛ حالت Flexible بدون الزام Start/End ثابت، Target مستقل روزانه، وقفه‌های شناور و Segmentهای جلسه/یادگیری/کار عمیق/اداری/پروژه با Breakdown گزارش؛ بررسی معماری به ارتقای AppData از Schema v17 به v18 با Migration امن منجر شد.
 - [ ] فاز ۱۸۳: Notification Intelligence؛ Reminder سفارشی، Snooze و Quiet hours با محاسبه فقط بر اساس Active Work Time و بدون شمردن Lunch/Break.
 - [ ] فاز ۱۸۴: Product Analytics privacy-safe؛ Event taxonomy، Consent/Opt-out و ممنوعیت ارسال حقوق، درآمد، عنوان پروژه، یادداشت یا محتوای شخصی.
 - [ ] فاز ۱۸۵: GitHub-style Activity Graph & Month Intelligence؛ Heatmap کارکرد واقعی با Persian/Gregorian، Tooltip، keyboard accessibility، streak و توزیع deficit/overtime.

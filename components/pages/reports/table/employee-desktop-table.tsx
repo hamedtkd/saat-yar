@@ -5,16 +5,18 @@ import { PrivateMoney } from "@/components/common/private-money";
 import { useLocaleUi } from "@/components/i18n/use-locale-ui";
 import { cn } from "@/lib/cn";
 import { calc } from "@/lib/time-engine";
+import { getDailyTargetMinutes } from "@/lib/work-schedule";
 import type { Settings, WorkRecord } from "@/lib/types";
 import { getEmployeeDayPay, TableHeading, type EmployeeTotals } from "./report-table-shared";
 
-type Props = { monthRecords: WorkRecord[]; settings: Settings; dailyTarget: number; totals: EmployeeTotals; financialsHidden: boolean };
-export function EmployeeDesktopTable({ monthRecords, settings, dailyTarget, totals, financialsHidden }: Props) {
+type Props = { monthRecords: WorkRecord[]; settings: Settings; totals: EmployeeTotals; financialsHidden: boolean };
+export function EmployeeDesktopTable({ monthRecords, settings, totals, financialsHidden }: Props) {
   const { t, date, digits, duration, number } = useLocaleUi();
   const headings = [t("common.date"), t("common.clockIn"), t("common.clockOut"), t("common.lunch"), t("common.breaks"), t("common.netWorked"), t("common.leave"), t("common.balance"), t("common.estimatedSalary"), t("common.note")];
   return <div className="hidden w-full overflow-x-auto px-4 pb-5 pt-3 md:block sm:px-5"><table className="w-full min-w-270 border-collapse text-[11px]">
     <thead><tr>{headings.map((heading) => <TableHeading key={heading}>{heading}</TableHeading>)}</tr></thead>
     <tbody>{monthRecords.map((record) => {
+      const dailyTarget = getDailyTargetMinutes(record.date, settings);
       const result = calc(record, dailyTarget);
       const earnedAmount = getEmployeeDayPay({ record, settings, dailyTarget });
       return <tr key={record.date} className="transition-colors hover:bg-[var(--surface-2)]">

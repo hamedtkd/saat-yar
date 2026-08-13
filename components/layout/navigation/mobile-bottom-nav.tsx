@@ -30,7 +30,7 @@ export function MobileBottomNav({ mode, currentPath }: { mode: Mode; currentPath
           <section
             id="mobile-more-menu"
             aria-label={t("nav.moreTitle")}
-            className="absolute bottom-[calc(82px+env(safe-area-inset-bottom))] left-1/2 w-[calc(100%-16px)] max-w-[520px] -translate-x-1/2 rounded-[24px] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] p-3 shadow-[0_18px_48px_rgba(0,0,0,.24)] backdrop-blur-2xl"
+            className="absolute bottom-[calc(82px+env(safe-area-inset-bottom))] left-1/2 w-[calc(100vw-16px)] max-w-[520px] -translate-x-1/2 rounded-[24px] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] p-3 shadow-[0_18px_48px_rgba(0,0,0,.24)] backdrop-blur-2xl"
             onClick={(event) => event.stopPropagation()}
           >
             <div aria-hidden="true" className="mx-auto mb-2 h-1 w-10 rounded-full bg-[var(--border)]" />
@@ -81,7 +81,8 @@ export function MobileBottomNav({ mode, currentPath }: { mode: Mode; currentPath
 
       <nav
         aria-label={t("nav.mobileAria")}
-        className="fixed bottom-[calc(8px+env(safe-area-inset-bottom))] left-1/2 z-50 grid w-[calc(100%-16px)] max-w-[520px] -translate-x-1/2 grid-cols-5 rounded-[21px] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] p-1 shadow-[0_10px_30px_rgba(0,0,0,.16)] backdrop-blur-2xl xl:hidden"
+        data-mobile-bottom-nav
+        className="fixed bottom-[calc(8px+env(safe-area-inset-bottom))] left-1/2 z-50 grid w-[calc(100vw-16px)] max-w-[520px] -translate-x-1/2 grid-cols-5 rounded-[21px] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] p-1 shadow-[0_10px_30px_rgba(0,0,0,.16)] backdrop-blur-2xl xl:hidden"
       >
         {primary.map(({ href, labelKey, icon: Icon }) => {
           const active = normalizedPath === href;

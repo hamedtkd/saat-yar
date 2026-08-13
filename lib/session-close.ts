@@ -1,4 +1,5 @@
 import type { AppData, WorkRecord } from "./types.ts";
+import { closeActiveActivitySegments } from "./activity-segments.ts";
 
 export const SESSION_CLOSE_KEY = "saatyar:pending-session-close";
 export const SESSION_HEARTBEAT_KEY = "saatyar:session-heartbeat";
@@ -31,6 +32,7 @@ function closeOpenRecord(data: AppData, date: string, closedAt: string, reason: 
         ...record,
         end,
         endedAt: closedAt,
+        activitySegments: closeActiveActivitySegments(record.activitySegments, end, closedAt),
         autoClosedAt: closedAt,
         autoClosedReason: reason,
         needsReview: true,

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import { createInitialData } from "../lib/constants.ts";
+import { APP_DATA_SCHEMA_VERSION } from "../lib/data/version.ts";
 import {
   applyDeviceTransfer,
   createDeviceTransferPayload,
@@ -19,7 +20,7 @@ function devices() {
   const incoming = createInitialData({ onboarded: true });
   local.settings.name = "لپ‌تاپ";
   incoming.settings.name = "موبایل";
-  local.records["2026-08-01"] = { date: "2026-08-01", start: "08:00", end: "16:00", lunchMinutes: 30, breaks: [], leaveMinutes: 0, leaveType: "none", note: "local", holiday: false };
+  local.records["2026-08-01"] = { date: "2026-08-01", start: "08:00", end: "16:00", lunchMinutes: 30, breaks: [], activitySegments: [], leaveMinutes: 0, leaveType: "none", note: "local", holiday: false };
   incoming.records["2026-08-01"] = { ...local.records["2026-08-01"], note: "incoming" };
   incoming.records["2026-08-02"] = { ...local.records["2026-08-01"], date: "2026-08-02", note: "new" };
   local.clients.push({ id: "shared", name: "Local", color: "#000000", archived: false });
@@ -32,7 +33,7 @@ test("device transfer payload is versioned and checksum-protected", async () => 
   const { local } = devices();
   const payload = await createDeviceTransferPayload(local, { deviceId: "desktop-1", deviceName: "Laptop" }, "2026-08-07T10:00:00.000Z");
   assert.equal(payload.protocolVersion, 1);
-  assert.equal(payload.appDataSchemaVersion, 17);
+  assert.equal(payload.appDataSchemaVersion, APP_DATA_SCHEMA_VERSION);
   assert.equal((await verifyDeviceTransferPayload(payload)).data.settings.name, "لپ‌تاپ");
   const tampered = structuredClone(payload);
   tampered.data.settings.name = "tampered";

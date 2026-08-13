@@ -1,5 +1,5 @@
 import type { AppData, Settings, WeekdayKey } from "../types.ts";
-import { weekdayOrder } from "../work-schedule.ts";
+import { getConfiguredWorkMinutes, weekdayOrder } from "../work-schedule.ts";
 import { createCompleteAppData } from "./app-data-factory.ts";
 import { normalizePayrollPolicy } from "../payroll-policy.ts";
 import { normalizeLeaveSettings } from "../leave-entitlement.ts";
@@ -8,12 +8,21 @@ export function normaliseData(value: AppData, defaults: Settings): AppData {
   const incomingSettings = value.settings ?? defaults;
   const incomingSchedule = incomingSettings.weeklySchedule ?? {};
   const leaveSettings = normalizeLeaveSettings(incomingSettings);
+  const workTimingMode = incomingSettings.workTimingMode === "flexible" ? "flexible" : "scheduled";
   const weeklySchedule = Object.fromEntries(
-    weekdayOrder.map((day) => [day, {
-      ...defaults.weeklySchedule[day],
-      ...(incomingSchedule[day as WeekdayKey] ?? {}),
-      lunchPaid: Boolean(incomingSchedule[day as WeekdayKey]?.lunchPaid),
-    }]),
+    weekdayOrder.map((day) => {
+      const merged = {
+        ...defaults.weeklySchedule[day],
+        ...(incomingSchedule[day as WeekdayKey] ?? {}),
+        lunchPaid: Boolean(incomingSchedule[day as WeekdayKey]?.lunchPaid),
+      };
+      return [day, {
+        ...merged,
+        targetMinutes: Number.isFinite(merged.targetMinutes)
+          ? Math.max(0, Math.round(merged.targetMinutes))
+          : getConfiguredWorkMinutes(merged),
+      }];
+    }),
   ) as Settings["weeklySchedule"];
 
   return createCompleteAppData({
@@ -21,6 +30,7 @@ export function normaliseData(value: AppData, defaults: Settings): AppData {
       ...defaults,
       ...incomingSettings,
       weeklySchedule,
+      workTimingMode,
       ...leaveSettings,
       notificationSettings: {
         ...defaults.notificationSettings,
@@ -44,6 +54,10 @@ export function normaliseData(value: AppData, defaults: Settings): AppData {
           breaks: (record.breaks ?? []).map((item) => ({
             ...item,
             paid: Boolean(item.paid),
+          })),
+          activitySegments: (record.activitySegments ?? []).map((item) => ({
+            ...item,
+            projectId: item.projectId || undefined,
           })),
           leaveMinutes: Math.max(0, record.leaveMinutes ?? 0),
           leaveType: record.leaveType ?? "none",
@@ -93,6 +107,7 @@ export function normaliseData(value: AppData, defaults: Settings): AppData {
       record: {
         ...item.record,
         breaks: (item.record.breaks ?? []).map((entry) => ({ ...entry })),
+        activitySegments: (item.record.activitySegments ?? []).map((entry) => ({ ...entry })),
       },
     })),
   });

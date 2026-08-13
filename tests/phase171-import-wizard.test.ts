@@ -86,7 +86,7 @@ test("expense CSV imports Persian numbers/categories and validates relations", (
 
 test("work-record CSV normalizes Persian date/time and detects an existing day conflict", () => {
   const data = createInitialData({ onboarded: true });
-  data.records["2026-08-09"] = { date: "2026-08-09", start: "08:00", end: "17:00", lunchMinutes: 30, breaks: [], leaveMinutes: 0, leaveType: "none", note: "", holiday: false };
+  data.records["2026-08-09"] = { date: "2026-08-09", start: "08:00", end: "17:00", lunchMinutes: 30, breaks: [], activitySegments: [], leaveMinutes: 0, leaveType: "none", note: "", holiday: false };
   const parsed = parseCsvText("date,start,end,lunch_minutes,note\n۱۴۰۵/۰۵/۱۸,۷:۳۰,۱۶:۱۵,۴۵,قدیمی\n1405/05/19,0730,1615,30,جدید\n");
   const preview = buildCsvImportPreview("work-records", parsed, createAutoMapping("work-records", parsed.headers), data);
   assert.equal(preview.conflictCount, 1);
@@ -118,7 +118,7 @@ test("CSV apply skips conflicts by default and replaces them only when explicitl
 test("backup analysis previews additions/conflicts and safe merge keeps current settings and conflicts", () => {
   const current = withClient("فعلی");
   current.settings.name = "نام فعلی";
-  current.records["2026-08-09"] = { date: "2026-08-09", start: "08:00", end: "17:00", lunchMinutes: 30, breaks: [], leaveMinutes: 0, leaveType: "none", note: "current", holiday: false };
+  current.records["2026-08-09"] = { date: "2026-08-09", start: "08:00", end: "17:00", lunchMinutes: 30, breaks: [], activitySegments: [], leaveMinutes: 0, leaveType: "none", note: "current", holiday: false };
   const incoming = structuredClone(current) as AppData;
   incoming.settings.name = "نام فایل";
   incoming.records["2026-08-09"].note = "incoming";

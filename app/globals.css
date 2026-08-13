@@ -75,12 +75,16 @@
 
 
 .dashboard-shell {
+  max-width: 100%;
+  overflow-x: clip;
   background-image:
     radial-gradient(circle at 18% 12%, color-mix(in srgb, var(--accent) 5%, transparent), transparent 30%),
     linear-gradient(180deg, color-mix(in srgb, var(--accent) 1.5%, transparent), transparent 38%);
 }
 
 .shell-main-offset {
+  min-width: 0;
+  max-width: 100%;
   width: min(100%, var(--shell-content-max));
   margin-right: auto;
   margin-left: auto;

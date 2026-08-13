@@ -10,6 +10,7 @@ import { localDateKey } from "@/lib/format";
 import { getHolidayInfo } from "@/lib/holidays";
 import { isScheduledDayOff } from "@/lib/work-schedule";
 import { CompletedDayEditor } from "./completed-day-editor";
+import { ActivitySegmentsCard } from "./activity-segments-card";
 import { FirstRunGuide } from "./first-run-guide";
 import { ManualEntryForm } from "./manual-entry-form";
 import { RecordHealthBanner } from "./record-health-banner";
@@ -100,8 +101,10 @@ export function TodayPage(props: TodayPageProps) {
         openBreak={Boolean(props.activeBreak)}
         lunchRunning={props.lunchRunning}
         scheduledDayOff={scheduledDayOff}
+        flexible={props.data.settings.workTimingMode === "flexible"}
       />
       <CompletedDayEditor key={`${props.selectedDate}:${props.record.start && props.record.end ? "completed" : "active"}`} {...props} scheduledDayOff={scheduledDayOff} />
+      <ActivitySegmentsCard record={props.record} projects={props.data.projects} activeSegment={props.activeActivitySegment} activeBreak={props.activeBreak} lunchRunning={props.lunchRunning} trackingAllowed={isToday} onStart={props.startActivitySegment} onStop={props.stopActivitySegment} />
       {props.editingEntry === "manual" && props.data.settings.mode !== "employee" && <ManualEntryForm {...props} />}
       {props.data.settings.mode === "employee" ? <TodayAttendanceLog record={props.record} /> : <TodayTimeline {...props} />}
       <TodayMetrics

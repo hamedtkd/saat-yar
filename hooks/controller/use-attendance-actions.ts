@@ -6,9 +6,10 @@ import { formatLocaleNumber } from "@/lib/i18n/formatters";
 import { translateSystem } from "@/lib/i18n/system";
 import { closePreviousRecordForNewDay, findPreviousOpenRecord } from "@/lib/previous-day-session";
 import type { Dispatch, SetStateAction } from "react";
-import type { AppData, WorkRecord, WorkRecordPatch } from "@/lib/types";
+import type { ActivityKind, AppData, WorkRecord, WorkRecordPatch } from "@/lib/types";
 import { createDeletedWorkRecord } from "@/lib/record-recycle-bin";
 import { resumeAutoClosedRecord } from "@/lib/session-close";
+import { closeActiveActivitySegments } from "@/lib/activity-segments";
 
 type Args = {
   data: AppData;
@@ -98,7 +99,7 @@ export function useAttendanceActions({ data, record, selectedDate, activeBreak, 
     }));
     setPendingPreviousRecord(undefined);
     beginCurrentDay();
-    setToast(translateSystem(getBrowserLocale(), "Previous-day clock-out was recorded from the schedule; please review it."));
+    setToast(translateSystem(getBrowserLocale(), data.settings.workTimingMode === "flexible" ? "Previous-day clock-out was estimated from the last saved activity; please review it." : "Previous-day clock-out was recorded from the schedule; please review it."));
   }
   function reviewPreviousRecord() {
     if (!pendingPreviousRecord) return;
@@ -127,12 +128,18 @@ export function useAttendanceActions({ data, record, selectedDate, activeBreak, 
   function finishWork() {
     if (!ensureLiveTimerOwnership()) return setToast(translateSystem(getBrowserLocale(), "Timer control is active in another tab."));
     if (activeBreak || lunchRunning) return setToast(translateSystem(getBrowserLocale(), "Finish the lunch or break timer first."));
-    updateRecord({ end: nowTime(), endedAt: new Date().toISOString() }); setToast(translateSystem(getBrowserLocale(), "Clock-out was recorded."));
+    const end = nowTime();
+    const endedAt = new Date().toISOString();
+    updateRecord((current) => ({ end, endedAt, activitySegments: closeActiveActivitySegments(current.activitySegments, end, endedAt) }));
+    setToast(translateSystem(getBrowserLocale(), "Clock-out was recorded."));
   }
   function startLunch() {
     if (!ensureLiveTimerOwnership()) return setToast(translateSystem(getBrowserLocale(), "Timer control is active in another tab."));
     if (activeBreak) return setToast(translateSystem(getBrowserLocale(), "Finish the active break first."));
-    updateRecord({ lunchStart: nowTime(), lunchEnd: "", lunchStartedAt: new Date().toISOString(), lunchEndedAt: undefined }); setToast(translateSystem(getBrowserLocale(), "Lunch timer started."));
+    const start = nowTime();
+    const startedAt = new Date().toISOString();
+    updateRecord((current) => ({ lunchStart: start, lunchEnd: "", lunchStartedAt: startedAt, lunchEndedAt: undefined, activitySegments: closeActiveActivitySegments(current.activitySegments, start, startedAt) }));
+    setToast(translateSystem(getBrowserLocale(), "Lunch timer started."));
   }
   function finishLunch() {
     if (!ensureLiveTimerOwnership()) return setToast(translateSystem(getBrowserLocale(), "Timer control is active in another tab."));
@@ -143,7 +150,12 @@ export function useAttendanceActions({ data, record, selectedDate, activeBreak, 
   function startBreak() {
     if (!ensureLiveTimerOwnership()) return setToast(translateSystem(getBrowserLocale(), "Timer control is active in another tab."));
     if (activeBreak || lunchRunning) return setToast(translateSystem(getBrowserLocale(), "Another timer is already running."));
-    updateRecord((current) => ({ breaks: [...current.breaks, { id: crypto.randomUUID(), start: nowTime(), end: "", startedAt: new Date().toISOString(), title: translateSystem(getBrowserLocale(), "Personal break"), paid: false }] }));
+    const start = nowTime();
+    const startedAt = new Date().toISOString();
+    updateRecord((current) => ({
+      breaks: [...current.breaks, { id: crypto.randomUUID(), start, end: "", startedAt, title: translateSystem(getBrowserLocale(), "Personal break"), paid: false }],
+      activitySegments: closeActiveActivitySegments(current.activitySegments, start, startedAt),
+    }));
     setToast(translateSystem(getBrowserLocale(), "Break timer started."));
   }
   function finishBreak(minutes?: number) {
@@ -154,6 +166,28 @@ export function useAttendanceActions({ data, record, selectedDate, activeBreak, 
       endedAt: minutes && item.startedAt ? new Date(new Date(item.startedAt).getTime() + minutes * 60_000).toISOString() : new Date().toISOString() } : item) }));
     setToast(minutes ? translateSystem(getBrowserLocale(), "{minutes}-minute break was recorded.", { minutes: formatLocaleNumber(getBrowserLocale(), minutes) }) : translateSystem(getBrowserLocale(), "Break ended."));
   }
-  return { updateRecord, resetRecord, undoResetRecord, dismissResetUndo, resetUndoDate: resetUndo?.date, startWork, resumeAutoClosedWork, finishWork, startLunch, finishLunch, startBreak, finishBreak,
+
+  function startActivitySegment(kind: ActivityKind, projectId?: string) {
+    if (!ensureLiveTimerOwnership()) return setToast(translateSystem(getBrowserLocale(), "Timer control is active in another tab."));
+    if (!record.start || record.end) return setToast(translateSystem(getBrowserLocale(), "Start the workday before tracking an activity."));
+    if (activeBreak || lunchRunning) return setToast(translateSystem(getBrowserLocale(), "Finish the active pause before starting an activity."));
+    const start = nowTime();
+    const startedAt = new Date().toISOString();
+    updateRecord((current) => ({
+      activitySegments: [
+        ...closeActiveActivitySegments(current.activitySegments, start, startedAt),
+        { id: crypto.randomUUID(), kind, start, end: "", startedAt, projectId: projectId || undefined },
+      ],
+    }));
+    setToast(translateSystem(getBrowserLocale(), "Activity segment started."));
+  }
+  function stopActivitySegment() {
+    if (!ensureLiveTimerOwnership()) return setToast(translateSystem(getBrowserLocale(), "Timer control is active in another tab."));
+    const end = nowTime();
+    const endedAt = new Date().toISOString();
+    updateRecord((current) => ({ activitySegments: closeActiveActivitySegments(current.activitySegments, end, endedAt) }));
+    setToast(translateSystem(getBrowserLocale(), "Activity segment stopped."));
+  }
+  return { updateRecord, resetRecord, undoResetRecord, dismissResetUndo, resetUndoDate: resetUndo?.date, startWork, resumeAutoClosedWork, finishWork, startLunch, finishLunch, startBreak, finishBreak, startActivitySegment, stopActivitySegment,
     pendingPreviousRecord, closePreviousAndStart, reviewPreviousRecord, dismissPreviousRecord: () => setPendingPreviousRecord(undefined) };
 }

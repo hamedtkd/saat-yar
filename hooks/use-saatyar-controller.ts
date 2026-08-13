@@ -42,7 +42,7 @@ export function useSaatyarController(calendar: CalendarSystem = "persian") {
 
   const derived = useControllerDerived(data, selectedDate, selectedProjectId, reportFilter, calendar);
   const liveTimerActive = Boolean(derived.activeEntry || Object.values(data.records).some((item) =>
-    (item.start && !item.end) || (item.lunchStart && !item.lunchEnd) || item.breaks.some((entry) => !entry.end),
+    (item.start && !item.end) || (item.lunchStart && !item.lunchEnd) || item.breaks.some((entry) => !entry.end) || (item.activitySegments ?? []).some((entry) => !entry.end),
   ));
   const liveTimerOwnership = useLiveTimerOwnership(liveTimerActive);
   const attendance = useAttendanceActions({

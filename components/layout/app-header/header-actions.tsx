@@ -26,7 +26,7 @@ export function HeaderActions(props: Props) {
   const financialLabel = props.financialsHidden ? t("header.showFinancials") : t("header.hideFinancials");
 
   return (
-    <div className="flex min-w-0 items-center justify-end gap-1.5 sm:gap-2">
+    <div className="flex min-w-0 items-center justify-end gap-1.5 sm:gap-2 max-[520px]:flex-1 max-[520px]:gap-1">
       <HeaderSaveStatus state={props.saveState} />
       <WorkspaceSwitcher mode={props.mode} onChange={props.onModeChange} />
       <Button

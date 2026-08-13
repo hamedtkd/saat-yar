@@ -8,6 +8,7 @@ export function makeWorkRecord(overrides: Partial<WorkRecord> = {}): WorkRecord 
     lunchMinutes: 0,
     lunchPaid: false,
     breaks: [],
+    activitySegments: [],
     leaveMinutes: 0,
     leaveType: "none",
     note: "",

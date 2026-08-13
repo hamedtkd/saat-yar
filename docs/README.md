@@ -141,6 +141,7 @@
 - [فاز ۱۷۹: Release Candidate 2.4.0](./phases/PHASE_179_NOTES_FA.md)
 - [فاز ۱۸۰: Final Release 2.4.0](./phases/PHASE_180_NOTES_FA.md)
 - [فاز ۱۸۱: Onboarding & First-run UX](./phases/PHASE_181_NOTES_FA.md)
+- [فاز ۱۸۲: Flexible Work Mode & Activity Segments](./phases/PHASE_182_NOTES_FA.md)
 
 - [فاز ۱۶۵: Final Release 2.3.2](./phases/PHASE_165_NOTES_FA.md)
 - [فاز ۱۶۶: Route مستقل آنبوردینگ](./phases/PHASE_166_NOTES_FA.md)
