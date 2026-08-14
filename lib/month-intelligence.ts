@@ -1,4 +1,4 @@
-import { calendarMonthCells } from "./format.ts";
+import { calendarMonthCells, localDateKey, shiftDateKey } from "./format.ts";
 import type { CalendarSystem } from "./i18n/calendars.ts";
 import { calc } from "./time-engine.ts";
 import type { Settings, WorkRecord } from "./types.ts";
@@ -11,6 +11,15 @@ export type MonthActivityCell = {
   target: number;
   balance: number;
   intensity: 0 | 1 | 2 | 3 | 4;
+  hasRecord: boolean;
+};
+
+
+export type RecentActivityDay = {
+  key: string;
+  worked: number;
+  target: number;
+  balance: number;
   hasRecord: boolean;
 };
 
@@ -57,6 +66,29 @@ export function buildMonthActivityCells(
       intensity: getActivityIntensity(result.worked, result.target),
       hasRecord: true,
     };
+  });
+}
+
+export function buildRecentActivityDays(
+  selectedDate: string,
+  calendar: CalendarSystem,
+  records: WorkRecord[],
+  settings: Settings,
+  count = 7,
+  today = localDateKey(),
+): RecentActivityDay[] {
+  const monthKeys = calendarMonthCells(selectedDate, calendar).filter((cell) => cell.inMonth).map((cell) => cell.key);
+  const firstDay = monthKeys[0] ?? selectedDate;
+  const lastDay = monthKeys[monthKeys.length - 1] ?? selectedDate;
+  const anchorDate = today >= firstDay && today <= lastDay ? today : lastDay;
+  const recordMap = new Map(records.map((record) => [record.date, record]));
+  return Array.from({ length: count }, (_, index) => {
+    const key = shiftDateKey(anchorDate, -index);
+    const target = getDailyTargetMinutes(key, settings);
+    const record = recordMap.get(key);
+    if (!record) return { key, worked: 0, target, balance: 0, hasRecord: false };
+    const result = calc(record, target);
+    return { key, worked: result.worked, target: result.target, balance: result.balance, hasRecord: true };
   });
 }
 

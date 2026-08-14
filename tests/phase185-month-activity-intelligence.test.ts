@@ -5,6 +5,7 @@ import { defaultSettings } from "../lib/constants.ts";
 import { APP_DATA_SCHEMA_VERSION } from "../lib/data/version.ts";
 import {
   buildMonthActivityCells,
+  buildRecentActivityDays,
   getActivityIntensity,
   summarizeMonthIntelligence,
   type MonthActivityCell,
@@ -69,10 +70,18 @@ test("activity cells reuse the canonical schedule and time engine instead of inv
   assert.equal(activity.target, 480);
   assert.equal(activity.balance, 0);
   assert.equal(activity.intensity, 3);
+
+  const recent = buildRecentActivityDays("2026-02-10", "gregory", [record], defaultSettings, 3, "2026-02-10");
+  assert.deepEqual(recent.map((item) => item.key), ["2026-02-10", "2026-02-09", "2026-02-08"]);
+  assert.equal(recent[1]?.worked, 480);
+  assert.equal(recent[1]?.target, 480);
+  assert.equal(recent[1]?.hasRecord, true);
 });
 
 test("Month exposes a keyboard-accessible GitHub-style heatmap tooltip and bilingual month intelligence", () => {
   const heatmap = read("components/pages/month/activity-heatmap/activity-heatmap.tsx");
+  const tooltip = read("components/pages/month/activity-heatmap/activity-heatmap-tooltip.tsx");
+  const recent = read("components/pages/month/activity-heatmap/recent-activity-card.tsx");
   const intelligence = read("components/pages/month/activity-heatmap/month-intelligence-card.tsx");
   const monthPage = read("components/pages/month/month-page.tsx");
   const en = read("lib/i18n/en.ts");
@@ -82,9 +91,25 @@ test("Month exposes a keyboard-accessible GitHub-style heatmap tooltip and bilin
   assert.match(heatmap, /role="gridcell"/);
   assert.match(heatmap, /ArrowDown/);
   assert.match(heatmap, /ArrowRight/);
-  assert.match(heatmap, /role="tooltip"/);
+  assert.match(heatmap, /addEventListener\("focusin"/);
+  assert.match(heatmap, /onFocus=/);
+  assert.match(heatmap, /onBlur=/);
+  assert.match(heatmap, /data-activity-tooltip-id/);
+  assert.match(tooltip, /createPortal/);
+  assert.match(tooltip, /role="tooltip"/);
+  assert.match(tooltip, /data-activity-tooltip/);
+  assert.match(tooltip, /z-\[2200\]/);
+  assert.match(recent, /data-month-recent-activity/);
+  assert.match(recent, /buildRecentActivityDays/);
   assert.match(intelligence, /data-month-intelligence/);
   assert.match(monthPage, /ActivityHeatmap/);
+  assert.match(monthPage, /data-month-overview-section/);
+  assert.match(monthPage, /data-month-intelligence-section/);
+  assert.ok(monthPage.indexOf('data-month-overview-section') < monthPage.indexOf('data-month-intelligence-section'));
+  assert.match(monthPage, /grid items-start grid-cols-\[minmax\(340px,.95fr\)_minmax\(300px,.78fr\)_minmax\(340px,1fr\)\]/);
+  assert.match(monthPage, /RecentActivityCard/);
+  assert.match(heatmap, /self-start/);
+  assert.match(intelligence, /self-start/);
   assert.match(en, /Activity map and month intelligence/);
   assert.match(fa, /نقشه فعالیت و هوشمندی ماه/);
 });
@@ -101,4 +126,9 @@ test("Phase 185 stays derived-only on schema v19 and is wired into docs quality 
   const smoke = read("scripts/production-browser-smoke.mjs");
   assert.match(smoke, /data-month-activity-heatmap/);
   assert.match(smoke, /keyboard-accessible month activity heatmap/);
+  assert.match(smoke, /data-activity-tooltip/);
+  assert.match(smoke, /Input\.dispatchMouseEvent/);
+  assert.match(smoke, /pointer hover/);
+  assert.match(smoke, /keyboard target did not receive focus/);
+  assert.match(smoke, /data-month-recent-activity/);
 });

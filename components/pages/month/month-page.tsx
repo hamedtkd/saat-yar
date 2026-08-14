@@ -14,6 +14,7 @@ import type { AppData, WorkRecord } from "@/lib/types";
 import { getDailyTargetMinutes } from "@/lib/work-schedule";
 import { ActivityHeatmap } from "./activity-heatmap/activity-heatmap";
 import { MonthIntelligenceCard } from "./activity-heatmap/month-intelligence-card";
+import { RecentActivityCard } from "./activity-heatmap/recent-activity-card";
 import { MonthCalendar } from "./month-calendar";
 import { MonthDayDetails } from "./month-day-details";
 import { MonthTable } from "./month-table";
@@ -55,19 +56,20 @@ export function MonthPage({ data, selectedDate, setSelectedDate, monthRecords, m
       <MetricCard icon={<Coffee />} label={t("month.details.rest")} value={duration(monthStats.breaks)} suffix={t("common.hour")} tone="purple" />
     </section>
 
-    <section className="mb-5">
-      <SectionHeading icon={<Activity />} eyebrow={t("month.section.intelligenceEyebrow")} title={t("month.section.intelligenceTitle")} description={t("month.section.intelligenceDescription")} />
-      <div className="grid grid-cols-[minmax(0,1.45fr)_minmax(280px,.55fr)] gap-4 max-[980px]:grid-cols-1">
-        <ActivityHeatmap selectedDate={selectedDate} setSelectedDate={setSelectedDate} records={monthRecords} settings={data.settings} />
-        <MonthIntelligenceCard selectedDate={selectedDate} records={monthRecords} settings={data.settings} />
+    <section className="mb-5" data-month-overview-section>
+      <SectionHeading icon={<CalendarRange />} eyebrow={t("month.section.overviewEyebrow")} title={t("month.section.overviewTitle")} description={t("month.section.overviewDescription")} trailing={<span className="rounded-full border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-3 py-1.5 text-[9px] font-bold text-[var(--text-muted)]">{t("month.calendar.withRecords", { count: number(monthRecords.length) })}</span>} />
+      <div className="grid items-start grid-cols-[minmax(0,1.7fr)_minmax(280px,.3fr)] gap-4 max-[980px]:grid-cols-1">
+        <MonthCalendar data={data} selectedDate={selectedDate} setSelectedDate={setSelectedDate} monthRecordCount={monthRecords.length} moveMonth={(amount) => setSelectedDate(shiftCalendarMonth(selectedDate, amount, calendar))} />
+        <WeeklyChart values={weekValues} />
       </div>
     </section>
 
-    <section className="mb-5">
-      <SectionHeading icon={<CalendarRange />} eyebrow={t("month.section.overviewEyebrow")} title={t("month.section.overviewTitle")} description={t("month.section.overviewDescription")} trailing={<span className="rounded-full border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-3 py-1.5 text-[9px] font-bold text-[var(--text-muted)]">{t("month.calendar.withRecords", { count: number(monthRecords.length) })}</span>} />
-      <div className="grid grid-cols-[minmax(0,1.55fr)_minmax(300px,.45fr)] gap-4 max-[980px]:grid-cols-1">
-        <MonthCalendar data={data} selectedDate={selectedDate} setSelectedDate={setSelectedDate} monthRecordCount={monthRecords.length} moveMonth={(amount) => setSelectedDate(shiftCalendarMonth(selectedDate, amount, calendar))} />
-        <WeeklyChart values={weekValues} />
+    <section className="mb-5" data-month-intelligence-section>
+      <SectionHeading icon={<Activity />} eyebrow={t("month.section.intelligenceEyebrow")} title={t("month.section.intelligenceTitle")} description={t("month.section.intelligenceDescription")} />
+      <div className="grid items-start grid-cols-[minmax(340px,.95fr)_minmax(300px,.78fr)_minmax(340px,1fr)] gap-4 max-[1180px]:grid-cols-1">
+        <ActivityHeatmap selectedDate={selectedDate} setSelectedDate={setSelectedDate} records={monthRecords} settings={data.settings} />
+        <RecentActivityCard selectedDate={selectedDate} setSelectedDate={setSelectedDate} records={Object.values(data.records)} settings={data.settings} />
+        <MonthIntelligenceCard selectedDate={selectedDate} records={monthRecords} settings={data.settings} />
       </div>
     </section>
 

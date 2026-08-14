@@ -17,11 +17,19 @@ Baseline توسعه: `49c517f` — `feat(analytics): add privacy-safe product an
 - همه اعداد مشتق‌شده‌اند و هیچ داده جدیدی در AppData ذخیره نمی‌شود.
 - توضیح قدیمی Month و Header CSV که به‌صورت ثابت «شمسی» نوشته شده بود Calendar-neutral شد تا Override میلادی نیز قرارداد صحیح داشته باشد.
 - Production Browser Smoke حالا Heatmap را در Persian/RTL و Gregorian/English-LTR می‌بیند، موبایل 425px را از نظر overflow نگه می‌دارد و حرکت واقعی Keyboard را روی Heatmap بررسی می‌کند.
+- Visual QA پس از Commit `c119754` نشان داد Intelligence قبل از Calendar سلسله‌مراتب صفحه را برعکس کرده و Stretch پیش‌فرض Grid در Desktop فضای خالی ایجاد می‌کند؛ Follow-up این فاز Calendar را بلافاصله بعد از KPIها قرار می‌دهد، Gridها را `items-start` می‌کند و Heatmap را در عرض محتوای خودش مرکز می‌کند.
+- Visual QA دوم نشان داد Tooltip داخل Cell زیر Surface مجاور می‌افتد و دو کارت Heatmap/Intelligence هنوز نسبت فضای اشغال‌شده به اطلاعات ضعیفی دارند؛ R3 Tooltip را با Portal ثابت و viewport-clamp به `document.body` منتقل می‌کند و بلوک «۷ روز اخیر» را با الگوی متراکم dashboard کنار Heatmap می‌آورد.
+- «۷ روز اخیر» کارکرد، هدف واقعی و تراز هر روز را از همان `calc()` و Schedule اصلی محاسبه می‌کند و با کلیک روی هر ردیف Day Details همان تاریخ انتخاب می‌شود؛ داده جدیدی ذخیره نمی‌شود.
+- Desktop Activity Intelligence حالا سه بلوک مستقل Heatmap + Recent 7 Days + Month Intelligence دارد تا عرض بزرگ صفحه به اطلاعات مفید تبدیل شود؛ در عرض‌های کمتر از 1180px این بلوک‌ها عمودی می‌شوند.
+- R5 نمایش Tooltip روی Focus صفحه‌کلید را از React synthetic focus به listener بومی `focusin/focusout` روی خود Grid منتقل می‌کند تا Programmatic/keyboard focus در Browser Gate و مرورگر واقعی قرارداد یکسانی داشته باشد؛ Hover همچنان مستقل باقی می‌ماند.
+- R6 قرارداد Browser را از Focus برنامه‌نویسی‌شده DevTools جدا می‌کند: باگ واقعی stacking با Hover واقعی `Input.dispatchMouseEvent` و Portal/viewport/z-index سنجیده می‌شود، در حالی که Keyboard navigation جداگانه با Focus + Arrow key واقعی بررسی می‌شود. برای UX واقعی، `onFocus/onBlur` نیز در کنار listener بومی Grid حفظ شده است.
 
 ## فایل‌های مهم
 
 - `lib/month-intelligence.ts`
 - `components/pages/month/activity-heatmap/activity-heatmap.tsx`
+- `components/pages/month/activity-heatmap/activity-heatmap-tooltip.tsx`
+- `components/pages/month/activity-heatmap/recent-activity-card.tsx`
 - `components/pages/month/activity-heatmap/month-intelligence-card.tsx`
 - `components/pages/month/month-page.tsx`
 - `lib/i18n/fa.ts`
@@ -33,7 +41,9 @@ Baseline توسعه: `49c517f` — `feat(analytics): add privacy-safe product an
 
 منطق محاسبه شدت، streak و توزیع Balance در helper خالص `lib/month-intelligence.ts` قرار گرفت تا UI فقط نمایش و تعامل را مدیریت کند. محاسبات روزانه همچنان از `calc()` و `getDailyTargetMinutes()` استفاده می‌کنند و Month یک موتور زمان موازی نمی‌سازد.
 
-برای Tooltip یک سطح کوچک domain-specific داخل Cell استفاده شد، نه یک Tooltip عمومی جدید؛ پروژه در این فاز به Dependency یا Primitive عمومی تازه نیاز ندارد. Tooltip با Hover و Focus نمایش داده می‌شود و خود Cell نیز متن دسترس‌پذیر دارد.
+Tooltip همچنان domain-specific و بدون Dependency تازه است، اما برای شکستن stacking-context کارت‌ها داخل Cell رندر نمی‌شود؛ یک Portal ثابت به `document.body` با z-index بالا، viewport-clamp و reposition روی scroll/resize دارد. Cell متن دسترس‌پذیر مستقل دارد و Tooltip با Hover و Keyboard Focus نمایش داده می‌شود.
+
+بلوک «۷ روز اخیر» نیز Derived-only است و از `shiftDateKey()`، `getDailyTargetMinutes()` و `calc()` استفاده می‌کند؛ بنابراین Month هیچ موتور زمان یا مدل ذخیره‌سازی موازی نمی‌سازد.
 
 ## Schema و Migration
 
@@ -66,9 +76,11 @@ Baseline فاز ۱۸۴: `796/796`.
 - `en / LTR / Gregorian calendar`
 - Light و Dark
 - Hover و Keyboard Focus روی Cellها
-- عدم خروج Tooltip و Heatmap از viewport
+- عدم خروج Tooltip و Heatmap از viewport و قرارگرفتن Tooltip بالاتر از همه Surfaceها
+- نمایش فشرده «۷ روز اخیر» و تغییر Day Details با انتخاب هر ردیف
 - خوانایی پنج سطح شدت با Accentهای مختلف
 - انتخاب Cell باید روز انتخاب‌شده Month را تغییر دهد و Day Details همان روز را دنبال کند
+- Calendar باید قبل از Activity Intelligence دیده شود و کارت‌های کوتاه‌تر در Desktop به ارتفاع کارت بلندتر Stretch نشوند
 
 ## Commit پیشنهادی
 

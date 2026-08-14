@@ -577,7 +577,7 @@ export async function runProductionBrowserSmoke() {
       await mobileLoad;
       await waitFor(client, `["/${route}", "/${route}/"].includes(location.pathname) && Boolean(document.querySelector('#main-content'))`, `${label} mobile responsive render`);
       if (route === "month") {
-        await waitFor(client, `document.documentElement.dataset.calendar === "persian" && Boolean(document.querySelector('[data-month-activity-heatmap]')) && Boolean(document.querySelector('[data-month-intelligence]'))`, "Persian month activity intelligence on mobile");
+        await waitFor(client, `document.documentElement.dataset.calendar === "persian" && Boolean(document.querySelector('[data-month-activity-heatmap]')) && Boolean(document.querySelector('[data-month-recent-activity]')) && Boolean(document.querySelector('[data-month-intelligence]'))`, "Persian month activity intelligence on mobile");
       }
       await assertMobileShellFits(client, `${label} 425px`);
     }
@@ -698,14 +698,108 @@ export async function runProductionBrowserSmoke() {
     const englishMonthLoad = waitForEvent(client, "Page.loadEventFired", "English Month route");
     await client.call("Page.navigate", { url: `${origin}/month/` });
     await englishMonthLoad;
-    await waitFor(client, `["/month", "/month/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.documentElement.dataset.calendar === "gregory" && document.body?.innerText.includes("My month") && document.body?.innerText.includes("Activity map and month intelligence") && Boolean(document.querySelector('[data-month-activity-heatmap]')) && Boolean(document.querySelector('[data-month-intelligence]'))`, "English Month activity intelligence surface");
-    const heatmapStartDate = await evaluate(client, `(() => {
-      const cells = [...document.querySelectorAll('[data-activity-date]')];
-      const cell = cells.find((item, index) => item.getAttribute('data-activity-in-month') === 'true' && index % 7 < 6 && cells[index + 1]?.getAttribute('data-activity-in-month') === 'true');
-      cell?.focus();
-      return cell?.getAttribute('data-activity-date') ?? null;
+    await waitFor(client, `["/month", "/month/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.documentElement.dataset.calendar === "gregory" && document.body?.innerText.includes("My month") && document.body?.innerText.includes("Activity map and month intelligence") && Boolean(document.querySelector('[data-month-activity-heatmap]')) && Boolean(document.querySelector('[data-month-recent-activity]')) && Boolean(document.querySelector('[data-month-intelligence]'))`, "English Month activity intelligence surface");
+    const monthHierarchy = await evaluate(client, `(() => {
+      const overview = document.querySelector('[data-month-overview-section]')?.getBoundingClientRect();
+      const intelligence = document.querySelector('[data-month-intelligence-section]')?.getBoundingClientRect();
+      const heatmap = document.querySelector('[data-month-activity-heatmap]')?.getBoundingClientRect();
+      const recent = document.querySelector('[data-month-recent-activity]')?.getBoundingClientRect();
+      const insight = document.querySelector('[data-month-intelligence]')?.getBoundingClientRect();
+      if (!overview || !intelligence || !heatmap || !recent || !insight) return null;
+      return {
+        overviewTop: overview.top,
+        intelligenceTop: intelligence.top,
+        sectionWidth: intelligence.width,
+        heatmapWidth: heatmap.width,
+        recentWidth: recent.width,
+        insightWidth: insight.width,
+        heatmapHeight: heatmap.height,
+        recentHeight: recent.height,
+        insightHeight: insight.height,
+      };
     })()`);
+    if (
+      !monthHierarchy
+      || monthHierarchy.overviewTop >= monthHierarchy.intelligenceTop
+      || monthHierarchy.heatmapWidth > monthHierarchy.sectionWidth * 0.46
+      || monthHierarchy.recentWidth < 260
+      || monthHierarchy.insightWidth < 300
+      || monthHierarchy.heatmapHeight > Math.max(monthHierarchy.recentHeight, monthHierarchy.insightHeight) + 120
+    ) {
+      throw new Error(`Month visual hierarchy contract failed: ${JSON.stringify(monthHierarchy)}`);
+    }
+    console.log("✓ Month keeps the calendar first and fits heatmap, recent activity, and intelligence without wasted desktop space");
+    const heatmapPointerDate = await evaluate(client, `(() => {
+      const cells = [...document.querySelectorAll('[data-activity-date]')];
+      const cell = cells.find((item) => item.getAttribute('data-activity-in-month') === 'true' && !item.disabled);
+      if (!cell) return null;
+      cell.scrollIntoView({ block: "center", inline: "center", behavior: "instant" });
+      return cell.getAttribute('data-activity-date');
+    })()`);
+    if (!heatmapPointerDate) throw new Error("Month heatmap has no in-month hover target");
+    await evaluate(client, `new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))`);
+    const heatmapPointerTarget = await evaluate(client, `(() => {
+      const cell = document.querySelector('[data-activity-date="${heatmapPointerDate}"]');
+      const rect = cell?.getBoundingClientRect();
+      if (!cell || !rect) return null;
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
+      const hit = document.elementFromPoint(x, y);
+      return {
+        date: cell.getAttribute('data-activity-date'),
+        x,
+        y,
+        inViewport: x >= 0 && x <= document.documentElement.clientWidth && y >= 0 && y <= window.innerHeight,
+        hitTarget: hit === cell || Boolean(hit?.closest?.('[data-activity-date="${heatmapPointerDate}"]')),
+      };
+    })()`);
+    if (!heatmapPointerTarget?.inViewport || !heatmapPointerTarget.hitTarget) {
+      throw new Error(`Month heatmap hover target is not pointer-reachable: ${JSON.stringify(heatmapPointerTarget)}`);
+    }
+    await client.call("Input.dispatchMouseEvent", { type: "mouseMoved", x: heatmapPointerTarget.x, y: heatmapPointerTarget.y });
+    await waitFor(client, `Boolean(document.querySelector('[data-activity-tooltip]'))`, "portal heatmap tooltip on pointer hover");
+    const heatmapTooltip = await evaluate(client, `(() => {
+      const tooltip = document.querySelector('[data-activity-tooltip]');
+      const rect = tooltip?.getBoundingClientRect();
+      if (!tooltip || !rect) return null;
+      return {
+        parentIsBody: tooltip.parentElement === document.body,
+        left: rect.left,
+        right: rect.right,
+        top: rect.top,
+        bottom: rect.bottom,
+        viewportWidth: document.documentElement.clientWidth,
+        viewportHeight: window.innerHeight,
+        zIndex: Number(getComputedStyle(tooltip).zIndex || 0),
+      };
+    })()`);
+    if (
+      !heatmapTooltip
+      || !heatmapTooltip.parentIsBody
+      || heatmapTooltip.left < 0
+      || heatmapTooltip.right > heatmapTooltip.viewportWidth + 1
+      || heatmapTooltip.top < 0
+      || heatmapTooltip.bottom > heatmapTooltip.viewportHeight + 1
+      || heatmapTooltip.zIndex < 1000
+    ) {
+      throw new Error(`Month heatmap tooltip portal contract failed: ${JSON.stringify(heatmapTooltip)}`);
+    }
+    console.log("✓ Month heatmap tooltip is portaled above dashboard cards and clamped to the viewport on hover");
+    await client.call("Input.dispatchMouseEvent", { type: "mouseMoved", x: 2, y: 2 });
+
+    const heatmapFocusState = await evaluate(client, `(() => {
+      const cells = [...document.querySelectorAll('[data-activity-date]')];
+      const cell = cells.find((item, index) => item.getAttribute('data-activity-in-month') === 'true' && !item.disabled && index % 7 < 6 && cells[index + 1]?.getAttribute('data-activity-in-month') === 'true');
+      if (!cell) return null;
+      cell.focus({ preventScroll: true });
+      return {
+        date: cell.getAttribute('data-activity-date'),
+        focused: document.activeElement === cell,
+      };
+    })()`);
+    const heatmapStartDate = heatmapFocusState?.date ?? null;
     if (!heatmapStartDate) throw new Error("Month heatmap has no in-month keyboard target");
+    if (!heatmapFocusState?.focused) throw new Error(`Month heatmap keyboard target did not receive focus: ${JSON.stringify(heatmapFocusState)}`);
     await client.call("Input.dispatchKeyEvent", { type: "keyDown", key: "ArrowDown", code: "ArrowDown" });
     await client.call("Input.dispatchKeyEvent", { type: "keyUp", key: "ArrowDown", code: "ArrowDown" });
     await waitFor(client, `document.activeElement?.getAttribute('data-activity-date') && document.activeElement?.getAttribute('data-activity-date') !== ${JSON.stringify(heatmapStartDate)}`, "keyboard-accessible month activity heatmap");

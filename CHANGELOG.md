@@ -1,6 +1,8 @@
 ## [Unreleased]
 
 - Phase 185: صفحه Month یک GitHub-style Activity Heatmap مشتق‌شده از کارکرد واقعی، Tooltip/Keyboard navigation، longest streak و توزیع اضافه‌کار/کسری دریافت کرد؛ Heatmap با Persian/Gregorian و RTL/LTR کار می‌کند و Schema v19 بدون تغییر ماند.
+- Phase 185 visual follow-up: تقویم به بالاترین بخش محتوای Month منتقل شد، کارت‌های Calendar/Weekly و Heatmap/Intelligence دیگر ارتفاع همدیگر را کش نمی‌دهند و Heatmap در فضای واقعی خودش متراکم/مرکزی می‌ماند تا فضای خالی Desktop حذف شود.
+- Phase 185 tooltip hardening: Tooltip نقشه فعالیت با Portal روی `document.body` بالای Surfaceها می‌ماند؛ Browser Smoke با Hover واقعی CDP stacking/viewport را می‌سنجد و مسیر Keyboard navigation را جداگانه بررسی می‌کند تا Focus مصنوعی DevTools باعث false negative نشود.
 - Phase 184: Product Analytics privacy-safe با Consent محلی خارج از AppData، Event taxonomy allowlisted و Plausible adapter اختیاری اضافه شد؛ هیچ داده کاری شخصی در Payload مجاز نیست و Provider پیش‌فرض خاموش است.
 - Phase 183: Notification Intelligence با محاسبه Active Work Time، Quiet Hours، Snooze/Resume عمومی و Reminderهای pause-aware اضافه شد؛ AppData توسعه به Schema v19 رفت و Release تاریخی v2.4.0 روی Schema v17 immutable ماند.
 - Phase 183 R2: Custom active-work reminder از یک Rule به حداکثر پنج Reminder مستقل با Add/Edit/Disable/Delete ارتقا یافت؛ هر Rule bucket و dedupe مستقل دارد و Quiet Hours/Snooze همچنان Global می‌مانند.
