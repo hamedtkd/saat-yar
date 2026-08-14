@@ -136,7 +136,7 @@ test("locale UI formatter callbacks stay referentially stable across ordinary re
 test("production browser smoke covers English Today Month Reports then restores Persian", async () => {
   const smoke = await read("scripts/production-browser-smoke.mjs");
   assert.match(smoke, /English Today core surface/);
-  assert.match(smoke, /English Month core surface/);
+  assert.match(smoke, /English Month activity intelligence surface/);
   assert.match(smoke, /English Reports core surface/);
   assert.match(smoke, /Today, Month, and Reports render localized English LTR surfaces before Persian restore/);
   assert.match(smoke, /Persian RTL locale restore/);

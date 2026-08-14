@@ -1,6 +1,6 @@
 "use client";
 
-import { BarChart3, CalendarRange, CheckCircle2, Clock3, Coffee, Download, ListChecks, TrendingUp } from "lucide-react";
+import { Activity, BarChart3, CalendarRange, CheckCircle2, Clock3, Coffee, Download, ListChecks, TrendingUp } from "lucide-react";
 import { MetricCard } from "@/components/common/metric-card";
 import { PageHeading } from "@/components/common/page-heading";
 import { SectionHeading } from "@/components/common/section-heading";
@@ -12,6 +12,8 @@ import { calc } from "@/lib/time-engine";
 import { shiftCalendarMonth } from "@/lib/format";
 import type { AppData, WorkRecord } from "@/lib/types";
 import { getDailyTargetMinutes } from "@/lib/work-schedule";
+import { ActivityHeatmap } from "./activity-heatmap/activity-heatmap";
+import { MonthIntelligenceCard } from "./activity-heatmap/month-intelligence-card";
 import { MonthCalendar } from "./month-calendar";
 import { MonthDayDetails } from "./month-day-details";
 import { MonthTable } from "./month-table";
@@ -51,6 +53,14 @@ export function MonthPage({ data, selectedDate, setSelectedDate, monthRecords, m
       <MetricCard icon={<CheckCircle2 />} label={t("month.metrics.actual")} value={duration(monthStats.worked)} suffix={t("common.hour")} />
       <MetricCard icon={<TrendingUp />} label={monthStats.balance >= 0 ? t("common.overtime") : t("common.deficit")} value={duration(monthStats.balance, true)} suffix={t("common.hour")} tone={monthStats.balance >= 0 ? "green" : "amber"} />
       <MetricCard icon={<Coffee />} label={t("month.details.rest")} value={duration(monthStats.breaks)} suffix={t("common.hour")} tone="purple" />
+    </section>
+
+    <section className="mb-5">
+      <SectionHeading icon={<Activity />} eyebrow={t("month.section.intelligenceEyebrow")} title={t("month.section.intelligenceTitle")} description={t("month.section.intelligenceDescription")} />
+      <div className="grid grid-cols-[minmax(0,1.45fr)_minmax(280px,.55fr)] gap-4 max-[980px]:grid-cols-1">
+        <ActivityHeatmap selectedDate={selectedDate} setSelectedDate={setSelectedDate} records={monthRecords} settings={data.settings} />
+        <MonthIntelligenceCard selectedDate={selectedDate} records={monthRecords} settings={data.settings} />
+      </div>
     </section>
 
     <section className="mb-5">

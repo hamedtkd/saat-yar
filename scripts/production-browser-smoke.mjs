@@ -576,9 +576,12 @@ export async function runProductionBrowserSmoke() {
       await client.call("Page.navigate", { url: `${origin}/${route}/` });
       await mobileLoad;
       await waitFor(client, `["/${route}", "/${route}/"].includes(location.pathname) && Boolean(document.querySelector('#main-content'))`, `${label} mobile responsive render`);
+      if (route === "month") {
+        await waitFor(client, `document.documentElement.dataset.calendar === "persian" && Boolean(document.querySelector('[data-month-activity-heatmap]')) && Boolean(document.querySelector('[data-month-intelligence]'))`, "Persian month activity intelligence on mobile");
+      }
       await assertMobileShellFits(client, `${label} 425px`);
     }
-    console.log("✓ Month, Leave, and Settings stay inside a 425px mobile viewport without horizontal overflow");
+    console.log("✓ Month activity intelligence follows Persian calendar and Month, Leave, and Settings fit a 425px viewport");
 
     await waitFor(client, `Boolean(document.querySelector('[data-settings-mobile-trigger]'))`, "Settings compact mobile navigation trigger");
     const compactSettingsNav = await evaluate(client, `(() => {
@@ -695,7 +698,18 @@ export async function runProductionBrowserSmoke() {
     const englishMonthLoad = waitForEvent(client, "Page.loadEventFired", "English Month route");
     await client.call("Page.navigate", { url: `${origin}/month/` });
     await englishMonthLoad;
-    await waitFor(client, `["/month", "/month/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("My month") && document.body?.innerText.includes("Calendar and weekly trend")`, "English Month core surface");
+    await waitFor(client, `["/month", "/month/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.documentElement.dataset.calendar === "gregory" && document.body?.innerText.includes("My month") && document.body?.innerText.includes("Activity map and month intelligence") && Boolean(document.querySelector('[data-month-activity-heatmap]')) && Boolean(document.querySelector('[data-month-intelligence]'))`, "English Month activity intelligence surface");
+    const heatmapStartDate = await evaluate(client, `(() => {
+      const cells = [...document.querySelectorAll('[data-activity-date]')];
+      const cell = cells.find((item, index) => item.getAttribute('data-activity-in-month') === 'true' && index % 7 < 6 && cells[index + 1]?.getAttribute('data-activity-in-month') === 'true');
+      cell?.focus();
+      return cell?.getAttribute('data-activity-date') ?? null;
+    })()`);
+    if (!heatmapStartDate) throw new Error("Month heatmap has no in-month keyboard target");
+    await client.call("Input.dispatchKeyEvent", { type: "keyDown", key: "ArrowDown", code: "ArrowDown" });
+    await client.call("Input.dispatchKeyEvent", { type: "keyUp", key: "ArrowDown", code: "ArrowDown" });
+    await waitFor(client, `document.activeElement?.getAttribute('data-activity-date') && document.activeElement?.getAttribute('data-activity-date') !== ${JSON.stringify(heatmapStartDate)}`, "keyboard-accessible month activity heatmap");
+    console.log("✓ Persian/Gregorian month intelligence exposes a keyboard-accessible month activity heatmap");
 
     const englishReportsLoad = waitForEvent(client, "Page.loadEventFired", "English Reports route");
     await client.call("Page.navigate", { url: `${origin}/reports/` });
