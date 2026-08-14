@@ -319,6 +319,24 @@ function migrateV17ToV18(value: unknown): unknown {
   };
 }
 
+function migrateV18ToV19(value: unknown): unknown {
+  if (!isObject(value)) return value;
+  const settings = isObject(value.settings) ? value.settings : {};
+  const notifications = isObject(settings.notificationSettings) ? settings.notificationSettings : {};
+  return {
+    ...value,
+    settings: {
+      ...settings,
+      notificationSettings: {
+        ...notifications,
+        quietHours: { enabled: false, start: "22:00", end: "07:00" },
+        customReminders: [],
+        snoozeMinutes: 30,
+      },
+    },
+  };
+}
+
 const migrations: Record<number, (value: unknown) => unknown> = {
   1: migrateV1ToV2,
   2: migrateV2ToV3,
@@ -337,6 +355,7 @@ const migrations: Record<number, (value: unknown) => unknown> = {
   15: migrateV15ToV16,
   16: migrateV16ToV17,
   17: migrateV17ToV18,
+  18: migrateV18ToV19,
 };
 
 export function migrateAppData(value: unknown): MigrationResult {

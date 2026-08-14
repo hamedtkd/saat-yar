@@ -189,5 +189,5 @@ test("Phase 177 is documented and wired without schema dependency or release-ver
   assert.match(backlog, /\[x\] فاز ۱۷۷:/);
   assert.match(backlog, /\[x\] فاز ۱۷۸:/);
   assert.match(docs, /PHASE_177_NOTES_FA\.md/);
-  assert.match(schema, /APP_DATA_SCHEMA_VERSION = 18/);
+  assert.match(schema, /APP_DATA_SCHEMA_VERSION = 19/);
 });

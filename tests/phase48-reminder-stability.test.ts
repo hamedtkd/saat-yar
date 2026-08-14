@@ -6,6 +6,7 @@ import {
   activeTrackingMinutes,
   breakReminderSnoozeKey,
   isRecordPaused,
+  notificationSnoozeKey,
 } from "../lib/notification-reminders.ts";
 import { makeWorkRecord } from "./fixtures/work-record.ts";
 
@@ -53,8 +54,10 @@ test("notification hook avoids whole-record effect dependencies and supports dai
   const card = await readFile(new URL("../components/pages/settings/notification-settings-card.tsx", import.meta.url), "utf8");
 
   assert.doesNotMatch(hook, /\], \[[\s\S]*?\brecord\b/);
-  assert.match(hook, /activeTrackingMinutes/);
+  assert.match(hook, /evaluateNotificationReminders/);
   assert.match(hook, /breakReminderSnoozeKey/);
+  assert.match(hook, /notificationSnoozeKey/);
   assert.match(card, /s\("Do not remind me today"\)/);
   assert.equal(breakReminderSnoozeKey("2026-08-05"), "saatyar-break-reminder-snooze:2026-08-05");
+  assert.equal(notificationSnoozeKey("2026-08-05"), "saatyar-notification-snooze-until:2026-08-05");
 });

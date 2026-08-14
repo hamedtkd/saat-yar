@@ -30,6 +30,9 @@ export const defaultSettings: Settings = {
     dailyTargetReminder: true,
     endOfDayReminder: true,
     breakReminder: { enabled: false, intervalMinutes: 60, onlyWhenTracking: true },
+    quietHours: { enabled: false, start: "22:00", end: "07:00" },
+    customReminders: [],
+    snoozeMinutes: 30,
   },
   appearance: { mode: "system", preset: "spotify", accent: "#06b6d4", radius: "rounded", surface: "tinted" },
   mode: "employee",
@@ -51,6 +54,8 @@ export function createInitialData(options: { onboarded?: boolean } = {}): AppDat
       notificationSettings: {
         ...defaultSettings.notificationSettings,
         breakReminder: { ...defaultSettings.notificationSettings.breakReminder },
+        quietHours: { ...defaultSettings.notificationSettings.quietHours },
+        customReminders: defaultSettings.notificationSettings.customReminders.map((reminder) => ({ ...reminder })),
       },
       appearance: { ...defaultSettings.appearance },
     },

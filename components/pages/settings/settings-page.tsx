@@ -58,7 +58,7 @@ export function SettingsPage({ data, setData, storage, exportBackup, previewImpo
   return <>
     <PageHeading autosave={false} title={t("settings.title")} description={t("settings.description")} />
     <SettingsSearch />
-    <section className={cn("grid grid-cols-[250px_minmax(0,1fr)] gap-5 max-[900px]:grid-cols-1") }>
+    <section className={cn("grid grid-cols-[250px_minmax(0,1fr)] gap-5 max-[900px]:grid-cols-1 max-[900px]:gap-3") }>
       <SettingsNav />
       <div className="grid min-w-0 gap-5">
         <span id="settings-general" className="block scroll-mt-24" aria-hidden="true" />

@@ -108,12 +108,29 @@ export type BreakReminderSettings = {
   onlyWhenTracking: boolean;
 };
 
+export type QuietHoursSettings = {
+  enabled: boolean;
+  start: string;
+  end: string;
+};
+
+export type CustomReminderSettings = {
+  id: string;
+  enabled: boolean;
+  intervalMinutes: number;
+  title: string;
+  message: string;
+};
+
 export type NotificationSettings = {
   enabled: boolean;
   openTimerReminderMinutes: number;
   dailyTargetReminder: boolean;
   endOfDayReminder: boolean;
   breakReminder: BreakReminderSettings;
+  quietHours: QuietHoursSettings;
+  customReminders: CustomReminderSettings[];
+  snoozeMinutes: number;
 };
 
 export type Settings = {

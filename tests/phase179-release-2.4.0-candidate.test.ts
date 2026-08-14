@@ -145,9 +145,13 @@ test("Phase 179 notes preserve the candidate boundary while Phase 180 owns final
   const headerActions = read("components/layout/app-header/header-actions.tsx");
   assert.match(headerActions, /data-header-privacy-control/);
   assert.doesNotMatch(headerActions, /gap-0\.5 p-1/);
-  const mobileSettingsNav = read("components/pages/settings/settings-nav.tsx");
-  assert.match(mobileSettingsNav, /scrollbar-width:none/);
-  assert.match(mobileSettingsNav, /max-\[520px\]:grid-cols-2/);
+  const settingsNav = read("components/pages/settings/settings-nav.tsx");
+  const mobileSettingsNav = read("components/pages/settings/settings-mobile-nav.tsx");
+  assert.match(settingsNav, /<SettingsMobileNav/);
+  assert.match(settingsNav, /max-\[900px\]:hidden/);
+  assert.match(mobileSettingsNav, /data-settings-mobile-trigger/);
+  assert.match(mobileSettingsNav, /data-settings-mobile-dialog/);
+  assert.match(mobileSettingsNav, /hidden max-\[900px\]:block/);
   const dialog = read("components/ui/dialog.tsx");
   assert.match(dialog, /useSyncExternalStore/);
   assert.match(dialog, /window\.visualViewport/);

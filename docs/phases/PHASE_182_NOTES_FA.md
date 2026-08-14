@@ -73,4 +73,3 @@ Visual QA روی viewport واقعی `425×608` نشان داد Shell در صف�
 - Mobile bottom navigation سقف صریح مبتنی بر viewport دارد.
 - Production Browser Smoke اکنون Month و Leave را روی `425×608` تست می‌کند و `scrollWidth` و bounding boxهای Header/Main/Nav را می‌سنجد.
 - Warning مربوط به import بلااستفاده `AppData` در Contract Test فاز ۱۸۲ حذف شد تا ESLint با `--max-warnings=0` Gate را متوقف نکند.
-

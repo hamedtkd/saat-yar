@@ -22,12 +22,12 @@ test("desktop settings navigation groups can expand and collapse without owning 
   assert.doesNotMatch(nav, /setActive/);
 });
 
-test("mobile settings navigation exposes group chips and only the active group item strip", async () => {
-  const nav = await read("components/pages/settings/settings-nav.tsx");
-  assert.match(nav, /aria-pressed=\{isActiveGroup\}/);
-  assert.match(nav, /navigateToGroup/);
-  assert.match(nav, /getSettingsGroupItems\(activeGroup\)\.map/);
-  assert.match(nav, /max-\[900px\]:grid/);
+test("mobile settings navigation uses a compact selector and grouped dialog", async () => {
+  const mobile = await read("components/pages/settings/settings-mobile-nav.tsx");
+  assert.match(mobile, /DialogTrigger asChild/);
+  assert.match(mobile, /settingsNavGroups.map/);
+  assert.match(mobile, /getSettingsGroupItems\(group.id\)/);
+  assert.match(mobile, /aria-current=\{isActive \? "location"/);
 });
 
 test("settings navigation model exposes typed group helpers", async () => {
@@ -50,6 +50,7 @@ test("phase 128 is documented, wired into quality, and keeps navigation modules 
   for (const path of [
     "components/pages/settings/settings-nav.tsx",
     "components/pages/settings/settings-navigation-model.ts",
+    "components/pages/settings/settings-mobile-nav.tsx",
   ]) {
     const source = await read(path);
     assert.ok(source.split("\n").length <= 250, `${path} exceeds 250 lines`);

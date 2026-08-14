@@ -569,14 +569,42 @@ export async function runProductionBrowserSmoke() {
     await evaluate(client, `document.querySelector('[data-first-run-dismiss]')?.click()`);
 
     await client.call("Emulation.setDeviceMetricsOverride", { width: 425, height: 608, deviceScaleFactor: 1, mobile: true, screenWidth: 425, screenHeight: 608 });
-    for (const [route, label] of [["month", "Month"], ["leave", "Leave"]]) {
+    for (const [route, label] of [["month", "Month"], ["leave", "Leave"], ["settings", "Settings"]]) {
       const mobileLoad = waitForEvent(client, "Page.loadEventFired", `${label} mobile responsive route`);
       await client.call("Page.navigate", { url: `${origin}/${route}/` });
       await mobileLoad;
       await waitFor(client, `["/${route}", "/${route}/"].includes(location.pathname) && Boolean(document.querySelector('#main-content'))`, `${label} mobile responsive render`);
       await assertMobileShellFits(client, `${label} 425px`);
     }
-    console.log("✓ Month and Leave stay inside a 425px mobile viewport without horizontal overflow");
+    console.log("✓ Month, Leave, and Settings stay inside a 425px mobile viewport without horizontal overflow");
+
+    await waitFor(client, `Boolean(document.querySelector('[data-settings-mobile-trigger]'))`, "Settings compact mobile navigation trigger");
+    const compactSettingsNav = await evaluate(client, `(() => {
+      const nav = document.querySelector('[data-settings-mobile-nav]');
+      const trigger = document.querySelector('[data-settings-mobile-trigger]');
+      const navRect = nav?.getBoundingClientRect();
+      const triggerRect = trigger?.getBoundingClientRect();
+      if (!navRect || !triggerRect) return null;
+      return { navHeight: navRect.height, triggerHeight: triggerRect.height, width: triggerRect.width, viewport: document.documentElement.clientWidth };
+    })()`);
+    if (!compactSettingsNav || compactSettingsNav.navHeight > 64 || compactSettingsNav.triggerHeight > 56 || compactSettingsNav.width > compactSettingsNav.viewport) {
+      throw new Error(`Settings compact mobile navigation contract failed: ${JSON.stringify(compactSettingsNav)}`);
+    }
+    await evaluate(client, `document.querySelector('[data-settings-mobile-trigger]')?.click()`);
+    await waitFor(client, `Boolean(document.querySelector('[data-settings-mobile-dialog]'))`, "Settings compact mobile navigation dialog");
+    const mobileSettingsDialog = await evaluate(client, `(() => {
+      const dialog = document.querySelector('[data-settings-mobile-dialog]');
+      const rect = dialog?.getBoundingClientRect();
+      if (!rect) return null;
+      return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, width: rect.width, viewportWidth: document.documentElement.clientWidth, viewportHeight: window.innerHeight };
+    })()`);
+    if (!mobileSettingsDialog || mobileSettingsDialog.left < 0 || mobileSettingsDialog.right > mobileSettingsDialog.viewportWidth + 1 || mobileSettingsDialog.top < 0 || mobileSettingsDialog.bottom > mobileSettingsDialog.viewportHeight + 1) {
+      throw new Error(`Settings mobile navigation dialog overflowed viewport: ${JSON.stringify(mobileSettingsDialog)}`);
+    }
+    await client.call("Input.dispatchKeyEvent", { type: "keyDown", key: "Escape", code: "Escape" });
+    await client.call("Input.dispatchKeyEvent", { type: "keyUp", key: "Escape", code: "Escape" });
+    await waitFor(client, `!document.querySelector('[data-settings-mobile-dialog]')`, "Settings compact mobile navigation dialog close");
+    console.log("✓ Settings compact mobile navigation replaces the oversized mobile section box");
 
     await client.call("Emulation.setDeviceMetricsOverride", { width: 2560, height: 1440, deviceScaleFactor: 1, mobile: false, screenWidth: 2560, screenHeight: 1440 });
     await evaluate(client, `new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))`);
@@ -708,6 +736,8 @@ export async function runProductionBrowserSmoke() {
     await client.call("Page.navigate", { url: `${origin}/settings/` });
     await englishSystemSettingsLoad;
     await waitFor(client, `document.documentElement.dir === "ltr" && document.querySelector('#settings-onboarding')?.textContent.includes("Initial setup") && document.querySelector('#settings-device-transfer')?.textContent.includes("Connect phone and laptop") && document.title === "Settings | Saatyar"`, "English Settings deep system surface");
+    await waitFor(client, `Boolean(document.querySelector('[data-notification-intelligence]')) && Boolean(document.querySelector('[data-quiet-hours]')) && Boolean(document.querySelector('[data-custom-reminder]')) && Boolean(document.querySelector('[data-add-custom-reminder]')) && Boolean(document.querySelector('[data-reminder-snooze]')) && document.querySelector('#settings-notifications')?.textContent.includes("Quiet hours")`, "English notification intelligence settings");
+    console.log("✓ Notification intelligence settings expose quiet hours, multi custom reminders, and snooze in English LTR");
 
     const englishImportLoad = waitForEvent(client, "Page.loadEventFired", "English Import system route");
     await client.call("Page.navigate", { url: `${origin}/import/` });

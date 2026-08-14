@@ -36,12 +36,16 @@ test("settings active item follows scroll position and hash without effect-drive
   assert.doesNotMatch(nav, /setActive/);
 });
 
-test("settings navigation stays visible and grouped on mobile", async () => {
-  const nav = await read("components/pages/settings/settings-nav.tsx");
+test("settings navigation stays compact and reachable on mobile", async () => {
+  const [nav, mobile] = await Promise.all([
+    read("components/pages/settings/settings-nav.tsx"),
+    read("components/pages/settings/settings-mobile-nav.tsx"),
+  ]);
   assert.match(nav, /max-\[900px\]:top-\[72px\]/);
-  assert.match(nav, /overflow-x-auto/);
-  assert.match(nav, /data-settings-group-id/);
-  assert.match(nav, /getSettingsGroupItems\(activeGroup\)/);
+  assert.match(nav, /SettingsMobileNav/);
+  assert.match(mobile, /data-settings-mobile-trigger/);
+  assert.match(mobile, /data-settings-mobile-dialog/);
+  assert.match(mobile, /getSettingsGroupItems\(group.id\)/);
 });
 
 test("settings search and navigation share one destination model and phase 126 is in quality", async () => {
@@ -55,6 +59,7 @@ test("settings search and navigation share one destination model and phase 126 i
   for (const path of [
     "components/pages/settings/settings-nav.tsx",
     "components/pages/settings/settings-navigation-model.ts",
+    "components/pages/settings/settings-mobile-nav.tsx",
     "components/layout/navigation/mobile-bottom-nav.tsx",
   ]) {
     const source = await read(path);

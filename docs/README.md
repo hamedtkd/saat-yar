@@ -153,3 +153,5 @@
 - [فاز ۱۷۱: Import Wizard و ورود امن Backup/CSV](./phases/PHASE_171_NOTES_FA.md)
 - [فاز ۱۷۲: ساعت زنده Runtime و Refresh کم‌مصرف](./phases/PHASE_172_NOTES_FA.md)
 - [فاز ۱۷۳: Onboarding شخصی‌شده Employee/Freelancer/Hybrid](./phases/PHASE_173_NOTES_FA.md)
+
+- [Phase 183](./phases/PHASE_183_NOTES_FA.md)

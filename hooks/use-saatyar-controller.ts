@@ -64,7 +64,7 @@ export function useSaatyarController(calendar: CalendarSystem = "persian") {
   const notifications = useNotificationReminders({
     settings: data.settings.notificationSettings, selectedDate, record: derived.record,
     dailyTarget: derived.dailyTarget, worked: derived.todayCalc.worked,
-    credited: derived.todayCalc.credited, suggestedExit: derived.suggestedExit, setToast,
+    suggestedExit: derived.suggestedExit, setToast,
   });
 
   async function requestPersistence() {

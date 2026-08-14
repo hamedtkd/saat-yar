@@ -42,7 +42,7 @@ export function SettingsSearch() {
   ];
 
   return (
-    <section className="dashboard-card relative z-40 mb-5 rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-1)] p-3 shadow-[0_5px_16px_rgba(0,0,0,.025)] sm:p-4">
+    <section className="dashboard-card relative z-40 mb-3 rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-1)] p-2 shadow-[0_5px_16px_rgba(0,0,0,.025)] sm:mb-5 sm:p-4">
       <div className="flex items-center gap-3 rounded-[var(--control-radius)] border border-[var(--border)] bg-[var(--surface-2)] px-3 focus-within:border-[var(--accent)] focus-within:ring-2 focus-within:ring-[var(--accent-soft)]">
         <Search aria-hidden="true" className="size-4.5 shrink-0 text-[var(--accent-strong)]" />
         <input
@@ -51,7 +51,7 @@ export function SettingsSearch() {
           onChange={(event) => setQuery(event.target.value)}
           placeholder={t("settings.search.placeholder")}
           aria-label={t("settings.search.aria")}
-          className="h-11 min-w-0 flex-1 bg-transparent text-xs font-semibold text-[var(--text)] outline-none placeholder:text-[var(--text-muted)]"
+          className="h-10 min-w-0 flex-1 bg-transparent text-xs font-semibold sm:h-11 text-[var(--text)] outline-none placeholder:text-[var(--text-muted)]"
         />
         {query && (
           <button type="button" aria-label={t("settings.search.clear")} onClick={() => setQuery("")} className="grid size-8 place-items-center rounded-lg text-[var(--text-muted)] hover:bg-[var(--accent-soft)] hover:text-[var(--accent-strong)]">
@@ -88,7 +88,7 @@ export function SettingsSearch() {
         </div>
       )}
 
-      <div className="mt-2 flex flex-wrap items-center gap-1.5 px-1 text-[9px] text-[var(--text-muted)]">
+      <div className="mt-2 flex flex-wrap items-center gap-1.5 px-1 text-[9px] text-[var(--text-muted)] max-[900px]:hidden">
         <span>{t("settings.search.quick")}</span>
         {quickItems.map((item) => (
           <button key={item.label} type="button" onClick={() => setQuery(item.query)} className={cn("rounded-full bg-[var(--surface-2)] px-2 py-1 font-bold hover:bg-[var(--accent-soft)] hover:text-[var(--accent-strong)]")}>{item.label}</button>

@@ -15,8 +15,8 @@ import { makeWorkRecord } from "./fixtures/work-record.ts";
 
 const read = (path: string) => readFileSync(path, "utf8");
 
-test("schema v18 migrates released v17 data into flexible-work and activity contracts safely", () => {
-  assert.equal(APP_DATA_SCHEMA_VERSION, 18);
+test("Phase 182 flexible-work contracts survive the current schema after the v17 migration", () => {
+  assert.equal(APP_DATA_SCHEMA_VERSION, 19);
   const current = createInitialData({ onboarded: true });
   const legacy = structuredClone(current) as unknown as Record<string, unknown>;
   const settings = legacy.settings as Record<string, unknown>;
@@ -30,7 +30,7 @@ test("schema v18 migrates released v17 data into flexible-work and activity cont
   legacy.deletedRecords = [{ id: "deleted-1", date: "2026-08-11", record: { ...legacyRecord, date: "2026-08-11" }, deletedAt: "2026-08-12T00:00:00.000Z", expiresAt: "2026-09-11T00:00:00.000Z" }];
 
   const result = migrateAppData({ schemaVersion: 17, data: legacy });
-  assert.equal(result.toVersion, 18);
+  assert.equal(result.toVersion, 19);
   assert.equal(result.data.settings.workTimingMode, "scheduled", "v17 users keep their released fixed-schedule behavior");
   assert.equal(result.data.settings.weeklySchedule.saturday.targetMinutes, 480);
   assert.deepEqual(result.data.records["2026-08-12"].activitySegments, []);
@@ -120,7 +120,7 @@ test("Settings Today and Reports expose the flexible-work activity flow", () => 
   assert.match(browserSmoke, /data-activity-breakdown/);
 });
 
-test("Phase 182 advances development to schema v18 while the released 2.4.0 contract stays immutable", () => {
+test("Phase 182 remains the historical schema-v18 boundary while the released 2.4.0 contract stays immutable", () => {
   const packageJson = JSON.parse(read("package.json")) as { scripts: Record<string, string> };
   const manifest = JSON.parse(read("docs/releases/2.4.0.json")) as { dataSchemaVersion: number; status: string; tag: string };
   const backlog = read("docs/roadmap/BACKLOG_FA.md");

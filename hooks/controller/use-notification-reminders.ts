@@ -4,9 +4,10 @@ import { getBrowserLocale } from "@/lib/i18n";
 import { formatLocaleNumber } from "@/lib/i18n/formatters";
 import { translateSystem } from "@/lib/i18n/system";
 import {
-  activeTrackingMinutes,
   breakReminderSnoozeKey,
-  isRecordPaused,
+  evaluateNotificationReminders,
+  notificationSnoozeKey,
+  parseNotificationSnoozeUntil,
 } from "@/lib/notification-reminders";
 import type { Settings, WorkRecord } from "@/lib/types";
 
@@ -16,22 +17,12 @@ type Args = {
   record: WorkRecord;
   dailyTarget: number;
   worked: number;
-  credited: number;
   suggestedExit: string;
   setToast: (message: string) => void;
 };
 
-export function useNotificationReminders({ settings, selectedDate, record, dailyTarget, worked, credited, suggestedExit, setToast }: Args) {
-  const {
-    start,
-    end,
-    startedAt,
-    endedAt,
-    lunchStartedAt,
-    lunchEndedAt,
-    breaks,
-  } = record;
-  const paused = isRecordPaused({ lunchStartedAt, lunchEndedAt, breaks });
+export function useNotificationReminders({ settings, selectedDate, record, dailyTarget, worked, suggestedExit, setToast }: Args) {
+  const { start, end, startedAt, endedAt, lunchStartedAt, lunchEndedAt, breaks } = record;
 
   async function requestNotificationPermission() {
     if (typeof window === "undefined" || !("Notification" in window)) {
@@ -54,37 +45,41 @@ export function useNotificationReminders({ settings, selectedDate, record, daily
     };
 
     const check = () => {
-      const tracking = Boolean(start && !end);
-      const elapsed = activeTrackingMinutes(
-        { startedAt, endedAt, lunchStartedAt, lunchEndedAt, breaks },
-        Date.now(),
-        worked,
-      );
+      const nowMs = Date.now();
+      const locale = getBrowserLocale();
+      const candidates = evaluateNotificationReminders({
+        settings,
+        record: { start, end, startedAt, endedAt, lunchStartedAt, lunchEndedAt, breaks },
+        nowMs,
+        nowTime: nowTime(),
+        fallbackWorked: worked,
+        dailyTarget,
+        suggestedExit,
+        snoozeUntilMs: parseNotificationSnoozeUntil(localStorage.getItem(notificationSnoozeKey(selectedDate))),
+        breakReminderSnoozed: Boolean(sessionStorage.getItem(breakReminderSnoozeKey(selectedDate))),
+      });
 
-      if (tracking && elapsed >= settings.openTimerReminderMinutes) {
-        notifyOnce("open-timer", translateSystem(getBrowserLocale(), "Saatyar timer is still running"), translateSystem(getBrowserLocale(), "More than {minutes} minutes of active work have been recorded.", { minutes: formatLocaleNumber(getBrowserLocale(), settings.openTimerReminderMinutes) }));
+      for (const candidate of candidates) {
+        if (candidate.kind === "open-timer") {
+          notifyOnce(candidate.key, translateSystem(locale, "Saatyar timer is still running"), translateSystem(locale, "More than {minutes} minutes of active work have been recorded.", { minutes: formatLocaleNumber(locale, settings.openTimerReminderMinutes) }));
+        } else if (candidate.kind === "target") {
+          notifyOnce(candidate.key, translateSystem(locale, "Daily target completed"), translateSystem(locale, "Today's required work is complete."));
+        } else if (candidate.kind === "exit") {
+          notifyOnce(candidate.key, translateSystem(locale, "It's time to clock out"), translateSystem(locale, "Today's suggested exit is {time}.", { time: suggestedExit }));
+        } else if (candidate.kind === "break") {
+          notifyOnce(candidate.key, translateSystem(locale, "Time for a short break"), translateSystem(locale, "You have had about {minutes} minutes of active work. Step away for a few minutes, then continue.", { minutes: formatLocaleNumber(locale, settings.breakReminder.intervalMinutes) }));
+        } else {
+          const custom = settings.customReminders.find((item) => item.id === candidate.customReminderId);
+          if (!custom) continue;
+          notifyOnce(candidate.key, custom.title.trim() || translateSystem(locale, "Custom work reminder"), custom.message.trim() || translateSystem(locale, "You have reached another active-work reminder interval."));
+        }
       }
-      if (settings.dailyTargetReminder && dailyTarget > 0 && credited >= dailyTarget) {
-        notifyOnce("target", translateSystem(getBrowserLocale(), "Daily target completed"), translateSystem(getBrowserLocale(), "Today's required work is complete."));
-      }
-      if (settings.endOfDayReminder && suggestedExit && nowTime() >= suggestedExit) {
-        notifyOnce("exit", translateSystem(getBrowserLocale(), "It's time to clock out"), translateSystem(getBrowserLocale(), "Today's suggested exit is {time}.", { time: suggestedExit }));
-      }
-
-      const reminder = settings.breakReminder;
-      if (!reminder.enabled || paused) return;
-      if (sessionStorage.getItem(breakReminderSnoozeKey(selectedDate))) return;
-      if (reminder.onlyWhenTracking && !tracking) return;
-      const interval = Math.max(15, reminder.intervalMinutes);
-      const bucket = Math.floor(elapsed / interval);
-      if (bucket < 1) return;
-      notifyOnce(`break-${bucket}`, translateSystem(getBrowserLocale(), "Time for a short break"), translateSystem(getBrowserLocale(), "You have had about {minutes} minutes of active work. Step away for a few minutes, then continue.", { minutes: formatLocaleNumber(getBrowserLocale(), interval) }));
     };
 
     check();
     const interval = window.setInterval(check, 60_000);
     return () => window.clearInterval(interval);
-  }, [settings, selectedDate, start, end, startedAt, endedAt, lunchStartedAt, lunchEndedAt, breaks, paused, dailyTarget, worked, credited, suggestedExit]);
+  }, [settings, selectedDate, start, end, startedAt, endedAt, lunchStartedAt, lunchEndedAt, breaks, dailyTarget, worked, suggestedExit]);
 
   return { requestNotificationPermission };
 }

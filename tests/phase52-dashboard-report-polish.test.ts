@@ -11,12 +11,16 @@ test("greeting follows local day periods and includes the saved name", () => {
   assert.equal(buildGreeting("حامد", 8), "صبح بخیر، حامد");
 });
 
-test("settings navigation stays sticky on desktop", async () => {
+test("settings navigation stays sticky on desktop and collapses to the compact mobile picker", async () => {
   const source = await readFile("components/pages/settings/settings-nav.tsx", "utf8");
+  const mobile = await readFile("components/pages/settings/settings-mobile-nav.tsx", "utf8");
   assert.match(source, /sticky top-\[84px\]/);
   assert.match(source, /max-\[900px\]:top-\[72px\]/);
-  assert.match(source, /max-\[900px\]:grid/);
-  assert.match(source, /overflow-x-auto/);
+  assert.match(source, /max-\[900px\]:hidden/);
+  assert.match(source, /<SettingsMobileNav/);
+  assert.match(mobile, /data-settings-mobile-trigger/);
+  assert.match(mobile, /hidden max-\[900px\]:block/);
+  assert.doesNotMatch(mobile, /overflow-x-auto/);
 });
 
 test("employee notes use a textarea and the today title greets the user", async () => {

@@ -30,7 +30,7 @@ test("smart time input accepts Persian and compact values with Persian errors", 
 });
 
 test("current schema persists configurable break reminders", () => {
-  assert.equal(APP_DATA_SCHEMA_VERSION, 18);
+  assert.equal(APP_DATA_SCHEMA_VERSION, 19);
   const current = createInitialData({ onboarded: true });
   assert.deepEqual(current.settings.notificationSettings.breakReminder, {
     enabled: false,
@@ -51,6 +51,7 @@ test("notification settings and runtime include break reminder controls", async 
   const hook = await read("hooks/controller/use-notification-reminders.ts");
   assert.match(card, /s\("Break reminder"\)/);
   assert.match(card, /intervalMinutes/);
-  assert.match(hook, /translateSystem\(getBrowserLocale\(\), "Time for a short break"\)/);
-  assert.match(hook, /break-\$\{bucket\}/);
+  assert.match(hook, /translateSystem\(locale, "Time for a short break"\)/);
+  const domain = await read("lib/notification-reminders.ts");
+  assert.match(domain, /break-\$\{bucket\}/);
 });

@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+- Phase 183: Notification Intelligence با محاسبه Active Work Time، Quiet Hours، Snooze/Resume عمومی و Reminderهای pause-aware اضافه شد؛ AppData توسعه به Schema v19 رفت و Release تاریخی v2.4.0 روی Schema v17 immutable ماند.
+- Phase 183 R2: Custom active-work reminder از یک Rule به حداکثر پنج Reminder مستقل با Add/Edit/Disable/Delete ارتقا یافت؛ هر Rule bucket و dedupe مستقل دارد و Quiet Hours/Snooze همچنان Global می‌مانند.
+- Mobile Settings navigation بازطراحی شد: باکس دوطبقه Group/Section حذف و به یک Section Picker فشرده و sticky با Dialog گروه‌بندی‌شده تبدیل شد؛ Quick-search chipها نیز در موبایل پنهان شدند تا محتوای تنظیمات بالاتر دیده شود. Production Browser Smoke اکنون Settings را در 425px از نظر overflow، ارتفاع navigator و viewport-safe dialog بررسی می‌کند.
 - Phase 182 R3: Mobile shell در عرض 425px برای Month/Leave سخت‌گیری شد؛ Header باریک‌تر، Surfaceها shrink-safe و Browser Smoke دارای قرارداد صریح no-horizontal-overflow شد. Warning صفر-تحمل ESLint در Contract Test فاز ۱۸۲ نیز رفع شد.
 - Phase 182: Flexible Work Mode اضافه شد؛ کاربر می‌تواند بدون الزام Start/End ثابت، Target مستقل هر روز را نگه دارد و شروع/وقفه/پایان واقعی را در طول روز ثبت کند.
 - Activity Segments برای Deep Work، Meeting، Learning، Admin، Project و Other به Today و Reports اضافه شد؛ شروع Lunch/Break یا پایان روز Segment فعال را امن می‌بندد.
