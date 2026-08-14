@@ -102,6 +102,7 @@ export const enCatalog: Record<MessageKey, string> = {
   "settings.nav.payroll": "Payroll method",
   "settings.nav.payrollComponents": "Benefits & deductions",
   "settings.nav.notifications": "Notifications & reminders",
+  "settings.nav.analytics": "Privacy & analytics",
   "settings.nav.danger": "Reset data",
   "settings.search.placeholder": "Search settings; for example payroll, QR, or appearance…",
   "settings.search.aria": "Search settings",

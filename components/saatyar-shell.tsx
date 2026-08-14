@@ -20,6 +20,7 @@ import { useSaatyarController } from "@/hooks/use-saatyar-controller";
 import { cn } from "@/lib/cn";
 import { normalizePathname } from "@/lib/navigation";
 import { useLocale } from "@/components/i18n/locale-provider";
+import { ProductAnalyticsRuntime } from "@/components/analytics/product-analytics-runtime";
 
 const SaatyarContext = createContext<ReturnType<typeof useSaatyarController> | null>(null);
 
@@ -56,6 +57,7 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
   return (
     <SaatyarContext.Provider value={controller}>
       <ThemeRuntime appearance={data.settings.appearance} />
+      <ProductAnalyticsRuntime pathname={pathname} saveError={Boolean(controller.saveError)} />
       <RouteGuard
         mode={mode}
         pathname={pathname}

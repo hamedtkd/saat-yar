@@ -100,6 +100,7 @@ export const faCatalog = {
   "settings.nav.payroll": "روش محاسبه حقوق",
   "settings.nav.payrollComponents": "مزایا و کسورات",
   "settings.nav.notifications": "اعلان‌ها و یادآورها",
+  "settings.nav.analytics": "حریم خصوصی و آمار محصول",
   "settings.nav.danger": "بازنشانی داده",
   "settings.search.placeholder": "جستجو در تنظیمات؛ مثلاً حقوق، QR یا ظاهر…",
   "settings.search.aria": "جستجو در تنظیمات",

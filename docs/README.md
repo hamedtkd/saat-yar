@@ -155,3 +155,5 @@
 - [فاز ۱۷۳: Onboarding شخصی‌شده Employee/Freelancer/Hybrid](./phases/PHASE_173_NOTES_FA.md)
 
 - [Phase 183](./phases/PHASE_183_NOTES_FA.md)
+- [Phase 184: Privacy-safe Product Analytics](./phases/PHASE_184_NOTES_FA.md)
+- [قرارداد Privacy-safe Analytics](./product-analytics/PRIVACY_SAFE_ANALYTICS_FA.md)

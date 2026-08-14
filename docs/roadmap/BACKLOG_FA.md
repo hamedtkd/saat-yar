@@ -308,7 +308,7 @@
 - [x] فاز ۱۸۱: Onboarding & First-run UX؛ Fast Setup و Skip for now بدون حذف Wizard کامل، Apply یک برنامه به همه روزهای فعال، CTA روشن اولین اقدام برای Employee/Freelancer/Hybrid و پالیش Responsive/RTL/LTR.
 - [x] فاز ۱۸۲: Flexible Work Mode & Activity Segments؛ حالت Flexible بدون الزام Start/End ثابت، Target مستقل روزانه، وقفه‌های شناور و Segmentهای جلسه/یادگیری/کار عمیق/اداری/پروژه با Breakdown گزارش؛ بررسی معماری به ارتقای AppData از Schema v17 به v18 با Migration امن منجر شد.
 - [x] فاز ۱۸۳: Notification Intelligence؛ تا پنج Reminder سفارشی مستقل، Snooze و Quiet hours بر اساس Active Work Time، به‌همراه بازطراحی ناوبری Settings موبایل به Section Picker فشرده و بدون اشغال viewport.
-- [ ] فاز ۱۸۴: Product Analytics privacy-safe؛ Event taxonomy، Consent/Opt-out و ممنوعیت ارسال حقوق، درآمد، عنوان پروژه، یادداشت یا محتوای شخصی.
+- [x] فاز ۱۸۴: Product Analytics privacy-safe؛ Event taxonomy تایپ‌شده، Consent/Opt-out محلی خارج از AppData، Plausible adapter اختیاری بدون Auto-tracking و ممنوعیت ارسال حقوق، درآمد، نام/عنوان، یادداشت، تاریخ/ساعت دقیق، ID یا Free-text.
 - [ ] فاز ۱۸۵: GitHub-style Activity Graph & Month Intelligence؛ Heatmap کارکرد واقعی با Persian/Gregorian، Tooltip، keyboard accessibility، streak و توزیع deficit/overtime.
 - [ ] فاز ۱۸۶: Motion & Perceived Performance؛ animation محدود و state-driven، loading state ساعت‌یار، `prefers-reduced-motion` و بدون layout shift.
 - [ ] فاز ۱۸۷: Google Calendar Architecture + Read Integration؛ بررسی OAuth/امنیت Local-first، import فقط‌خواندنی با Preview و mapping event به activity/meeting.

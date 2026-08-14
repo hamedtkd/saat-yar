@@ -530,6 +530,8 @@ export async function runProductionBrowserSmoke() {
     await clickButton(client, "ادامه");
 
     await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="6"]'))`, "onboarding privacy step");
+    await waitFor(client, `Boolean(document.querySelector('[data-product-analytics-consent]')) && Boolean(document.querySelector('[data-analytics-opt-out]'))`, "onboarding privacy-safe analytics consent");
+    console.log("✓ Onboarding privacy step exposes explicit analytics opt-out before any provider is required");
     await clickButton(client, "ادامه");
     await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="7"] [data-onboarding-import]')) && Boolean(document.querySelector('[data-onboarding-step-index="7"] [data-import-source="csv"]'))`, "personalized onboarding import step");
     await evaluate(client, `document.querySelector('[data-onboarding-step-index="7"] [data-import-source="csv"]')?.click()`);
@@ -738,6 +740,8 @@ export async function runProductionBrowserSmoke() {
     await waitFor(client, `document.documentElement.dir === "ltr" && document.querySelector('#settings-onboarding')?.textContent.includes("Initial setup") && document.querySelector('#settings-device-transfer')?.textContent.includes("Connect phone and laptop") && document.title === "Settings | Saatyar"`, "English Settings deep system surface");
     await waitFor(client, `Boolean(document.querySelector('[data-notification-intelligence]')) && Boolean(document.querySelector('[data-quiet-hours]')) && Boolean(document.querySelector('[data-custom-reminder]')) && Boolean(document.querySelector('[data-add-custom-reminder]')) && Boolean(document.querySelector('[data-reminder-snooze]')) && document.querySelector('#settings-notifications')?.textContent.includes("Quiet hours")`, "English notification intelligence settings");
     console.log("✓ Notification intelligence settings expose quiet hours, multi custom reminders, and snooze in English LTR");
+    await waitFor(client, `Boolean(document.querySelector('[data-product-analytics-settings]')) && Boolean(document.querySelector('[data-analytics-opt-in]')) && Boolean(document.querySelector('[data-analytics-opt-out]')) && document.querySelector('#settings-analytics')?.textContent.includes("Privacy-safe product analytics")`, "English privacy-safe analytics settings");
+    console.log("✓ Privacy-safe analytics exposes explicit opt-in/opt-out without including work content in Settings");
 
     const englishImportLoad = waitForEvent(client, "Page.loadEventFired", "English Import system route");
     await client.call("Page.navigate", { url: `${origin}/import/` });

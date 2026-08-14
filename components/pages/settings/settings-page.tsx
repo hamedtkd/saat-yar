@@ -28,6 +28,7 @@ import { SettingsSection } from "./settings-section";
 import { SettingsSearch } from "./settings-search";
 import { OnboardingReentryCard } from "./onboarding-reentry-card";
 import { LanguageSettingsCard } from "./language-settings-card";
+import { AnalyticsPrivacyCard } from "./analytics-privacy-card";
 import { useLocale } from "@/components/i18n/locale-provider";
 
 export function SettingsPage({ data, setData, storage, exportBackup, previewImport, importPreview, applyImport, requestPersistence, requestNotificationPermission, setToast, financialsHidden, saveState, lastSavedAt, saveError, recoverySnapshot, retrySave, createRecovery, restoreRecovery, clearRecovery, multiTabSyncStatus, clearMultiTabSyncHistory, startOnboardingReentry }: {
@@ -92,6 +93,7 @@ export function SettingsPage({ data, setData, storage, exportBackup, previewImpo
 
         <span id="settings-about" className="block scroll-mt-24" aria-hidden="true" />
         <SettingsSection icon={<ShieldCheck />} eyebrow={t("settings.safety.eyebrow")} title={t("settings.safety.title")} description={t("settings.safety.description")}>
+          <AnalyticsPrivacyCard />
           <DangerZone setData={setData} setToast={setToast} />
         </SettingsSection>
       </div>

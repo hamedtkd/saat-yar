@@ -1,4 +1,5 @@
 import {
+  BarChart3,
   Bell,
   CalendarClock,
   CalendarDays,
@@ -52,6 +53,7 @@ export const settingsNavItems: readonly SettingsNavItem[] = [
   { id: "settings-payroll-components", labelKey: "settings.nav.payrollComponents", groupId: "settings-work", icon: WalletCards, keywords: "benefits deductions bonus finance payroll" },
   { id: "settings-notifications", labelKey: "settings.nav.notifications", groupId: "settings-work", icon: Bell, keywords: "notification reminder break clock out permission" },
 
+  { id: "settings-analytics", labelKey: "settings.nav.analytics", groupId: "settings-about", icon: BarChart3, keywords: "analytics privacy consent opt out measurement metrics plausible" },
   { id: "settings-danger", labelKey: "settings.nav.danger", groupId: "settings-about", icon: ShieldAlert, keywords: "reset delete danger destructive safety" },
 ] as const;
 

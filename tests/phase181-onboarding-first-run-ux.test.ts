@@ -85,7 +85,8 @@ test("first-run onboarding offers fast setup and skip without removing the advan
   ]);
   assert.match(onboarding, /FINAL_STEP = 7/);
   assert.match(onboarding, /markBrowserFirstRunGuidePending\(\)/);
-  assert.match(onboarding, /onFastSetup=\{finishInitialSetup\}/);
+  assert.match(onboarding, /onFastSetup=\{\(\) => finishInitialSetup\("fast-setup"\)\}/);
+  assert.match(onboarding, /onSkip=\{\(\) => finishInitialSetup\("skip"\)\}/);
   assert.match(mode, /data-onboarding-fast-setup/);
   assert.match(footer, /data-onboarding-skip/);
   assert.match(footer, /!reentry && step < FINAL_STEP/);

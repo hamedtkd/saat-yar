@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+- Phase 184: Privacy-safe Product Analytics با Event taxonomy تایپ‌شده، Consent/Opt-out محلی خارج از AppData، Funnelهای Onboarding/Start/Completion، Feature discovery و UX error categoryهای بدون متن شخصی اضافه شد. Provider پیش‌فرض خاموش است و Plausible فقط با Environment config + Opt-in صریح فعال می‌شود؛ Schema توسعه روی v19 باقی ماند.
+
 - Phase 183: Notification Intelligence با محاسبه Active Work Time، Quiet Hours، Snooze/Resume عمومی و Reminderهای pause-aware اضافه شد؛ AppData توسعه به Schema v19 رفت و Release تاریخی v2.4.0 روی Schema v17 immutable ماند.
 - Phase 183 R2: Custom active-work reminder از یک Rule به حداکثر پنج Reminder مستقل با Add/Edit/Disable/Delete ارتقا یافت؛ هر Rule bucket و dedupe مستقل دارد و Quiet Hours/Snooze همچنان Global می‌مانند.
 - Mobile Settings navigation بازطراحی شد: باکس دوطبقه Group/Section حذف و به یک Section Picker فشرده و sticky با Dialog گروه‌بندی‌شده تبدیل شد؛ Quick-search chipها نیز در موبایل پنهان شدند تا محتوای تنظیمات بالاتر دیده شود. Production Browser Smoke اکنون Settings را در 425px از نظر overflow، ارتفاع navigator و viewport-safe dialog بررسی می‌کند.
