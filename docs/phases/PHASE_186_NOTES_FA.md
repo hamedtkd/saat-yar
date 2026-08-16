@@ -66,4 +66,3 @@
 - `predev` قبل از `next dev` همین cleanup را اجرا می‌کند، در حالی که قرارداد تاریخی `dev = next dev` بدون تغییر باقی مانده است.
 - چون ریشه‌ی `<html>` عمداً `scroll-smooth` دارد، `data-scroll-behavior="smooth"` اضافه شد تا Next.js 16 هنگام route navigation مدیریت scroll را بدون warning انجام دهد.
 - این Revision هیچ تغییر Schema، dependency یا رفتار دامنه‌ای ندارد.
-
