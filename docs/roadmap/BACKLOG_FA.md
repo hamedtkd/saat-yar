@@ -310,7 +310,7 @@
 - [x] فاز ۱۸۳: Notification Intelligence؛ تا پنج Reminder سفارشی مستقل، Snooze و Quiet hours بر اساس Active Work Time، به‌همراه بازطراحی ناوبری Settings موبایل به Section Picker فشرده و بدون اشغال viewport.
 - [x] فاز ۱۸۴: Product Analytics privacy-safe؛ Event taxonomy تایپ‌شده، Consent/Opt-out محلی خارج از AppData، Plausible adapter اختیاری بدون Auto-tracking و ممنوعیت ارسال حقوق، درآمد، نام/عنوان، یادداشت، تاریخ/ساعت دقیق، ID یا Free-text.
 - [x] فاز ۱۸۵: GitHub-style Activity Graph & Month Intelligence؛ Heatmap کارکرد واقعی با Persian/Gregorian، Tooltip portal-safe و keyboard accessibility، Recent 7 Days، streak، قوی‌ترین روز و توزیع deficit/overtime؛ همه داده‌ها Derived و بدون Schema bump روی v19 باقی ماندند.
-- [ ] فاز ۱۸۶: Motion & Perceived Performance؛ animation محدود و state-driven، loading state ساعت‌یار، `prefers-reduced-motion` و بدون layout shift.
+- [x] فاز ۱۸۶: Motion & Perceived Performance؛ Loading Skeletonهای Route-aware برای Today/Month، Route Motion محدود به opacity/transform، radial Theme Reveal از خود دکمه با fallback Reduced Motion، و alignment یکدست کارت‌های Month بدون Schema/Dependency جدید.
 - [ ] فاز ۱۸۷: Google Calendar Architecture + Read Integration؛ بررسی OAuth/امنیت Local-first، import فقط‌خواندنی با Preview و mapping event به activity/meeting.
 - [ ] فاز ۱۸۸: Google Calendar Write/Sync + Advanced Month؛ فقط در صورت تأیید معماری امن، export/sync انتخابی، conflict/duplicate handling و Month planning پیشرفته.
 - [ ] Technical debt پس از 2.4.0: کاهش Regex source tests و افزایش behavioral/component/browser contracts به‌صورت تدریجی.

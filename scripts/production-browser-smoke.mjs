@@ -232,6 +232,23 @@ async function waitForEvent(client, method, label, timeout = WAIT_TIMEOUT_MS) {
   });
 }
 
+
+async function clickRouteLink(client, expectedPath) {
+  const clicked = await evaluate(client, `(() => {
+    const expectedPath = ${JSON.stringify(expectedPath)};
+    const link = Array.from(document.querySelectorAll('a[href]')).find((candidate) => {
+      if (!(candidate instanceof HTMLAnchorElement)) return false;
+      const pathname = new URL(candidate.href, location.href).pathname;
+      const normalizedPathname = pathname.length > 1 && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname;
+      return normalizedPathname === expectedPath;
+    });
+    if (!(link instanceof HTMLAnchorElement)) return false;
+    link.click();
+    return true;
+  })()`);
+  if (!clicked) throw new Error(`In-app route link unavailable: ${expectedPath}`);
+}
+
 async function clickButton(client, text) {
   const clicked = await evaluate(client, `(() => {
     const expected = ${JSON.stringify(text)};
@@ -570,6 +587,54 @@ export async function runProductionBrowserSmoke() {
     console.log("✓ Today exposes activity-segment tracking without requiring a separate route");
     await evaluate(client, `document.querySelector('[data-first-run-dismiss]')?.click()`);
 
+    await waitFor(client, `Boolean(document.querySelector('[data-route-motion][data-route-motion-path="/today"]'))`, "Today route motion boundary");
+    await client.call("Emulation.setEmulatedMedia", { media: "", features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
+    const reducedMotionReload = waitForEvent(client, "Page.loadEventFired", "reduced-motion route reload");
+    await client.call("Page.reload", { ignoreCache: false });
+    await reducedMotionReload;
+    await waitFor(client, `matchMedia('(prefers-reduced-motion: reduce)').matches && document.querySelector('[data-route-motion][data-route-motion-path="/today"]')?.getAttribute('data-route-motion-reduced') === 'true'`, "reduced-motion route contract");
+    await client.call("Emulation.setEmulatedMedia", { media: "", features: [{ name: "prefers-reduced-motion", value: "no-preference" }] });
+    const restoredMotionReload = waitForEvent(client, "Page.loadEventFired", "restored route motion reload");
+    await client.call("Page.reload", { ignoreCache: false });
+    await restoredMotionReload;
+    await waitFor(client, `!matchMedia('(prefers-reduced-motion: reduce)').matches && document.querySelector('[data-route-motion][data-route-motion-path="/today"]')?.getAttribute('data-route-motion-reduced') === 'false'`, "restored route motion preference");
+    const openedMonthThroughAppNav = await evaluate(client, `(() => { const link = Array.from(document.querySelectorAll('a[href]')).find((candidate) => { if (!(candidate instanceof HTMLAnchorElement)) return false; const pathname = new URL(candidate.href, location.href).pathname; const normalizedPathname = pathname.length > 1 && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname; return normalizedPathname === '/month'; }); if (!(link instanceof HTMLAnchorElement)) return false; link.click(); return true; })()`);
+    if (!openedMonthThroughAppNav) throw new Error("In-app Month navigation link was unavailable for route motion smoke.");
+    await waitFor(client, `['/month', '/month/'].includes(location.pathname) && document.querySelector('[data-route-motion]')?.getAttribute('data-route-motion-path') === '/month'`, "state-driven Month route motion");
+    const returnedTodayThroughAppNav = await evaluate(client, `(() => { const link = Array.from(document.querySelectorAll('a[href]')).find((candidate) => { if (!(candidate instanceof HTMLAnchorElement)) return false; const pathname = new URL(candidate.href, location.href).pathname; const normalizedPathname = pathname.length > 1 && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname; return normalizedPathname === '/today'; }); if (!(link instanceof HTMLAnchorElement)) return false; link.click(); return true; })()`);
+    if (!returnedTodayThroughAppNav) throw new Error("In-app Today navigation link was unavailable for route motion smoke.");
+    await waitFor(client, `['/today', '/today/'].includes(location.pathname) && document.querySelector('[data-route-motion]')?.getAttribute('data-route-motion-path') === '/today'`, "state-driven Today route motion");
+    console.log("✓ Route motion is state-driven, reduced-motion aware, and keeps navigation responsive");
+
+    const themeRevealContract = await evaluate(client, `(async () => {
+      const root = document.documentElement;
+      const originalMode = root.dataset.themeMode;
+      const supported = typeof document.startViewTransition === 'function';
+      let visualChanged = false;
+      let revealObserved = false;
+      for (let attempt = 0; attempt < 2 && !visualChanged; attempt += 1) {
+        const button = document.querySelector('[data-theme-toggle]');
+        if (!(button instanceof HTMLButtonElement)) return { missing: true };
+        const beforeTheme = root.dataset.theme;
+        button.click();
+        revealObserved ||= root.dataset.themeTransition === 'active';
+        await new Promise((resolveWait) => setTimeout(resolveWait, 50));
+        visualChanged = root.dataset.theme !== beforeTheme;
+        await new Promise((resolveWait) => setTimeout(resolveWait, 300));
+      }
+      for (let attempt = 0; attempt < 3 && root.dataset.themeMode !== originalMode; attempt += 1) {
+        const button = document.querySelector('[data-theme-toggle]');
+        if (!(button instanceof HTMLButtonElement)) break;
+        button.click();
+        await new Promise((resolveWait) => setTimeout(resolveWait, 340));
+      }
+      return { missing: false, supported, visualChanged, revealObserved, restored: root.dataset.themeMode === originalMode };
+    })()`);
+    if (themeRevealContract?.missing || !themeRevealContract?.visualChanged || !themeRevealContract?.restored || (themeRevealContract.supported && !themeRevealContract.revealObserved)) {
+      throw new Error(`Theme reveal contract failed: ${JSON.stringify(themeRevealContract)}`);
+    }
+    console.log("✓ Theme changes reveal from the header control and restore the original mode");
+
     await client.call("Emulation.setDeviceMetricsOverride", { width: 425, height: 608, deviceScaleFactor: 1, mobile: true, screenWidth: 425, screenHeight: 608 });
     for (const [route, label] of [["month", "Month"], ["leave", "Leave"], ["settings", "Settings"]]) {
       const mobileLoad = waitForEvent(client, "Page.loadEventFired", `${label} mobile responsive route`);
@@ -724,11 +789,12 @@ export async function runProductionBrowserSmoke() {
       || monthHierarchy.heatmapWidth > monthHierarchy.sectionWidth * 0.46
       || monthHierarchy.recentWidth < 260
       || monthHierarchy.insightWidth < 300
-      || monthHierarchy.heatmapHeight > Math.max(monthHierarchy.recentHeight, monthHierarchy.insightHeight) + 120
+      || Math.max(monthHierarchy.heatmapHeight, monthHierarchy.recentHeight, monthHierarchy.insightHeight)
+        - Math.min(monthHierarchy.heatmapHeight, monthHierarchy.recentHeight, monthHierarchy.insightHeight) > 2
     ) {
       throw new Error(`Month visual hierarchy contract failed: ${JSON.stringify(monthHierarchy)}`);
     }
-    console.log("✓ Month keeps the calendar first and fits heatmap, recent activity, and intelligence without wasted desktop space");
+    console.log("✓ Month keeps the calendar first and aligns heatmap, recent activity, and intelligence on one desktop baseline");
     const heatmapPointerDate = await evaluate(client, `(() => {
       const cells = [...document.querySelectorAll('[data-activity-date]')];
       const cell = cells.find((item) => item.getAttribute('data-activity-in-month') === 'true' && !item.disabled);
@@ -805,10 +871,9 @@ export async function runProductionBrowserSmoke() {
     await waitFor(client, `document.activeElement?.getAttribute('data-activity-date') && document.activeElement?.getAttribute('data-activity-date') !== ${JSON.stringify(heatmapStartDate)}`, "keyboard-accessible month activity heatmap");
     console.log("✓ Persian/Gregorian month intelligence exposes a keyboard-accessible month activity heatmap");
 
-    const englishReportsLoad = waitForEvent(client, "Page.loadEventFired", "English Reports route");
-    await client.call("Page.navigate", { url: `${origin}/reports/` });
-    await englishReportsLoad;
-    await waitFor(client, `["/reports", "/reports/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Work and payroll report") && document.body?.innerText.includes("Analytics charts") && Boolean(document.querySelector('[data-activity-breakdown]'))`, "English Reports core surface");
+    await clickRouteLink(client, "/reports");
+    await waitFor(client, `["/reports", "/reports/"].includes(location.pathname) && document.documentElement.dir === "ltr"`, "English Reports route");
+    await waitFor(client, `document.body?.innerText.includes("Work and payroll report") && document.body?.innerText.includes("Analytics charts") && Boolean(document.querySelector('[data-activity-breakdown]'))`, "English Reports core surface", WAIT_TIMEOUT_MS * 2);
     console.log("✓ Today, Month, and Reports render localized English LTR surfaces before Persian restore");
     console.log("✓ Activity segment and breakdown surfaces follow English LTR");
 

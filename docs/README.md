@@ -157,4 +157,5 @@
 - [Phase 183](./phases/PHASE_183_NOTES_FA.md)
 - [Phase 184: Privacy-safe Product Analytics](./phases/PHASE_184_NOTES_FA.md)
 - [Phase 185: Activity Graph & Month Intelligence](./phases/PHASE_185_NOTES_FA.md)
+- [Phase 186: Motion & Perceived Performance](./phases/PHASE_186_NOTES_FA.md)
 - [قرارداد Privacy-safe Analytics](./product-analytics/PRIVACY_SAFE_ANALYTICS_FA.md)

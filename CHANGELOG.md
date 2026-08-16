@@ -1,5 +1,6 @@
 ## [Unreleased]
 
+- Phase 186: Boot اولیه با Loading Shell و Skeletonهای Route-aware برای Today/Month جایگزین حالت متن مرکزی شد؛ Routeها transition کوتاه state-driven دارند، کارت‌های Activity Intelligence هم‌تراز شدند و Theme Toggle با radial reveal از محل دکمه تغییر می‌کند؛ Reduced Motion صریحاً animation را خاموش می‌کند و Schema v19/Dependencyها بدون تغییر ماندند.
 - Phase 185: صفحه Month یک GitHub-style Activity Heatmap مشتق‌شده از کارکرد واقعی، Tooltip/Keyboard navigation، longest streak و توزیع اضافه‌کار/کسری دریافت کرد؛ Heatmap با Persian/Gregorian و RTL/LTR کار می‌کند و Schema v19 بدون تغییر ماند.
 - Phase 185 visual follow-up: تقویم به بالاترین بخش محتوای Month منتقل شد، کارت‌های Calendar/Weekly و Heatmap/Intelligence دیگر ارتفاع همدیگر را کش نمی‌دهند و Heatmap در فضای واقعی خودش متراکم/مرکزی می‌ماند تا فضای خالی Desktop حذف شود.
 - Phase 185 tooltip hardening: Tooltip نقشه فعالیت با Portal روی `document.body` بالای Surfaceها می‌ماند؛ Browser Smoke با Hover واقعی CDP stacking/viewport را می‌سنجد و مسیر Keyboard navigation را جداگانه بررسی می‌کند تا Focus مصنوعی DevTools باعث false negative نشود.

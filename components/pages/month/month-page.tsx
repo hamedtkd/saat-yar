@@ -66,7 +66,7 @@ export function MonthPage({ data, selectedDate, setSelectedDate, monthRecords, m
 
     <section className="mb-5" data-month-intelligence-section>
       <SectionHeading icon={<Activity />} eyebrow={t("month.section.intelligenceEyebrow")} title={t("month.section.intelligenceTitle")} description={t("month.section.intelligenceDescription")} />
-      <div className="grid items-start grid-cols-[minmax(340px,.95fr)_minmax(300px,.78fr)_minmax(340px,1fr)] gap-4 max-[1180px]:grid-cols-1">
+      <div className="grid items-stretch grid-cols-[minmax(340px,.95fr)_minmax(300px,.78fr)_minmax(340px,1fr)] gap-4 max-[1180px]:grid-cols-1 max-[1180px]:[&>article]:h-auto">
         <ActivityHeatmap selectedDate={selectedDate} setSelectedDate={setSelectedDate} records={monthRecords} settings={data.settings} />
         <RecentActivityCard selectedDate={selectedDate} setSelectedDate={setSelectedDate} records={Object.values(data.records)} settings={data.settings} />
         <MonthIntelligenceCard selectedDate={selectedDate} records={monthRecords} settings={data.settings} />

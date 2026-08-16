@@ -46,7 +46,7 @@ async function applyDynamicFavicon(accent: string, strong: string) {
   }
 }
 
-function applyAppearance(appearance: AppearanceSettings) {
+export function applyAppearanceToDocument(appearance: AppearanceSettings) {
   const root = document.documentElement;
   const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
   const resolved = appearance.mode === "system" ? (prefersDark ? "dark" : "light") : appearance.mode;
@@ -68,11 +68,11 @@ function applyAppearance(appearance: AppearanceSettings) {
 
 export function ThemeRuntime({ appearance }: { appearance: AppearanceSettings }) {
   useEffect(() => {
-    applyAppearance(appearance);
+    applyAppearanceToDocument(appearance);
     localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(appearance));
     if (appearance.mode !== "system") return;
     const media = window.matchMedia("(prefers-color-scheme: dark)");
-    const listener = () => applyAppearance(appearance);
+    const listener = () => applyAppearanceToDocument(appearance);
     media.addEventListener("change", listener);
     return () => media.removeEventListener("change", listener);
   }, [appearance]);

@@ -43,7 +43,7 @@ export function HeaderActions(props: Props) {
       <LanguageSwitcher variant="compact" className="xl:hidden" />
       <ThemeToggle
         className={headerStandaloneIconButton}
-        mode={props.appearance.mode}
+        appearance={props.appearance}
         onChange={props.onThemeModeChange}
       />
     </div>

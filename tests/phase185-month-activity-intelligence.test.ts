@@ -106,10 +106,10 @@ test("Month exposes a keyboard-accessible GitHub-style heatmap tooltip and bilin
   assert.match(monthPage, /data-month-overview-section/);
   assert.match(monthPage, /data-month-intelligence-section/);
   assert.ok(monthPage.indexOf('data-month-overview-section') < monthPage.indexOf('data-month-intelligence-section'));
-  assert.match(monthPage, /grid items-start grid-cols-\[minmax\(340px,.95fr\)_minmax\(300px,.78fr\)_minmax\(340px,1fr\)\]/);
+  assert.match(monthPage, /grid items-stretch grid-cols-\[minmax\(340px,.95fr\)_minmax\(300px,.78fr\)_minmax\(340px,1fr\)\]/);
   assert.match(monthPage, /RecentActivityCard/);
-  assert.match(heatmap, /self-start/);
-  assert.match(intelligence, /self-start/);
+  assert.match(heatmap, /flex h-full[\s\S]*AnalyticsCardHeader/);
+  assert.match(intelligence, /flex h-full[\s\S]*AnalyticsCardHeader/);
   assert.match(en, /Activity map and month intelligence/);
   assert.match(fa, /نقشه فعالیت و هوشمندی ماه/);
 });

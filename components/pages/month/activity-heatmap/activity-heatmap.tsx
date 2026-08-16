@@ -2,13 +2,13 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Activity } from "lucide-react";
-import { DescriptionTooltip } from "@/components/common/description-tooltip";
 import { SurfaceCard } from "@/components/common/surface-card";
 import { useLocaleUi } from "@/components/i18n/use-locale-ui";
 import { cn } from "@/lib/cn";
 import { buildMonthActivityCells } from "@/lib/month-intelligence";
 import type { Settings, WorkRecord } from "@/lib/types";
 import { ActivityHeatmapTooltip } from "./activity-heatmap-tooltip";
+import { AnalyticsCardHeader } from "./analytics-card-header";
 
 const intensityClasses = [
   "bg-[var(--surface-2)]",
@@ -79,21 +79,15 @@ export function ActivityHeatmap({
   }
 
   return (
-    <SurfaceCard as="article" className="min-w-0 self-start p-4" data-month-activity-heatmap>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex min-w-0 items-center gap-2.5">
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[var(--accent-soft)] text-[var(--accent)]">
-            <Activity className="size-4.5" />
-          </span>
-          <div className="flex min-w-0 items-center gap-1">
-            <h3 className="truncate text-sm font-black text-[var(--text)]">{t("month.activity.title")}</h3>
-            <DescriptionTooltip content={t("month.activity.description")} />
-          </div>
-        </div>
-        <span className="rounded-full border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-2.5 py-1 text-[9px] font-bold text-[var(--text-muted)]">{monthLabel}</span>
-      </div>
+    <SurfaceCard as="article" className="flex h-full min-w-0 flex-col p-4" data-month-activity-heatmap>
+      <AnalyticsCardHeader
+        icon={<Activity />}
+        title={t("month.activity.title")}
+        description={t("month.activity.description")}
+        trailing={<span className="rounded-full border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-2.5 py-1 text-[9px] font-bold text-[var(--text-muted)]">{monthLabel}</span>}
+      />
 
-      <div className="mx-auto mt-4 grid w-fit max-w-full min-w-0 grid-cols-[auto_minmax(0,1fr)] items-start gap-2.5">
+      <div className="mx-auto mt-4 grid w-fit max-w-full min-w-0 flex-1 grid-cols-[auto_minmax(0,1fr)] content-center items-start gap-2.5">
         <div className="grid grid-rows-7 gap-1.5 pt-0.5 text-[9px] font-bold text-[var(--text-muted)] sm:gap-2">
           {weekdayKeys.map((day) => <span key={day} className="flex h-7 items-center">{t(`weekday.${day}.short`)}</span>)}
         </div>

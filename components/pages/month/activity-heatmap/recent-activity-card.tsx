@@ -1,12 +1,12 @@
 "use client";
 
 import { Clock3 } from "lucide-react";
-import { DescriptionTooltip } from "@/components/common/description-tooltip";
 import { SurfaceCard } from "@/components/common/surface-card";
 import { useLocaleUi } from "@/components/i18n/use-locale-ui";
 import { cn } from "@/lib/cn";
 import { buildRecentActivityDays } from "@/lib/month-intelligence";
 import type { Settings, WorkRecord } from "@/lib/types";
+import { AnalyticsCardHeader } from "./analytics-card-header";
 
 export function RecentActivityCard({
   selectedDate,
@@ -23,20 +23,10 @@ export function RecentActivityCard({
   const days = buildRecentActivityDays(selectedDate, calendar, records, settings);
 
   return (
-    <SurfaceCard as="article" className="self-start p-4" data-month-recent-activity>
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex min-w-0 items-center gap-2.5">
-          <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[var(--accent-soft)] text-[var(--accent)]">
-            <Clock3 className="size-4.5" />
-          </span>
-          <div className="flex min-w-0 items-center gap-1">
-            <h3 className="truncate text-sm font-black text-[var(--text)]">{t("month.recent.title")}</h3>
-            <DescriptionTooltip content={t("month.recent.description")} />
-          </div>
-        </div>
-      </div>
+    <SurfaceCard as="article" className="flex h-full flex-col p-4" data-month-recent-activity>
+      <AnalyticsCardHeader icon={<Clock3 />} title={t("month.recent.title")} description={t("month.recent.description")} />
 
-      <div className="mt-3 divide-y divide-[var(--dashboard-border)]">
+      <div className="mt-3 flex-1 divide-y divide-[var(--dashboard-border)]">
         {days.map((day) => {
           const progress = day.target > 0 ? Math.min(100, (day.worked / day.target) * 100) : day.worked > 0 ? 100 : 0;
           const balanceTone = day.balance > 5 ? "text-[var(--success)]" : day.balance < -5 ? "text-[var(--warning)]" : "text-[var(--text-muted)]";
