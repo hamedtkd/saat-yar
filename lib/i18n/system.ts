@@ -552,6 +552,8 @@ export const faSystemCatalog = {
   "Rounding increment (Toman)": "گام گردکردن (تومان)",
   "Live payroll preview": "پیش‌نمایش زنده حقوق",
   "Overtime hourly rate": "نرخ هر ساعت اضافه‌کاری",
+  "Holiday-work hourly rate": "نرخ هر ساعت تعطیل‌کاری",
+  "Deficit hourly rate": "نرخ هر ساعت کسرکار",
   "Based on {count} records from the current month": "بر اساس {count} رکورد ماه جاری",
   "Sample data; current-month data replaces it after you record work.": "نمونه فرضی؛ بعد از ثبت کارکرد، داده ماه جاری جایگزین می‌شود.",
   "Net: {amount} Toman": "خالص: {amount} تومان",

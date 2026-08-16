@@ -1,5 +1,6 @@
 ## [Unreleased]
 
+- Phase 191: Payroll و Reports روی Payroll Period Facts مشترک همگرا شدند؛ تعطیل‌کاری دیگر کسری روز عادی را در balance ماهانه پنهان نمی‌کند، Paid Leave با credited time بین Today/Reports یکسان شده و Preview نرخ Base/Overtime/Holiday/Deficit را از یک Rate Engine نمایش می‌دهد؛ Schema v20 و dependencyها بدون تغییر ماندند.
 - Phase 190: Google Calendar با Incremental Sync مبتنی بر `syncToken` و fallback امن 410، cache مستقل مرورگر، ETag/`If-Match` برای جلوگیری از overwrite نسخه stale، تشخیص overlap و collapse duplicateها، Day/Week planner، Event → Activity صریح و recurring occurrence/series editing ارتقا یافت؛ Google همچنان روی WorkRecord/Payroll/تعطیلات داخلی اثر خودکار ندارد.
 - Phase 189C: باگ نرخ ساعتی روش‌های ماهانه اصلاح شد؛ مبنای پیش‌فرض اضافه‌کاری/تعطیل‌کاری/کسرکار اکنون `حقوق ماهانه ÷ ساعات استاندارد ماه` با پیش‌فرض قابل‌تنظیم ۲۲۰ ساعت است، حالت اختیاری «ساعات موظفی بازه» حفظ شد، Live Payroll Preview نرخ پایه/اضافه‌کاری را نشان می‌دهد و AppData توسعه به Schema v20 مهاجرت کرد.
 - Phase 189B: Settings از یک صفحه طولانی به Overview و routeهای مستقل Profile/Appearance/Work/Payroll/Notifications/Integrations/Data/Sync/Privacy تقسیم شد؛ Search و Deep-linkها route-aware ماندند و تقویم Month با Context Menu روز برای Event CRUD سریع، Holiday/Workday override و بازگشت به قانون خودکار ارتقا یافت. توضیح Weekly Chart نیز به Tooltip مشترک منتقل شد.

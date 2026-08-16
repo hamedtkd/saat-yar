@@ -2,6 +2,7 @@ import { useMemo } from "react";
 
 import { entryMinutes } from "@/lib/format";
 import { calculateMonthlyPayrollForSettings } from "@/lib/payroll";
+import { derivePayrollPeriodFacts } from "@/lib/payroll-period";
 import { calc } from "@/lib/time-engine";
 import { getDailyTargetMinutes } from "@/lib/work-schedule";
 import type { AppData, TimeEntry, WorkRecord } from "@/lib/types";
@@ -41,23 +42,10 @@ export function useReportSummary({
       0,
     );
     const nonBillableMinutes = Math.max(0, totalProjectTime - reportBillable);
-    const deficitMinutes = Math.max(0, -effectiveMonthStats.balance);
-    const holidayMinutes = monthRecords.reduce((sum, record) => {
-      if (!record.holiday) return sum;
-      const target = getDailyTargetMinutes(record.date, data.settings);
-      return sum + calc(record, target).worked;
-    }, 0);
-    const overtimeMinutes = Math.max(
-      0,
-      Math.max(0, effectiveMonthStats.balance) - holidayMinutes,
-    );
-    const payroll = calculateMonthlyPayrollForSettings(data.settings, {
-      workedMinutes: effectiveMonthStats.worked,
-      targetMinutes: effectiveMonthStats.target,
-      overtimeMinutes,
-      deficitMinutes,
-      holidayMinutes,
-    });
+    const payrollFacts = derivePayrollPeriodFacts(monthRecords, data.settings);
+    const deficitMinutes = payrollFacts.deficitMinutes;
+    const overtimeMinutes = payrollFacts.overtimeMinutes;
+    const payroll = calculateMonthlyPayrollForSettings(data.settings, payrollFacts);
 
     return {
       isEmployee,

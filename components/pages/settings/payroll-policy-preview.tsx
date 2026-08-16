@@ -22,7 +22,10 @@ export function PayrollPolicyPreview({ preview, hidden }: { preview: ReturnTypeO
         <Mini label={s("Hourly rate basis")} value={basisText} />
         <MiniMoney label={s("Base hourly rate")} value={preview.rateSummary.baseHourlyRate} hidden={hidden} />
         <MiniMoney label={s("Overtime hourly rate")} value={preview.rateSummary.overtimeHourlyRate} hidden={hidden} />
+        <MiniMoney label={s("Holiday-work hourly rate")} value={preview.rateSummary.holidayHourlyRate} hidden={hidden} />
+        <MiniMoney label={s("Deficit hourly rate")} value={preview.rateSummary.deficitHourlyRate} hidden={hidden} />
         <Mini label={s("Overtime")} value={duration(preview.facts.overtimeMinutes)} />
+        <Mini label={s("Deficit")} value={duration(preview.facts.deficitMinutes)} />
       </div>
       <div className="grid gap-1 border-t border-[var(--border)] pt-3">{preview.payroll.breakdown.filter((line) => line.amount > 0).map((line) => <div key={line.key} className="flex items-center justify-between text-[10px]"><span className="text-[var(--text-muted)]">{line.direction === "deduction" ? "−" : "+"} {s(breakdownLabels[line.key])}</span><strong className={line.direction === "deduction" ? "text-[var(--danger)]" : "text-[var(--text)]"}><PrivateMoney value={line.amount} hidden={hidden} /> {s("Toman")}</strong></div>)}</div>
     </aside>

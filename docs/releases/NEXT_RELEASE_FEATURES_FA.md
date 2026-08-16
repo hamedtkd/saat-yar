@@ -16,10 +16,11 @@
 - Phase 189B — Settings IA + Calendar Day Quick Actions: Settings چندصفحه‌ای، Search/Deep-link route-aware، Context Menu هر روز در Month، Event CRUD سریع و Holiday/Workday override از خود تقویم.
 - Phase 189C — Payroll Rate Basis & Standard Monthly Hours: اصلاح نرخ غیرواقعی اضافه‌کاری روش ماهانه، مبنای استاندارد ماه با پیش‌فرض ۲۲۰ ساعت قابل تنظیم، حالت اختیاری ساعات موظفی بازه و Live Preview نرخ ساعتی.
 - Phase 190 — Calendar Intelligence: Full/Incremental Sync با syncToken و fallback 410، ETag conflict protection، duplicate/overlap intelligence، Day/Week planner، Event → Activity صریح و recurring occurrence/series editing ایمن.
+- Phase 191 — Payroll & Reports Hardening: Payroll Period Facts مشترک، جلوگیری از masking کسری توسط تعطیل‌کاری، Paid Leave consistency و Rate Summary واحد برای base/overtime/holiday/deficit.
 
 ## فازهای ثبت‌شده بعدی
 
-- پس از بسته‌شدن Phase 190، فاز بعدی هنوز در این سند قفل نشده است.
+- Phase 192 — Behavioral Test Modernization: کاهش تدریجی source/regex contracts و افزایش component/browser/behavior tests بدون حذف architecture guardهای ضروری.
 
 ## پیام‌های مهم برای معرفی نسخه
 
