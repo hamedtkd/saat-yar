@@ -4,6 +4,7 @@ import type { ActivityKind, ActivitySegment, AppData, BreakItem, ClientDraft, Pr
 
 export type TodayPageProps = {
   data: AppData;
+  setToast: (message: string) => void;
   record: WorkRecord;
   selectedDate: string;
   setSelectedDate: (date: string) => void;

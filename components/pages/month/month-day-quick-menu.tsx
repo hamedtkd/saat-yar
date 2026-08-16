@@ -9,7 +9,7 @@ import { useCalendarIntegration } from "@/components/calendar/calendar-integrati
 import { useLocaleUi } from "@/components/i18n/use-locale-ui";
 import { Button } from "@/components/ui/button";
 import { chooseWritableCalendar } from "@/lib/calendar-integration/draft";
-import { eventOccursOnDate } from "@/lib/calendar-integration/google-calendar";
+import { buildCalendarDayAgenda } from "@/lib/calendar-integration/intelligence";
 import type { ExternalCalendarEvent } from "@/lib/calendar-integration/types";
 import { getHolidayInfo } from "@/lib/holidays";
 import { normalizeHolidayOverrides } from "@/lib/holiday-overrides";
@@ -34,7 +34,7 @@ export function MonthDayQuickMenu({ anchor, onClose, data, setData, setToast, ex
   const [editingEvent, setEditingEvent] = useState<ExternalCalendarEvent | undefined>();
   const [deletingEvent, setDeletingEvent] = useState<ExternalCalendarEvent | null>(null);
   const dateKey = anchor?.dateKey ?? "";
-  const events = useMemo(() => externalEvents.filter((event) => dateKey && eventOccursOnDate(event, dateKey)), [dateKey, externalEvents]);
+  const events = useMemo(() => dateKey ? buildCalendarDayAgenda(externalEvents, dateKey).map((item) => item.event) : [], [dateKey, externalEvents]);
   const defaultCalendar = useMemo(() => chooseWritableCalendar(integration.calendars, integration.selectedCalendarIds, editingEvent?.calendarId), [editingEvent?.calendarId, integration.calendars, integration.selectedCalendarIds]);
   const override = data.holidayOverrides.find((item) => item.date === dateKey);
   const record = data.records[dateKey];

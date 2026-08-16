@@ -15,6 +15,7 @@ export default function TodayRoute() {
     <TodayPage
       data={controller.data}
       setData={controller.setData}
+      setToast={controller.setToast}
       record={controller.record}
       selectedDate={controller.selectedDate}
       setSelectedDate={controller.setSelectedDate}

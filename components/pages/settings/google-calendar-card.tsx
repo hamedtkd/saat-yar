@@ -13,7 +13,7 @@ const stateTone: Record<string, StatusBadgeTone> = {
 };
 
 export function GoogleCalendarCard() {
-  const { t, number } = useLocaleUi();
+  const { t, number, time } = useLocaleUi();
   const integration = useCalendarIntegration();
   const statusKey = `calendar.google.status.${integration.state}` as const;
   const errorKey = integration.errorCode ? `calendar.google.error.${integration.errorCode}` as const : null;
@@ -30,7 +30,7 @@ export function GoogleCalendarCard() {
       ) : integration.state === "connected" ? (
         <div className="grid gap-3">
           <div className="grid gap-4 rounded-[14px] border border-[var(--dashboard-border)] bg-[var(--surface-2)] p-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
-            <div className="grid gap-1"><strong className="text-[11px] text-[var(--text)]">{t("calendar.google.connectedSummary", { selected: number(selectedCount), writable: number(writableCount) })}</strong><span className="text-[9px] leading-5 text-[var(--text-muted)]">{t("calendar.google.connectedDescription")}</span></div>
+            <div className="grid gap-1"><strong className="text-[11px] text-[var(--text)]">{t("calendar.google.connectedSummary", { selected: number(selectedCount), writable: number(writableCount) })}</strong><span className="text-[9px] leading-5 text-[var(--text-muted)]">{t("calendar.google.connectedDescription")}</span>{integration.syncMode && integration.lastSyncedAt ? <span data-calendar-sync-status className="flex flex-wrap items-center gap-1.5 text-[8px] font-bold text-[var(--accent-strong)]"><RefreshCw className="size-3" />{t(`calendar.google.sync.${integration.syncMode}`)}<span className="text-[var(--text-muted)]">· {t("calendar.google.syncLast", { time: time(integration.lastSyncedAt) })}</span></span> : null}{errorKey ? <span className="text-[8px] leading-5 text-[var(--warning)]">{t(errorKey)}</span> : null}</div>
             <div className="flex flex-wrap items-center gap-2 md:justify-end"><Button size="sm" variant="outline" onClick={integration.disconnect}><Link2Off /> {t("calendar.google.disconnect")}</Button><Button size="sm" variant="ghost" onClick={() => { void integration.revoke(); }}>{t("calendar.google.revoke")}</Button></div>
           </div>
           <details className="group overflow-hidden rounded-[14px] border border-[var(--dashboard-border)] bg-[var(--surface-2)] p-3">

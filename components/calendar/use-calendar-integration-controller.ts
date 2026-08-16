@@ -5,12 +5,14 @@ import { useLocaleUi } from "@/components/i18n/use-locale-ui";
 import {
   createGoogleCalendarEvent,
   deleteGoogleCalendarEvent,
-  fetchGoogleCalendarEvents,
   fetchGoogleCalendars,
   GoogleCalendarApiError,
   resolveGoogleCalendarConfig,
   updateGoogleCalendarEvent,
 } from "@/lib/calendar-integration/google-calendar";
+import { deleteGoogleCalendarSeries, updateGoogleCalendarSeries } from "@/lib/calendar-integration/google-calendar-series";
+import { syncSelectedGoogleCalendars } from "@/lib/calendar-integration/google-calendar-sync";
+import { eventOccursInRange } from "@/lib/calendar-integration/intelligence";
 import {
   GoogleIdentityError,
   requestGoogleCalendarAccess,
@@ -23,19 +25,26 @@ import {
   subscribeExternalCalendarPreferences,
   writeExternalCalendarPreferences,
 } from "@/lib/calendar-integration/preferences";
+import { clearGoogleCalendarSyncCache } from "@/lib/calendar-integration/sync-cache";
 import type {
+  ExternalCalendarEditScope,
   ExternalCalendarErrorCode,
   ExternalCalendarEvent,
   ExternalCalendarEventDraft,
   ExternalCalendarPreferences,
   ExternalCalendarRange,
   ExternalCalendarSource,
+  ExternalCalendarSyncMode,
 } from "@/lib/calendar-integration/types";
 import type { CalendarIntegrationContextValue } from "./calendar-integration-context";
 
 function classifyError(error: unknown): ExternalCalendarErrorCode {
   if (error instanceof GoogleIdentityError) return error.code;
-  if (error instanceof GoogleCalendarApiError) return error.status === 401 || error.status === 403 ? "authorization" : "api";
+  if (error instanceof GoogleCalendarApiError) {
+    if (error.status === 401 || error.status === 403) return "authorization";
+    if (error.status === 412) return "conflict";
+    return "api";
+  }
   return "network";
 }
 
@@ -62,6 +71,8 @@ export function useCalendarIntegrationController(onToast?: (message: string) => 
   const [loadedRange, setLoadedRange] = useState<ExternalCalendarRange | null>(null);
   const [loadingEvents, setLoadingEvents] = useState(false);
   const [mutating, setMutating] = useState(false);
+  const [syncMode, setSyncMode] = useState<ExternalCalendarSyncMode | null>(null);
+  const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null);
   const sessionRef = useRef<GoogleAccessSession | null>(null);
   const pendingRangeRef = useRef("");
   const requestIdRef = useRef(0);
@@ -75,22 +86,21 @@ export function useCalendarIntegrationController(onToast?: (message: string) => 
 
   const disconnect = useCallback(() => {
     sessionRef.current = null;
+    void clearGoogleCalendarSyncCache();
     setCalendars([]);
     setEvents([]);
     setLoadedRange(null);
     setLoadingEvents(false);
     setMutating(false);
+    setSyncMode(null);
+    setLastSyncedAt(null);
     setErrorCode(null);
     pendingRangeRef.current = "";
     setState(config.configured ? "disconnected" : "unconfigured");
   }, [config.configured]);
 
   const connect = useCallback(async () => {
-    if (!config.configured) {
-      setState("unconfigured");
-      setErrorCode("configuration");
-      return;
-    }
+    if (!config.configured) { setState("unconfigured"); setErrorCode("configuration"); return; }
     setState("connecting");
     setErrorCode(null);
     try {
@@ -110,15 +120,14 @@ export function useCalendarIntegrationController(onToast?: (message: string) => 
   const revoke = useCallback(async () => {
     const session = sessionRef.current;
     if (session?.accessToken) {
-      try { await revokeGoogleCalendarAccess(session.accessToken); } catch { /* local disconnect remains safe */ }
+      try { await revokeGoogleCalendarAccess(session.accessToken); } catch { /* local cleanup remains authoritative */ }
     }
     disconnect();
   }, [disconnect]);
 
   const setCalendarSelected = useCallback((calendarId: string, selected: boolean) => {
     const current = new Set(readExternalCalendarPreferences().selectedCalendarIds);
-    if (selected) current.add(calendarId);
-    else current.delete(calendarId);
+    if (selected) current.add(calendarId); else current.delete(calendarId);
     persistSelection([...current]);
   }, [persistSelection]);
 
@@ -127,41 +136,30 @@ export function useCalendarIntegrationController(onToast?: (message: string) => 
     const session = sessionRef.current;
     if (!session || session.expiresAt <= Date.now() + 5_000) {
       sessionRef.current = null;
-      setState("expired");
-      setErrorCode("authorization");
-      setEvents([]);
-      setLoadedRange(null);
+      setState("expired"); setErrorCode("authorization"); setEvents([]); setLoadedRange(null);
       return;
     }
     const selected = calendars.filter((calendar) => preferences.selectedCalendarIds.includes(calendar.id));
-    if (!selected.length) {
-      setEvents([]);
-      setLoadedRange(range);
-      return;
-    }
+    if (!selected.length) { setEvents([]); setLoadedRange(range); return; }
     const selectionKey = selected.map((calendar) => calendar.id).sort().join("|");
     const requestKey = `${range.startDateKey}:${range.endDateKeyExclusive}:${selectionKey}`;
     if (!force && sameRange(loadedRange, range) && pendingRangeRef.current === requestKey) return;
     if (!force && pendingRangeRef.current === requestKey && loadingEvents) return;
     pendingRangeRef.current = requestKey;
     const requestId = ++requestIdRef.current;
-    setLoadingEvents(true);
-    setErrorCode(null);
+    setLoadingEvents(true); setErrorCode(null);
     try {
       const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
-      const nextEvents = await fetchGoogleCalendarEvents(session.accessToken, selected, range, timeZone);
+      const synced = await syncSelectedGoogleCalendars(session.accessToken, selected, timeZone);
       if (requestId !== requestIdRef.current) return;
-      setEvents(nextEvents);
-      setLoadedRange(range);
+      setEvents(synced.events.filter((event) => eventOccursInRange(event, range)));
+      setSyncMode(synced.mode); setLastSyncedAt(synced.syncedAt); setLoadedRange(range);
     } catch (error) {
       if (requestId !== requestIdRef.current) return;
       const code = classifyError(error);
       setErrorCode(code);
       if (code === "authorization") {
-        sessionRef.current = null;
-        setState("expired");
-        setEvents([]);
-        setLoadedRange(null);
+        sessionRef.current = null; setState("expired"); setEvents([]); setLoadedRange(null);
       } else setState("error");
       throw error;
     } finally {
@@ -176,12 +174,9 @@ export function useCalendarIntegrationController(onToast?: (message: string) => 
   const mutate = useCallback(async (operation: (accessToken: string, timeZone: string) => Promise<unknown>) => {
     const session = sessionRef.current;
     if (state !== "connected" || !session || session.expiresAt <= Date.now() + 5_000) {
-      setState("expired");
-      setErrorCode("authorization");
-      throw new GoogleCalendarApiError(401);
+      setState("expired"); setErrorCode("authorization"); throw new GoogleCalendarApiError(401);
     }
-    setMutating(true);
-    setErrorCode(null);
+    setMutating(true); setErrorCode(null);
     try {
       const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
       await operation(session.accessToken, timeZone);
@@ -189,11 +184,12 @@ export function useCalendarIntegrationController(onToast?: (message: string) => 
     } catch (error) {
       const code = classifyError(error);
       setErrorCode(code);
-      if (code === "authorization") {
-        sessionRef.current = null;
-        setState("expired");
+      if (code === "authorization") { sessionRef.current = null; setState("expired"); }
+      if (code === "conflict" && loadedRange) {
+        try { await loadRangeRequest(loadedRange, true); } catch { /* preserve original conflict */ }
+        setErrorCode("conflict");
       }
-      onToast?.(t("calendar.google.toast.error"));
+      onToast?.(t(code === "conflict" ? "calendar.google.toast.conflict" : "calendar.google.toast.error"));
       throw error;
     } finally { setMutating(false); }
   }, [loadRangeRequest, loadedRange, onToast, state, t]);
@@ -205,23 +201,26 @@ export function useCalendarIntegrationController(onToast?: (message: string) => 
     onToast?.(t("calendar.google.toast.created"));
   }, [calendars, mutate, onToast, t]);
 
-  const updateEvent = useCallback(async (event: ExternalCalendarEvent, draft: ExternalCalendarEventDraft) => {
+  const updateEvent = useCallback(async (event: ExternalCalendarEvent, draft: ExternalCalendarEventDraft, options?: { scope?: ExternalCalendarEditScope }) => {
     if (!event.editable) throw new GoogleCalendarApiError(403);
-    await mutate((accessToken, timeZone) => updateGoogleCalendarEvent(accessToken, event.calendarId, event.id, draft, timeZone));
+    await mutate((accessToken, timeZone) => options?.scope === "series" && event.recurringEventId
+      ? updateGoogleCalendarSeries(accessToken, event, draft, timeZone)
+      : updateGoogleCalendarEvent(accessToken, event.calendarId, event.id, draft, timeZone, fetch, event.etag));
     onToast?.(t("calendar.google.toast.updated"));
   }, [mutate, onToast, t]);
 
   const deleteEvent = useCallback(async (event: ExternalCalendarEvent, options?: { series?: boolean; notifyAttendees?: boolean }) => {
     if (!event.editable) throw new GoogleCalendarApiError(403);
-    const eventId = options?.series && event.recurringEventId ? event.recurringEventId : event.id;
-    await mutate((accessToken) => deleteGoogleCalendarEvent(accessToken, event.calendarId, eventId, options?.notifyAttendees ?? true));
+    await mutate((accessToken) => options?.series && event.recurringEventId
+      ? deleteGoogleCalendarSeries(accessToken, event, options?.notifyAttendees ?? true)
+      : deleteGoogleCalendarEvent(accessToken, event.calendarId, event.id, options?.notifyAttendees ?? true, fetch, event.etag));
     onToast?.(t("calendar.google.toast.deleted"));
   }, [mutate, onToast, t]);
 
   const writableCalendars = useMemo(() => calendars.filter((calendar) => calendar.writable), [calendars]);
   return useMemo(() => ({
     configured: config.configured, state, errorCode, calendars, writableCalendars,
-    selectedCalendarIds: preferences.selectedCalendarIds, events, loadedRange, loadingEvents, mutating,
+    selectedCalendarIds: preferences.selectedCalendarIds, events, loadedRange, loadingEvents, mutating, syncMode, lastSyncedAt,
     connect, disconnect, revoke, setCalendarSelected, loadRange, createEvent, updateEvent, deleteEvent,
-  }), [calendars, config.configured, connect, createEvent, deleteEvent, disconnect, errorCode, events, loadRange, loadedRange, loadingEvents, mutating, preferences.selectedCalendarIds, revoke, setCalendarSelected, state, updateEvent, writableCalendars]);
+  }), [calendars, config.configured, connect, createEvent, deleteEvent, disconnect, errorCode, events, lastSyncedAt, loadRange, loadedRange, loadingEvents, mutating, preferences.selectedCalendarIds, revoke, setCalendarSelected, state, syncMode, updateEvent, writableCalendars]);
 }

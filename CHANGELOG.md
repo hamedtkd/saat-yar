@@ -1,5 +1,6 @@
 ## [Unreleased]
 
+- Phase 190: Google Calendar با Incremental Sync مبتنی بر `syncToken` و fallback امن 410، cache مستقل مرورگر، ETag/`If-Match` برای جلوگیری از overwrite نسخه stale، تشخیص overlap و collapse duplicateها، Day/Week planner، Event → Activity صریح و recurring occurrence/series editing ارتقا یافت؛ Google همچنان روی WorkRecord/Payroll/تعطیلات داخلی اثر خودکار ندارد.
 - Phase 189C: باگ نرخ ساعتی روش‌های ماهانه اصلاح شد؛ مبنای پیش‌فرض اضافه‌کاری/تعطیل‌کاری/کسرکار اکنون `حقوق ماهانه ÷ ساعات استاندارد ماه` با پیش‌فرض قابل‌تنظیم ۲۲۰ ساعت است، حالت اختیاری «ساعات موظفی بازه» حفظ شد، Live Payroll Preview نرخ پایه/اضافه‌کاری را نشان می‌دهد و AppData توسعه به Schema v20 مهاجرت کرد.
 - Phase 189B: Settings از یک صفحه طولانی به Overview و routeهای مستقل Profile/Appearance/Work/Payroll/Notifications/Integrations/Data/Sync/Privacy تقسیم شد؛ Search و Deep-linkها route-aware ماندند و تقویم Month با Context Menu روز برای Event CRUD سریع، Holiday/Workday override و بازگشت به قانون خودکار ارتقا یافت. توضیح Weekly Chart نیز به Tooltip مشترک منتقل شد.
 - Phase 189A: Visual QA تقویم بسته شد؛ نمودار هفتگی به هفته واقعی روز انتخاب‌شده اصلاح شد و تعطیلی/مرخصی را context می‌دهد، Header موبایل لوگو دارد، Modal رویداد Header/Footer ثابت و Body اسکرولی شد، Quick Delete/Toast/CTA اتصال/Quick Create و alignment Settings Google اضافه شد.

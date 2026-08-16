@@ -30,8 +30,8 @@ type GoogleCalendarListResponse = {
   nextPageToken?: string;
 };
 
-type GoogleEventDate = { date?: string; dateTime?: string; timeZone?: string };
-type GoogleEventItem = {
+export type GoogleEventDate = { date?: string; dateTime?: string; timeZone?: string };
+export type GoogleEventItem = {
   id?: string;
   summary?: string;
   description?: string;
@@ -40,6 +40,11 @@ type GoogleEventItem = {
   eventType?: string;
   htmlLink?: string;
   recurringEventId?: string;
+  originalStartTime?: GoogleEventDate;
+  iCalUID?: string;
+  etag?: string;
+  updated?: string;
+  recurrence?: string[];
   start?: GoogleEventDate;
   end?: GoogleEventDate;
 };
@@ -112,6 +117,10 @@ export function normalizeGoogleEvent(
     description: item.description,
     location: item.location,
     recurringEventId: item.recurringEventId,
+    originalStart: item.originalStartTime?.dateTime ?? item.originalStartTime?.date,
+    iCalUid: item.iCalUID,
+    etag: item.etag,
+    updatedAt: item.updated,
     editable: calendar.writable && eventType === "default",
   };
 }
@@ -209,7 +218,7 @@ function repeatRule(repeat: ExternalCalendarEventDraft["repeat"]) {
   return undefined;
 }
 
-function buildGoogleEventBody(draft: ExternalCalendarEventDraft, timeZone: string) {
+export function buildGoogleEventBody(draft: ExternalCalendarEventDraft, timeZone: string) {
   const summary = draft.title.trim();
   const description = draft.description.trim();
   const location = draft.location.trim();
@@ -257,13 +266,14 @@ export async function updateGoogleCalendarEvent(
   draft: ExternalCalendarEventDraft,
   timeZone: string,
   fetcher: typeof fetch = fetch,
+  ifMatch?: string,
 ) {
   const params = new URLSearchParams({ sendUpdates: draft.notifyAttendees ? "all" : "none" });
   return fetchJson<GoogleEventItem>(
     `${GOOGLE_CALENDAR_API_ROOT}/calendars/${encodeURIComponent(calendarId)}/events/${encodeURIComponent(eventId)}?${params}`,
     accessToken,
     fetcher,
-    { method: "PATCH", body: JSON.stringify(buildGoogleEventBody({ ...draft, repeat: "none" }, timeZone)) },
+    { method: "PATCH", body: JSON.stringify(buildGoogleEventBody({ ...draft, repeat: "none" }, timeZone)), headers: ifMatch ? { "If-Match": ifMatch } : undefined },
   );
 }
 
@@ -273,12 +283,26 @@ export async function deleteGoogleCalendarEvent(
   eventId: string,
   notifyAttendees = true,
   fetcher: typeof fetch = fetch,
+  ifMatch?: string,
 ) {
   const params = new URLSearchParams({ sendUpdates: notifyAttendees ? "all" : "none" });
   await fetchJson<void>(
     `${GOOGLE_CALENDAR_API_ROOT}/calendars/${encodeURIComponent(calendarId)}/events/${encodeURIComponent(eventId)}?${params}`,
     accessToken,
     fetcher,
-    { method: "DELETE" },
+    { method: "DELETE", headers: ifMatch ? { "If-Match": ifMatch } : undefined },
+  );
+}
+
+export async function fetchGoogleCalendarEvent(
+  accessToken: string,
+  calendarId: string,
+  eventId: string,
+  fetcher: typeof fetch = fetch,
+) {
+  return fetchJson<GoogleEventItem>(
+    `${GOOGLE_CALENDAR_API_ROOT}/calendars/${encodeURIComponent(calendarId)}/events/${encodeURIComponent(eventId)}`,
+    accessToken,
+    fetcher,
   );
 }

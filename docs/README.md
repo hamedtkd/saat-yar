@@ -165,6 +165,7 @@
 - [Phase 189A: Calendar UX Polish & Weekly Accuracy](./phases/PHASE_189A_NOTES_FA.md)
 - [Phase 189B: Settings IA + Calendar Day Quick Actions](./phases/PHASE_189B_NOTES_FA.md)
 - [Phase 189C: Payroll Rate Basis & Standard Monthly Hours](./phases/PHASE_189C_NOTES_FA.md)
+- [Phase 190: Calendar Intelligence](./phases/PHASE_190_NOTES_FA.md)
 - [قرارداد Privacy-safe Analytics](./product-analytics/PRIVACY_SAFE_ANALYTICS_FA.md)
 
 - `releases/NEXT_RELEASE_FEATURES_FA.md`: فهرست تجمیعی قابلیت‌های نسخه بعدی برای Release Notes و LinkedIn.

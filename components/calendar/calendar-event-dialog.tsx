@@ -11,8 +11,9 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { createExternalCalendarDraft, draftFromExternalCalendarEvent, validateExternalCalendarDraft } from "@/lib/calendar-integration/draft";
-import type { ExternalCalendarEvent, ExternalCalendarEventDraft, ExternalCalendarEventRepeat, ExternalCalendarSource } from "@/lib/calendar-integration/types";
+import type { ExternalCalendarEditScope, ExternalCalendarEvent, ExternalCalendarEventDraft, ExternalCalendarEventRepeat, ExternalCalendarSource } from "@/lib/calendar-integration/types";
 import { CalendarEventDeleteDialog } from "./calendar-event-delete-dialog";
+import { CalendarRecurringEditScope } from "./calendar-recurring-edit-scope";
 
 export function CalendarEventDialog(props: {
   open: boolean;
@@ -23,7 +24,7 @@ export function CalendarEventDialog(props: {
   event?: ExternalCalendarEvent;
   busy: boolean;
   onCreate: (draft: ExternalCalendarEventDraft) => Promise<void>;
-  onUpdate: (event: ExternalCalendarEvent, draft: ExternalCalendarEventDraft) => Promise<void>;
+  onUpdate: (event: ExternalCalendarEvent, draft: ExternalCalendarEventDraft, options?: { scope?: ExternalCalendarEditScope }) => Promise<void>;
   onDelete: (event: ExternalCalendarEvent, options: { series: boolean; notifyAttendees: boolean }) => Promise<void>;
 }) {
   const sessionKey = `${props.event?.calendarId ?? "new"}:${props.event?.id ?? props.dateKey}:${props.open ? "open" : "closed"}`;
@@ -37,7 +38,9 @@ function CalendarEventDialogSession({ open, onOpenChange, dateKey, defaultCalend
   const [error, setError] = useState<ReturnType<typeof validateExternalCalendarDraft>>(null);
   const [operationFailed, setOperationFailed] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [editScope, setEditScope] = useState<ExternalCalendarEditScope>("occurrence");
   const editing = Boolean(event);
+  const seriesEditing = Boolean(event?.recurringEventId && editScope === "series");
   const writableCalendars = calendars.filter((calendar) => calendar.writable);
   const update = <K extends keyof ExternalCalendarEventDraft>(key: K, value: ExternalCalendarEventDraft[K]) => setDraft((current) => ({ ...current, [key]: value }));
 
@@ -47,7 +50,7 @@ function CalendarEventDialogSession({ open, onOpenChange, dateKey, defaultCalend
     setOperationFailed(false);
     if (nextError) return;
     try {
-      if (event) await onUpdate(event, draft);
+      if (event) await onUpdate(event, draft, { scope: editScope });
       else await onCreate(draft);
       onOpenChange(false);
     } catch {
@@ -68,13 +71,14 @@ function CalendarEventDialogSession({ open, onOpenChange, dateKey, defaultCalend
             <div className="grid gap-4">
               <label className="grid gap-1.5 text-[10px] font-bold text-[var(--text-muted)]"><span>{t("calendar.google.eventTitle")}</span><Input autoFocus maxLength={140} value={draft.title} onChange={(input) => { update("title", input.target.value); setError(null); }} placeholder={t("calendar.google.eventTitlePlaceholder")} />{error === "title" && <span className="text-[9px] text-[var(--danger)]">{t("calendar.google.validation.title")}</span>}</label>
 
+              {editing && event?.recurringEventId ? <CalendarRecurringEditScope value={editScope} onChange={setEditScope} /> : null}
+
               <label className="grid gap-1.5 text-[10px] font-bold text-[var(--text-muted)]"><span>{t("calendar.google.calendar")}</span><Select value={draft.calendarId} disabled={editing} onValueChange={(calendarId) => update("calendarId", calendarId)}><SelectTrigger><SelectValue placeholder={t("calendar.google.calendarPlaceholder")} /></SelectTrigger><SelectContent>{writableCalendars.map((calendar) => <SelectItem key={calendar.id} value={calendar.id}>{calendar.name}{calendar.primary ? ` · ${t("calendar.google.primary")}` : ""}</SelectItem>)}</SelectContent></Select>{error === "calendar" && <span className="text-[9px] text-[var(--danger)]">{t("calendar.google.validation.calendar")}</span>}</label>
 
-              <label className="!flex cursor-pointer items-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5"><Checkbox checked={draft.allDay} onCheckedChange={(allDay) => update("allDay", allDay)} /><span className="text-[10px] font-bold text-[var(--text)]">{t("calendar.google.allDay")}</span></label>
+              <label className="!flex cursor-pointer items-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5"><Checkbox checked={draft.allDay} disabled={seriesEditing} onCheckedChange={(allDay) => update("allDay", allDay)} /><span className="text-[10px] font-bold text-[var(--text)]">{t("calendar.google.allDay")}</span></label>
 
               <div className="grid gap-3 sm:grid-cols-2">
-                <label className="grid gap-1.5 text-[10px] font-bold text-[var(--text-muted)]"><span>{t("calendar.google.startDate")}</span><JalaliDatePicker value={draft.startDateKey} onChange={(startDateKey) => { update("startDateKey", startDateKey); if (draft.endDateKey < startDateKey) update("endDateKey", startDateKey); setError(null); }} /></label>
-                <label className="grid gap-1.5 text-[10px] font-bold text-[var(--text-muted)]"><span>{t("calendar.google.endDate")}</span><JalaliDatePicker value={draft.endDateKey} onChange={(endDateKey) => { update("endDateKey", endDateKey); setError(null); }} /></label>
+                {!seriesEditing && <><label className="grid gap-1.5 text-[10px] font-bold text-[var(--text-muted)]"><span>{t("calendar.google.startDate")}</span><JalaliDatePicker value={draft.startDateKey} onChange={(startDateKey) => { update("startDateKey", startDateKey); if (draft.endDateKey < startDateKey) update("endDateKey", startDateKey); setError(null); }} /></label><label className="grid gap-1.5 text-[10px] font-bold text-[var(--text-muted)]"><span>{t("calendar.google.endDate")}</span><JalaliDatePicker value={draft.endDateKey} onChange={(endDateKey) => { update("endDateKey", endDateKey); setError(null); }} /></label></>}
                 {!draft.allDay && <><label className="grid gap-1.5 text-[10px] font-bold text-[var(--text-muted)]"><span>{t("common.start")}</span><TimePicker value={draft.startTime} onChange={(startTime) => { update("startTime", startTime); setError(null); }} /></label><label className="grid gap-1.5 text-[10px] font-bold text-[var(--text-muted)]"><span>{t("common.end")}</span><TimePicker value={draft.endTime} onChange={(endTime) => { update("endTime", endTime); setError(null); }} /></label></>}
               </div>
               {(error === "date" || error === "time") && <p className="-mt-2 text-[9px] text-[var(--danger)]">{t(`calendar.google.validation.${error}`)}</p>}

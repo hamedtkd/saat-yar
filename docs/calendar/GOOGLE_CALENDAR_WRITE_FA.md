@@ -56,3 +56,15 @@ Google Calendar یک لایه اختیاری روی Calendar خود ساعت‌�
 - Desktop header قابل کلیک و `aria-sort` دارد.
 - ستون تاریخ هنگام Horizontal scroll sticky می‌ماند.
 - Mobile یک Sort picker مستقل دارد و همان ترتیب Desktop را استفاده می‌کند.
+
+
+## افزونه Phase 190 — Sync و Intelligence
+
+قرارداد پایه Phase 188 حفظ شده، اما Phase 190 دو بخش را ارتقا می‌دهد:
+
+- **Event metadata cache:** برای Incremental Sync، metadata رویدادهای Google و `syncToken` هر Calendar در IndexedDB جداگانه `saatyar-calendar-cache` ذخیره می‌شود. این cache بخشی از AppData نیست، وارد Backup/Device Transfer نمی‌شود و Disconnect/Revoke آن را پاک می‌کند. Access Token همچنان فقط memory-only است.
+- **Event → Activity:** کاربر می‌تواند یک Event timed تک‌روزه را به‌صورت صریح به Activity Segment تبدیل کند. این تبدیل Clock-in/Clock-out ایجاد نمی‌کند و روی worked time، Payroll یا Attendance اثر ندارد.
+
+Phase 190 برای Edit/Delete از `etag` و `If-Match` استفاده می‌کند؛ تغییر stale با Conflict متوقف و آخرین Event دوباره Sync می‌شود. Agenda نیز duplicate occurrenceها را collapse می‌کند، overlap رویدادهای timed را نشان می‌دهد و Day/Week planning دارد.
+
+Recurring edit اکنون Scope «همین occurrence» و «کل series» دارد. ویرایش whole-series الگوی recurrence را بازنویسی نمی‌کند؛ حالت «این رخداد و رخدادهای بعدی» نیازمند split سری است و در این فاز عمداً انجام نمی‌شود.

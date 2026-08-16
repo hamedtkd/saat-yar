@@ -15,10 +15,11 @@
 - Phase 189A — Calendar UX Polish & Weekly Accuracy: نمودار هفتگی واقعیِ همان هفته، Holiday/Leave context، لوگوی موبایل، Modal با Header/Footer ثابت، Toast CRUD، Quick Delete، CTA اتصال و Quick Create نزدیک جدول.
 - Phase 189B — Settings IA + Calendar Day Quick Actions: Settings چندصفحه‌ای، Search/Deep-link route-aware، Context Menu هر روز در Month، Event CRUD سریع و Holiday/Workday override از خود تقویم.
 - Phase 189C — Payroll Rate Basis & Standard Monthly Hours: اصلاح نرخ غیرواقعی اضافه‌کاری روش ماهانه، مبنای استاندارد ماه با پیش‌فرض ۲۲۰ ساعت قابل تنظیم، حالت اختیاری ساعات موظفی بازه و Live Preview نرخ ساعتی.
+- Phase 190 — Calendar Intelligence: Full/Incremental Sync با syncToken و fallback 410، ETag conflict protection، duplicate/overlap intelligence، Day/Week planner، Event → Activity صریح و recurring occurrence/series editing ایمن.
 
 ## فازهای ثبت‌شده بعدی
 
-- Phase 190 — Calendar Intelligence: incremental sync، conflict handling، Event → Activity اختیاری و Week/Agenda planning پیشرفته.
+- پس از بسته‌شدن Phase 190، فاز بعدی هنوز در این سند قفل نشده است.
 
 ## پیام‌های مهم برای معرفی نسخه
 

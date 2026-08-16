@@ -104,7 +104,7 @@ export function TodayPage(props: TodayPageProps) {
         scheduledDayOff={scheduledDayOff}
         flexible={props.data.settings.workTimingMode === "flexible"}
       />
-      <CalendarAgendaCard dateKey={props.selectedDate} />
+      <CalendarAgendaCard dateKey={props.selectedDate} data={props.data} setData={props.setData} setToast={props.setToast} />
       <CompletedDayEditor key={`${props.selectedDate}:${props.record.start && props.record.end ? "completed" : "active"}`} {...props} scheduledDayOff={scheduledDayOff} />
       <ActivitySegmentsCard record={props.record} projects={props.data.projects} activeSegment={props.activeActivitySegment} activeBreak={props.activeBreak} lunchRunning={props.lunchRunning} trackingAllowed={isToday} onStart={props.startActivitySegment} onStop={props.stopActivitySegment} />
       {props.editingEntry === "manual" && props.data.settings.mode !== "employee" && <ManualEntryForm {...props} />}

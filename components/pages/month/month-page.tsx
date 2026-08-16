@@ -25,6 +25,7 @@ import { MonthDayDetails } from "./month-day-details";
 import { MonthDayQuickMenu, type MonthDayMenuAnchor } from "./month-day-quick-menu";
 import { MonthTable } from "./month-table";
 import { WeeklyChart } from "./weekly-chart";
+import { getSelectedWeekDateKeys } from "./weekly-chart/week-range";
 
 export function MonthPage({ data, setData, setToast, selectedDate, setSelectedDate, monthRecords, monthStats }: {
   data: AppData;
@@ -38,6 +39,7 @@ export function MonthPage({ data, setData, setToast, selectedDate, setSelectedDa
   const { t, duration, date, number, calendar } = useLocaleUi();
   const [dayMenu, setDayMenu] = useState<MonthDayMenuAnchor | null>(null);
   const monthCells = calendarMonthCells(selectedDate, calendar);
+  const selectedWeekDateKeys = getSelectedWeekDateKeys(selectedDate);
   const calendarRange = useCalendarRange({
     startDateKey: monthCells[0]?.key ?? selectedDate,
     endDateKeyExclusive: shiftDateKey(monthCells[monthCells.length - 1]?.key ?? selectedDate, 1),
@@ -73,7 +75,7 @@ export function MonthPage({ data, setData, setToast, selectedDate, setSelectedDa
         <MonthCalendar data={data} selectedDate={selectedDate} setSelectedDate={setSelectedDate} monthRecordCount={monthRecords.length} moveMonth={(amount) => setSelectedDate(shiftCalendarMonth(selectedDate, amount, calendar))} externalEvents={calendarRange.events} onOpenDayActions={(dateKey, point) => setDayMenu({ dateKey, ...point })} />
         <WeeklyChart data={data} selectedDate={selectedDate} />
       </div>
-      {calendarRange.state === "connected" ? <CalendarAgendaSurface dateKey={selectedDate} events={calendarRange.events} loading={calendarRange.loadingEvents} compact /> : null}
+      {calendarRange.state === "connected" ? <CalendarAgendaSurface dateKey={selectedDate} events={calendarRange.events} loading={calendarRange.loadingEvents} compact data={data} setData={setData} setToast={setToast} weekDateKeys={selectedWeekDateKeys} onSelectDate={setSelectedDate} /> : null}
     </section>
 
     <section className="mb-5" data-month-intelligence-section>

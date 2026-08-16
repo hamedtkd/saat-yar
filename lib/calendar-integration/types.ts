@@ -14,6 +14,7 @@ export type ExternalCalendarErrorCode =
   | "permission"
   | "network"
   | "authorization"
+  | "conflict"
   | "api";
 
 export type ExternalCalendarSource = {
@@ -45,6 +46,10 @@ export type ExternalCalendarEvent = {
   description?: string;
   location?: string;
   recurringEventId?: string;
+  originalStart?: string;
+  iCalUid?: string;
+  etag?: string;
+  updatedAt?: string;
   editable: boolean;
 };
 
@@ -60,6 +65,8 @@ export type ExternalCalendarRange = {
 };
 
 export type ExternalCalendarEventRepeat = "none" | "daily" | "weekly" | "monthly";
+export type ExternalCalendarEditScope = "occurrence" | "series";
+export type ExternalCalendarSyncMode = "full" | "incremental";
 
 export type ExternalCalendarEventDraft = {
   calendarId: string;
