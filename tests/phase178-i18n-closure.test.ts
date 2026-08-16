@@ -171,5 +171,5 @@ test("Phase 178 is wired as final i18n closure without schema dependency or pack
   assert.match(notes, /Dependency جدید: ندارد/);
   assert.match(backlog, /\[x\] فاز ۱۷۸:/);
   assert.match(docs, /PHASE_178_NOTES_FA\.md/);
-  assert.match(schema, /APP_DATA_SCHEMA_VERSION = 19/);
+  assert.match(schema, /APP_DATA_SCHEMA_VERSION = \d+ as const/);
 });

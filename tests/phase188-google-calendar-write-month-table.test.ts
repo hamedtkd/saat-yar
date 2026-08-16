@@ -146,5 +146,5 @@ test("Phase 188 is documented dependency-neutral and registers Settings IA plus 
   assert.match(roadmap, /فاز ۱۸۹(?:B)?: Settings Information Architecture/);
   assert.match(roadmap, /فاز ۱۹۰: Calendar Intelligence/);
   assert.match(releaseFeatures, /LinkedIn/);
-  assert.equal(APP_DATA_SCHEMA_VERSION, 19);
+  assert.ok(APP_DATA_SCHEMA_VERSION >= 19);
 });

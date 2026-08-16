@@ -32,6 +32,7 @@ test("legacy payroll policy preserves the released monthly calculation", () => {
 
 test("fixed monthly policy can keep the base salary independent from attendance", () => {
   const policy = createPayrollPreset("monthly-fixed", 30_000_000);
+  policy.rateBasis = "period-target";
   const result = calculatePayrollWithPolicy(policy, facts);
 
   assert.equal(result.regularPay, 30_000_000);

@@ -39,6 +39,8 @@ const payrollPolicySchema = z.object({
   baseMode: z.enum(["monthly-prorated", "monthly-fixed", "hourly", "daily"]),
   baseAmount: z.number().nonnegative(),
   standardDayMinutes: z.number().int().positive(),
+  rateBasis: z.enum(["standard-month", "period-target"]),
+  standardMonthMinutes: z.number().int().positive(),
   overtime: payrollRateRuleSchema,
   holiday: payrollRateRuleSchema,
   deficit: z.object({ mode: z.enum(["deduct", "ignore"]), multiplier: z.number().nonnegative() }).passthrough(),

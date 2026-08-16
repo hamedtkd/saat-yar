@@ -929,6 +929,12 @@ export async function runProductionBrowserSmoke() {
     await waitFor(client, `Boolean(document.querySelector('[data-product-analytics-settings]')) && Boolean(document.querySelector('[data-analytics-opt-in]')) && Boolean(document.querySelector('[data-analytics-opt-out]')) && document.querySelector('#settings-analytics')?.textContent.includes("Privacy-safe product analytics")`, "English privacy-safe analytics settings");
     console.log("✓ Privacy-safe analytics exposes explicit opt-in/opt-out without including work content in Settings");
 
+    const englishPayrollLoad = waitForEvent(client, "Page.loadEventFired", "English Settings payroll route");
+    await client.call("Page.navigate", { url: `${origin}/settings/payroll/` });
+    await englishPayrollLoad;
+    await waitFor(client, `document.documentElement.dir === "ltr" && Boolean(document.querySelector('[data-payroll-rate-basis]')) && document.querySelector('[data-payroll-rate-basis]')?.textContent.includes("Hourly rate basis") && document.querySelector('[data-payroll-rate-basis]')?.textContent.includes("Standard month (recommended)") && document.querySelector('[data-payroll-rate-preview]')?.textContent.includes("Base hourly rate") && document.querySelector('[data-payroll-rate-preview]')?.textContent.includes("Overtime hourly rate")`, "English standard-month payroll rate basis");
+    console.log("✓ Payroll settings default monthly hourly rates to a configurable standard-month basis");
+
     const englishIntegrationsLoad = waitForEvent(client, "Page.loadEventFired", "English Settings integrations route");
     await client.call("Page.navigate", { url: `${origin}/settings/integrations/` });
     await englishIntegrationsLoad;

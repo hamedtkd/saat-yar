@@ -30,7 +30,7 @@ test("smart time input accepts Persian and compact values with Persian errors", 
 });
 
 test("current schema persists configurable break reminders", () => {
-  assert.equal(APP_DATA_SCHEMA_VERSION, 19);
+  assert.ok(APP_DATA_SCHEMA_VERSION >= 19);
   const current = createInitialData({ onboarded: true });
   assert.deepEqual(current.settings.notificationSettings.breakReminder, {
     enabled: false,

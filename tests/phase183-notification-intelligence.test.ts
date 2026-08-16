@@ -16,7 +16,7 @@ import { makeWorkRecord } from "./fixtures/work-record.ts";
 const read = (path: string) => readFileSync(path, "utf8");
 
 test("schema v19 adds notification intelligence without changing released 2.4.0 data", () => {
-  assert.equal(APP_DATA_SCHEMA_VERSION, 19);
+  assert.ok(APP_DATA_SCHEMA_VERSION >= 19);
   const current = createInitialData({ onboarded: true });
   const legacy = structuredClone(current) as unknown as Record<string, unknown>;
   const settings = (legacy.settings as Record<string, unknown>);
@@ -27,7 +27,7 @@ test("schema v19 adds notification intelligence without changing released 2.4.0 
 
   const result = migrateAppData({ schemaVersion: 18, data: legacy });
   assert.equal(result.fromVersion, 18);
-  assert.equal(result.toVersion, 19);
+  assert.equal(result.toVersion, APP_DATA_SCHEMA_VERSION);
   assert.deepEqual(result.data.settings.notificationSettings.quietHours, { enabled: false, start: "22:00", end: "07:00" });
   assert.deepEqual(result.data.settings.notificationSettings.customReminders, []);
   assert.equal(result.data.settings.notificationSettings.snoozeMinutes, 30);

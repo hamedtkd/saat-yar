@@ -37,7 +37,7 @@ test("calendar preferences store only selected source ids outside AppData", () =
   assert.deepEqual(readExternalCalendarPreferences(storage).selectedCalendarIds, ["a", "b"]);
   const serialized = memory.get(EXTERNAL_CALENDAR_PREFERENCES_KEY) ?? "";
   assert.doesNotMatch(serialized, /access[_-]?token|refresh[_-]?token|event|summary|description/i);
-  assert.equal(APP_DATA_SCHEMA_VERSION, 19);
+  assert.ok(APP_DATA_SCHEMA_VERSION >= 19);
 });
 
 test("Google events normalize into provider-neutral read-only meeting and activity context", () => {
@@ -153,5 +153,5 @@ test("Phase 187 is documented browser-covered dependency-neutral and keeps schem
   assert.match(roadmap, /\[x\] فاز ۱۸۷: Google Calendar Architecture \+ Read Integration/);
   assert.match(smoke, /data-google-calendar-settings/);
   assert.match(smoke, /Google Calendar .*integration stays opt-in/);
-  assert.equal(APP_DATA_SCHEMA_VERSION, 19);
+  assert.ok(APP_DATA_SCHEMA_VERSION >= 19);
 });

@@ -13,7 +13,7 @@ import { APP_DATA_SCHEMA_VERSION } from "../lib/data/version.ts";
 const read = (path: string) => readFileSync(path, "utf8");
 
 test("analytics consent stays browser-local and does not expand AppData or schema v19", () => {
-  assert.equal(APP_DATA_SCHEMA_VERSION, 19);
+  assert.ok(APP_DATA_SCHEMA_VERSION >= 19);
   assert.equal(ANALYTICS_CONSENT_STORAGE_KEY, "saatyar-product-analytics-consent-v1");
   const types = read("lib/types.ts");
   assert.doesNotMatch(types, /analyticsConsent|productAnalyticsConsent/);

@@ -3,7 +3,7 @@ import type { AppData } from "../types.ts";
 import { normaliseData } from "./normalise.ts";
 import { APP_DATA_SCHEMA_VERSION } from "./version.ts";
 import { createDefaultWeeklySchedule, getConfiguredWorkMinutes, weekdayOrder } from "../work-schedule.ts";
-import { createLegacyPayrollPolicy } from "../payroll-policy.ts";
+import { DEFAULT_STANDARD_MONTH_MINUTES, createLegacyPayrollPolicy } from "../payroll-policy.ts";
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -337,6 +337,27 @@ function migrateV18ToV19(value: unknown): unknown {
   };
 }
 
+function migrateV19ToV20(value: unknown): unknown {
+  if (!isObject(value)) return value;
+  const settings = isObject(value.settings) ? value.settings : {};
+  const salary = typeof settings.salary === "number" ? settings.salary : defaultSettings.salary;
+  const overtimeMultiplier = typeof settings.overtimeMultiplier === "number" ? settings.overtimeMultiplier : defaultSettings.overtimeMultiplier;
+  const holidayMultiplier = typeof settings.holidayMultiplier === "number" ? settings.holidayMultiplier : defaultSettings.holidayMultiplier;
+  const fallback = createLegacyPayrollPolicy({ monthlySalary: salary, overtimeMultiplier, holidayMultiplier });
+  const payrollPolicy = isObject(settings.payrollPolicy) ? settings.payrollPolicy : fallback;
+  return {
+    ...value,
+    settings: {
+      ...settings,
+      payrollPolicy: {
+        ...payrollPolicy,
+        rateBasis: "standard-month",
+        standardMonthMinutes: DEFAULT_STANDARD_MONTH_MINUTES,
+      },
+    },
+  };
+}
+
 const migrations: Record<number, (value: unknown) => unknown> = {
   1: migrateV1ToV2,
   2: migrateV2ToV3,
@@ -356,6 +377,7 @@ const migrations: Record<number, (value: unknown) => unknown> = {
   16: migrateV16ToV17,
   17: migrateV17ToV18,
   18: migrateV18ToV19,
+  19: migrateV19ToV20,
 };
 
 export function migrateAppData(value: unknown): MigrationResult {

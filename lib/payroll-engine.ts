@@ -1,6 +1,10 @@
 import type { PayrollCalculationPolicy, PayrollFacts, PayrollRateRule } from "./payroll-policy.ts";
 import { normalizePayrollPolicy, roundPayrollAmount } from "./payroll-policy.ts";
 
+export type PayrollRateContext = {
+  baseAmount?: number;
+};
+
 function positive(value: number) {
   return Number.isFinite(value) ? Math.max(0, value) : 0;
 }
@@ -9,10 +13,16 @@ function activeComponents(facts: PayrollFacts) {
   return facts.components.filter((item) => item.enabled !== false);
 }
 
-function getBaseMinuteRate(policy: PayrollCalculationPolicy, facts: PayrollFacts) {
-  if (policy.baseMode === "hourly") return policy.baseAmount / 60;
-  if (policy.baseMode === "daily") return policy.baseAmount / policy.standardDayMinutes;
-  return policy.baseAmount / Math.max(1, positive(facts.targetMinutes));
+export function getPayrollBaseMinuteRate(
+  policy: PayrollCalculationPolicy,
+  facts: Pick<PayrollFacts, "targetMinutes">,
+  rateContext: PayrollRateContext = {},
+) {
+  const baseAmount = positive(rateContext.baseAmount ?? policy.baseAmount);
+  if (policy.baseMode === "hourly") return baseAmount / 60;
+  if (policy.baseMode === "daily") return baseAmount / policy.standardDayMinutes;
+  if (policy.rateBasis === "standard-month") return baseAmount / Math.max(1, positive(policy.standardMonthMinutes));
+  return baseAmount / Math.max(1, positive(facts.targetMinutes));
 }
 
 function calculateBasePay(policy: PayrollCalculationPolicy, facts: PayrollFacts) {
@@ -31,7 +41,11 @@ function calculatePremium(minutes: number, rule: PayrollRateRule, baseMinuteRate
   return safeMinutes * baseMinuteRate * positive(rule.multiplier);
 }
 
-export function calculatePayrollWithPolicy(rawPolicy: PayrollCalculationPolicy, rawFacts: PayrollFacts) {
+export function calculatePayrollWithPolicy(
+  rawPolicy: PayrollCalculationPolicy,
+  rawFacts: PayrollFacts,
+  rateContext: PayrollRateContext = {},
+) {
   const policy = normalizePayrollPolicy(rawPolicy);
   const facts = {
     ...rawFacts,
@@ -42,7 +56,7 @@ export function calculatePayrollWithPolicy(rawPolicy: PayrollCalculationPolicy, 
     holidayMinutes: positive(rawFacts.holidayMinutes),
   };
   const round = (value: number) => roundPayrollAmount(value, policy.rounding);
-  const baseMinuteRate = getBaseMinuteRate(policy, facts);
+  const baseMinuteRate = getPayrollBaseMinuteRate(policy, facts, rateContext);
   const regularPay = round(calculateBasePay(policy, facts));
   const overtimePay = round(calculatePremium(facts.overtimeMinutes, policy.overtime, baseMinuteRate));
   const holidayPay = round(calculatePremium(facts.holidayMinutes, policy.holiday, baseMinuteRate));

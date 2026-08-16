@@ -158,7 +158,7 @@ test("Phase 175 is documented and wired without schema dependency or release-ver
   assert.match(notes, /Dependency جدید: ندارد/);
   assert.match(backlog, /\[x\] فاز ۱۷۵:/);
   assert.match(docs, /PHASE_175_NOTES_FA\.md/);
-  assert.match(schema, /APP_DATA_SCHEMA_VERSION = 19/);
+  assert.match(schema, /APP_DATA_SCHEMA_VERSION = \d+ as const/);
 });
 
 test("employee break smoke uses structural hooks instead of localized paid-checkbox copy", async () => {

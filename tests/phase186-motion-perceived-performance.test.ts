@@ -44,7 +44,7 @@ test("Saatyar shell owns branded loading and one route-motion boundary without c
   assert.match(read("tests/phase100-brand-metadata-pwa.test.ts"), /components\/motion\/app-loading-state\.tsx/);
   assert.match(shell, /<RouteMotionBoundary pathname=\{pathname\}>\{children\}<\/RouteMotionBoundary>/);
   assert.doesNotMatch(shell, /motion\.div|AnimatePresence/);
-  assert.equal(APP_DATA_SCHEMA_VERSION, 19);
+  assert.ok(APP_DATA_SCHEMA_VERSION >= 19);
 });
 
 test("loading motion is intentionally limited to one progress sweep and existing brand breathing", () => {
@@ -88,7 +88,7 @@ test("Phase 186 is documented, browser-covered, dependency-neutral, and keeps sc
   const lock = JSON.parse(read("package-lock.json")) as { packages: Record<string, { dependencies?: Record<string, string> }> };
   const rootDependencyOrder = Object.keys(lock.packages[""]?.dependencies ?? {});
   assert.deepEqual(rootDependencyOrder.slice(-2), ["vazirmatn", "zod"]);
-  assert.equal(APP_DATA_SCHEMA_VERSION, 19);
+  assert.ok(APP_DATA_SCHEMA_VERSION >= 19);
 });
 
 test("loading skeletons follow the active Today or Month route instead of showing one generic dashboard", () => {

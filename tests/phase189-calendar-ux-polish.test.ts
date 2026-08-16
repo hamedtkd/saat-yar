@@ -91,5 +91,5 @@ test("Phase 189A stays dependency and schema neutral while handing off Settings 
   assert.match(roadmap, /فاز ۱۸۹(?:B)?: Settings Information Architecture/);
   assert.match(notes, /Schema v19/);
   assert.match(releaseFeatures, /Phase 189A/);
-  assert.equal(APP_DATA_SCHEMA_VERSION, 19);
+  assert.ok(APP_DATA_SCHEMA_VERSION >= 19);
 });
