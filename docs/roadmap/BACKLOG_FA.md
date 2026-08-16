@@ -311,8 +311,11 @@
 - [x] فاز ۱۸۴: Product Analytics privacy-safe؛ Event taxonomy تایپ‌شده، Consent/Opt-out محلی خارج از AppData، Plausible adapter اختیاری بدون Auto-tracking و ممنوعیت ارسال حقوق، درآمد، نام/عنوان، یادداشت، تاریخ/ساعت دقیق، ID یا Free-text.
 - [x] فاز ۱۸۵: GitHub-style Activity Graph & Month Intelligence؛ Heatmap کارکرد واقعی با Persian/Gregorian، Tooltip portal-safe و keyboard accessibility، Recent 7 Days، streak، قوی‌ترین روز و توزیع deficit/overtime؛ همه داده‌ها Derived و بدون Schema bump روی v19 باقی ماندند.
 - [x] فاز ۱۸۶: Motion & Perceived Performance؛ Loading Skeletonهای Route-aware برای Today/Month، Route Motion محدود به opacity/transform، radial Theme Reveal از خود دکمه با fallback Reduced Motion، و alignment یکدست کارت‌های Month بدون Schema/Dependency جدید.
-- [ ] فاز ۱۸۷: Google Calendar Architecture + Read Integration؛ بررسی OAuth/امنیت Local-first، import فقط‌خواندنی با Preview و mapping event به activity/meeting.
-- [ ] فاز ۱۸۸: Google Calendar Write/Sync + Advanced Month؛ فقط در صورت تأیید معماری امن، export/sync انتخابی، conflict/duplicate handling و Month planning پیشرفته.
+- [x] فاز ۱۸۷: Google Calendar Architecture + Read Integration؛ OAuth فقط‌خواندنی با Token memory-only، انتخاب Calendar محلی، Preview و Context رویداد در Today/Month بدون تبدیل به WorkRecord.
+- [x] فاز ۱۸۸: Google Calendar Write + Unified Month UX؛ Scope حداقلی `calendar.events` + `calendar.calendarlist.readonly`، Create/Edit/Delete رویداد با Modal مشترک، حذف occurrence/series، Google به‌عنوان لایه اختیاری روی «ماه من» و sortable records table بدون تغییر Source of Truth کارکرد/تعطیلات.
+- [x] فاز ۱۸۹A: Calendar UX Polish؛ اصلاح دقت نمودار هفتگی و وضعیت تعطیلات، Header موبایل، Modal sticky، Toast CRUD، Quick Delete، CTA اتصال در Month، Quick Create کنار جدول و Alignment تنظیمات Google.
+- [x] فاز ۱۸۹B: Settings Information Architecture + Calendar Day Quick Actions؛ `/settings` به Overview و routeهای مستقل Profile/Appearance/Work/Payroll/Notifications/Integrations/Data/Sync/Privacy تقسیم شد و Context Menu روز در Month برای Event CRUD، Holiday/Workday override و دسترسی سریع اضافه شد؛ Search، Deep-link و Unsaved Draft Guard حفظ شدند.
+- [ ] فاز ۱۹۰: Calendar Intelligence؛ incremental sync token، conflict/duplicate handling، Event → Activity اختیاری، Week/Agenda planning و recurring-series editing پیشرفته بدون تبدیل خودکار Calendar به WorkRecord.
 - [ ] Technical debt پس از 2.4.0: کاهش Regex source tests و افزایش behavioral/component/browser contracts به‌صورت تدریجی.
 
 ## بین‌المللی‌سازی آینده — پس از Patch بعدی

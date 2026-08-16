@@ -21,7 +21,8 @@ export function MobileBottomNav({ mode, currentPath }: { mode: Mode; currentPath
   const primary = getMobilePrimaryNavItems(mode);
   const primaryHrefs = new Set(primary.map((item) => item.href));
   const overflow = visible.filter((item) => !primaryHrefs.has(item.href));
-  const overflowActive = normalizedPath === "/settings" || overflow.some((item) => item.href === normalizedPath);
+  const settingsActive = normalizedPath === "/settings" || normalizedPath.startsWith("/settings/");
+  const overflowActive = settingsActive || overflow.some((item) => item.href === normalizedPath);
 
   return (
     <>
@@ -65,10 +66,10 @@ export function MobileBottomNav({ mode, currentPath }: { mode: Mode; currentPath
               <GuardedLink
                 href="/settings"
                 onNavigate={() => setOpen(false)}
-                aria-current={normalizedPath === "/settings" ? "page" : undefined}
+                aria-current={settingsActive ? "page" : undefined}
                 className={cn(
                   "flex min-h-12 items-center gap-3 rounded-2xl bg-[var(--surface-2)] px-3 text-sm font-bold text-[var(--text)]",
-                  normalizedPath === "/settings" && "bg-[var(--accent-soft)] text-[var(--accent-strong)]",
+                  settingsActive && "bg-[var(--accent-soft)] text-[var(--accent-strong)]",
                 )}
               >
                 <Settings aria-hidden="true" className="size-5 text-[var(--accent-strong)]" />

@@ -1,0 +1,27 @@
+# فهرست قابلیت‌های نسخه بعدی ساعت‌یار — منبع Release/LinkedIn
+
+این سند برای جمع‌کردن قابلیت‌های پس از 2.4.0 است تا هنگام Release Notes، پست LinkedIn، README و معرفی محصول چیزی جا نماند.
+
+## تکمیل‌شده
+
+- Phase 181 — Onboarding & First-run UX: Fast Setup، Skip، Apply برنامه به روزهای فعال و CTA شروع واضح.
+- Phase 182 — Flexible Work Mode & Activity Segments: هدف مستقل، ساعت کاری منعطف، Segmentهای فعالیت و Breakdown گزارش.
+- Phase 183 — Notification Intelligence: Quiet Hours، Snooze و چند Reminder سفارشی بر اساس Active Work Time.
+- Phase 184 — Privacy-safe Product Analytics: Consent محلی، taxonomy امن و provider اختیاری بدون ارسال محتوای کاری.
+- Phase 185 — Activity Graph & Month Intelligence: Heatmap، streak، Recent 7 Days، overtime/deficit intelligence.
+- Phase 186 — Motion & Perceived Performance: route-aware skeleton، motion امن، reduced-motion و radial theme transition.
+- Phase 187 — Google Calendar Read Integration: OAuth browser token، انتخاب Calendar و نمایش رویداد در Today/Month.
+- Phase 188 — Google Calendar Write + Unified Month UX: Create/Edit/Delete Event، Modal مشترک، recurring delete، Google layer روی ماه من، Settings compact و sortable Month records table.
+- Phase 189A — Calendar UX Polish & Weekly Accuracy: نمودار هفتگی واقعیِ همان هفته، Holiday/Leave context، لوگوی موبایل، Modal با Header/Footer ثابت، Toast CRUD، Quick Delete، CTA اتصال و Quick Create نزدیک جدول.
+- Phase 189B — Settings IA + Calendar Day Quick Actions: Settings چندصفحه‌ای، Search/Deep-link route-aware، Context Menu هر روز در Month، Event CRUD سریع و Holiday/Workday override از خود تقویم.
+
+## فازهای ثبت‌شده بعدی
+
+- Phase 190 — Calendar Intelligence: incremental sync، conflict handling، Event → Activity اختیاری و Week/Agenda planning پیشرفته.
+
+## پیام‌های مهم برای معرفی نسخه
+
+- Local-first بودن داده‌های کاری حفظ شده است.
+- Google Calendar اختیاری است؛ کاربران بدون Google هیچ workflow اضافه‌ای نمی‌بینند.
+- Google Event به‌صورت خودکار کارکرد یا حقوق تولید نمی‌کند.
+- حریم خصوصی و least-privilege OAuth جزو قرارداد محصول است.

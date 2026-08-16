@@ -159,7 +159,12 @@ test("production browser smoke covers English Settings Import About and onboardi
   assert.match(smoke, /await switchWorkspaceMode\(client, "hybrid"\)/);
   assert.match(smoke, /await switchWorkspaceMode\(client, "employee"\)/);
   assert.match(smoke, /RouteGuard remains authoritative/);
-  assert.match(smoke, /English Settings deep system surface/);
+  assert.match(smoke, /English Settings profile surface/);
+  assert.match(smoke, /English Settings sync surface/);
+  assert.match(smoke, /English notification intelligence settings/);
+  assert.match(smoke, /English privacy-safe analytics settings/);
+  assert.match(smoke, /English Google Calendar opt-in settings/);
+  assert.match(smoke, /Settings is split into focused Profile, Sync, Notifications, Privacy, and Integrations routes/);
   assert.match(smoke, /#settings-onboarding/);
   assert.match(smoke, /#settings-device-transfer/);
   assert.match(smoke, /title: document\.title/);

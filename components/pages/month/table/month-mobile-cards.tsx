@@ -5,13 +5,13 @@ import { useLocaleUi } from "@/components/i18n/use-locale-ui";
 import { Button } from "@/components/ui/button";
 import { MonthBalanceBadge } from "./month-balance-badge";
 import { toMonthRecordView } from "./month-table-utils";
-import type { MonthTableProps } from "./types";
+import type { SortedMonthTableProps } from "./types";
 
 function Stat({ label, value, dir }: { label: string; value: string; dir?: "ltr" }) {
-  return <div className="rounded-xl bg-[var(--surface-1)] px-3 py-2.5"><span className="block text-[9px] text-[var(--text-muted)]">{label}</span><strong dir={dir} className="mt-1 block text-sm font-extrabold text-[var(--text)]">{value}</strong></div>;
+  return <div className="rounded-xl bg-[var(--surface-1)] px-3 py-2.5"><span className="block text-[9px] text-[var(--text-muted)]">{label}</span><strong dir={dir} className="mt-1 block text-sm font-extrabold tabular-nums text-[var(--text)]">{value}</strong></div>;
 }
 
-export function MonthMobileCards({ records, settings, onEdit }: MonthTableProps) {
+export function MonthMobileCards({ records, settings, onEdit }: SortedMonthTableProps) {
   const { t, date, digits, duration } = useLocaleUi();
   return (
     <div className="grid gap-3 p-4 md:hidden">

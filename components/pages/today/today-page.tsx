@@ -5,6 +5,7 @@ import { useLocaleUi } from "@/components/i18n/use-locale-ui";
 import { useUnsavedNavigation } from "@/components/layout/navigation/unsaved-navigation-provider";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { CalendarAgendaCard } from "@/components/calendar/calendar-agenda-card";
 import { cn } from "@/lib/cn";
 import { localDateKey } from "@/lib/format";
 import { getHolidayInfo } from "@/lib/holidays";
@@ -103,6 +104,7 @@ export function TodayPage(props: TodayPageProps) {
         scheduledDayOff={scheduledDayOff}
         flexible={props.data.settings.workTimingMode === "flexible"}
       />
+      <CalendarAgendaCard dateKey={props.selectedDate} />
       <CompletedDayEditor key={`${props.selectedDate}:${props.record.start && props.record.end ? "completed" : "active"}`} {...props} scheduledDayOff={scheduledDayOff} />
       <ActivitySegmentsCard record={props.record} projects={props.data.projects} activeSegment={props.activeActivitySegment} activeBreak={props.activeBreak} lunchRunning={props.lunchRunning} trackingAllowed={isToday} onStart={props.startActivitySegment} onStop={props.stopActivitySegment} />
       {props.editingEntry === "manual" && props.data.settings.mode !== "employee" && <ManualEntryForm {...props} />}

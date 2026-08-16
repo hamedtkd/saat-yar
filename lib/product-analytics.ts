@@ -109,6 +109,7 @@ export function getAnalyticsRoute(pathname: string): AnalyticsRoute | null {
     "/onboarding": "onboarding", "/today": "today", "/month": "month", "/leave": "leave", "/reports": "reports",
     "/clients": "clients", "/projects": "projects", "/invoices": "invoices", "/import": "import", "/settings": "settings", "/about": "about",
   };
+  if (route.startsWith("/settings/")) return "settings";
   return allowed[route] ?? null;
 }
 

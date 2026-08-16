@@ -112,16 +112,22 @@ http://localhost:3000
 
 ## ENVهای لازم
 
-هیچ‌کدام.
+برای هسته Local-first ساعت‌یار هیچ ENV اجباری وجود ندارد. Google Calendar کاملاً اختیاری است.
 
-فایل `.env` لازم نیست و این متغیرها نباید ساخته شوند:
+اگر Google Calendar را فعال می‌کنید، فقط Client ID عمومی OAuth را در `.env.local` بگذارید:
 
 ```env
-DATABASE_URL=
-NEXT_PUBLIC_API_URL=
-SUPABASE_URL=
-SUPABASE_KEY=
+NEXT_PUBLIC_GOOGLE_CALENDAR_CLIENT_ID=YOUR_CLIENT_ID.apps.googleusercontent.com
 ```
+
+Client Secret نباید در پروژه، متغیر `NEXT_PUBLIC_*` یا Bundle مرورگر قرار بگیرد. در Google Auth Platform برای Phase 188 این دو Scope را ثبت کنید:
+
+```text
+https://www.googleapis.com/auth/calendar.calendarlist.readonly
+https://www.googleapis.com/auth/calendar.events
+```
+
+برای Production همان Client ID عمومی را در Environment Variables میزبان (مثلاً Vercel) تنظیم کنید و Origin دقیق دامنه Production را در Authorized JavaScript origins همان OAuth Client ثبت کنید.
 
 متغیر اختیاری زیر فقط هنگام Build خودکار GitHub Pages استفاده می‌شود:
 

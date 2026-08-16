@@ -1,15 +1,20 @@
 "use client";
 
+import { useState } from "react";
 import { Activity, BarChart3, CalendarRange, CheckCircle2, Clock3, Coffee, Download, ListChecks, TrendingUp } from "lucide-react";
 import { MetricCard } from "@/components/common/metric-card";
 import { PageHeading } from "@/components/common/page-heading";
 import { SectionHeading } from "@/components/common/section-heading";
 import { useLocaleUi } from "@/components/i18n/use-locale-ui";
+import { CalendarAgendaSurface } from "@/components/calendar/calendar-agenda-surface";
+import { CalendarConnectCallout } from "@/components/calendar/calendar-connect-callout";
+import { CalendarEventQuickAction } from "@/components/calendar/calendar-event-quick-action";
+import { useCalendarRange } from "@/components/calendar/use-calendar-range";
 import { JalaliDatePicker } from "@/components/pickers";
 import { Button } from "@/components/ui/button";
 import { exportCsv } from "@/lib/exporters";
 import { calc } from "@/lib/time-engine";
-import { shiftCalendarMonth } from "@/lib/format";
+import { calendarMonthCells, shiftCalendarMonth, shiftDateKey } from "@/lib/format";
 import type { AppData, WorkRecord } from "@/lib/types";
 import { getDailyTargetMinutes } from "@/lib/work-schedule";
 import { ActivityHeatmap } from "./activity-heatmap/activity-heatmap";
@@ -17,21 +22,26 @@ import { MonthIntelligenceCard } from "./activity-heatmap/month-intelligence-car
 import { RecentActivityCard } from "./activity-heatmap/recent-activity-card";
 import { MonthCalendar } from "./month-calendar";
 import { MonthDayDetails } from "./month-day-details";
+import { MonthDayQuickMenu, type MonthDayMenuAnchor } from "./month-day-quick-menu";
 import { MonthTable } from "./month-table";
 import { WeeklyChart } from "./weekly-chart";
 
-export function MonthPage({ data, selectedDate, setSelectedDate, monthRecords, monthStats }: {
+export function MonthPage({ data, setData, setToast, selectedDate, setSelectedDate, monthRecords, monthStats }: {
   data: AppData;
+  setData: React.Dispatch<React.SetStateAction<AppData>>;
+  setToast: (message: string) => void;
   selectedDate: string;
   setSelectedDate: (value: string) => void;
   monthRecords: WorkRecord[];
   monthStats: { worked: number; target: number; balance: number; breaks: number };
 }) {
   const { t, duration, date, number, calendar } = useLocaleUi();
-  const weekValues = Array.from({ length: 7 }, (_, weekday) => monthRecords
-    .filter((item) => (new Date(`${item.date}T12:00:00`).getDay() + 1) % 7 === weekday)
-    .reduce((sum, item) => sum + calc(item, getDailyTargetMinutes(item.date, data.settings)).worked, 0));
-
+  const [dayMenu, setDayMenu] = useState<MonthDayMenuAnchor | null>(null);
+  const monthCells = calendarMonthCells(selectedDate, calendar);
+  const calendarRange = useCalendarRange({
+    startDateKey: monthCells[0]?.key ?? selectedDate,
+    endDateKeyExclusive: shiftDateKey(monthCells[monthCells.length - 1]?.key ?? selectedDate, 1),
+  });
   function exportMonth() {
     exportCsv(
       t("month.exportFilename", { month: selectedDate.slice(0, 7) }),
@@ -58,10 +68,12 @@ export function MonthPage({ data, selectedDate, setSelectedDate, monthRecords, m
 
     <section className="mb-5" data-month-overview-section>
       <SectionHeading icon={<CalendarRange />} eyebrow={t("month.section.overviewEyebrow")} title={t("month.section.overviewTitle")} description={t("month.section.overviewDescription")} trailing={<span className="rounded-full border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-3 py-1.5 text-[9px] font-bold text-[var(--text-muted)]">{t("month.calendar.withRecords", { count: number(monthRecords.length) })}</span>} />
+      <CalendarConnectCallout />
       <div className="grid items-start grid-cols-[minmax(0,1.7fr)_minmax(280px,.3fr)] gap-4 max-[980px]:grid-cols-1">
-        <MonthCalendar data={data} selectedDate={selectedDate} setSelectedDate={setSelectedDate} monthRecordCount={monthRecords.length} moveMonth={(amount) => setSelectedDate(shiftCalendarMonth(selectedDate, amount, calendar))} />
-        <WeeklyChart values={weekValues} />
+        <MonthCalendar data={data} selectedDate={selectedDate} setSelectedDate={setSelectedDate} monthRecordCount={monthRecords.length} moveMonth={(amount) => setSelectedDate(shiftCalendarMonth(selectedDate, amount, calendar))} externalEvents={calendarRange.events} onOpenDayActions={(dateKey, point) => setDayMenu({ dateKey, ...point })} />
+        <WeeklyChart data={data} selectedDate={selectedDate} />
       </div>
+      {calendarRange.state === "connected" ? <CalendarAgendaSurface dateKey={selectedDate} events={calendarRange.events} loading={calendarRange.loadingEvents} compact /> : null}
     </section>
 
     <section className="mb-5" data-month-intelligence-section>
@@ -73,14 +85,15 @@ export function MonthPage({ data, selectedDate, setSelectedDate, monthRecords, m
       </div>
     </section>
 
-    <section className="mb-5">
+    <section id="month-selected-day-section" className="mb-5 scroll-mt-24">
       <SectionHeading icon={<ListChecks />} eyebrow={t("month.section.selectedEyebrow")} title={t("month.section.selectedTitle")} description={t("month.section.selectedDescription")} />
       <MonthDayDetails data={data} selectedDate={selectedDate} />
     </section>
 
     <section className="mb-5">
-      <SectionHeading icon={<BarChart3 />} eyebrow={t("month.section.recordsEyebrow")} title={t("month.section.recordsTitle")} description={t("month.section.recordsDescription")} />
+      <SectionHeading icon={<BarChart3 />} eyebrow={t("month.section.recordsEyebrow")} title={t("month.section.recordsTitle")} description={t("month.section.recordsDescription")} trailing={<CalendarEventQuickAction dateKey={selectedDate} compact />} />
       <MonthTable records={monthRecords} settings={data.settings} onEdit={setSelectedDate} />
     </section>
+    <MonthDayQuickMenu anchor={dayMenu} onClose={() => setDayMenu(null)} data={data} setData={setData} setToast={setToast} externalEvents={calendarRange.events} />
   </>;
 }

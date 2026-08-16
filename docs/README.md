@@ -158,4 +158,12 @@
 - [Phase 184: Privacy-safe Product Analytics](./phases/PHASE_184_NOTES_FA.md)
 - [Phase 185: Activity Graph & Month Intelligence](./phases/PHASE_185_NOTES_FA.md)
 - [Phase 186: Motion & Perceived Performance](./phases/PHASE_186_NOTES_FA.md)
+- [Phase 187: Google Calendar Architecture + Read Integration](./phases/PHASE_187_NOTES_FA.md)
+- [Google Calendar read-only setup — historical Phase 187](./calendar/GOOGLE_CALENDAR_READ_ONLY_FA.md)
+- [Google Calendar write setup](./calendar/GOOGLE_CALENDAR_WRITE_FA.md)
+- [Phase 188: Google Calendar Write + Unified Month UX](./phases/PHASE_188_NOTES_FA.md)
+- [Phase 189A: Calendar UX Polish & Weekly Accuracy](./phases/PHASE_189A_NOTES_FA.md)
+- [Phase 189B: Settings IA + Calendar Day Quick Actions](./phases/PHASE_189B_NOTES_FA.md)
 - [قرارداد Privacy-safe Analytics](./product-analytics/PRIVACY_SAFE_ANALYTICS_FA.md)
+
+- `releases/NEXT_RELEASE_FEATURES_FA.md`: فهرست تجمیعی قابلیت‌های نسخه بعدی برای Release Notes و LinkedIn.

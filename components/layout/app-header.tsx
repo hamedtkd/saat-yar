@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useUnsavedNavigation } from "@/components/layout/navigation/unsaved-navigation-provider";
+import { BrandMark } from "@/components/common/brand-mark";
 import { cn } from "@/lib/cn";
 import type { AppearanceSettings, Mode, ThemeMode } from "@/lib/types";
 import { HeaderActions } from "./app-header/header-actions";
@@ -41,8 +42,8 @@ export function AppHeader(props: Props) {
     });
   };
 
-  const navigateToSettings = (hash: string) => {
-    requestNavigation(() => router.push(`/settings#${hash}`));
+  const navigateToSettings = (href: string) => {
+    requestNavigation(() => router.push(href));
   };
 
   return (
@@ -62,7 +63,9 @@ export function AppHeader(props: Props) {
         </div>
       </div>
 
-      <div className="flex min-w-0 items-center gap-1.5 sm:gap-2 max-[520px]:w-full max-[520px]:justify-end">
+      <div className="hidden shrink-0 max-[520px]:block"><BrandMark size={34} animated={false} label={t("app.logoLabel")} /></div>
+
+      <div className="flex min-w-0 items-center gap-1.5 sm:gap-2 max-[520px]:flex-1 max-[520px]:justify-end">
         <HeaderActions
           mode={props.mode}
           saveState={props.saveState}

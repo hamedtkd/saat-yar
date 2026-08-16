@@ -31,6 +31,7 @@ export function normalizePathname(pathname: string) {
 
 export function getPathTab(pathname: string): Tab | null {
   const normalized = normalizePathname(pathname);
+  if (normalized === "/settings" || normalized.startsWith("/settings/")) return "settings";
   return (Object.keys(TAB_ROUTES) as Tab[]).find((tab) => TAB_ROUTES[tab] === normalized) ?? null;
 }
 

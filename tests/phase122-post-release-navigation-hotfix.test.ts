@@ -20,10 +20,10 @@ test("profile deep links to settings remain protected by the unsaved navigation 
     read("components/layout/app-header.tsx"),
     read("components/layout/app-header/profile-menu.tsx"),
   ]);
-  assert.match(header, /requestNavigation\(\(\) => router\.push\(`\/settings#\$\{hash\}`\)\)/);
+  assert.match(header, /requestNavigation\(\(\) => router\.push\(href\)\)/);
   assert.match(profile, /onNavigate/);
-  assert.match(profile, /settings-profile/);
-  assert.match(profile, /settings-device-transfer/);
+  assert.match(profile, /\/settings\/profile#settings-profile/);
+  assert.match(profile, /\/settings\/sync#settings-device-transfer/);
 });
 
 test("phase 122 hotfix is wired into the main quality command", async () => {

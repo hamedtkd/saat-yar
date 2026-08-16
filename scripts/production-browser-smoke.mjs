@@ -727,12 +727,12 @@ export async function runProductionBrowserSmoke() {
     await returnToday;
     await waitFor(client, `["/today", "/today/"].includes(location.pathname) && document.body?.innerText.includes("ساعت‌یار")`, "Today after Import Wizard");
 
-    const settingsLocaleLoad = waitForEvent(client, "Page.loadEventFired", "Settings locale route");
-    await client.call("Page.navigate", { url: `${origin}/settings/` });
+    const settingsLocaleLoad = waitForEvent(client, "Page.loadEventFired", "Settings profile locale route");
+    await client.call("Page.navigate", { url: `${origin}/settings/profile/` });
     await settingsLocaleLoad;
-    await waitFor(client, `Boolean(document.querySelector('[data-settings-language]')) && Boolean(document.querySelector('[data-work-timing-mode]'))`, "language and work-timing settings cards");
+    await waitFor(client, `["/settings/profile", "/settings/profile/"].includes(location.pathname) && Boolean(document.querySelector('[data-settings-language]')) && Boolean(document.querySelector('#settings-profile'))`, "language settings profile route");
     await evaluate(client, `document.querySelector('[data-locale-choice="en"]')?.click()`);
-    await waitFor(client, `document.documentElement.lang === "en" && document.documentElement.dir === "ltr" && document.documentElement.dataset.calendar === "gregory" && localStorage.getItem("saatyar-locale-v1") === "en" && document.body?.innerText.includes("Settings & data") && document.body?.innerText.includes("Today")`, "English LTR locale switch with automatic Gregorian calendar");
+    await waitFor(client, `document.documentElement.lang === "en" && document.documentElement.dir === "ltr" && document.documentElement.dataset.calendar === "gregory" && localStorage.getItem("saatyar-locale-v1") === "en" && Boolean(document.querySelector('#settings-profile')) && Boolean(document.querySelector('[data-settings-language]')) && document.body?.innerText.includes("Today")`, "English LTR locale switch with automatic Gregorian calendar");
     await waitFor(client, `Boolean(document.querySelector('[data-calendar-choice="persian"]'))`, "calendar preference controls");
     await evaluate(client, `document.querySelector('[data-calendar-choice="persian"]')?.click()`);
     await waitFor(client, `document.documentElement.dataset.calendar === "persian" && localStorage.getItem("saatyar-calendar-v1") === "persian"`, "English interface with Persian calendar override");
@@ -753,7 +753,7 @@ export async function runProductionBrowserSmoke() {
     const localeReload = waitForEvent(client, "Page.loadEventFired", "English locale persistence reload");
     await client.call("Page.reload", { ignoreCache: false });
     await localeReload;
-    await waitFor(client, `document.documentElement.lang === "en" && document.documentElement.dir === "ltr" && document.documentElement.dataset.calendar === "gregory" && document.body?.innerText.includes("Settings & data")`, "English locale persistence after reload with automatic Gregorian calendar");
+    await waitFor(client, `document.documentElement.lang === "en" && document.documentElement.dir === "ltr" && document.documentElement.dataset.calendar === "gregory" && Boolean(document.querySelector('#settings-profile')) && Boolean(document.querySelector('[data-settings-language]'))`, "English locale persistence after reload with automatic Gregorian calendar");
 
     const englishTodayLoad = waitForEvent(client, "Page.loadEventFired", "English Today route");
     await client.call("Page.navigate", { url: `${origin}/today/` });
@@ -907,14 +907,34 @@ export async function runProductionBrowserSmoke() {
     // checks so the historical production journey keeps its original mode.
     await switchWorkspaceMode(client, "employee");
 
-    const englishSystemSettingsLoad = waitForEvent(client, "Page.loadEventFired", "English Settings system route");
-    await client.call("Page.navigate", { url: `${origin}/settings/` });
+    const englishSystemSettingsLoad = waitForEvent(client, "Page.loadEventFired", "English Settings profile route");
+    await client.call("Page.navigate", { url: `${origin}/settings/profile/` });
     await englishSystemSettingsLoad;
-    await waitFor(client, `document.documentElement.dir === "ltr" && document.querySelector('#settings-onboarding')?.textContent.includes("Initial setup") && document.querySelector('#settings-device-transfer')?.textContent.includes("Connect phone and laptop") && document.title === "Settings | Saatyar"`, "English Settings deep system surface");
+    await waitFor(client, `document.documentElement.dir === "ltr" && document.querySelector('#settings-onboarding')?.textContent.includes("Initial setup") && document.title === "Settings | Saatyar"`, "English Settings profile surface");
+
+    const englishSyncSettingsLoad = waitForEvent(client, "Page.loadEventFired", "English Settings sync route");
+    await client.call("Page.navigate", { url: `${origin}/settings/sync/` });
+    await englishSyncSettingsLoad;
+    await waitFor(client, `document.documentElement.dir === "ltr" && document.querySelector('#settings-device-transfer')?.textContent.includes("Connect phone and laptop")`, "English Settings sync surface");
+
+    const englishNotificationsLoad = waitForEvent(client, "Page.loadEventFired", "English Settings notifications route");
+    await client.call("Page.navigate", { url: `${origin}/settings/notifications/` });
+    await englishNotificationsLoad;
     await waitFor(client, `Boolean(document.querySelector('[data-notification-intelligence]')) && Boolean(document.querySelector('[data-quiet-hours]')) && Boolean(document.querySelector('[data-custom-reminder]')) && Boolean(document.querySelector('[data-add-custom-reminder]')) && Boolean(document.querySelector('[data-reminder-snooze]')) && document.querySelector('#settings-notifications')?.textContent.includes("Quiet hours")`, "English notification intelligence settings");
     console.log("✓ Notification intelligence settings expose quiet hours, multi custom reminders, and snooze in English LTR");
+
+    const englishPrivacyLoad = waitForEvent(client, "Page.loadEventFired", "English Settings privacy route");
+    await client.call("Page.navigate", { url: `${origin}/settings/privacy/` });
+    await englishPrivacyLoad;
     await waitFor(client, `Boolean(document.querySelector('[data-product-analytics-settings]')) && Boolean(document.querySelector('[data-analytics-opt-in]')) && Boolean(document.querySelector('[data-analytics-opt-out]')) && document.querySelector('#settings-analytics')?.textContent.includes("Privacy-safe product analytics")`, "English privacy-safe analytics settings");
     console.log("✓ Privacy-safe analytics exposes explicit opt-in/opt-out without including work content in Settings");
+
+    const englishIntegrationsLoad = waitForEvent(client, "Page.loadEventFired", "English Settings integrations route");
+    await client.call("Page.navigate", { url: `${origin}/settings/integrations/` });
+    await englishIntegrationsLoad;
+    await waitFor(client, `Boolean(document.querySelector('[data-google-calendar-settings]')) && document.querySelector('#settings-calendar-integration')?.textContent.includes("Google Calendar") && !document.getElementById('saatyar-google-identity')`, "English Google Calendar opt-in settings");
+    console.log("✓ Google Calendar integration stays opt-in and does not load Google Identity before user action");
+    console.log("✓ Settings is split into focused Profile, Sync, Notifications, Privacy, and Integrations routes");
 
     const englishImportLoad = waitForEvent(client, "Page.loadEventFired", "English Import system route");
     await client.call("Page.navigate", { url: `${origin}/import/` });
@@ -927,7 +947,7 @@ export async function runProductionBrowserSmoke() {
     await waitFor(client, `["/about", "/about/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("About and guide") && document.body?.innerText.includes("What is Saatyar?") && document.title === "About & help | Saatyar"`, "English About system surface");
 
     const englishReentrySettingsLoad = waitForEvent(client, "Page.loadEventFired", "English Settings onboarding reentry route");
-    await client.call("Page.navigate", { url: `${origin}/settings/` });
+    await client.call("Page.navigate", { url: `${origin}/settings/profile/` });
     await englishReentrySettingsLoad;
     await waitFor(client, `document.documentElement.dir === "ltr" && Boolean(document.querySelector('[data-onboarding-reentry-action]'))`, "English onboarding reentry action");
     await evaluate(client, `document.querySelector('[data-onboarding-reentry-action]')?.click()`);
@@ -937,11 +957,11 @@ export async function runProductionBrowserSmoke() {
     console.log("✓ Settings, Onboarding, Import, and About follow English LTR before Persian restore");
 
     const settingsLocaleRestoreLoad = waitForEvent(client, "Page.loadEventFired", "Settings locale restore route");
-    await client.call("Page.navigate", { url: `${origin}/settings/` });
+    await client.call("Page.navigate", { url: `${origin}/settings/profile/` });
     await settingsLocaleRestoreLoad;
     await waitFor(client, `Boolean(document.querySelector('[data-locale-choice="fa-IR"]')) && document.documentElement.lang === "en"`, "language settings before Persian restore");
     await evaluate(client, `document.querySelector('[data-locale-choice="fa-IR"]')?.click()`);
-    await waitFor(client, `document.documentElement.lang === "fa" && document.documentElement.dir === "rtl" && document.documentElement.dataset.calendar === "persian" && localStorage.getItem("saatyar-locale-v1") === "fa-IR" && document.body?.innerText.includes("تنظیمات و داده‌ها")`, "Persian RTL locale restore with automatic Persian calendar");
+    await waitFor(client, `document.documentElement.lang === "fa" && document.documentElement.dir === "rtl" && document.documentElement.dataset.calendar === "persian" && localStorage.getItem("saatyar-locale-v1") === "fa-IR" && (document.body?.innerText.includes("عمومی و ظاهر") || document.body?.innerText.includes("پروفایل"))`, "Persian RTL locale restore with automatic Persian calendar");
     console.log("✓ Local-first locale switch persists English LTR across reload and restores Persian RTL");
 
     const localeReturnToday = waitForEvent(client, "Page.loadEventFired", "return to Today after locale smoke");

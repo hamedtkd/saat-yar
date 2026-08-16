@@ -27,7 +27,8 @@ test("settings data section exposes an actionable health card", async () => {
   assert.match(card, /s\("Data health"\)/);
   assert.match(card, /\/today\?date=\$\{item\.date\}/);
   assert.match(card, /GuardedLink/);
-  assert.match(page, /<DataHealthCard records=\{data\.records\}/);
+  assert.match(page, /props\.route === "sync"/);
+  assert.match(page, /<DataHealthCard records=\{props\.data\.records\}/);
 });
 
 test("phase 61 registry fixture follows the current labelled contract", async () => {

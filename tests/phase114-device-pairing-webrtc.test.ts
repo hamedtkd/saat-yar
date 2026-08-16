@@ -78,7 +78,8 @@ test("settings exposes send receive preview and safe merge flows", () => {
   const page = read("components/pages/settings/settings-page.tsx");
   const card = read("components/pages/settings/device-transfer-card.tsx");
   const preview = read("components/pages/settings/device-transfer-preview.tsx");
-  assert.match(page, /<DeviceTransferCard data=\{data\}/);
+  assert.match(page, /props\.route === "sync"/);
+  assert.match(page, /<DeviceTransferCard data=\{props\.data\}/);
   assert.match(card, /s\("Send from this device"\)/);
   assert.match(card, /s\("Receive on this device"\)/);
   assert.match(card, /s\("Send encrypted data"\)/);

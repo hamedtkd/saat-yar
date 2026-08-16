@@ -143,9 +143,13 @@ export function collectReleaseAuditFailures() {
   requireCondition(manifest.productionAuditCommand === "npm run audit:production", "Release manifest production audit command is stale.", failures);
   requireCondition(manifest.vercelAuditCommand === "npm run audit:vercel", "Release manifest Vercel audit command is stale.", failures);
 
-  const declaredTests = new Set(packageJson.scripts?.test?.match(/tests\/[A-Za-z0-9_.-]+\.test\.ts/g) ?? []);
+  const testCommand = packageJson.scripts?.test ?? "";
+  const declaredTests = new Set(testCommand.match(/tests\/[A-Za-z0-9_.-]+\.test\.ts/g) ?? []);
+  const coversAllTests = testCommand.includes("tests/**/*.test.ts");
   const discoveredTests = readdirSync(resolve(ROOT, "tests")).filter((name) => name.endsWith(".test.ts")).map((name) => `tests/${name}`);
-  for (const testPath of discoveredTests) requireCondition(declaredTests.has(testPath), `Test file is not included in npm test: ${testPath}`, failures);
+  for (const testPath of discoveredTests) {
+    requireCondition(coversAllTests || declaredTests.has(testPath), `Test file is not included in npm test: ${testPath}`, failures);
+  }
 
   const releaseBacklog = sectionLines("docs/roadmap/BACKLOG_FA.md", "## آمادگی انتشار ۲.۴.۰");
   requireCondition(releaseBacklog.length > 0, "2.4.0 release backlog section is missing.", failures);
