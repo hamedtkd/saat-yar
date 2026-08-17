@@ -63,6 +63,7 @@ function buildWorkRecord(row: Record<string, string>, mapping: CsvMapping, local
         lunchMinutes: Math.round(lunch ?? 0),
         lunchPaid: false,
         breaks: [],
+        activitySegments: [],
         leaveMinutes: 0,
         leaveType: "none",
         note: normalizeImportText(cell(row, mapping, "note")),

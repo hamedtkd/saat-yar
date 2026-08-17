@@ -32,7 +32,7 @@ export function PageHeading({ title, description, children, autosave = true, var
   }
 
   return (
-    <section className={cn("dashboard-card mb-5 flex min-h-[98px] items-center justify-between gap-6 rounded-[var(--card-radius)] border border-[var(--dashboard-border)] px-5 py-4 shadow-[0_5px_16px_rgba(0,0,0,.03)] max-[720px]:min-h-0 max-[720px]:flex-col max-[720px]:items-stretch sm:px-6") }>
+    <section className={cn("dashboard-card mb-5 flex min-w-0 max-w-full min-h-[98px] items-center justify-between gap-6 rounded-[var(--card-radius)] border border-[var(--dashboard-border)] px-5 py-4 shadow-[0_5px_16px_rgba(0,0,0,.03)] max-[720px]:min-h-0 max-[720px]:flex-col max-[720px]:items-stretch sm:px-6") }>
       <div className="min-w-0">
         {autosave && <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--accent-soft)] px-2.5 py-1 text-[10px] font-bold text-[var(--accent-strong)]"><CheckCircle2 className="size-3.5" /> {t("common.autosave")}</span>}
         <div className="mt-2 flex min-w-0 items-center gap-1.5">
@@ -40,7 +40,7 @@ export function PageHeading({ title, description, children, autosave = true, var
           {description && <DescriptionTooltip content={description} />}
         </div>
       </div>
-      {children && <div className="row-actions flex flex-wrap items-center gap-2 max-[720px]:w-full">{children}</div>}
+      {children && <div className="row-actions flex min-w-0 max-w-full flex-wrap items-center gap-2 max-[720px]:w-full [&>*]:max-w-full">{children}</div>}
     </section>
   );
 }

@@ -3,6 +3,7 @@ import type { Settings } from "@/lib/types";
 export type WorkSettingsDraft = Pick<
   Settings,
   | "mode"
+  | "workTimingMode"
   | "autoOfficialHolidays"
   | "autoWeeklyHoliday"
   | "weeklyMinutes"
@@ -13,6 +14,7 @@ export type WorkSettingsDraft = Pick<
 export function createWorkSettingsDraft(settings: Settings): WorkSettingsDraft {
   return {
     mode: settings.mode,
+    workTimingMode: settings.workTimingMode,
     autoOfficialHolidays: settings.autoOfficialHolidays,
     autoWeeklyHoliday: settings.autoWeeklyHoliday,
     weeklyMinutes: settings.weeklyMinutes,

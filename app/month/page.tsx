@@ -10,6 +10,8 @@ export default function MonthRoute() {
   return (
     <MonthPage
       data={controller.data}
+      setData={controller.setData}
+      setToast={controller.setToast}
       selectedDate={controller.selectedDate}
       setSelectedDate={controller.setSelectedDate}
       monthRecords={controller.monthRecords}

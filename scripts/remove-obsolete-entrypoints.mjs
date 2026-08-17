@@ -9,6 +9,8 @@ const obsoletePaths = [
   "tests/phase178-i18n-final-closure.test.ts",
   // npm/package-lock.json is the canonical package-manager contract for Saatyar.
   "pnpm-lock.yaml",
+  // Stale static manifest from older local builds conflicts with the App Router metadata route.
+  "public/manifest.webmanifest",
 ];
 
 await Promise.all(obsoletePaths.map((path) => rm(path, { force: true })));

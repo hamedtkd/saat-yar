@@ -17,6 +17,7 @@ export function SidebarNav({ mode, currentPath, name }: Props) {
   const { t } = useLocale();
   const items = getVisibleNavItems(mode);
   const normalizedPath = normalizePath(currentPath);
+  const settingsActive = normalizedPath === "/settings" || normalizedPath.startsWith("/settings/");
   const subtitle = name ? t("app.personalSpace", { name }) : t("app.brandSubtitle");
   return (
     <aside className="fixed inset-y-2 start-2 z-40 hidden w-[var(--shell-sidebar-width)] flex-col overflow-hidden rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[linear-gradient(180deg,var(--surface-1),var(--surface-raised))] p-3 shadow-[0_10px_32px_rgba(0,0,0,.055)] xl:flex dark:shadow-[0_14px_38px_rgba(0,0,0,.24)]">
@@ -66,10 +67,10 @@ export function SidebarNav({ mode, currentPath, name }: Props) {
         </div>
         <GuardedLink
           href="/settings"
-          aria-current={normalizedPath === "/settings" ? "page" : undefined}
+          aria-current={settingsActive ? "page" : undefined}
           className={cn(
             "flex min-h-11 items-center gap-3 rounded-[var(--control-radius)] px-3 text-sm font-bold text-[var(--text-muted)] hover:bg-[var(--accent-soft)] hover:text-[var(--text)]",
-            normalizedPath === "/settings" && "bg-[var(--accent-soft)] text-[var(--accent-strong)]",
+            settingsActive && "bg-[var(--accent-soft)] text-[var(--accent-strong)]",
           )}
         >
           <span className="grid size-8 place-items-center rounded-[10px] bg-[var(--surface-2)]">

@@ -22,6 +22,7 @@ export function TodayFocusCard(props: Props) {
   const { digits, duration, percent, t } = useLocaleUi();
   const mode = props.data.settings.mode;
   const isEmployee = mode === "employee";
+  const flexible = props.data.settings.workTimingMode === "flexible";
   const liveResult = useLiveWorkCalc(props.record, props.dailyTarget, props.todayCalc);
   const hasTarget = props.dailyTarget > 0;
   const progress = hasTarget ? Math.min(100, Math.round(liveResult.credited / props.dailyTarget * 100)) : 0;
@@ -45,10 +46,14 @@ export function TodayFocusCard(props: Props) {
     : props.record.start
       ? props.scheduledDayOff
         ? t("today.focus.startNoRequiredEnd", { start: digits(props.record.start) })
-        : t("today.focus.startSuggested", { start: digits(props.record.start), end: digits(props.suggestedExit) })
+        : flexible
+          ? t("today.focus.flexibleActive", { start: digits(props.record.start), target: duration(props.dailyTarget) })
+          : t("today.focus.startSuggested", { start: digits(props.record.start), end: digits(props.suggestedExit) })
       : props.scheduledDayOff
         ? t("today.focus.exceptionHint")
-        : t("today.focus.suggestedExit", { end: digits(props.suggestedExit) });
+        : flexible
+          ? t("today.focus.flexibleReady", { target: duration(props.dailyTarget) })
+          : t("today.focus.suggestedExit", { end: digits(props.suggestedExit) });
 
   return (
     <SurfaceCard className="dashboard-card mb-4 overflow-hidden shadow-[0_6px_18px_rgba(0,0,0,.035)] dark:shadow-[0_10px_26px_rgba(0,0,0,.18)]">

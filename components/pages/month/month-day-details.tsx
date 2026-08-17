@@ -50,21 +50,21 @@ export function MonthDayDetails({ data, selectedDate }: { data: AppData; selecte
   const holidayLabel = locale === "fa-IR" && holiday.title ? holiday.title : t("common.holiday");
 
   return (
-    <article className="dashboard-card rounded-[var(--card-radius)] border border-[var(--dashboard-border)] p-4 shadow-[0_6px_20px_rgba(0,0,0,.035)] sm:p-5">
-      <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-        <div>
+    <article className="dashboard-card min-w-0 max-w-full rounded-[var(--card-radius)] border border-[var(--dashboard-border)] p-4 shadow-[0_6px_20px_rgba(0,0,0,.035)] sm:p-5">
+      <div className="mb-4 flex min-w-0 flex-wrap items-start justify-between gap-3 max-[520px]:grid max-[520px]:grid-cols-1">
+        <div className="min-w-0">
           <div className="mb-1 flex items-center gap-2 text-sm font-extrabold text-[var(--text)]">
             <CalendarDays className="size-4 text-[var(--accent-strong)]" />
             {t("month.details.title")}
           </div>
-          <strong className="text-base font-black text-[var(--text)]">{date(selectedDate, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</strong>
+          <strong className="block min-w-0 break-words text-base font-black text-[var(--text)]">{date(selectedDate, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</strong>
           <div className="mt-2 flex flex-wrap gap-2">
             {holiday.isHoliday && <StatusBadge success={false}>{holidayLabel}</StatusBadge>}
             {leave && <span className="rounded-full bg-[var(--info-soft)] px-2.5 py-1 text-[10px] font-bold text-[var(--info)]">{t("month.details.leave")}</span>}
             {health && <StatusBadge success={health.state === "complete"}>{t(healthStateKeys[health.state])}</StatusBadge>}
           </div>
         </div>
-        <Button asChild>
+        <Button asChild className="max-[520px]:w-full">
           <Link href={`/today?date=${selectedDate}`}><Edit3 className="size-4" /> {t("month.details.edit")}</Link>
         </Button>
       </div>

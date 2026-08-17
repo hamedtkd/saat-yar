@@ -35,6 +35,10 @@ test("employee browser smoke covers attendance lunch break completion month and 
     "فیش حقوقی تخمینی ماه",
   ]) assert.match(smoke, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.match(smoke, /NET_DURATION = "۸:۱۵"/);
+  assert.match(smoke, /navigate\(client, `\$\{server\.origin\}\/robots\.txt`\);[\s\S]*seedEmployeeData\(client\)/);
+  assert.match(smoke, /APP_DATA_SCHEMA_VERSION, APP_DATA_STORAGE_FORMAT/);
+  assert.match(smoke, /tx\.objectStore\("app-data"\)\.put\(snapshot, "current"\)/);
+  assert.match(smoke, /current\?\.format === "saatyar-app-data"/);
 });
 
 test("employee persistence probe follows the snapshot envelope and exact completed-day contract", () => {

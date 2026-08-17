@@ -31,11 +31,11 @@ test("sync status records the latest external save and pending conflict state", 
 test("data health center renders multi-tab support, source tab and conflict state", async () => {
   const card = await read("components/pages/settings/data-health-card.tsx");
   const panel = await read("components/pages/settings/multi-tab-health-panel.tsx");
-  const route = await read("app/settings/page.tsx");
+  const entry = await read("components/pages/settings/settings-route-entry.tsx");
   assert.match(card, /MultiTabHealthPanel status=\{syncStatus\}/);
   assert.match(panel, /s\("Multi-tab sync health"\)/);
   assert.match(panel, /s\("Last sender tab"\)/);
   assert.match(panel, /s\("Last external save"\)/);
   assert.match(panel, /status\.pending/);
-  assert.match(route, /multiTabSyncStatus=\{controller\.multiTabSyncStatus\}/);
+  assert.match(entry, /multiTabSyncStatus=\{controller\.multiTabSyncStatus\}/);
 });

@@ -140,6 +140,8 @@
 - [فاز ۱۷۸: Closure و Hardening نهایی i18n](./phases/PHASE_178_NOTES_FA.md)
 - [فاز ۱۷۹: Release Candidate 2.4.0](./phases/PHASE_179_NOTES_FA.md)
 - [فاز ۱۸۰: Final Release 2.4.0](./phases/PHASE_180_NOTES_FA.md)
+- [فاز ۱۸۱: Onboarding & First-run UX](./phases/PHASE_181_NOTES_FA.md)
+- [فاز ۱۸۲: Flexible Work Mode & Activity Segments](./phases/PHASE_182_NOTES_FA.md)
 
 - [فاز ۱۶۵: Final Release 2.3.2](./phases/PHASE_165_NOTES_FA.md)
 - [فاز ۱۶۶: Route مستقل آنبوردینگ](./phases/PHASE_166_NOTES_FA.md)
@@ -151,3 +153,21 @@
 - [فاز ۱۷۱: Import Wizard و ورود امن Backup/CSV](./phases/PHASE_171_NOTES_FA.md)
 - [فاز ۱۷۲: ساعت زنده Runtime و Refresh کم‌مصرف](./phases/PHASE_172_NOTES_FA.md)
 - [فاز ۱۷۳: Onboarding شخصی‌شده Employee/Freelancer/Hybrid](./phases/PHASE_173_NOTES_FA.md)
+
+- [Phase 183](./phases/PHASE_183_NOTES_FA.md)
+- [Phase 184: Privacy-safe Product Analytics](./phases/PHASE_184_NOTES_FA.md)
+- [Phase 185: Activity Graph & Month Intelligence](./phases/PHASE_185_NOTES_FA.md)
+- [Phase 186: Motion & Perceived Performance](./phases/PHASE_186_NOTES_FA.md)
+- [Phase 187: Google Calendar Architecture + Read Integration](./phases/PHASE_187_NOTES_FA.md)
+- [Google Calendar read-only setup — historical Phase 187](./calendar/GOOGLE_CALENDAR_READ_ONLY_FA.md)
+- [Google Calendar write setup](./calendar/GOOGLE_CALENDAR_WRITE_FA.md)
+- [Phase 188: Google Calendar Write + Unified Month UX](./phases/PHASE_188_NOTES_FA.md)
+- [Phase 189A: Calendar UX Polish & Weekly Accuracy](./phases/PHASE_189A_NOTES_FA.md)
+- [Phase 189B: Settings IA + Calendar Day Quick Actions](./phases/PHASE_189B_NOTES_FA.md)
+- [Phase 189C: Payroll Rate Basis & Standard Monthly Hours](./phases/PHASE_189C_NOTES_FA.md)
+- [Phase 190: Calendar Intelligence](./phases/PHASE_190_NOTES_FA.md)
+- [قرارداد Privacy-safe Analytics](./product-analytics/PRIVACY_SAFE_ANALYTICS_FA.md)
+
+- `releases/NEXT_RELEASE_FEATURES_FA.md`: فهرست تجمیعی قابلیت‌های نسخه بعدی برای Release Notes و LinkedIn.
+
+- 2.5.0 final release: [`releases/2.5.0.json`](./releases/2.5.0.json)

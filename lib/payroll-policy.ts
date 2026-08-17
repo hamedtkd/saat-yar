@@ -6,6 +6,7 @@ export type PayrollBaseMode = "monthly-prorated" | "monthly-fixed" | "hourly" | 
 export type PayrollPremiumMode = "multiplier" | "fixed-hourly" | "ignore";
 export type PayrollDeficitMode = "deduct" | "ignore";
 export type PayrollRoundingMode = "nearest" | "floor" | "ceil";
+export type PayrollRateBasis = "standard-month" | "period-target";
 
 export type PayrollRateRule = {
   mode: PayrollPremiumMode;
@@ -19,6 +20,8 @@ export type PayrollCalculationPolicy = {
   baseMode: PayrollBaseMode;
   baseAmount: number;
   standardDayMinutes: number;
+  rateBasis: PayrollRateBasis;
+  standardMonthMinutes: number;
   overtime: PayrollRateRule;
   holiday: PayrollRateRule;
   deficit: {
@@ -48,6 +51,7 @@ export type PayrollBreakdownLine = {
 };
 
 export const DEFAULT_PAYROLL_DAY_MINUTES = 8 * 60;
+export const DEFAULT_STANDARD_MONTH_MINUTES = 220 * 60;
 
 function safeNumber(value: number, fallback = 0) {
   return Number.isFinite(value) ? Math.max(0, value) : fallback;
@@ -71,6 +75,8 @@ export function createLegacyPayrollPolicy(input: {
     baseMode: "monthly-prorated",
     baseAmount: safeNumber(input.monthlySalary),
     standardDayMinutes: DEFAULT_PAYROLL_DAY_MINUTES,
+    rateBasis: "period-target",
+    standardMonthMinutes: DEFAULT_STANDARD_MONTH_MINUTES,
     overtime: { mode: "multiplier", multiplier: safeNumber(input.overtimeMultiplier, 1), hourlyRate: 0 },
     holiday: { mode: "multiplier", multiplier: safeNumber(input.holidayMultiplier, 1), hourlyRate: 0 },
     deficit: { mode: "deduct" as PayrollDeficitMode, multiplier: 1 },
@@ -85,6 +91,8 @@ export function createPayrollPreset(
   const baseAmount = safeNumber(amount);
   const common = {
     standardDayMinutes: DEFAULT_PAYROLL_DAY_MINUTES,
+    rateBasis: "standard-month" as PayrollRateBasis,
+    standardMonthMinutes: DEFAULT_STANDARD_MONTH_MINUTES,
     overtime: { mode: "multiplier", multiplier: 1.4, hourlyRate: 0 } as PayrollRateRule,
     holiday: { mode: "multiplier", multiplier: 1.4, hourlyRate: 0 } as PayrollRateRule,
     deficit: { mode: "deduct" as PayrollDeficitMode, multiplier: 1 },
@@ -100,7 +108,6 @@ export function createPayrollPreset(
 
   return { id: preset, title: titles[preset], baseMode: preset, baseAmount, ...common };
 }
-
 
 export function clonePayrollPolicy(policy: PayrollCalculationPolicy): PayrollCalculationPolicy {
   return {
@@ -126,6 +133,10 @@ export function normalizePayrollPolicy(policy: PayrollCalculationPolicy): Payrol
     standardDayMinutes: Number.isFinite(policy.standardDayMinutes) && policy.standardDayMinutes > 0
       ? Math.max(1, Math.round(policy.standardDayMinutes))
       : DEFAULT_PAYROLL_DAY_MINUTES,
+    rateBasis: policy.rateBasis === "period-target" ? "period-target" : "standard-month",
+    standardMonthMinutes: Number.isFinite(policy.standardMonthMinutes) && policy.standardMonthMinutes > 0
+      ? Math.max(1, Math.round(policy.standardMonthMinutes))
+      : DEFAULT_STANDARD_MONTH_MINUTES,
     overtime: normalizeRule(policy.overtime),
     holiday: normalizeRule(policy.holiday),
     deficit: { mode: policy.deficit.mode, multiplier: safeNumber(policy.deficit.multiplier, 1) },
@@ -137,6 +148,7 @@ export function validatePayrollPolicy(policy: PayrollCalculationPolicy, locale: 
   if (!policy.title.trim()) return translateSystem(locale, "Enter a title for the payroll calculation method.");
   if (!Number.isFinite(policy.baseAmount) || policy.baseAmount < 0) return translateSystem(locale, "Base payroll amount is invalid.");
   if (!Number.isFinite(policy.standardDayMinutes) || policy.standardDayMinutes <= 0) return translateSystem(locale, "Standard workday hours must be greater than zero.");
+  if (!Number.isFinite(policy.standardMonthMinutes) || policy.standardMonthMinutes <= 0) return translateSystem(locale, "Standard monthly hours must be greater than zero.");
   if (policy.overtime.mode === "multiplier" && policy.overtime.multiplier < 0) return translateSystem(locale, "Overtime multiplier is invalid.");
   if (policy.overtime.mode === "fixed-hourly" && policy.overtime.hourlyRate < 0) return translateSystem(locale, "Overtime hourly rate is invalid.");
   if (policy.holiday.mode === "multiplier" && policy.holiday.multiplier < 0) return translateSystem(locale, "Holiday-work multiplier is invalid.");

@@ -136,7 +136,7 @@ test("locale UI formatter callbacks stay referentially stable across ordinary re
 test("production browser smoke covers English Today Month Reports then restores Persian", async () => {
   const smoke = await read("scripts/production-browser-smoke.mjs");
   assert.match(smoke, /English Today core surface/);
-  assert.match(smoke, /English Month core surface/);
+  assert.match(smoke, /English Month activity intelligence surface/);
   assert.match(smoke, /English Reports core surface/);
   assert.match(smoke, /Today, Month, and Reports render localized English LTR surfaces before Persian restore/);
   assert.match(smoke, /Persian RTL locale restore/);
@@ -158,7 +158,7 @@ test("Phase 175 is documented and wired without schema dependency or release-ver
   assert.match(notes, /Dependency جدید: ندارد/);
   assert.match(backlog, /\[x\] فاز ۱۷۵:/);
   assert.match(docs, /PHASE_175_NOTES_FA\.md/);
-  assert.match(schema, /APP_DATA_SCHEMA_VERSION = 17/);
+  assert.match(schema, /APP_DATA_SCHEMA_VERSION = \d+ as const/);
 });
 
 test("employee break smoke uses structural hooks instead of localized paid-checkbox copy", async () => {

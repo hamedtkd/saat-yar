@@ -8,7 +8,7 @@ import { useLiveWorkCalc } from "@/hooks/use-live-work-calc";
 import type { ReturnTypeCalc } from "@/lib/type-helpers";
 import type { WorkRecord } from "@/lib/types";
 
-export function TodaySmartSummary({ record, result, dailyTarget, suggestedExit, openBreak, lunchRunning, scheduledDayOff }: {
+export function TodaySmartSummary({ record, result, dailyTarget, suggestedExit, openBreak, lunchRunning, scheduledDayOff, flexible }: {
   record: WorkRecord;
   result: ReturnTypeCalc;
   dailyTarget: number;
@@ -16,6 +16,7 @@ export function TodaySmartSummary({ record, result, dailyTarget, suggestedExit, 
   openBreak: boolean;
   lunchRunning: boolean;
   scheduledDayOff: boolean;
+  flexible: boolean;
 }) {
   const { duration, percent, t } = useLocaleUi();
   const liveResult = useLiveWorkCalc(record, dailyTarget, result);
@@ -47,7 +48,7 @@ export function TodaySmartSummary({ record, result, dailyTarget, suggestedExit, 
                 : t("today.summary.remaining", { duration: duration(remaining) });
   const items = [
     { icon: <TimerReset />, label: t("today.summary.currentWork"), value: duration(workedMinutes), tone: "text-[var(--success)] bg-[var(--success-soft)]" },
-    { icon: <LogOut />, label: t("today.summary.suggestedExit"), value: started && !finished && !scheduledDayOff ? suggestedExit : "—", tone: "text-[var(--danger)] bg-[var(--danger-soft)]" },
+    { icon: <LogOut />, label: flexible ? t("today.summary.estimatedFinish") : t("today.summary.suggestedExit"), value: started && !finished && !scheduledDayOff ? suggestedExit : "—", tone: "text-[var(--danger)] bg-[var(--danger-soft)]" },
     { icon: <Coffee />, label: t("common.rest"), value: lunchRunning ? t("common.running") : t("common.recorded"), tone: "text-[var(--warning)] bg-[var(--warning-soft)]" },
     { icon: <Pause />, label: t("common.break"), value: openBreak ? t("common.running") : t("common.ready"), tone: "text-[var(--info)] bg-[var(--info-soft)]" },
   ];

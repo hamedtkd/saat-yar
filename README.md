@@ -91,6 +91,7 @@ Regenerate the media with `npm run media:capture`. See [docs/assets/README.md](.
 ### Reports and data safety
 
 - Monthly attendance, target, overtime, and deficit reports
+- GitHub-style monthly work-activity heatmap with keyboard navigation, streaks, and overtime/deficit intelligence
 - Daily details and record filters
 - CSV and Excel export
 - A4-aware print and PDF output
@@ -301,9 +302,9 @@ Before opening a pull request, read [CONTRIBUTING.md](./CONTRIBUTING.md) and the
 
 ## Roadmap
 
-Version **2.4.0** is the latest stable Saatyar release and packages Phases 166–180: dedicated recoverable onboarding, corrected leave entitlement, completed-day editing feedback, the Import Wizard, the shared live runtime clock, full Persian RTL / English LTR i18n hardening, and the final release contract.
+Version **2.5.0** is the latest stable Saatyar release and packages Phases 166–180: dedicated recoverable onboarding, corrected leave entitlement, completed-day editing feedback, the Import Wizard, the shared live runtime clock, full Persian RTL / English LTR i18n hardening, and the final release contract.
 
-The verified Phase 178 baseline at `887158c` passed **758/758 tests**. Phase 179 candidate `1cabdb4` completed the **764/764** gate, and Phase 180 adds six finalization contracts for a **770/770** final gate. The initial controlled `dev -> main` merge is `7627e99`. AppData remains on schema v17 with no Phase 180 migration or dependency change. See the [2.4.0 release notes](./docs/releases/RELEASE_NOTES_2.4.0_EN.md), the Persian [final release checklist](./RELEASE_CHECKLIST_FA.md), and the [roadmap](./docs/roadmap/BACKLOG_FA.md).
+The verified Phase 178 baseline at `887158c` passed **758/758 tests**. Phase 179 candidate `1cabdb4` completed the **764/764** gate, and Phase 180 added six finalization contracts for a **770/770** final gate. The released 2.4.0 data contract stays immutable on schema v17. Post-release development now uses **schema v20**: Phase 182 introduced flexible daily targets and activity segments, Phase 183 added notification intelligence, Phase 184 added privacy-safe analytics without AppData expansion, Phase 185 added derived month intelligence, Phase 186 added a stable branded loading shell plus reduced-motion-aware route transitions, Phases 187–189B added Google Calendar read/write, unified Month context and multi-route Settings, Phase 189C fixes monthly payroll hourly-rate derivation with a configurable standard-month basis, and Phase 190 adds conflict-safe incremental Google Calendar sync, Day/Week planning, duplicate/overlap intelligence, explicit Event-to-Activity conversion, and safe recurring occurrence/series editing. See the [2.4.0 release notes](./docs/releases/RELEASE_NOTES_2.4.0_EN.md), the [Phase 188 notes](./docs/phases/PHASE_188_NOTES_FA.md), the [next-release feature inventory](./docs/releases/NEXT_RELEASE_FEATURES_FA.md), and the [roadmap](./docs/roadmap/BACKLOG_FA.md).
 
 The 2.4.0 manifest is `released` and intentionally does not embed its own final release commit. After the final `dev -> main` merge and Vercel deployment, `npm run audit:production` must pass before the annotated `v2.4.0` tag is created. That tag is the source of truth for the exact final release commit. Historical 2.3.2 and earlier manifests/tags remain immutable.
 

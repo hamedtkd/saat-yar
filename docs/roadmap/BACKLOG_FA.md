@@ -298,10 +298,28 @@
 ## آمادگی انتشار ۲.۴.۰
 
 - [x] فاز ۱۷۹: Release Candidate 2.4.0؛ افزایش Package/Lockfile به ۲.۴.۰، Manifest Candidate، Release Notes فارسی/انگلیسی، Release Audit فعال و ثبت Baseline فاز ۱۷۸ روی `887158c` با ۷۵۸/۷۵۸ تست. Candidate Gate با شش Contract Test جدید باید ۷۶۴/۷۶۴ باشد.
-- [x] فاز ۱۸۰: Final Release 2.4.0؛ Candidate `1cabdb4` و Merge اولیه `7627e99` ثبت شدند، Final Manifest/Docs و شش Contract نهایی برای Gate ۷۷۰/۷۷۰ آماده شدند؛ Merge نهایی، Deploy، `audit:production` و Tag annotated `v2.4.0` طبق Checklist و فقط روی Commit نهایی سبز انجام می‌شوند.
+- [x] فاز ۱۸۰: Final Release 2.4.0؛ Candidate فاز ۱۷۹ روی `1cabdb4` با Gate `۷۶۴/۷۶۴` حفظ شد، Merge اولیه کنترل‌شده `7627e99` ثبت شد، Gate نهایی ۷۷۰/۷۷۰ سبز شد، Merge نهایی روی `71f6732` Deploy شد، `audit:production` پاس شد و Tag annotated `v2.4.0` دقیقاً روی همان Commit منتشر شد.
 - [x] AppData Schema روی v17 باقی می‌ماند و Phase 179 Migration یا Dependency جدید ندارد.
 - [x] Manifestهای ۲.۳.۲ و قدیمی‌تر تاریخی و immutable باقی می‌مانند.
 - [x] Static metadata/PWA در Candidate همچنان Canonical فارسی است و Runtime Locale فارسی RTL / انگلیسی LTR را اعمال می‌کند.
+
+## توسعه پس از ۲.۴.۰ — First-run، انعطاف و تحلیل
+
+- [x] فاز ۱۸۱: Onboarding & First-run UX؛ Fast Setup و Skip for now بدون حذف Wizard کامل، Apply یک برنامه به همه روزهای فعال، CTA روشن اولین اقدام برای Employee/Freelancer/Hybrid و پالیش Responsive/RTL/LTR.
+- [x] فاز ۱۸۲: Flexible Work Mode & Activity Segments؛ حالت Flexible بدون الزام Start/End ثابت، Target مستقل روزانه، وقفه‌های شناور و Segmentهای جلسه/یادگیری/کار عمیق/اداری/پروژه با Breakdown گزارش؛ بررسی معماری به ارتقای AppData از Schema v17 به v18 با Migration امن منجر شد.
+- [x] فاز ۱۸۳: Notification Intelligence؛ تا پنج Reminder سفارشی مستقل، Snooze و Quiet hours بر اساس Active Work Time، به‌همراه بازطراحی ناوبری Settings موبایل به Section Picker فشرده و بدون اشغال viewport.
+- [x] فاز ۱۸۴: Product Analytics privacy-safe؛ Event taxonomy تایپ‌شده، Consent/Opt-out محلی خارج از AppData، Plausible adapter اختیاری بدون Auto-tracking و ممنوعیت ارسال حقوق، درآمد، نام/عنوان، یادداشت، تاریخ/ساعت دقیق، ID یا Free-text.
+- [x] فاز ۱۸۵: GitHub-style Activity Graph & Month Intelligence؛ Heatmap کارکرد واقعی با Persian/Gregorian، Tooltip portal-safe و keyboard accessibility، Recent 7 Days، streak، قوی‌ترین روز و توزیع deficit/overtime؛ همه داده‌ها Derived و بدون Schema bump روی v19 باقی ماندند.
+- [x] فاز ۱۸۶: Motion & Perceived Performance؛ Loading Skeletonهای Route-aware برای Today/Month، Route Motion محدود به opacity/transform، radial Theme Reveal از خود دکمه با fallback Reduced Motion، و alignment یکدست کارت‌های Month بدون Schema/Dependency جدید.
+- [x] فاز ۱۸۷: Google Calendar Architecture + Read Integration؛ OAuth فقط‌خواندنی با Token memory-only، انتخاب Calendar محلی، Preview و Context رویداد در Today/Month بدون تبدیل به WorkRecord.
+- [x] فاز ۱۸۸: Google Calendar Write + Unified Month UX؛ Scope حداقلی `calendar.events` + `calendar.calendarlist.readonly`، Create/Edit/Delete رویداد با Modal مشترک، حذف occurrence/series، Google به‌عنوان لایه اختیاری روی «ماه من» و sortable records table بدون تغییر Source of Truth کارکرد/تعطیلات.
+- [x] فاز ۱۸۹A: Calendar UX Polish؛ اصلاح دقت نمودار هفتگی و وضعیت تعطیلات، Header موبایل، Modal sticky، Toast CRUD، Quick Delete، CTA اتصال در Month، Quick Create کنار جدول و Alignment تنظیمات Google.
+- [x] فاز ۱۸۹B: Settings Information Architecture + Calendar Day Quick Actions؛ `/settings` به Overview و routeهای مستقل Profile/Appearance/Work/Payroll/Notifications/Integrations/Data/Sync/Privacy تقسیم شد و Context Menu روز در Month برای Event CRUD، Holiday/Workday override و دسترسی سریع اضافه شد؛ Search، Deep-link و Unsaved Draft Guard حفظ شدند.
+- [x] فاز ۱۸۹C: Payroll Rate Basis & Standard Monthly Hours؛ نرخ ساعتی روش‌های ماهانه از ساعات سپری‌شده جدا شد، مبنای پیش‌فرض ۲۲۰ ساعت استاندارد ماه قابل تنظیم است، حالت اختیاری ساعات موظفی بازه حفظ شد و Schema توسعه به v20 ارتقا یافت.
+- [x] فاز ۱۹۰: Calendar Intelligence؛ incremental sync token با fallback پاسخ 410، ETag/If-Match برای conflict-safe mutation، collapse کردن duplicate occurrenceها، Event → Activity کاملاً اختیاری و duplicate-safe، Day/Week planning و recurring occurrence/series editing بدون تبدیل خودکار Calendar به WorkRecord.
+- [x] فاز ۱۹۱: Payroll & Reports Hardening؛ ساخت Payroll Period Facts مشترک برای Reports/Preview، جداسازی holiday work از regular balance، همسان‌سازی Paid Leave با credited time و مشتق‌سازی واحد نرخ Base/Overtime/Holiday/Deficit بدون تغییر Schema v20.
+- [x] فاز ۱۹۲: Behavioral Test Modernization؛ استخراج Report Summary به قرارداد pure و رفتاری، حذف source-inspection از تست‌های جدید Phase 192، ثبت budget بدهی تاریخی source-coupled tests و افزودن `audit:tests` برای جلوگیری از رشد دوباره وابستگی تست‌ها به filename/ساختار داخلی.
+- [ ] Technical debt پس از 2.4.0: کاهش Regex source tests و افزایش behavioral/component/browser contracts به‌صورت تدریجی.
 
 ## بین‌المللی‌سازی آینده — پس از Patch بعدی
 
@@ -313,3 +331,10 @@
 - [x] ترجمه Validation/Toastهای تجاری و خروجی CSV/Excel/سطح چاپ مرتبط در فاز ۱۷۶، بدون تغییر داده دامنه.
 - [x] تکمیل متن‌های System/PWA و سطوح باقی‌مانده Settings/Onboarding/Import/About در فاز ۱۷۷؛ Metadata استاتیک فعلاً Canonical فارسی و Runtime title دو Locale است.
 - [x] فاز ۱۷۸: Audit نهایی Hard-coded UI، Metadata/PWA، Print/CSV و هندسه دو جهت پیش از تصمیم Rollout زبان دوم؛ Audit اجرایی به Quality Gate متصل شد.
+
+## آمادگی انتشار ۲.۵.۰
+
+- [x] فاز ۱۹۱: Payroll & Reports Hardening؛ Payroll Period Facts مشترک، Paid Leave consistency و rate summary واحد.
+- [x] فاز ۱۹۲: Behavioral Test Modernization؛ Report Summary رفتاری و جلوگیری از رشد source-coupled tests.
+- [x] فاز ۱۹۳: Release Candidate 2.5.0؛ bump نسخه، Manifest Schema v20، Migration audit v17→v20، Release Notes دو‌زبانه و Browser/Production matrix روی Baseline `0c4c22e` با ۸۷۴/۸۷۴ تست و Candidate commit `d81e094`.
+- [x] فاز ۱۹۴: Finalization/Release 2.5.0؛ Final source و ۸۸۰-test contract، سپس Merge کنترل‌شده به `main`، Deploy، `audit:production` و Tag annotated `v2.5.0` فقط به همین ترتیب.

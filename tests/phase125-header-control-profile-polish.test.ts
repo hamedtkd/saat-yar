@@ -30,7 +30,8 @@ test("header controls share one height radius surface and interaction contract",
 test("workspace trigger is a single compact Radix trigger instead of a mismatched nested shell", async () => {
   const source = await read("components/layout/app-header/workspace-switcher.tsx");
   assert.match(source, /min-w-\[132px\]/);
-  assert.match(source, /max-\[520px\]:min-w-\[108px\]/);
+  assert.match(source, /max-\[520px\]:min-w-0/);
+  assert.match(source, /max-\[520px\]:flex-1/);
   assert.match(source, /<SelectGroup>[\s\S]*<SelectLabel>[\s\S]*<SelectItem value="employee">[\s\S]*<\/SelectGroup>/);
   assert.doesNotMatch(source, /<div className="flex h-10/);
 });

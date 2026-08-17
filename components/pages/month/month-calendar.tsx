@@ -8,17 +8,21 @@ import { calc } from "@/lib/time-engine";
 import { calendarMonthCells, localDateKey } from "@/lib/format";
 import { getHolidayInfo } from "@/lib/holidays";
 import type { AppData } from "@/lib/types";
+import type { ExternalCalendarEvent } from "@/lib/calendar-integration/types";
+import { buildCalendarDayAgenda } from "@/lib/calendar-integration/intelligence";
 import { getDailyTargetMinutes } from "@/lib/work-schedule";
 import { cn } from "@/lib/cn";
 
 const weekdayKeys = ["sat", "sun", "mon", "tue", "wed", "thu", "fri"] as const;
 
-export function MonthCalendar({ data, selectedDate, setSelectedDate, monthRecordCount, moveMonth }: {
+export function MonthCalendar({ data, selectedDate, setSelectedDate, monthRecordCount, moveMonth, externalEvents = [], onOpenDayActions }: {
   data: AppData;
   selectedDate: string;
   setSelectedDate: (value: string) => void;
   monthRecordCount: number;
   moveMonth: (amount: number) => void;
+  externalEvents?: ExternalCalendarEvent[];
+  onOpenDayActions?: (dateKey: string, point: { x: number; y: number }) => void;
 }) {
   const { t, date, duration, number, locale, direction, calendar } = useLocaleUi();
   const cells = calendarMonthCells(selectedDate, calendar);
@@ -61,7 +65,10 @@ export function MonthCalendar({ data, selectedDate, setSelectedDate, monthRecord
                   : "";
           const holidayLabel = holiday.isHoliday ? (locale === "fa-IR" && holiday.title ? holiday.title : t("common.holiday")) : "";
           const dayLabel = number(cell.day);
-          return <button key={cell.key} type="button" title={holidayLabel || undefined} aria-label={holidayLabel ? `${dayLabel}, ${holidayLabel}` : dayLabel} className={cn(!cell.inMonth && "opacity-30", cell.key === localDateKey() && "shadow-[inset_0_0_0_2px_var(--accent)]", cell.key === selectedDate && "ring-2 ring-[var(--accent)] ring-offset-2 ring-offset-[var(--surface-1)]", statusClass)} aria-pressed={cell.key === selectedDate} onClick={() => setSelectedDate(cell.key)}><span>{dayLabel}</span>{item && <small>{duration(result?.worked ?? 0)}</small>}{statusClass && <i aria-hidden="true" />}</button>;
+          const externalEventCount = buildCalendarDayAgenda(externalEvents, cell.key).length;
+          const externalLabel = externalEventCount ? t("calendar.google.eventsCount", { count: number(externalEventCount) }) : "";
+          const ariaLabel = [dayLabel, holidayLabel, externalLabel].filter(Boolean).join(", ");
+          return <button key={cell.key} type="button" title={holidayLabel || undefined} aria-label={ariaLabel} aria-haspopup={onOpenDayActions ? "menu" : undefined} className={cn(!cell.inMonth && "opacity-30", cell.key === localDateKey() && "shadow-[inset_0_0_0_2px_var(--accent)]", cell.key === selectedDate && "ring-2 ring-[var(--accent)] ring-offset-2 ring-offset-[var(--surface-1)]", statusClass)} aria-pressed={cell.key === selectedDate} onClick={() => setSelectedDate(cell.key)} onContextMenu={(event) => { if (!onOpenDayActions) return; event.preventDefault(); setSelectedDate(cell.key); onOpenDayActions(cell.key, { x: event.clientX, y: event.clientY }); }} onKeyDown={(event) => { if (!onOpenDayActions || !(event.key === "ContextMenu" || (event.shiftKey && event.key === "F10"))) return; event.preventDefault(); const rect = event.currentTarget.getBoundingClientRect(); setSelectedDate(cell.key); onOpenDayActions(cell.key, { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }); }}><span>{dayLabel}</span>{item && <small>{duration(result?.worked ?? 0)}</small>}{externalEventCount > 0 && <span data-external-calendar-count className="absolute bottom-1.5 end-1.5 rounded-full bg-[var(--accent-soft)] px-1.5 py-0.5 text-[8px] font-extrabold text-[var(--accent-strong)]">{number(externalEventCount)}</span>}{statusClass && <i aria-hidden="true" />}</button>;
         })}
       </div>
       <div className={cn("mt-[15px] flex flex-wrap gap-[15px] text-[10px] text-[var(--text-muted)] [&_span]:flex [&_span]:items-center [&_span]:gap-1.5 [&_i]:h-2 [&_i]:w-2 [&_i]:rounded-full max-[620px]:gap-[9px]")}>
@@ -69,6 +76,7 @@ export function MonthCalendar({ data, selectedDate, setSelectedDate, monthRecord
         <span><i className="bg-[var(--warning)]" /> {t("month.calendar.legendDeficit")}</span>
         <span><i className="bg-[var(--info)]" /> {t("month.calendar.legendLeave")}</span>
         <span><i className="bg-[var(--danger)]" /> {t("month.calendar.legendHoliday")}</span>
+        {externalEvents.length > 0 && <span data-external-calendar-legend><i className="bg-[var(--accent)]" /> {t("calendar.google.title")}</span>}
       </div>
     </SurfaceCard>
   );

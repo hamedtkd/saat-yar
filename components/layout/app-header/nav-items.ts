@@ -45,7 +45,7 @@ export function getMobilePrimaryNavItems(mode: Mode) {
 
 export function getRouteNavItem(pathname: string) {
   const normalized = pathname.replace(/\/+$/, "") || "/";
-  if (normalized === settingsNavItem.href) return settingsNavItem;
+  if (normalized === settingsNavItem.href || normalized.startsWith(`${settingsNavItem.href}/`)) return settingsNavItem;
   if (normalized === aboutNavItem.href) return aboutNavItem;
   return appNavItems.find((item) => item.href === normalized) ?? appNavItems[0];
 }

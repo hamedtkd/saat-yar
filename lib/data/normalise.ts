@@ -1,19 +1,53 @@
-import type { AppData, Settings, WeekdayKey } from "../types.ts";
-import { weekdayOrder } from "../work-schedule.ts";
+import type { AppData, CustomReminderSettings, NotificationSettings, Settings, WeekdayKey } from "../types.ts";
+import { getConfiguredWorkMinutes, weekdayOrder } from "../work-schedule.ts";
 import { createCompleteAppData } from "./app-data-factory.ts";
 import { normalizePayrollPolicy } from "../payroll-policy.ts";
 import { normalizeLeaveSettings } from "../leave-entitlement.ts";
+
+
+function withoutLegacyCustomReminder(settings: NotificationSettings | undefined): Partial<NotificationSettings> {
+  if (!settings) return {};
+  const clean = { ...settings } as Record<string, unknown>;
+  delete clean.customReminder;
+  return clean as Partial<NotificationSettings>;
+}
+
+function normalizeCustomReminders(settings: NotificationSettings | undefined): CustomReminderSettings[] {
+  const raw = settings as (NotificationSettings & { customReminder?: Partial<CustomReminderSettings> }) | undefined;
+  const source = Array.isArray(raw?.customReminders)
+    ? raw.customReminders
+    : raw?.customReminder && (raw.customReminder.enabled || raw.customReminder.title || raw.customReminder.message)
+      ? [{ id: "legacy-custom-1", enabled: false, intervalMinutes: 90, title: "", message: "", ...raw.customReminder }]
+      : [];
+
+  return source.slice(0, 5).map((item, index) => ({
+    id: typeof item.id === "string" && item.id.trim() ? item.id : `custom-${index + 1}`,
+    enabled: Boolean(item.enabled),
+    intervalMinutes: Math.min(240, Math.max(15, Math.round(item.intervalMinutes ?? 90))),
+    title: typeof item.title === "string" ? item.title.slice(0, 80) : "",
+    message: typeof item.message === "string" ? item.message.slice(0, 180) : "",
+  }));
+}
 
 export function normaliseData(value: AppData, defaults: Settings): AppData {
   const incomingSettings = value.settings ?? defaults;
   const incomingSchedule = incomingSettings.weeklySchedule ?? {};
   const leaveSettings = normalizeLeaveSettings(incomingSettings);
+  const workTimingMode = incomingSettings.workTimingMode === "flexible" ? "flexible" : "scheduled";
   const weeklySchedule = Object.fromEntries(
-    weekdayOrder.map((day) => [day, {
-      ...defaults.weeklySchedule[day],
-      ...(incomingSchedule[day as WeekdayKey] ?? {}),
-      lunchPaid: Boolean(incomingSchedule[day as WeekdayKey]?.lunchPaid),
-    }]),
+    weekdayOrder.map((day) => {
+      const merged = {
+        ...defaults.weeklySchedule[day],
+        ...(incomingSchedule[day as WeekdayKey] ?? {}),
+        lunchPaid: Boolean(incomingSchedule[day as WeekdayKey]?.lunchPaid),
+      };
+      return [day, {
+        ...merged,
+        targetMinutes: Number.isFinite(merged.targetMinutes)
+          ? Math.max(0, Math.round(merged.targetMinutes))
+          : getConfiguredWorkMinutes(merged),
+      }];
+    }),
   ) as Settings["weeklySchedule"];
 
   return createCompleteAppData({
@@ -21,14 +55,21 @@ export function normaliseData(value: AppData, defaults: Settings): AppData {
       ...defaults,
       ...incomingSettings,
       weeklySchedule,
+      workTimingMode,
       ...leaveSettings,
       notificationSettings: {
         ...defaults.notificationSettings,
-        ...(incomingSettings.notificationSettings ?? {}),
+        ...withoutLegacyCustomReminder(incomingSettings.notificationSettings),
         breakReminder: {
           ...defaults.notificationSettings.breakReminder,
           ...(incomingSettings.notificationSettings?.breakReminder ?? {}),
         },
+        quietHours: {
+          ...defaults.notificationSettings.quietHours,
+          ...(incomingSettings.notificationSettings?.quietHours ?? {}),
+        },
+        customReminders: normalizeCustomReminders(incomingSettings.notificationSettings),
+        snoozeMinutes: Math.min(240, Math.max(5, Math.round(incomingSettings.notificationSettings?.snoozeMinutes ?? defaults.notificationSettings.snoozeMinutes))),
       },
       appearance: { ...defaults.appearance, ...(incomingSettings.appearance ?? {}) },
       payrollPolicy: normalizePayrollPolicy(incomingSettings.payrollPolicy ?? defaults.payrollPolicy),
@@ -44,6 +85,10 @@ export function normaliseData(value: AppData, defaults: Settings): AppData {
           breaks: (record.breaks ?? []).map((item) => ({
             ...item,
             paid: Boolean(item.paid),
+          })),
+          activitySegments: (record.activitySegments ?? []).map((item) => ({
+            ...item,
+            projectId: item.projectId || undefined,
           })),
           leaveMinutes: Math.max(0, record.leaveMinutes ?? 0),
           leaveType: record.leaveType ?? "none",
@@ -93,6 +138,7 @@ export function normaliseData(value: AppData, defaults: Settings): AppData {
       record: {
         ...item.record,
         breaks: (item.record.breaks ?? []).map((entry) => ({ ...entry })),
+        activitySegments: (item.record.activitySegments ?? []).map((entry) => ({ ...entry })),
       },
     })),
   });

@@ -23,12 +23,12 @@ const modeLabelKeys: Record<Mode, MessageKey> = {
   hybrid: "mode.hybrid",
 };
 
-const menuItems: readonly { labelKey: MessageKey; hash: string; icon: LucideIcon }[] = [
-  { labelKey: "profile.profile", hash: "settings-profile", icon: UserRound },
-  { labelKey: "profile.appearance", hash: "settings-appearance", icon: Palette },
-  { labelKey: "profile.transfer", hash: "settings-device-transfer", icon: Smartphone },
-  { labelKey: "profile.backup", hash: "settings-backup", icon: DatabaseBackup },
-  { labelKey: "profile.health", hash: "settings-health", icon: ShieldCheck },
+const menuItems: readonly { labelKey: MessageKey; href: string; icon: LucideIcon }[] = [
+  { labelKey: "profile.profile", href: "/settings/profile#settings-profile", icon: UserRound },
+  { labelKey: "profile.appearance", href: "/settings/appearance#settings-appearance", icon: Palette },
+  { labelKey: "profile.transfer", href: "/settings/sync#settings-device-transfer", icon: Smartphone },
+  { labelKey: "profile.backup", href: "/settings/data#settings-backup", icon: DatabaseBackup },
+  { labelKey: "profile.health", href: "/settings/sync#settings-health", icon: ShieldCheck },
 ];
 
 function ProfileAvatar({ name, size = "sm" }: { name: string; size?: "sm" | "lg" }) {
@@ -56,7 +56,7 @@ export function ProfileMenu({
 }: {
   name: string;
   mode: Mode;
-  onNavigate: (hash: string) => void;
+  onNavigate: (href: string) => void;
   onExport: () => void;
 }) {
   const { t } = useLocale();
@@ -80,9 +80,9 @@ export function ProfileMenu({
     };
   }, [open]);
 
-  const navigate = (hash: string) => {
+  const navigate = (href: string) => {
     setOpen(false);
-    onNavigate(hash);
+    onNavigate(href);
   };
 
   return (
@@ -133,12 +133,12 @@ export function ProfileMenu({
           </div>
 
           <div className="grid gap-0.5">
-            {menuItems.map(({ labelKey, hash, icon: Icon }) => (
+            {menuItems.map(({ labelKey, href, icon: Icon }) => (
               <button
-                key={`${labelKey}-${hash}`}
+                key={`${labelKey}-${href}`}
                 type="button"
                 role="menuitem"
-                onClick={() => navigate(hash)}
+                onClick={() => navigate(href)}
                 className="flex min-h-10 w-full items-center gap-2.5 rounded-xl px-2.5 text-start text-[11px] font-bold text-[var(--text)] transition-colors hover:bg-[var(--accent-soft)] hover:text-[var(--accent-strong)]"
               >
                 <span className="grid size-7 place-items-center rounded-[9px] bg-[var(--surface-2)] text-[var(--accent-strong)]"><Icon aria-hidden="true" className="size-4" /></span>

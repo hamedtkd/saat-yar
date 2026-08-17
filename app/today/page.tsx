@@ -15,6 +15,7 @@ export default function TodayRoute() {
     <TodayPage
       data={controller.data}
       setData={controller.setData}
+      setToast={controller.setToast}
       record={controller.record}
       selectedDate={controller.selectedDate}
       setSelectedDate={controller.setSelectedDate}
@@ -23,6 +24,7 @@ export default function TodayRoute() {
       suggestedExit={controller.suggestedExit}
       activeEntry={controller.activeEntry}
       activeBreak={controller.activeBreak}
+      activeActivitySegment={controller.activeActivitySegment}
       lunchRunning={controller.lunchRunning}
       timerDraft={controller.timerDraft}
       setTimerDraft={controller.setTimerDraft}
@@ -42,6 +44,8 @@ export default function TodayRoute() {
       finishLunch={controller.finishLunch}
       startBreak={controller.startBreak}
       finishBreak={controller.finishBreak}
+      startActivitySegment={controller.startActivitySegment}
+      stopActivitySegment={controller.stopActivitySegment}
       toggleProjectTimer={controller.toggleProjectTimer}
       createClient={controller.createClient}
       createProject={controller.createProject}

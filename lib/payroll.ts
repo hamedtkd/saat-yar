@@ -72,11 +72,13 @@ export function calculateMonthlyPayroll(input: MonthlyPayrollInput) {
 
 
 export function getPayrollPolicy(settings: Settings): PayrollCalculationPolicy {
-  return normalizePayrollPolicy(settings.payrollPolicy ?? createLegacyPayrollPolicy({
+  const fallback = createLegacyPayrollPolicy({
     monthlySalary: settings.salary,
     overtimeMultiplier: settings.overtimeMultiplier,
     holidayMultiplier: settings.holidayMultiplier,
-  }));
+  });
+  fallback.rateBasis = "standard-month";
+  return normalizePayrollPolicy(settings.payrollPolicy ?? fallback);
 }
 
 export function calculateMonthlyPayrollForSettings(settings: Settings, facts: Omit<PayrollFacts, "components">) {
@@ -104,6 +106,9 @@ export function calculateEmployeeDayPayForSettings({
   const credited = Math.max(0, creditedMinutes);
   const holidayMinutes = holiday ? credited : 0;
   const overtimeMinutes = holiday ? 0 : Math.max(0, credited - target);
+  const rateContext = policy.baseMode.startsWith("monthly-") && policy.rateBasis === "standard-month"
+    ? { baseAmount: policy.baseAmount }
+    : undefined;
   return calculatePayrollWithPolicy(dayPolicy, {
     workedMinutes: credited,
     targetMinutes: target,
@@ -111,5 +116,5 @@ export function calculateEmployeeDayPayForSettings({
     deficitMinutes: 0,
     holidayMinutes,
     components: [],
-  }).net;
+  }, rateContext).net;
 }

@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useUnsavedNavigation } from "@/components/layout/navigation/unsaved-navigation-provider";
+import { BrandMark } from "@/components/common/brand-mark";
 import { cn } from "@/lib/cn";
 import type { AppearanceSettings, Mode, ThemeMode } from "@/lib/types";
 import { HeaderActions } from "./app-header/header-actions";
@@ -41,18 +42,18 @@ export function AppHeader(props: Props) {
     });
   };
 
-  const navigateToSettings = (hash: string) => {
-    requestNavigation(() => router.push(`/settings#${hash}`));
+  const navigateToSettings = (href: string) => {
+    requestNavigation(() => router.push(href));
   };
 
   return (
     <header
       className={cn(
-        "shell-main-offset sticky top-2 z-50 mx-auto flex min-h-[62px] max-w-[var(--shell-content-max)] items-center justify-between gap-3 rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] px-3.5 py-2 shadow-[0_6px_20px_rgba(0,0,0,.035)] backdrop-blur-xl sm:px-4",
-        "max-[640px]:min-h-[58px] max-[640px]:rounded-[18px] max-[640px]:px-2.5 max-[640px]:py-1.5",
+        "shell-main-offset sticky top-2 z-50 mx-auto flex w-full min-w-0 min-h-[62px] max-w-[var(--shell-content-max)] items-center justify-between gap-3 rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] px-3.5 py-2 shadow-[0_6px_20px_rgba(0,0,0,.035)] backdrop-blur-xl sm:px-4",
+        "max-[640px]:min-h-[58px] max-[640px]:rounded-[18px] max-[640px]:px-2.5 max-[640px]:py-1.5 max-[520px]:gap-1.5",
       )}
     >
-      <div className="flex min-w-0 items-center gap-2.5">
+      <div className="flex min-w-0 items-center gap-2.5 max-[520px]:hidden">
         <span className="grid size-9 shrink-0 place-items-center rounded-[12px] bg-[var(--accent-soft)] text-[var(--accent-strong)]">
           <RouteIcon aria-hidden="true" className="size-[18px]" />
         </span>
@@ -62,7 +63,9 @@ export function AppHeader(props: Props) {
         </div>
       </div>
 
-      <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
+      <div className="hidden shrink-0 max-[520px]:block"><BrandMark size={34} animated={false} label={t("app.logoLabel")} /></div>
+
+      <div className="flex min-w-0 items-center gap-1.5 sm:gap-2 max-[520px]:flex-1 max-[520px]:justify-end">
         <HeaderActions
           mode={props.mode}
           saveState={props.saveState}

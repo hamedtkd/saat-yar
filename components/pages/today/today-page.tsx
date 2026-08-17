@@ -5,11 +5,14 @@ import { useLocaleUi } from "@/components/i18n/use-locale-ui";
 import { useUnsavedNavigation } from "@/components/layout/navigation/unsaved-navigation-provider";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { CalendarAgendaCard } from "@/components/calendar/calendar-agenda-card";
 import { cn } from "@/lib/cn";
 import { localDateKey } from "@/lib/format";
 import { getHolidayInfo } from "@/lib/holidays";
 import { isScheduledDayOff } from "@/lib/work-schedule";
 import { CompletedDayEditor } from "./completed-day-editor";
+import { ActivitySegmentsCard } from "./activity-segments-card";
+import { FirstRunGuide } from "./first-run-guide";
 import { ManualEntryForm } from "./manual-entry-form";
 import { RecordHealthBanner } from "./record-health-banner";
 import { RecordResetUndo } from "./record-reset-undo";
@@ -59,6 +62,15 @@ export function TodayPage(props: TodayPageProps) {
         selectedDate={props.selectedDate}
         onDateChange={(nextDate) => requestNavigation(() => props.setSelectedDate(nextDate))}
       />
+      {isToday && (
+        <FirstRunGuide
+          mode={props.data.settings.mode}
+          hasClients={props.data.clients.some((client) => !client.archived)}
+          hasProjects={props.data.projects.some((project) => project.status === "active")}
+          hasTrackedActivity={Object.values(props.data.records).some((record) => Boolean(record.start)) || props.data.timeEntries.length > 0}
+          onStartWork={props.startWork}
+        />
+      )}
       {holiday.isHoliday && (
         <div className="mb-5 flex items-center justify-between gap-3 rounded-[var(--card-radius)] border border-red-500/20 bg-red-500/10 px-4 py-3 text-red-500">
           <div className="grid gap-0.5">
@@ -90,8 +102,11 @@ export function TodayPage(props: TodayPageProps) {
         openBreak={Boolean(props.activeBreak)}
         lunchRunning={props.lunchRunning}
         scheduledDayOff={scheduledDayOff}
+        flexible={props.data.settings.workTimingMode === "flexible"}
       />
+      <CalendarAgendaCard dateKey={props.selectedDate} data={props.data} setData={props.setData} setToast={props.setToast} />
       <CompletedDayEditor key={`${props.selectedDate}:${props.record.start && props.record.end ? "completed" : "active"}`} {...props} scheduledDayOff={scheduledDayOff} />
+      <ActivitySegmentsCard record={props.record} projects={props.data.projects} activeSegment={props.activeActivitySegment} activeBreak={props.activeBreak} lunchRunning={props.lunchRunning} trackingAllowed={isToday} onStart={props.startActivitySegment} onStop={props.stopActivitySegment} />
       {props.editingEntry === "manual" && props.data.settings.mode !== "employee" && <ManualEntryForm {...props} />}
       {props.data.settings.mode === "employee" ? <TodayAttendanceLog record={props.record} /> : <TodayTimeline {...props} />}
       <TodayMetrics

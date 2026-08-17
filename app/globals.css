@@ -75,12 +75,16 @@
 
 
 .dashboard-shell {
+  max-width: 100%;
+  overflow-x: clip;
   background-image:
     radial-gradient(circle at 18% 12%, color-mix(in srgb, var(--accent) 5%, transparent), transparent 30%),
     linear-gradient(180deg, color-mix(in srgb, var(--accent) 1.5%, transparent), transparent 38%);
 }
 
 .shell-main-offset {
+  min-width: 0;
+  max-width: 100%;
   width: min(100%, var(--shell-content-max));
   margin-right: auto;
   margin-left: auto;
@@ -153,6 +157,11 @@
   }
 }
 
+@keyframes saatyar-loading-sweep {
+  0%, 100% { transform: translateX(0); opacity: .52; }
+  50% { transform: translateX(200%); opacity: 1; }
+}
+
 @keyframes saatyar-breathe {
   0%, 100% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 0 color-mix(in srgb, var(--accent) 0%, transparent)); }
   50% { transform: scale(1.025) rotate(.6deg); filter: drop-shadow(0 5px 12px color-mix(in srgb, var(--accent) 24%, transparent)); }
@@ -182,4 +191,27 @@
 
 :root[lang="fa"] .saatyar-timer-countdown {
   font-family: "Vazirmatn FD", Vazirmatn, Tahoma, sans-serif;
+}
+
+:root[data-theme-transition="active"]::view-transition-old(root),
+:root[data-theme-transition="active"]::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+:root[data-theme-transition="active"]::view-transition-new(root) {
+  animation: saatyar-theme-reveal 300ms cubic-bezier(.22, .78, .2, 1) both;
+}
+
+@keyframes saatyar-theme-reveal {
+  from { clip-path: circle(0 at var(--theme-reveal-x) var(--theme-reveal-y)); }
+  to { clip-path: circle(var(--theme-reveal-radius) at var(--theme-reveal-x) var(--theme-reveal-y)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-theme-transition="active"]::view-transition-old(root),
+  :root[data-theme-transition="active"]::view-transition-new(root) {
+    animation: none !important;
+    clip-path: none !important;
+  }
 }

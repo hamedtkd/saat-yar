@@ -5,14 +5,16 @@ import { PrivateMoney } from "@/components/common/private-money";
 import { useLocaleUi } from "@/components/i18n/use-locale-ui";
 import { cn } from "@/lib/cn";
 import { calc } from "@/lib/time-engine";
+import { getDailyTargetMinutes } from "@/lib/work-schedule";
 import type { Settings, WorkRecord } from "@/lib/types";
 import { getEmployeeDayPay, InfoRow, type EmployeeTotals } from "./report-table-shared";
 
-type Props = { monthRecords: WorkRecord[]; settings: Settings; dailyTarget: number; totals: EmployeeTotals; financialsHidden: boolean };
-export function EmployeeMobileCards({ monthRecords, settings, dailyTarget, totals, financialsHidden }: Props) {
+type Props = { monthRecords: WorkRecord[]; settings: Settings; totals: EmployeeTotals; financialsHidden: boolean };
+export function EmployeeMobileCards({ monthRecords, settings, totals, financialsHidden }: Props) {
   const { t, date, digits, duration, number } = useLocaleUi();
   return <div className="grid gap-3 p-4 md:hidden">
     {monthRecords.map((record) => {
+      const dailyTarget = getDailyTargetMinutes(record.date, settings);
       const result = calc(record, dailyTarget);
       const earnedAmount = getEmployeeDayPay({ record, settings, dailyTarget });
       return <article key={record.date} className={cn("rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-4 shadow-[0_6px_20px_rgba(17,45,55,0.035)]")}>

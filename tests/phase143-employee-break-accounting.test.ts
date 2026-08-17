@@ -9,6 +9,7 @@ test("08:00-17:00 minus 30m lunch and 15m unpaid break is 8:15", () => {
   const result = calc({
     date: "2026-08-07", start: "08:00", end: "17:00", lunchMinutes: 30, lunchPaid: false,
     breaks: [{ id: "break-1", start: "15:00", end: "15:15", title: "وقفه شخصی", paid: false }],
+    activitySegments: [],
     leaveMinutes: 0, leaveType: "none", note: "", holiday: false, manuallyEdited: true,
   }, 0);
   assert.equal(result.grossMinutes, 540);

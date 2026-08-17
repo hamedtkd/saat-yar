@@ -55,7 +55,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fa" dir="rtl" suppressHydrationWarning className="scroll-smooth">
+    <html lang="fa" dir="rtl" suppressHydrationWarning className="scroll-smooth" data-scroll-behavior="smooth">
       <head>
         <meta name="saatyar-base" content={basePath} />
         <LocaleBootstrap />

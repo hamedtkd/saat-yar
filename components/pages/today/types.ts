@@ -1,9 +1,10 @@
 import type React from "react";
 import type { ReturnTypeCalc } from "@/lib/type-helpers";
-import type { AppData, BreakItem, ClientDraft, ProjectDraft, Tab, TimeEntry, TimerDraft, WorkRecord, WorkRecordPatch } from "@/lib/types";
+import type { ActivityKind, ActivitySegment, AppData, BreakItem, ClientDraft, ProjectDraft, Tab, TimeEntry, TimerDraft, WorkRecord, WorkRecordPatch } from "@/lib/types";
 
 export type TodayPageProps = {
   data: AppData;
+  setToast: (message: string) => void;
   record: WorkRecord;
   selectedDate: string;
   setSelectedDate: (date: string) => void;
@@ -12,6 +13,7 @@ export type TodayPageProps = {
   suggestedExit: string;
   activeEntry?: TimeEntry;
   activeBreak?: BreakItem;
+  activeActivitySegment?: ActivitySegment;
   lunchRunning: boolean;
   timerDraft: TimerDraft;
   setTimerDraft: React.Dispatch<React.SetStateAction<TimerDraft>>;
@@ -31,6 +33,8 @@ export type TodayPageProps = {
   finishLunch: () => void;
   startBreak: () => void;
   finishBreak: (minutes?: number) => void;
+  startActivitySegment: (kind: ActivityKind, projectId?: string) => void;
+  stopActivitySegment: () => void;
   toggleProjectTimer: (projectId?: string) => void;
   createClient: (draft: ClientDraft) => string | undefined;
   createProject: (draft: ProjectDraft) => string | undefined;

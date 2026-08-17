@@ -139,6 +139,37 @@ async function evaluate(client, expression) {
   return response.result?.value;
 }
 
+async function assertMobileShellFits(client, label) {
+  const contract = await evaluate(client, `(() => {
+    const viewportWidth = document.documentElement.clientWidth;
+    const header = document.querySelector('header.shell-main-offset');
+    const nav = document.querySelector('[data-mobile-bottom-nav]');
+    const main = document.querySelector('#main-content');
+    const rect = (element) => {
+      const value = element?.getBoundingClientRect();
+      return value ? { left: value.left, right: value.right, width: value.width } : null;
+    };
+    const fits = (value) => !value || (value.left >= -1 && value.right <= viewportWidth + 1 && value.width <= viewportWidth + 2);
+    const headerRect = rect(header);
+    const navRect = rect(nav);
+    const mainRect = rect(main);
+    return {
+      viewportWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+      pageFits: document.documentElement.scrollWidth <= viewportWidth + 2,
+      headerFits: fits(headerRect),
+      navFits: fits(navRect),
+      mainFits: fits(mainRect),
+      headerRect,
+      navRect,
+      mainRect,
+    };
+  })()`);
+  if (!contract?.pageFits || !contract.headerFits || !contract.navFits || !contract.mainFits) {
+    throw new Error(`${label} responsive shell contract failed: ${JSON.stringify(contract)}`);
+  }
+}
+
 async function browserStateSnapshot(client) {
   try {
     return await evaluate(client, `(async () => {
@@ -199,6 +230,23 @@ async function waitForEvent(client, method, label, timeout = WAIT_TIMEOUT_MS) {
       resolveEvent(params);
     });
   });
+}
+
+
+async function clickRouteLink(client, expectedPath) {
+  const clicked = await evaluate(client, `(() => {
+    const expectedPath = ${JSON.stringify(expectedPath)};
+    const link = Array.from(document.querySelectorAll('a[href]')).find((candidate) => {
+      if (!(candidate instanceof HTMLAnchorElement)) return false;
+      const pathname = new URL(candidate.href, location.href).pathname;
+      const normalizedPathname = pathname.length > 1 && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname;
+      return normalizedPathname === expectedPath;
+    });
+    if (!(link instanceof HTMLAnchorElement)) return false;
+    link.click();
+    return true;
+  })()`);
+  if (!clicked) throw new Error(`In-app route link unavailable: ${expectedPath}`);
 }
 
 async function clickButton(client, text) {
@@ -319,6 +367,7 @@ async function readStoredSettings(client) {
       name: settings.name,
       workDays: settings.workDays,
       weeklyMinutes: settings.weeklyMinutes,
+      workTimingMode: settings.workTimingMode,
       defaultStart: settings.defaultStart,
       defaultEnd: settings.defaultEnd,
       thursdayEnabled: Boolean(settings.weeklySchedule?.thursday?.enabled),
@@ -427,6 +476,8 @@ export async function runProductionBrowserSmoke() {
       "onboarding mode step",
     );
     console.log("✓ Onboarding welcome step captured a user name");
+    await waitFor(client, `Boolean(document.querySelector('[data-onboarding-fast-setup]')) && Boolean(document.querySelector('[data-onboarding-skip]'))`, "onboarding fast setup and skip actions");
+    console.log("✓ Onboarding exposes Fast Setup and Skip without removing the advanced flow");
     await clickButton(client, "فریلنسر");
     await waitFor(client, `document.querySelector('[data-onboarding-progress-mode="freelancer"]') && document.querySelector('[data-onboarding-step-index="2"][data-onboarding-mode="freelancer"]')`, "freelancer personalized onboarding progress");
     await clickButton(client, "ترکیبی");
@@ -435,7 +486,24 @@ export async function runProductionBrowserSmoke() {
     await waitFor(client, `document.querySelector('[data-onboarding-progress-mode="employee"]') && document.querySelector('[data-onboarding-step-index="2"][data-onboarding-mode="employee"]')`, "employee personalized onboarding progress");
     console.log("✓ Onboarding progress adapts immediately to Employee/Freelancer/Hybrid selection");
     await clickButton(client, "ادامه");
-    await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="3"] [data-work-schedule-editor]'))`, "onboarding schedule step");
+    await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="3"] [data-work-schedule-editor]')) && Boolean(document.querySelector('[data-onboarding-work-timing]'))`, "onboarding schedule step");
+    const timingOpened = await evaluate(client, `(() => {
+      const trigger = document.querySelector('[data-onboarding-work-timing]');
+      if (!(trigger instanceof HTMLButtonElement)) return false;
+      trigger.click();
+      return true;
+    })()`);
+    if (!timingOpened) throw new Error("Onboarding work-timing selector could not be opened.");
+    await waitFor(client, `Boolean(document.querySelector('[data-work-timing-option="flexible"]'))`, "flexible work-timing option");
+    const timingSelected = await evaluate(client, `(() => {
+      const marker = document.querySelector('[data-work-timing-option="flexible"]');
+      const option = marker?.closest('[role="option"]') || marker;
+      if (!(option instanceof HTMLElement)) return false;
+      option.click();
+      return true;
+    })()`);
+    if (!timingSelected) throw new Error("Flexible work timing could not be selected in onboarding.");
+    await waitFor(client, `document.querySelector('[data-onboarding-step-index="3"] [data-work-schedule-editor]')?.getAttribute('data-work-timing') === "flexible"`, "flexible onboarding schedule editor");
 
     const thursdayEnabled = await evaluate(client, `(() => {
       const input = document.querySelector('[data-onboarding-step-index="3"] [data-workday-toggle="thursday"]');
@@ -454,8 +522,9 @@ export async function runProductionBrowserSmoke() {
     const recoveredSchedule = await evaluate(client, `(() => ({
       weeklyTarget: document.querySelector('[data-onboarding-step-index="3"] [data-work-schedule-weekly-target]')?.getAttribute('aria-valuenow') || "",
       thursdayEnabled: document.querySelector('[data-onboarding-step-index="3"] [data-workday-toggle="thursday"]')?.checked === true,
+      workTiming: document.querySelector('[data-onboarding-step-index="3"] [data-work-schedule-editor]')?.getAttribute('data-work-timing') || "",
     }))()`);
-    if (recoveredSchedule?.weeklyTarget !== "44" || !recoveredSchedule?.thursdayEnabled) {
+    if (recoveredSchedule?.weeklyTarget !== "44" || !recoveredSchedule?.thursdayEnabled || recoveredSchedule?.workTiming !== "flexible") {
       throw new Error(`Onboarding schedule did not survive reload: ${JSON.stringify(recoveredSchedule)}`);
     }
     console.log("✓ Onboarding work schedule persisted across reload");
@@ -478,6 +547,8 @@ export async function runProductionBrowserSmoke() {
     await clickButton(client, "ادامه");
 
     await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="6"]'))`, "onboarding privacy step");
+    await waitFor(client, `Boolean(document.querySelector('[data-product-analytics-consent]')) && Boolean(document.querySelector('[data-analytics-opt-out]'))`, "onboarding privacy-safe analytics consent");
+    console.log("✓ Onboarding privacy step exposes explicit analytics opt-out before any provider is required");
     await clickButton(client, "ادامه");
     await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="7"] [data-onboarding-import]')) && Boolean(document.querySelector('[data-onboarding-step-index="7"] [data-import-source="csv"]'))`, "personalized onboarding import step");
     await evaluate(client, `document.querySelector('[data-onboarding-step-index="7"] [data-import-source="csv"]')?.click()`);
@@ -501,6 +572,7 @@ export async function runProductionBrowserSmoke() {
       && onboardingSettings.name === "کاربر تست"
       && onboardingSettings.workDays === 6
       && onboardingSettings.weeklyMinutes === 44 * 60
+      && onboardingSettings.workTimingMode === "flexible"
       && onboardingSettings.thursdayEnabled
       && onboardingSettings.salary === 42_000_000
       && onboardingSettings.payrollBaseAmount === 42_000_000
@@ -508,7 +580,101 @@ export async function runProductionBrowserSmoke() {
       && onboardingSettings.appearanceAccent?.toLowerCase() === "#0ea5e9"
       && onboardingSettings.onboarded === true;
     if (!onboardingContract) throw new Error(`Persisted onboarding settings contract failed: ${JSON.stringify(onboardingSettings)}`);
-    console.log("✓ Onboarding completed with schedule, payroll and appearance persisted to AppData");
+    console.log("✓ Onboarding completed with flexible schedule, payroll and appearance persisted to AppData");
+    await waitFor(client, `Boolean(document.querySelector('[data-first-run-guide]')) && Boolean(document.querySelector('[data-first-run-primary]'))`, "first-run action guide after onboarding");
+    console.log("✓ First-run guide exposes the next action immediately after onboarding");
+    await waitFor(client, `Boolean(document.querySelector('[data-activity-segments]')) && Boolean(document.querySelector('[data-activity-kind]'))`, "Today activity-segment card");
+    console.log("✓ Today exposes activity-segment tracking without requiring a separate route");
+    await evaluate(client, `document.querySelector('[data-first-run-dismiss]')?.click()`);
+
+    await waitFor(client, `Boolean(document.querySelector('[data-route-motion][data-route-motion-path="/today"]'))`, "Today route motion boundary");
+    await client.call("Emulation.setEmulatedMedia", { media: "", features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
+    const reducedMotionReload = waitForEvent(client, "Page.loadEventFired", "reduced-motion route reload");
+    await client.call("Page.reload", { ignoreCache: false });
+    await reducedMotionReload;
+    await waitFor(client, `matchMedia('(prefers-reduced-motion: reduce)').matches && document.querySelector('[data-route-motion][data-route-motion-path="/today"]')?.getAttribute('data-route-motion-reduced') === 'true'`, "reduced-motion route contract");
+    await client.call("Emulation.setEmulatedMedia", { media: "", features: [{ name: "prefers-reduced-motion", value: "no-preference" }] });
+    const restoredMotionReload = waitForEvent(client, "Page.loadEventFired", "restored route motion reload");
+    await client.call("Page.reload", { ignoreCache: false });
+    await restoredMotionReload;
+    await waitFor(client, `!matchMedia('(prefers-reduced-motion: reduce)').matches && document.querySelector('[data-route-motion][data-route-motion-path="/today"]')?.getAttribute('data-route-motion-reduced') === 'false'`, "restored route motion preference");
+    const openedMonthThroughAppNav = await evaluate(client, `(() => { const link = Array.from(document.querySelectorAll('a[href]')).find((candidate) => { if (!(candidate instanceof HTMLAnchorElement)) return false; const pathname = new URL(candidate.href, location.href).pathname; const normalizedPathname = pathname.length > 1 && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname; return normalizedPathname === '/month'; }); if (!(link instanceof HTMLAnchorElement)) return false; link.click(); return true; })()`);
+    if (!openedMonthThroughAppNav) throw new Error("In-app Month navigation link was unavailable for route motion smoke.");
+    await waitFor(client, `['/month', '/month/'].includes(location.pathname) && document.querySelector('[data-route-motion]')?.getAttribute('data-route-motion-path') === '/month'`, "state-driven Month route motion");
+    const returnedTodayThroughAppNav = await evaluate(client, `(() => { const link = Array.from(document.querySelectorAll('a[href]')).find((candidate) => { if (!(candidate instanceof HTMLAnchorElement)) return false; const pathname = new URL(candidate.href, location.href).pathname; const normalizedPathname = pathname.length > 1 && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname; return normalizedPathname === '/today'; }); if (!(link instanceof HTMLAnchorElement)) return false; link.click(); return true; })()`);
+    if (!returnedTodayThroughAppNav) throw new Error("In-app Today navigation link was unavailable for route motion smoke.");
+    await waitFor(client, `['/today', '/today/'].includes(location.pathname) && document.querySelector('[data-route-motion]')?.getAttribute('data-route-motion-path') === '/today'`, "state-driven Today route motion");
+    console.log("✓ Route motion is state-driven, reduced-motion aware, and keeps navigation responsive");
+
+    const themeRevealContract = await evaluate(client, `(async () => {
+      const root = document.documentElement;
+      const originalMode = root.dataset.themeMode;
+      const supported = typeof document.startViewTransition === 'function';
+      let visualChanged = false;
+      let revealObserved = false;
+      for (let attempt = 0; attempt < 2 && !visualChanged; attempt += 1) {
+        const button = document.querySelector('[data-theme-toggle]');
+        if (!(button instanceof HTMLButtonElement)) return { missing: true };
+        const beforeTheme = root.dataset.theme;
+        button.click();
+        revealObserved ||= root.dataset.themeTransition === 'active';
+        await new Promise((resolveWait) => setTimeout(resolveWait, 50));
+        visualChanged = root.dataset.theme !== beforeTheme;
+        await new Promise((resolveWait) => setTimeout(resolveWait, 300));
+      }
+      for (let attempt = 0; attempt < 3 && root.dataset.themeMode !== originalMode; attempt += 1) {
+        const button = document.querySelector('[data-theme-toggle]');
+        if (!(button instanceof HTMLButtonElement)) break;
+        button.click();
+        await new Promise((resolveWait) => setTimeout(resolveWait, 340));
+      }
+      return { missing: false, supported, visualChanged, revealObserved, restored: root.dataset.themeMode === originalMode };
+    })()`);
+    if (themeRevealContract?.missing || !themeRevealContract?.visualChanged || !themeRevealContract?.restored || (themeRevealContract.supported && !themeRevealContract.revealObserved)) {
+      throw new Error(`Theme reveal contract failed: ${JSON.stringify(themeRevealContract)}`);
+    }
+    console.log("✓ Theme changes reveal from the header control and restore the original mode");
+
+    await client.call("Emulation.setDeviceMetricsOverride", { width: 425, height: 608, deviceScaleFactor: 1, mobile: true, screenWidth: 425, screenHeight: 608 });
+    for (const [route, label] of [["month", "Month"], ["leave", "Leave"], ["settings", "Settings"]]) {
+      const mobileLoad = waitForEvent(client, "Page.loadEventFired", `${label} mobile responsive route`);
+      await client.call("Page.navigate", { url: `${origin}/${route}/` });
+      await mobileLoad;
+      await waitFor(client, `["/${route}", "/${route}/"].includes(location.pathname) && Boolean(document.querySelector('#main-content'))`, `${label} mobile responsive render`);
+      if (route === "month") {
+        await waitFor(client, `document.documentElement.dataset.calendar === "persian" && Boolean(document.querySelector('[data-month-activity-heatmap]')) && Boolean(document.querySelector('[data-month-recent-activity]')) && Boolean(document.querySelector('[data-month-intelligence]'))`, "Persian month activity intelligence on mobile");
+      }
+      await assertMobileShellFits(client, `${label} 425px`);
+    }
+    console.log("✓ Month activity intelligence follows Persian calendar and Month, Leave, and Settings fit a 425px viewport");
+
+    await waitFor(client, `Boolean(document.querySelector('[data-settings-mobile-trigger]'))`, "Settings compact mobile navigation trigger");
+    const compactSettingsNav = await evaluate(client, `(() => {
+      const nav = document.querySelector('[data-settings-mobile-nav]');
+      const trigger = document.querySelector('[data-settings-mobile-trigger]');
+      const navRect = nav?.getBoundingClientRect();
+      const triggerRect = trigger?.getBoundingClientRect();
+      if (!navRect || !triggerRect) return null;
+      return { navHeight: navRect.height, triggerHeight: triggerRect.height, width: triggerRect.width, viewport: document.documentElement.clientWidth };
+    })()`);
+    if (!compactSettingsNav || compactSettingsNav.navHeight > 64 || compactSettingsNav.triggerHeight > 56 || compactSettingsNav.width > compactSettingsNav.viewport) {
+      throw new Error(`Settings compact mobile navigation contract failed: ${JSON.stringify(compactSettingsNav)}`);
+    }
+    await evaluate(client, `document.querySelector('[data-settings-mobile-trigger]')?.click()`);
+    await waitFor(client, `Boolean(document.querySelector('[data-settings-mobile-dialog]'))`, "Settings compact mobile navigation dialog");
+    const mobileSettingsDialog = await evaluate(client, `(() => {
+      const dialog = document.querySelector('[data-settings-mobile-dialog]');
+      const rect = dialog?.getBoundingClientRect();
+      if (!rect) return null;
+      return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, width: rect.width, viewportWidth: document.documentElement.clientWidth, viewportHeight: window.innerHeight };
+    })()`);
+    if (!mobileSettingsDialog || mobileSettingsDialog.left < 0 || mobileSettingsDialog.right > mobileSettingsDialog.viewportWidth + 1 || mobileSettingsDialog.top < 0 || mobileSettingsDialog.bottom > mobileSettingsDialog.viewportHeight + 1) {
+      throw new Error(`Settings mobile navigation dialog overflowed viewport: ${JSON.stringify(mobileSettingsDialog)}`);
+    }
+    await client.call("Input.dispatchKeyEvent", { type: "keyDown", key: "Escape", code: "Escape" });
+    await client.call("Input.dispatchKeyEvent", { type: "keyUp", key: "Escape", code: "Escape" });
+    await waitFor(client, `!document.querySelector('[data-settings-mobile-dialog]')`, "Settings compact mobile navigation dialog close");
+    console.log("✓ Settings compact mobile navigation replaces the oversized mobile section box");
 
     await client.call("Emulation.setDeviceMetricsOverride", { width: 2560, height: 1440, deviceScaleFactor: 1, mobile: false, screenWidth: 2560, screenHeight: 1440 });
     await evaluate(client, `new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))`);
@@ -561,12 +727,12 @@ export async function runProductionBrowserSmoke() {
     await returnToday;
     await waitFor(client, `["/today", "/today/"].includes(location.pathname) && document.body?.innerText.includes("ساعت‌یار")`, "Today after Import Wizard");
 
-    const settingsLocaleLoad = waitForEvent(client, "Page.loadEventFired", "Settings locale route");
-    await client.call("Page.navigate", { url: `${origin}/settings/` });
+    const settingsLocaleLoad = waitForEvent(client, "Page.loadEventFired", "Settings profile locale route");
+    await client.call("Page.navigate", { url: `${origin}/settings/profile/` });
     await settingsLocaleLoad;
-    await waitFor(client, `Boolean(document.querySelector('[data-settings-language]'))`, "language settings card");
+    await waitFor(client, `["/settings/profile", "/settings/profile/"].includes(location.pathname) && Boolean(document.querySelector('[data-settings-language]')) && Boolean(document.querySelector('#settings-profile'))`, "language settings profile route");
     await evaluate(client, `document.querySelector('[data-locale-choice="en"]')?.click()`);
-    await waitFor(client, `document.documentElement.lang === "en" && document.documentElement.dir === "ltr" && document.documentElement.dataset.calendar === "gregory" && localStorage.getItem("saatyar-locale-v1") === "en" && document.body?.innerText.includes("Settings & data") && document.body?.innerText.includes("Today")`, "English LTR locale switch with automatic Gregorian calendar");
+    await waitFor(client, `document.documentElement.lang === "en" && document.documentElement.dir === "ltr" && document.documentElement.dataset.calendar === "gregory" && localStorage.getItem("saatyar-locale-v1") === "en" && Boolean(document.querySelector('#settings-profile')) && Boolean(document.querySelector('[data-settings-language]')) && document.body?.innerText.includes("Today")`, "English LTR locale switch with automatic Gregorian calendar");
     await waitFor(client, `Boolean(document.querySelector('[data-calendar-choice="persian"]'))`, "calendar preference controls");
     await evaluate(client, `document.querySelector('[data-calendar-choice="persian"]')?.click()`);
     await waitFor(client, `document.documentElement.dataset.calendar === "persian" && localStorage.getItem("saatyar-calendar-v1") === "persian"`, "English interface with Persian calendar override");
@@ -587,23 +753,129 @@ export async function runProductionBrowserSmoke() {
     const localeReload = waitForEvent(client, "Page.loadEventFired", "English locale persistence reload");
     await client.call("Page.reload", { ignoreCache: false });
     await localeReload;
-    await waitFor(client, `document.documentElement.lang === "en" && document.documentElement.dir === "ltr" && document.documentElement.dataset.calendar === "gregory" && document.body?.innerText.includes("Settings & data")`, "English locale persistence after reload with automatic Gregorian calendar");
+    await waitFor(client, `document.documentElement.lang === "en" && document.documentElement.dir === "ltr" && document.documentElement.dataset.calendar === "gregory" && Boolean(document.querySelector('#settings-profile')) && Boolean(document.querySelector('[data-settings-language]'))`, "English locale persistence after reload with automatic Gregorian calendar");
 
     const englishTodayLoad = waitForEvent(client, "Page.loadEventFired", "English Today route");
     await client.call("Page.navigate", { url: `${origin}/today/` });
     await englishTodayLoad;
-    await waitFor(client, `["/today", "/today/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Today summary") && document.body?.innerText.includes("Daily target")`, "English Today core surface");
+    await waitFor(client, `["/today", "/today/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Today summary") && document.body?.innerText.includes("Daily target") && Boolean(document.querySelector('[data-activity-segments]'))`, "English Today core surface");
 
     const englishMonthLoad = waitForEvent(client, "Page.loadEventFired", "English Month route");
     await client.call("Page.navigate", { url: `${origin}/month/` });
     await englishMonthLoad;
-    await waitFor(client, `["/month", "/month/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("My month") && document.body?.innerText.includes("Calendar and weekly trend")`, "English Month core surface");
+    await waitFor(client, `["/month", "/month/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.documentElement.dataset.calendar === "gregory" && document.body?.innerText.includes("My month") && document.body?.innerText.includes("Activity map and month intelligence") && Boolean(document.querySelector('[data-month-activity-heatmap]')) && Boolean(document.querySelector('[data-month-recent-activity]')) && Boolean(document.querySelector('[data-month-intelligence]'))`, "English Month activity intelligence surface");
+    const monthHierarchy = await evaluate(client, `(() => {
+      const overview = document.querySelector('[data-month-overview-section]')?.getBoundingClientRect();
+      const intelligence = document.querySelector('[data-month-intelligence-section]')?.getBoundingClientRect();
+      const heatmap = document.querySelector('[data-month-activity-heatmap]')?.getBoundingClientRect();
+      const recent = document.querySelector('[data-month-recent-activity]')?.getBoundingClientRect();
+      const insight = document.querySelector('[data-month-intelligence]')?.getBoundingClientRect();
+      if (!overview || !intelligence || !heatmap || !recent || !insight) return null;
+      return {
+        overviewTop: overview.top,
+        intelligenceTop: intelligence.top,
+        sectionWidth: intelligence.width,
+        heatmapWidth: heatmap.width,
+        recentWidth: recent.width,
+        insightWidth: insight.width,
+        heatmapHeight: heatmap.height,
+        recentHeight: recent.height,
+        insightHeight: insight.height,
+      };
+    })()`);
+    if (
+      !monthHierarchy
+      || monthHierarchy.overviewTop >= monthHierarchy.intelligenceTop
+      || monthHierarchy.heatmapWidth > monthHierarchy.sectionWidth * 0.46
+      || monthHierarchy.recentWidth < 260
+      || monthHierarchy.insightWidth < 300
+      || Math.max(monthHierarchy.heatmapHeight, monthHierarchy.recentHeight, monthHierarchy.insightHeight)
+        - Math.min(monthHierarchy.heatmapHeight, monthHierarchy.recentHeight, monthHierarchy.insightHeight) > 2
+    ) {
+      throw new Error(`Month visual hierarchy contract failed: ${JSON.stringify(monthHierarchy)}`);
+    }
+    console.log("✓ Month keeps the calendar first and aligns heatmap, recent activity, and intelligence on one desktop baseline");
+    const heatmapPointerDate = await evaluate(client, `(() => {
+      const cells = [...document.querySelectorAll('[data-activity-date]')];
+      const cell = cells.find((item) => item.getAttribute('data-activity-in-month') === 'true' && !item.disabled);
+      if (!cell) return null;
+      cell.scrollIntoView({ block: "center", inline: "center", behavior: "instant" });
+      return cell.getAttribute('data-activity-date');
+    })()`);
+    if (!heatmapPointerDate) throw new Error("Month heatmap has no in-month hover target");
+    await evaluate(client, `new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))`);
+    const heatmapPointerTarget = await evaluate(client, `(() => {
+      const cell = document.querySelector('[data-activity-date="${heatmapPointerDate}"]');
+      const rect = cell?.getBoundingClientRect();
+      if (!cell || !rect) return null;
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
+      const hit = document.elementFromPoint(x, y);
+      return {
+        date: cell.getAttribute('data-activity-date'),
+        x,
+        y,
+        inViewport: x >= 0 && x <= document.documentElement.clientWidth && y >= 0 && y <= window.innerHeight,
+        hitTarget: hit === cell || Boolean(hit?.closest?.('[data-activity-date="${heatmapPointerDate}"]')),
+      };
+    })()`);
+    if (!heatmapPointerTarget?.inViewport || !heatmapPointerTarget.hitTarget) {
+      throw new Error(`Month heatmap hover target is not pointer-reachable: ${JSON.stringify(heatmapPointerTarget)}`);
+    }
+    await client.call("Input.dispatchMouseEvent", { type: "mouseMoved", x: heatmapPointerTarget.x, y: heatmapPointerTarget.y });
+    await waitFor(client, `Boolean(document.querySelector('[data-activity-tooltip]'))`, "portal heatmap tooltip on pointer hover");
+    const heatmapTooltip = await evaluate(client, `(() => {
+      const tooltip = document.querySelector('[data-activity-tooltip]');
+      const rect = tooltip?.getBoundingClientRect();
+      if (!tooltip || !rect) return null;
+      return {
+        parentIsBody: tooltip.parentElement === document.body,
+        left: rect.left,
+        right: rect.right,
+        top: rect.top,
+        bottom: rect.bottom,
+        viewportWidth: document.documentElement.clientWidth,
+        viewportHeight: window.innerHeight,
+        zIndex: Number(getComputedStyle(tooltip).zIndex || 0),
+      };
+    })()`);
+    if (
+      !heatmapTooltip
+      || !heatmapTooltip.parentIsBody
+      || heatmapTooltip.left < 0
+      || heatmapTooltip.right > heatmapTooltip.viewportWidth + 1
+      || heatmapTooltip.top < 0
+      || heatmapTooltip.bottom > heatmapTooltip.viewportHeight + 1
+      || heatmapTooltip.zIndex < 1000
+    ) {
+      throw new Error(`Month heatmap tooltip portal contract failed: ${JSON.stringify(heatmapTooltip)}`);
+    }
+    console.log("✓ Month heatmap tooltip is portaled above dashboard cards and clamped to the viewport on hover");
+    await client.call("Input.dispatchMouseEvent", { type: "mouseMoved", x: 2, y: 2 });
 
-    const englishReportsLoad = waitForEvent(client, "Page.loadEventFired", "English Reports route");
-    await client.call("Page.navigate", { url: `${origin}/reports/` });
-    await englishReportsLoad;
-    await waitFor(client, `["/reports", "/reports/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Work and payroll report") && document.body?.innerText.includes("Analytics charts")`, "English Reports core surface");
+    const heatmapFocusState = await evaluate(client, `(() => {
+      const cells = [...document.querySelectorAll('[data-activity-date]')];
+      const cell = cells.find((item, index) => item.getAttribute('data-activity-in-month') === 'true' && !item.disabled && index % 7 < 6 && cells[index + 1]?.getAttribute('data-activity-in-month') === 'true');
+      if (!cell) return null;
+      cell.focus({ preventScroll: true });
+      return {
+        date: cell.getAttribute('data-activity-date'),
+        focused: document.activeElement === cell,
+      };
+    })()`);
+    const heatmapStartDate = heatmapFocusState?.date ?? null;
+    if (!heatmapStartDate) throw new Error("Month heatmap has no in-month keyboard target");
+    if (!heatmapFocusState?.focused) throw new Error(`Month heatmap keyboard target did not receive focus: ${JSON.stringify(heatmapFocusState)}`);
+    await client.call("Input.dispatchKeyEvent", { type: "keyDown", key: "ArrowDown", code: "ArrowDown" });
+    await client.call("Input.dispatchKeyEvent", { type: "keyUp", key: "ArrowDown", code: "ArrowDown" });
+    await waitFor(client, `document.activeElement?.getAttribute('data-activity-date') && document.activeElement?.getAttribute('data-activity-date') !== ${JSON.stringify(heatmapStartDate)}`, "keyboard-accessible month activity heatmap");
+    console.log("✓ Persian/Gregorian month intelligence exposes a keyboard-accessible month activity heatmap");
+
+    await clickRouteLink(client, "/reports");
+    await waitFor(client, `["/reports", "/reports/"].includes(location.pathname) && document.documentElement.dir === "ltr"`, "English Reports route");
+    await waitFor(client, `document.body?.innerText.includes("Work and payroll report") && document.body?.innerText.includes("Analytics charts") && Boolean(document.querySelector('[data-activity-breakdown]'))`, "English Reports core surface", WAIT_TIMEOUT_MS * 2);
     console.log("✓ Today, Month, and Reports render localized English LTR surfaces before Persian restore");
+    console.log("✓ Activity segment and breakdown surfaces follow English LTR");
 
     // Employee mode intentionally cannot access freelancer-only business routes.
     // Exercise the real workspace switcher before the business-route matrix so
@@ -635,10 +907,40 @@ export async function runProductionBrowserSmoke() {
     // checks so the historical production journey keeps its original mode.
     await switchWorkspaceMode(client, "employee");
 
-    const englishSystemSettingsLoad = waitForEvent(client, "Page.loadEventFired", "English Settings system route");
-    await client.call("Page.navigate", { url: `${origin}/settings/` });
+    const englishSystemSettingsLoad = waitForEvent(client, "Page.loadEventFired", "English Settings profile route");
+    await client.call("Page.navigate", { url: `${origin}/settings/profile/` });
     await englishSystemSettingsLoad;
-    await waitFor(client, `document.documentElement.dir === "ltr" && document.querySelector('#settings-onboarding')?.textContent.includes("Initial setup") && document.querySelector('#settings-device-transfer')?.textContent.includes("Connect phone and laptop") && document.title === "Settings | Saatyar"`, "English Settings deep system surface");
+    await waitFor(client, `document.documentElement.dir === "ltr" && document.querySelector('#settings-onboarding')?.textContent.includes("Initial setup") && document.title === "Settings | Saatyar"`, "English Settings profile surface");
+
+    const englishSyncSettingsLoad = waitForEvent(client, "Page.loadEventFired", "English Settings sync route");
+    await client.call("Page.navigate", { url: `${origin}/settings/sync/` });
+    await englishSyncSettingsLoad;
+    await waitFor(client, `document.documentElement.dir === "ltr" && document.querySelector('#settings-device-transfer')?.textContent.includes("Connect phone and laptop")`, "English Settings sync surface");
+
+    const englishNotificationsLoad = waitForEvent(client, "Page.loadEventFired", "English Settings notifications route");
+    await client.call("Page.navigate", { url: `${origin}/settings/notifications/` });
+    await englishNotificationsLoad;
+    await waitFor(client, `Boolean(document.querySelector('[data-notification-intelligence]')) && Boolean(document.querySelector('[data-quiet-hours]')) && Boolean(document.querySelector('[data-custom-reminder]')) && Boolean(document.querySelector('[data-add-custom-reminder]')) && Boolean(document.querySelector('[data-reminder-snooze]')) && document.querySelector('#settings-notifications')?.textContent.includes("Quiet hours")`, "English notification intelligence settings");
+    console.log("✓ Notification intelligence settings expose quiet hours, multi custom reminders, and snooze in English LTR");
+
+    const englishPrivacyLoad = waitForEvent(client, "Page.loadEventFired", "English Settings privacy route");
+    await client.call("Page.navigate", { url: `${origin}/settings/privacy/` });
+    await englishPrivacyLoad;
+    await waitFor(client, `Boolean(document.querySelector('[data-product-analytics-settings]')) && Boolean(document.querySelector('[data-analytics-opt-in]')) && Boolean(document.querySelector('[data-analytics-opt-out]')) && document.querySelector('#settings-analytics')?.textContent.includes("Privacy-safe product analytics")`, "English privacy-safe analytics settings");
+    console.log("✓ Privacy-safe analytics exposes explicit opt-in/opt-out without including work content in Settings");
+
+    const englishPayrollLoad = waitForEvent(client, "Page.loadEventFired", "English Settings payroll route");
+    await client.call("Page.navigate", { url: `${origin}/settings/payroll/` });
+    await englishPayrollLoad;
+    await waitFor(client, `document.documentElement.dir === "ltr" && Boolean(document.querySelector('[data-payroll-rate-basis]')) && document.querySelector('[data-payroll-rate-basis]')?.textContent.includes("Hourly rate basis") && document.querySelector('[data-payroll-rate-basis]')?.textContent.includes("Standard month (recommended)") && document.querySelector('[data-payroll-rate-preview]')?.textContent.includes("Base hourly rate") && document.querySelector('[data-payroll-rate-preview]')?.textContent.includes("Overtime hourly rate")`, "English standard-month payroll rate basis");
+    console.log("✓ Payroll settings default monthly hourly rates to a configurable standard-month basis");
+
+    const englishIntegrationsLoad = waitForEvent(client, "Page.loadEventFired", "English Settings integrations route");
+    await client.call("Page.navigate", { url: `${origin}/settings/integrations/` });
+    await englishIntegrationsLoad;
+    await waitFor(client, `Boolean(document.querySelector('[data-google-calendar-settings]')) && document.querySelector('#settings-calendar-integration')?.textContent.includes("Google Calendar") && !document.getElementById('saatyar-google-identity')`, "English Google Calendar opt-in settings");
+    console.log("✓ Google Calendar integration stays opt-in and does not load Google Identity before user action");
+    console.log("✓ Settings is split into focused Profile, Sync, Notifications, Privacy, and Integrations routes");
 
     const englishImportLoad = waitForEvent(client, "Page.loadEventFired", "English Import system route");
     await client.call("Page.navigate", { url: `${origin}/import/` });
@@ -651,7 +953,7 @@ export async function runProductionBrowserSmoke() {
     await waitFor(client, `["/about", "/about/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("About and guide") && document.body?.innerText.includes("What is Saatyar?") && document.title === "About & help | Saatyar"`, "English About system surface");
 
     const englishReentrySettingsLoad = waitForEvent(client, "Page.loadEventFired", "English Settings onboarding reentry route");
-    await client.call("Page.navigate", { url: `${origin}/settings/` });
+    await client.call("Page.navigate", { url: `${origin}/settings/profile/` });
     await englishReentrySettingsLoad;
     await waitFor(client, `document.documentElement.dir === "ltr" && Boolean(document.querySelector('[data-onboarding-reentry-action]'))`, "English onboarding reentry action");
     await evaluate(client, `document.querySelector('[data-onboarding-reentry-action]')?.click()`);
@@ -661,11 +963,11 @@ export async function runProductionBrowserSmoke() {
     console.log("✓ Settings, Onboarding, Import, and About follow English LTR before Persian restore");
 
     const settingsLocaleRestoreLoad = waitForEvent(client, "Page.loadEventFired", "Settings locale restore route");
-    await client.call("Page.navigate", { url: `${origin}/settings/` });
+    await client.call("Page.navigate", { url: `${origin}/settings/profile/` });
     await settingsLocaleRestoreLoad;
     await waitFor(client, `Boolean(document.querySelector('[data-locale-choice="fa-IR"]')) && document.documentElement.lang === "en"`, "language settings before Persian restore");
     await evaluate(client, `document.querySelector('[data-locale-choice="fa-IR"]')?.click()`);
-    await waitFor(client, `document.documentElement.lang === "fa" && document.documentElement.dir === "rtl" && document.documentElement.dataset.calendar === "persian" && localStorage.getItem("saatyar-locale-v1") === "fa-IR" && document.body?.innerText.includes("تنظیمات و داده‌ها")`, "Persian RTL locale restore with automatic Persian calendar");
+    await waitFor(client, `document.documentElement.lang === "fa" && document.documentElement.dir === "rtl" && document.documentElement.dataset.calendar === "persian" && localStorage.getItem("saatyar-locale-v1") === "fa-IR" && (document.body?.innerText.includes("عمومی و ظاهر") || document.body?.innerText.includes("پروفایل"))`, "Persian RTL locale restore with automatic Persian calendar");
     console.log("✓ Local-first locale switch persists English LTR across reload and restores Persian RTL");
 
     const localeReturnToday = waitForEvent(client, "Page.loadEventFired", "return to Today after locale smoke");

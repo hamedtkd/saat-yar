@@ -35,7 +35,7 @@ test("the supplied logo is the shared in-app and installable brand mark", () => 
   assert.ok(existsSync("public/brand/saatyar-mark.svg"));
   assert.ok(existsSync("components/common/brand-mark.tsx"));
   assert.match(read("components/common/brand.tsx"), /BrandMark/);
-  assert.match(read("components/saatyar-shell.tsx"), /BrandMark/);
+  assert.match(read("components/motion/app-loading-state.tsx"), /BrandMark/);
   assert.doesNotMatch(read("components/common/brand.tsx"), /saatyar-logo-green/);
   assert.deepEqual(pngSize("public/icons/icon-512.png"), { width: 512, height: 512 });
   assert.deepEqual(pngSize("public/icons/maskable-512.png"), { width: 512, height: 512 });

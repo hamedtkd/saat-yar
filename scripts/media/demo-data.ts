@@ -21,6 +21,7 @@ function record(date: string, start: string, end: string, note: string, override
     lunchEnd: "13:15",
     lunchPaid: false,
     breaks: [],
+    activitySegments: [],
     leaveMinutes: 0,
     leaveType: "none",
     note,

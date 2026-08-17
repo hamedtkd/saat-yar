@@ -1,11 +1,14 @@
 "use client";
 
 import { CheckCircle2 } from "lucide-react";
+import { useEffect } from "react";
 import type { FormEvent, KeyboardEvent } from "react";
 
 import { Brand } from "@/components/common/brand";
 import { useSystemUi } from "@/components/i18n/use-system-ui";
 import { cn } from "@/lib/cn";
+import { markBrowserFirstRunGuidePending } from "@/lib/first-run-guide";
+import { trackProductAnalytics, type OnboardingCompletionPath } from "@/lib/product-analytics";
 import { AppearanceStep } from "./onboarding/appearance-step";
 import { FreelancerClientStep } from "./onboarding/freelancer-client-step";
 import { FreelancerProjectStep } from "./onboarding/freelancer-project-step";
@@ -29,6 +32,17 @@ export function Onboarding({ data, setData, commitImport, step, setStep, reentry
   const canContinue = step !== 1 || Boolean(data.settings.name.trim());
   const mode = data.settings.mode;
 
+  useEffect(() => {
+    trackProductAnalytics({ name: "onboarding_step_viewed", properties: { step, mode } });
+  }, [step, mode]);
+
+  const finishInitialSetup = (path: OnboardingCompletionPath = "advanced") => {
+    setSetting("onboarded", true);
+    if (!reentry) markBrowserFirstRunGuidePending();
+    trackProductAnalytics({ name: "onboarding_completed", properties: { path, mode, timing: data.settings.workTimingMode } });
+    onComplete();
+  };
+
   const submitStep = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!canContinue) return;
@@ -39,8 +53,7 @@ export function Onboarding({ data, setData, commitImport, step, setStep, reentry
       });
       return;
     }
-    setSetting("onboarded", true);
-    onComplete();
+    finishInitialSetup();
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLFormElement>) => {
@@ -63,11 +76,11 @@ export function Onboarding({ data, setData, commitImport, step, setStep, reentry
         <span className={cn("inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--accent-strong)] [&_svg]:h-[15px] [&_svg]:w-[15px] max-[620px]:hidden")}><CheckCircle2 /> {s("Autosave")}</span>
       </header>
 
-      <form onSubmit={submitStep} onKeyDown={handleKeyDown} className={cn("mx-auto my-7 max-w-[1320px] px-5 max-[620px]:mt-[16px] max-[620px]:px-[12px]")}>
+      <form onSubmit={submitStep} onKeyDown={handleKeyDown} className={cn("mx-auto my-7 max-w-[1320px] px-5 pb-28 sm:pb-0 max-[620px]:mt-[16px] max-[620px]:px-[12px]")}>
         <StepsProgress step={step} mode={mode} />
         <div data-onboarding-step data-onboarding-step-index={step} data-onboarding-mode={mode}>
           {step === 1 && <WelcomeStep settings={data.settings} setSetting={setSetting} />}
-          {step === 2 && <ModeStep settings={data.settings} setSetting={setSetting} />}
+          {step === 2 && <ModeStep settings={data.settings} setSetting={setSetting} onFastSetup={() => finishInitialSetup("fast-setup")} />}
           {step === 3 && (mode === "freelancer" ? <FreelancerClientStep data={data} setData={setData} /> : <ScheduleStep settings={data.settings} updateSettings={updateSettings} />)}
           {step === 4 && (mode === "employee"
             ? <PayrollStep settings={data.settings} updateSettings={updateSettings} />
@@ -78,7 +91,7 @@ export function Onboarding({ data, setData, commitImport, step, setStep, reentry
           {step === 6 && <PrivacyStep />}
           {step === 7 && <ImportStep data={data} commitImport={commitImport} />}
         </div>
-        <OnboardingFooter step={step} setStep={setStep} canContinue={canContinue} reentry={reentry} onExit={onExit} />
+        <OnboardingFooter step={step} setStep={setStep} canContinue={canContinue} reentry={reentry} onExit={onExit} onSkip={() => finishInitialSetup("skip")} />
       </form>
     </div>
   );

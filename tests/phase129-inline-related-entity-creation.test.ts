@@ -48,11 +48,12 @@ test("business actions expose reusable create functions instead of duplicating p
   assert.match(source, /return \{[^}]*createClient[^}]*createProject/);
 });
 
-test("legacy settings density test follows the two-level mobile settings navigation", async () => {
+test("legacy settings density test follows the compact mobile settings picker", async () => {
   const phase52 = await read("tests/phase52-dashboard-report-polish.test.ts");
-  assert.match(phase52, /max-\\\[900px\\\]:grid/);
-  assert.match(phase52, /overflow-x-auto/);
-  assert.doesNotMatch(phase52, /max-\\\[900px\\\]:overflow-x-auto/);
+  assert.match(phase52, /collapses to the compact mobile picker/);
+  assert.match(phase52, /data-settings-mobile-trigger/);
+  assert.match(phase52, /hidden max-\\\[900px\\\]:block/);
+  assert.match(phase52, /doesNotMatch\(mobile, \/overflow-x-auto\//);
 });
 
 test("phase 129 is wired into quality and roadmap marks the inline relation foundation complete", async () => {

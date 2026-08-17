@@ -29,7 +29,8 @@ test("header keeps route context, profile identity and theme-aware workspace con
   assert.match(header, /<ProfileMenu/);
   assert.match(profile, /t\("profile\.local"\)/);
   assert.match(actions, /<WorkspaceSwitcher/);
-  assert.match(switcher, /max-\[520px\]:min-w-\[108px\]/);
+  assert.match(switcher, /max-\[520px\]:min-w-0/);
+  assert.match(switcher, /max-\[520px\]:flex-1/);
 });
 
 test("mobile navigation chooses stable primary destinations per work mode", async () => {

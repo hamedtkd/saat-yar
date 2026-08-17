@@ -92,6 +92,7 @@
 ### گزارش و مدیریت داده
 
 - گزارش ماهانه کارکرد، موظفی، اضافه‌کاری و کسری
+- نقشه فعالیت ماهانه شبیه GitHub با ناوبری صفحه‌کلید، streak و هوشمندی اضافه‌کار/کسری
 - جزئیات روزانه و فیلتر رکوردها
 - خروجی CSV و Excel
 - چاپ و PDF سازگار با A4
@@ -298,9 +299,9 @@ npm run test:browser:production
 
 ## نقشه راه
 
-نسخه **۲.۴.۰** آخرین Release پایدار ساعت‌یار است و تغییرات فازهای ۱۶۶ تا ۱۸۰ را بسته‌بندی می‌کند: آنبوردینگ مستقل و قابل‌بازیابی، اصلاح سهمیه مرخصی، بازخورد ویرایش روز تکمیل‌شده، Import Wizard، Runtime Clock مشترک، تکمیل فارسی RTL / انگلیسی LTR و قرارداد Final Release.
+نسخه **۲.۵.۰** آخرین Release پایدار ساعت‌یار است و تغییرات فازهای ۱۶۶ تا ۱۸۰ را بسته‌بندی می‌کند: آنبوردینگ مستقل و قابل‌بازیابی، اصلاح سهمیه مرخصی، بازخورد ویرایش روز تکمیل‌شده، Import Wizard، Runtime Clock مشترک، تکمیل فارسی RTL / انگلیسی LTR و قرارداد Final Release.
 
-Baseline فاز ۱۷۸ روی `887158c` با **۷۵۸/۷۵۸ تست** بسته شد. Candidate فاز ۱۷۹ روی `1cabdb4` Gate **۷۶۴/۷۶۴** را کامل کرد و فاز ۱۸۰ شش قرارداد Finalization اضافه می‌کند تا Gate نهایی **۷۷۰/۷۷۰** باشد. Merge کنترل‌شده اولیه `dev -> main` روی `7627e99` ثبت شده است. AppData همچنان Schema v17 است و Phase 180 Migration یا Dependency جدید ندارد. جزئیات در [یادداشت Release ۲.۴.۰](./docs/releases/RELEASE_NOTES_2.4.0_FA.md)، [چک‌لیست Final Release](./RELEASE_CHECKLIST_FA.md) و [نقشه راه](./docs/roadmap/BACKLOG_FA.md) ثبت شده‌اند.
+Baseline فاز ۱۷۸ روی `887158c` با **۷۵۸/۷۵۸ تست** بسته شد. Candidate فاز ۱۷۹ روی `1cabdb4` Gate **۷۶۴/۷۶۴** را کامل کرد و فاز ۱۸۰ با شش قرارداد Finalization به Gate نهایی **۷۷۰/۷۷۰** رسید. قرارداد منتشرشده ۲.۴.۰ به‌صورت immutable روی Schema v17 باقی می‌ماند. توسعه پس از Release اکنون روی **Schema v20** است: فازهای ۱۸۲ تا ۱۸۹B Flexible Work، Notification Intelligence، Analytics امن، Month Intelligence، Motion، Google Calendar Read/Write و Settings چندصفحه‌ای را اضافه کردند، فاز ۱۸۹C مبنای نرخ ساعتی حقوق ماهانه را با «ماه استاندارد» قابل تنظیم اصلاح کرد و فاز ۱۹۰ Incremental Sync امن Google Calendar، تشخیص Conflict/Duplicate، برنامه‌ریزی Day/Week، تبدیل صریح Event به Activity و ویرایش occurrence/series تکرارشونده را اضافه کرد. فهرست تجمیعی قابلیت‌های نسخه بعدی برای Release Notes و LinkedIn در `docs/releases/NEXT_RELEASE_FEATURES_FA.md` نگهداری می‌شود. جزئیات در [یادداشت Release ۲.۴.۰](./docs/releases/RELEASE_NOTES_2.4.0_FA.md)، [یادداشت فاز ۱۸۸](./docs/phases/PHASE_188_NOTES_FA.md) و [نقشه راه](./docs/roadmap/BACKLOG_FA.md) ثبت شده‌اند.
 
 Manifest ۲.۴.۰ در وضعیت `released` است اما عمداً SHA نهایی خودش را داخل Manifest ذخیره نمی‌کند. بعد از Merge نهایی `dev -> main` و Deploy Vercel، `npm run audit:production` باید سبز شود و فقط سپس Tag annotated `v2.4.0` روی همان Commit نهایی ساخته شود. این Tag منبع حقیقت SHA Release است. Manifest و Tagهای ۲.۳.۲ و قدیمی‌تر تاریخی و immutable باقی می‌مانند.
 

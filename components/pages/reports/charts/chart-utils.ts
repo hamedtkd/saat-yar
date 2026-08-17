@@ -1,5 +1,3 @@
-import { timeToMinutes } from "@/lib/time-engine";
-import type { Settings } from "@/lib/types";
 
 export const CHART_COLORS = {
   worked: "var(--accent)",
@@ -19,8 +17,4 @@ export function localDateKey(date: Date) {
 export function parseLocalDate(value: string) {
   const date = new Date(`${value}T12:00:00`);
   return Number.isNaN(date.getTime()) ? new Date(value) : date;
-}
-
-export function getDailyTarget(settings: Settings) {
-  return Math.max(1, timeToMinutes(settings.defaultEnd) - timeToMinutes(settings.defaultStart) - settings.lunchMinutes);
 }

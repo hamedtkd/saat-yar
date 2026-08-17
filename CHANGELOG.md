@@ -1,5 +1,30 @@
 ## [Unreleased]
 
+## [2.5.0] - 2026-08-17
+
+- Phase 194 Final Release: Candidate `d81e094` با 874/874 تست ثبت شد؛ Final source روی 880/880 قفل می‌شود و rollout فقط با ترتیب merge کنترل‌شده به `main` → deploy → `audit:production` → tag annotated `v2.5.0` مجاز است.
+
+- Phase 192: تست‌های Reports/Payroll از source-inspection به قراردادهای رفتاری منتقل شدند؛ Report Summary به helper خالص قابل‌تست استخراج شد و `audit:tests` بودجه بدهی تاریخی source-coupled/per-file wiring را ثبت می‌کند و برای Phase 192 به بعد هر تست وابسته به خواندن سورس را رد می‌کند. generic test discovery حفظ شده و Schema/dependency بدون تغییر است.
+- Phase 191: Payroll و Reports روی Payroll Period Facts مشترک همگرا شدند؛ تعطیل‌کاری دیگر کسری روز عادی را در balance ماهانه پنهان نمی‌کند، Paid Leave با credited time بین Today/Reports یکسان شده و Preview نرخ Base/Overtime/Holiday/Deficit را از یک Rate Engine نمایش می‌دهد؛ Schema v20 و dependencyها بدون تغییر ماندند.
+- Phase 190: Google Calendar با Incremental Sync مبتنی بر `syncToken` و fallback امن 410، cache مستقل مرورگر، ETag/`If-Match` برای جلوگیری از overwrite نسخه stale، تشخیص overlap و collapse duplicateها، Day/Week planner، Event → Activity صریح و recurring occurrence/series editing ارتقا یافت؛ Google همچنان روی WorkRecord/Payroll/تعطیلات داخلی اثر خودکار ندارد.
+- Phase 189C: باگ نرخ ساعتی روش‌های ماهانه اصلاح شد؛ مبنای پیش‌فرض اضافه‌کاری/تعطیل‌کاری/کسرکار اکنون `حقوق ماهانه ÷ ساعات استاندارد ماه` با پیش‌فرض قابل‌تنظیم ۲۲۰ ساعت است، حالت اختیاری «ساعات موظفی بازه» حفظ شد، Live Payroll Preview نرخ پایه/اضافه‌کاری را نشان می‌دهد و AppData توسعه به Schema v20 مهاجرت کرد.
+- Phase 189B: Settings از یک صفحه طولانی به Overview و routeهای مستقل Profile/Appearance/Work/Payroll/Notifications/Integrations/Data/Sync/Privacy تقسیم شد؛ Search و Deep-linkها route-aware ماندند و تقویم Month با Context Menu روز برای Event CRUD سریع، Holiday/Workday override و بازگشت به قانون خودکار ارتقا یافت. توضیح Weekly Chart نیز به Tooltip مشترک منتقل شد.
+- Phase 189A: Visual QA تقویم بسته شد؛ نمودار هفتگی به هفته واقعی روز انتخاب‌شده اصلاح شد و تعطیلی/مرخصی را context می‌دهد، Header موبایل لوگو دارد، Modal رویداد Header/Footer ثابت و Body اسکرولی شد، Quick Delete/Toast/CTA اتصال/Quick Create و alignment Settings Google اضافه شد.
+- Phase 188: Google Calendar از نمایش فقط‌خواندنی به مدیریت رویداد با Scope حداقلی `calendar.events` + `calendar.calendarlist.readonly` ارتقا یافت؛ Create/Edit/Delete با Modal مشترک Today/Month، recurring delete، Settings فشرده و sortable Month records table اضافه شد، در حالی که Google holidayها و Eventها همچنان روی WorkRecord/Payroll/تعطیلات داخلی اثر خودکار ندارند.
+- Phase 187: Google Calendar به‌صورت Opt-in و فقط‌خواندنی با Google Identity Services اضافه شد؛ Access Token فقط در حافظه Session می‌ماند، انتخاب Calendarها Browser-local است، Today/Month Event context می‌گیرند و هیچ Event خارجی وارد AppData یا محاسبات کارکرد نمی‌شود. Schema v19 و Dependencyها بدون تغییر ماندند.
+- Phase 186: Boot اولیه با Loading Shell و Skeletonهای Route-aware برای Today/Month جایگزین حالت متن مرکزی شد؛ Routeها transition کوتاه state-driven دارند، کارت‌های Activity Intelligence هم‌تراز شدند و Theme Toggle با radial reveal از محل دکمه تغییر می‌کند؛ Reduced Motion صریحاً animation را خاموش می‌کند و Schema v19/Dependencyها بدون تغییر ماندند.
+- Phase 185: صفحه Month یک GitHub-style Activity Heatmap مشتق‌شده از کارکرد واقعی، Tooltip/Keyboard navigation، longest streak و توزیع اضافه‌کار/کسری دریافت کرد؛ Heatmap با Persian/Gregorian و RTL/LTR کار می‌کند و Schema v19 بدون تغییر ماند.
+- Phase 185 visual follow-up: تقویم به بالاترین بخش محتوای Month منتقل شد، کارت‌های Calendar/Weekly و Heatmap/Intelligence دیگر ارتفاع همدیگر را کش نمی‌دهند و Heatmap در فضای واقعی خودش متراکم/مرکزی می‌ماند تا فضای خالی Desktop حذف شود.
+- Phase 185 tooltip hardening: Tooltip نقشه فعالیت با Portal روی `document.body` بالای Surfaceها می‌ماند؛ Browser Smoke با Hover واقعی CDP stacking/viewport را می‌سنجد و مسیر Keyboard navigation را جداگانه بررسی می‌کند تا Focus مصنوعی DevTools باعث false negative نشود.
+- Phase 184: Product Analytics privacy-safe با Consent محلی خارج از AppData، Event taxonomy allowlisted و Plausible adapter اختیاری اضافه شد؛ هیچ داده کاری شخصی در Payload مجاز نیست و Provider پیش‌فرض خاموش است.
+- Phase 183: Notification Intelligence با محاسبه Active Work Time، Quiet Hours، Snooze/Resume عمومی و Reminderهای pause-aware اضافه شد؛ AppData توسعه به Schema v19 رفت و Release تاریخی v2.4.0 روی Schema v17 immutable ماند.
+- Phase 183 R2: Custom active-work reminder از یک Rule به حداکثر پنج Reminder مستقل با Add/Edit/Disable/Delete ارتقا یافت؛ هر Rule bucket و dedupe مستقل دارد و Quiet Hours/Snooze همچنان Global می‌مانند.
+- Mobile Settings navigation بازطراحی شد: باکس دوطبقه Group/Section حذف و به یک Section Picker فشرده و sticky با Dialog گروه‌بندی‌شده تبدیل شد؛ Quick-search chipها نیز در موبایل پنهان شدند تا محتوای تنظیمات بالاتر دیده شود. Production Browser Smoke اکنون Settings را در 425px از نظر overflow، ارتفاع navigator و viewport-safe dialog بررسی می‌کند.
+- Phase 182 R3: Mobile shell در عرض 425px برای Month/Leave سخت‌گیری شد؛ Header باریک‌تر، Surfaceها shrink-safe و Browser Smoke دارای قرارداد صریح no-horizontal-overflow شد. Warning صفر-تحمل ESLint در Contract Test فاز ۱۸۲ نیز رفع شد.
+- Phase 182: Flexible Work Mode اضافه شد؛ کاربر می‌تواند بدون الزام Start/End ثابت، Target مستقل هر روز را نگه دارد و شروع/وقفه/پایان واقعی را در طول روز ثبت کند.
+- Activity Segments برای Deep Work، Meeting، Learning، Admin، Project و Other به Today و Reports اضافه شد؛ شروع Lunch/Break یا پایان روز Segment فعال را امن می‌بندد.
+- AppData به Schema v18 ارتقا یافت؛ Migration v17 رفتار Fixed Schedule نسخه 2.4.0 را حفظ می‌کند، targetهای روزانه را مقداردهی می‌کند و Activity Segmentهای جدید را بدون دست‌زدن به Manifest تاریخی v2.4.0 اضافه می‌کند.
+
 ## [2.4.0] - 2026-08-12
 
 - Phase 180 Final Release: Candidate `1cabdb4` و Merge اولیه `7627e99` ثبت شدند؛ Manifest به `released` منتقل شد، Gate نهایی روی 770/770 قفل شد و Tag annotated `v2.4.0` فقط پس از Deploy نهایی و `audit:production` سبز مجاز است.

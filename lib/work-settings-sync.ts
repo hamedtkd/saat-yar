@@ -3,7 +3,7 @@ import { getWeeklyTargetMinutes, weekdayOrder } from "./work-schedule.ts";
 
 export type WorkSettingsInput = Pick<
   Settings,
-  "mode" | "autoOfficialHolidays" | "autoWeeklyHoliday" | "weeklyMinutes" | "weeklySchedule" | "lunchMinutes"
+  "mode" | "workTimingMode" | "autoOfficialHolidays" | "autoWeeklyHoliday" | "weeklyMinutes" | "weeklySchedule" | "lunchMinutes"
 >;
 
 function firstEnabledDay(schedule: Record<WeekdayKey, WorkScheduleDay>) {

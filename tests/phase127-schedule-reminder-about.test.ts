@@ -30,7 +30,7 @@ test("53 weekly hours keep visible end times aligned with the 10h36 daily target
 test("work schedule shows exact hour and minute wording instead of a misleading decimal", async () => {
   const editor = await read("components/pages/settings/work-schedule-editor.tsx");
   assert.equal(durationWords(636), "۱۰ ساعت و ۳۶ دقیقه");
-  assert.match(editor, /durationWords\(getScheduleTargetMinutes\(schedule\)\)/);
+  assert.match(editor, /durationWords\(getScheduleTargetMinutes\(schedule,\s*value\.workTimingMode\)\)/);
   assert.match(editor, /s\("Net work for the day"\)/);
   assert.match(editor, /weeklyMinutes: getWeeklyTargetMinutes/);
 });

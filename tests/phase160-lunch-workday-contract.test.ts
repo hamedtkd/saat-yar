@@ -22,6 +22,7 @@ function record(start: string, lunchMinutes: number, lunchPaid = false): WorkRec
     lunchMinutes,
     lunchPaid,
     breaks: [],
+    activitySegments: [],
     leaveMinutes: 0,
     leaveType: "none",
     note: "",
