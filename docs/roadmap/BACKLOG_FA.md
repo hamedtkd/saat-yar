@@ -318,6 +318,7 @@
 - [x] فاز ۱۸۹C: Payroll Rate Basis & Standard Monthly Hours؛ نرخ ساعتی روش‌های ماهانه از ساعات سپری‌شده جدا شد، مبنای پیش‌فرض ۲۲۰ ساعت استاندارد ماه قابل تنظیم است، حالت اختیاری ساعات موظفی بازه حفظ شد و Schema توسعه به v20 ارتقا یافت.
 - [x] فاز ۱۹۰: Calendar Intelligence؛ incremental sync token با fallback پاسخ 410، ETag/If-Match برای conflict-safe mutation، collapse کردن duplicate occurrenceها، Event → Activity کاملاً اختیاری و duplicate-safe، Day/Week planning و recurring occurrence/series editing بدون تبدیل خودکار Calendar به WorkRecord.
 - [x] فاز ۱۹۱: Payroll & Reports Hardening؛ ساخت Payroll Period Facts مشترک برای Reports/Preview، جداسازی holiday work از regular balance، همسان‌سازی Paid Leave با credited time و مشتق‌سازی واحد نرخ Base/Overtime/Holiday/Deficit بدون تغییر Schema v20.
+- [x] فاز ۱۹۲: Behavioral Test Modernization؛ استخراج Report Summary به قرارداد pure و رفتاری، حذف source-inspection از تست‌های جدید Phase 192، ثبت budget بدهی تاریخی source-coupled tests و افزودن `audit:tests` برای جلوگیری از رشد دوباره وابستگی تست‌ها به filename/ساختار داخلی.
 - [ ] Technical debt پس از 2.4.0: کاهش Regex source tests و افزایش behavioral/component/browser contracts به‌صورت تدریجی.
 
 ## بین‌المللی‌سازی آینده — پس از Patch بعدی

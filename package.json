@@ -21,7 +21,7 @@
     "test:sites": "npm run build && node --test tests/rendered-html.test.mjs",
     "validate:artifact": "node scripts/validate-artifact.mjs",
     "lint": "eslint . --max-warnings=0 --ignore-pattern dist --ignore-pattern .next --ignore-pattern out",
-    "check": "npm run clean:obsolete && npm run clean:docs && npm run check:imports && npm run check:dependencies && npm run audit:schema && npm run audit:i18n && npm run typecheck && npm run lint && npm test",
+    "check": "npm run clean:obsolete && npm run clean:docs && npm run check:imports && npm run check:dependencies && npm run audit:schema && npm run audit:i18n && npm run audit:tests && npm run typecheck && npm run lint && npm test",
     "test:architecture": "node --test --experimental-strip-types tests/clean-architecture.test.ts",
     "check:imports": "node scripts/check-local-imports.mjs",
     "check:quality": "npm run check && npm run build:vercel",
@@ -44,7 +44,8 @@
     "audit:production": "node scripts/remote-production-audit.mjs",
     "audit:vercel": "node scripts/vercel-static-export-contract.mjs",
     "release:prepare:2.3.2": "node scripts/prepare-release-2.3.2.mjs",
-    "release:prepare:2.4.0": "node scripts/prepare-release-2.4.0.mjs"
+    "release:prepare:2.4.0": "node scripts/prepare-release-2.4.0.mjs",
+    "audit:tests": "node scripts/audit-test-coupling.mjs"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.1.23",

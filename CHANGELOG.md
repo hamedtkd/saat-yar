@@ -1,5 +1,6 @@
 ## [Unreleased]
 
+- Phase 192: تست‌های Reports/Payroll از source-inspection به قراردادهای رفتاری منتقل شدند؛ Report Summary به helper خالص قابل‌تست استخراج شد و `audit:tests` بودجه بدهی تاریخی source-coupled/per-file wiring را ثبت می‌کند و برای Phase 192 به بعد هر تست وابسته به خواندن سورس را رد می‌کند. generic test discovery حفظ شده و Schema/dependency بدون تغییر است.
 - Phase 191: Payroll و Reports روی Payroll Period Facts مشترک همگرا شدند؛ تعطیل‌کاری دیگر کسری روز عادی را در balance ماهانه پنهان نمی‌کند، Paid Leave با credited time بین Today/Reports یکسان شده و Preview نرخ Base/Overtime/Holiday/Deficit را از یک Rate Engine نمایش می‌دهد؛ Schema v20 و dependencyها بدون تغییر ماندند.
 - Phase 190: Google Calendar با Incremental Sync مبتنی بر `syncToken` و fallback امن 410، cache مستقل مرورگر، ETag/`If-Match` برای جلوگیری از overwrite نسخه stale، تشخیص overlap و collapse duplicateها، Day/Week planner، Event → Activity صریح و recurring occurrence/series editing ارتقا یافت؛ Google همچنان روی WorkRecord/Payroll/تعطیلات داخلی اثر خودکار ندارد.
 - Phase 189C: باگ نرخ ساعتی روش‌های ماهانه اصلاح شد؛ مبنای پیش‌فرض اضافه‌کاری/تعطیل‌کاری/کسرکار اکنون `حقوق ماهانه ÷ ساعات استاندارد ماه` با پیش‌فرض قابل‌تنظیم ۲۲۰ ساعت است، حالت اختیاری «ساعات موظفی بازه» حفظ شد، Live Payroll Preview نرخ پایه/اضافه‌کاری را نشان می‌دهد و AppData توسعه به Schema v20 مهاجرت کرد.

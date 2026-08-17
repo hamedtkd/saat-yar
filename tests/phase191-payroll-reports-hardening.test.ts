@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import test from "node:test";
-import { defaultSettings } from "../lib/constants.ts";
+import { createInitialData, defaultSettings } from "../lib/constants.ts";
 import { calculateMonthlyPayrollForSettings } from "../lib/payroll.ts";
+import { createPayrollPreview } from "../lib/payroll-preview.ts";
+import { createReportSummary } from "../lib/report-summary.ts";
 import { derivePayrollPeriodFacts, getPayrollRateSummary } from "../lib/payroll-period.ts";
 import { createPayrollPreset } from "../lib/payroll-policy.ts";
 import { makeWorkRecord } from "./fixtures/work-record.ts";
@@ -16,8 +17,6 @@ function settingsWithEightHourDays() {
   settings.payrollComponents = [];
   return settings;
 }
-
-const read = (path: string) => readFileSync(path, "utf8");
 
 test("holiday work stays separate and cannot hide a regular-day deficit", () => {
   const settings = settingsWithEightHourDays();
@@ -85,14 +84,32 @@ test("rate summary respects fixed premium rates and deficit multiplier", () => {
   assert.equal(rates.deficitHourlyRate, 150_000);
 });
 
-test("Reports and payroll preview consume the shared period facts engine", () => {
-  assert.match(read("components/pages/reports/overview/use-report-summary.ts"), /derivePayrollPeriodFacts/);
-  assert.match(read("lib/payroll-preview.ts"), /derivePayrollPeriodFacts/);
+test("Reports and payroll preview agree on period compensation behavior", () => {
+  const data = createInitialData({ onboarded: true });
+  data.settings = settingsWithEightHourDays();
+  data.records["2026-08-10"] = makeWorkRecord({ date: "2026-08-10", start: "08:00", end: "15:00" });
+  data.records["2026-08-11"] = makeWorkRecord({ date: "2026-08-11", start: "08:00", end: "16:00", holiday: true });
+  const records = Object.values(data.records);
+  const report = createReportSummary({
+    data,
+    monthRecords: records,
+    monthStats: { worked: 0, target: 0, balance: 0, breaks: 0 },
+    entries: [],
+    reportBillable: 0,
+  });
+  const preview = createPayrollPreview(data, new Date("2026-08-20T12:00:00Z"));
+
+  assert.equal(report.deficitMinutes, 60);
+  assert.equal(report.overtimeMinutes, 0);
+  assert.equal(preview.facts.deficitMinutes, report.deficitMinutes);
+  assert.equal(preview.facts.overtimeMinutes, report.overtimeMinutes);
 });
 
-test("Phase 191 is documented and stays in the main quality command", () => {
-  const pkg = JSON.parse(read("package.json")) as { scripts: { test: string } };
-  assert.match(pkg.scripts.test, /phase191-payroll-reports-hardening\.test\.ts/);
-  assert.match(read("docs/phases/PHASE_191_NOTES_FA.md"), /Single Source of Truth/);
-  assert.match(read("docs/roadmap/BACKLOG_FA.md"), /فاز ۱۹۱/);
+test("Phase 191 shared engine remains callable without UI source inspection", () => {
+  const settings = settingsWithEightHourDays();
+  const facts = derivePayrollPeriodFacts([], settings);
+  assert.deepEqual(
+    { overtime: facts.overtimeMinutes, deficit: facts.deficitMinutes, holiday: facts.holidayMinutes },
+    { overtime: 0, deficit: 0, holiday: 0 },
+  );
 });

@@ -17,10 +17,11 @@
 - Phase 189C — Payroll Rate Basis & Standard Monthly Hours: اصلاح نرخ غیرواقعی اضافه‌کاری روش ماهانه، مبنای استاندارد ماه با پیش‌فرض ۲۲۰ ساعت قابل تنظیم، حالت اختیاری ساعات موظفی بازه و Live Preview نرخ ساعتی.
 - Phase 190 — Calendar Intelligence: Full/Incremental Sync با syncToken و fallback 410، ETag conflict protection، duplicate/overlap intelligence، Day/Week planner، Event → Activity صریح و recurring occurrence/series editing ایمن.
 - Phase 191 — Payroll & Reports Hardening: Payroll Period Facts مشترک، جلوگیری از masking کسری توسط تعطیل‌کاری، Paid Leave consistency و Rate Summary واحد برای base/overtime/holiday/deficit.
+- Phase 192 — Behavioral Test Modernization: قرارداد pure برای Report Summary، تست رفتاری مشترک Reports/Payroll Preview و audit خودکار برای جلوگیری از رشد source/regex coupling در تست‌های جدید.
 
 ## فازهای ثبت‌شده بعدی
 
-- Phase 192 — Behavioral Test Modernization: کاهش تدریجی source/regex contracts و افزایش component/browser/behavior tests بدون حذف architecture guardهای ضروری.
+- Phase 193 — Next Release Candidate: آماده‌سازی Feature Release بعدی، migration audit، release manifest/notes و browser/production matrix.
 
 ## پیام‌های مهم برای معرفی نسخه
 
