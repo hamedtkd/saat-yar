@@ -23,6 +23,7 @@ import { ProductAnalyticsRuntime } from "@/components/analytics/product-analytic
 import { AppLoadingState } from "@/components/motion/app-loading-state";
 import { RouteMotionBoundary } from "@/components/motion/route-motion-boundary";
 import { CalendarIntegrationProvider } from "@/components/calendar/calendar-integration-provider";
+import { PublicHeader } from "@/components/layout/public-header";
 
 const SaatyarContext = createContext<ReturnType<typeof useSaatyarController> | null>(null);
 
@@ -62,9 +63,17 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
         {onboardingRoute || publicRoute ? (
           <>
             <SkipLink />
-            <main id="main-content" role="main" tabIndex={-1} className="min-h-screen bg-[var(--page)] px-3 py-5 sm:px-5" dir={direction}>
+            <main className="min-h-screen w-full min-w-0 overflow-x-clip bg-[var(--page)] px-2.5 py-3 sm:px-5 sm:py-5" dir={direction}>
               {controller.toast && <AppToast message={controller.toast} />}
-              <div className="mx-auto w-full max-w-[1180px]"><RouteMotionBoundary pathname={pathname}>{children}</RouteMotionBoundary></div>
+              {publicRoute && (
+                <PublicHeader
+                  appearance={data.settings.appearance}
+                  onThemeModeChange={(appearanceMode) => setData((previous) => ({ ...previous, settings: { ...previous.settings, appearance: { ...previous.settings.appearance, mode: appearanceMode } } }))}
+                />
+              )}
+              <div id="main-content" role="main" tabIndex={-1} className="mx-auto mt-3 w-full min-w-0 max-w-5xl overflow-x-clip sm:mt-5">
+                <RouteMotionBoundary pathname={pathname}>{children}</RouteMotionBoundary>
+              </div>
             </main>
           </>
         ) : (

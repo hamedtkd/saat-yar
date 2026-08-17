@@ -54,6 +54,13 @@ export const ABOUT_METADATA = {
   path: "/about/",
 } as const;
 
+
+export const HELP_METADATA = {
+  title: "راهنمای جامع",
+  description: "راهنمای جامع استفاده از ساعت‌یار؛ از راه‌اندازی و ثبت کار تا گزارش، حقوق، پشتیبان، Google Calendar و حریم خصوصی.",
+  path: "/help/",
+} as const;
+
 export const PRIVACY_METADATA = {
   title: "سیاست حریم خصوصی",
   description: "سیاست حریم خصوصی ساعت‌یار شامل داده‌های local-first، Google Calendar و تحلیل اختیاری محصول.",
@@ -66,7 +73,7 @@ export const TERMS_METADATA = {
   path: "/terms/",
 } as const;
 
-type RouteMetadata = (typeof ROUTE_METADATA)[keyof typeof ROUTE_METADATA] | typeof ABOUT_METADATA | typeof PRIVACY_METADATA | typeof TERMS_METADATA;
+type RouteMetadata = (typeof ROUTE_METADATA)[keyof typeof ROUTE_METADATA] | typeof ABOUT_METADATA | typeof HELP_METADATA | typeof PRIVACY_METADATA | typeof TERMS_METADATA;
 
 export function absoluteUrl(path = "/") {
   return new URL(path, SITE_URL);

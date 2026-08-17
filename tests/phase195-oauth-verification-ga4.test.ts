@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { buildGa4Event, getAnalyticsRoute, resolveProductAnalyticsProviderConfig } from "../lib/product-analytics.ts";
 import { getPrivacyCopy, getTermsCopy } from "../lib/legal-content.ts";
+import { getHelpCopy } from "../lib/help-content.ts";
 import { isPublicRoute, isSupplementalRoute } from "../lib/navigation.ts";
 
 test("GA4 provider requires an explicit valid measurement id", () => {
@@ -27,12 +28,20 @@ test("Google OAuth legal disclosure documents both requested calendar scopes", (
   assert.match(text, /not sold/);
 });
 
-test("About privacy and terms are public supplemental routes before onboarding", () => {
-  for (const path of ["/about", "/privacy/", "/terms"]) {
+test("About help privacy and terms are public supplemental routes before onboarding", () => {
+  for (const path of ["/about", "/help", "/privacy/", "/terms"]) {
     assert.equal(isPublicRoute(path), true);
     assert.equal(isSupplementalRoute(path), true);
   }
   assert.equal(isPublicRoute("/settings"), false);
+  for (const locale of ["fa-IR", "en"] as const) {
+    const help = getHelpCopy(locale);
+    assert.ok(help.sections.length >= 6);
+    const text = JSON.stringify(help);
+    assert.match(text, /Google Calendar/);
+    assert.match(text, /WebRTC/);
+    assert.match(text, /GA4/);
+  }
 });
 
 test("terms disclose optional external services without changing local-first ownership", () => {

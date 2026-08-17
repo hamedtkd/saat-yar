@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { ABOUT_METADATA, PRIVACY_METADATA, TERMS_METADATA, absoluteUrl, ROUTE_METADATA } from "@/lib/site-metadata";
+import { ABOUT_METADATA, HELP_METADATA, PRIVACY_METADATA, TERMS_METADATA, absoluteUrl, ROUTE_METADATA } from "@/lib/site-metadata";
 
 export const dynamic = "force-static";
 
@@ -7,7 +7,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const updatedAt = new Date("2026-08-07T00:00:00.000Z");
   return [
     { url: absoluteUrl("/").toString(), lastModified: updatedAt, changeFrequency: "monthly", priority: 1 },
-    ...[...Object.values(ROUTE_METADATA), ABOUT_METADATA, PRIVACY_METADATA, TERMS_METADATA].map((page) => ({
+    ...[...Object.values(ROUTE_METADATA), ABOUT_METADATA, HELP_METADATA, PRIVACY_METADATA, TERMS_METADATA].map((page) => ({
       url: absoluteUrl(page.path).toString(),
       lastModified: updatedAt,
       changeFrequency: "monthly" as const,

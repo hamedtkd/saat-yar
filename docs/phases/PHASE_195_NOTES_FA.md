@@ -32,3 +32,8 @@ NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION=... # فقط در صورت استفاده �
 - Google OAuth access token memory-only باقی می‌ماند.
 - Calendar sync cache browser-local باقی می‌ماند.
 - Analytics taxonomy همچنان فقط coarse/allowlisted است.
+
+### R6 - Public help and responsive shell
+- Visual QA موبایل نشان داد About/Privacy/Terms در viewport باریک overflow افقی دارند؛ public shell با قرارداد `min-w-0/max-w-full/overflow-x-clip` و wrap امن سخت‌گیری شد.
+- header سبک عمومی با بازگشت به اپ، Settings، Help، تغییر زبان و Theme برای routeهای عمومی اضافه شد.
+- `/help` به‌عنوان راهنمای جامع دوزبانه و public اضافه شد و در sitemap/footer قرار گرفت.

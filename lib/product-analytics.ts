@@ -6,7 +6,7 @@ const ANALYTICS_SESSION_DISCOVERY_KEY = "saatyar-product-analytics-discovery-v1"
 const MAX_BUFFERED_EVENTS = 24;
 
 export type AnalyticsConsent = "unset" | "granted" | "denied";
-export type AnalyticsRoute = "onboarding" | "today" | "month" | "leave" | "reports" | "clients" | "projects" | "invoices" | "import" | "settings" | "about" | "privacy" | "terms";
+export type AnalyticsRoute = "onboarding" | "today" | "month" | "leave" | "reports" | "clients" | "projects" | "invoices" | "import" | "settings" | "about" | "help" | "privacy" | "terms";
 export type AnalyticsFeature = "today" | "month" | "leave" | "reports" | "business" | "import" | "settings" | "activity-segments" | "notification-intelligence";
 export type AnalyticsErrorArea = "runtime" | "navigation" | "persistence";
 export type AnalyticsErrorCode = "window-error" | "unhandled-rejection" | "route-error" | "save-error";
@@ -124,7 +124,7 @@ export function getAnalyticsRoute(pathname: string): AnalyticsRoute | null {
   const allowed: Record<string, AnalyticsRoute> = {
     "/onboarding": "onboarding", "/today": "today", "/month": "month", "/leave": "leave", "/reports": "reports",
     "/clients": "clients", "/projects": "projects", "/invoices": "invoices", "/import": "import", "/settings": "settings",
-    "/about": "about", "/privacy": "privacy", "/terms": "terms",
+    "/about": "about", "/help": "help", "/privacy": "privacy", "/terms": "terms",
   };
   if (route.startsWith("/settings/")) return "settings";
   return allowed[route] ?? null;

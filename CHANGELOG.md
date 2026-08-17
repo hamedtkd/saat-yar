@@ -331,3 +331,5 @@
 - بازآرایی جزئیات پروژه و فاکتورها به کامپوننت‌ها و Hookهای متمرکز.
 - یکپارچه‌سازی نمایش اطلاعات مالی با PrivateMoney.
 - افزودن تست معماری صفحات تجاری.
+
+- Phase 195 R6: hardened responsive public pages, added a public navigation/language/theme header, and introduced the bilingual `/help` guide.

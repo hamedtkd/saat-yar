@@ -56,6 +56,6 @@ export function getTermsCopy(locale: Locale) { return locale === "en" ? termsEn 
 
 export function getLegalNavLabels(locale: Locale) {
   return locale === "en"
-    ? { about: "About Saatyar", privacy: "Privacy Policy", terms: "Terms of Service", source: "Source code" }
-    : { about: "درباره ساعت‌یار", privacy: "سیاست حریم خصوصی", terms: "شرایط استفاده", source: "کد منبع" };
+    ? { about: "About Saatyar", help: "Help", privacy: "Privacy Policy", terms: "Terms of Service", source: "Source code" }
+    : { about: "درباره ساعت‌یار", help: "راهنما", privacy: "سیاست حریم خصوصی", terms: "شرایط استفاده", source: "کد منبع" };
 }

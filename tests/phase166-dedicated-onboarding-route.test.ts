@@ -27,7 +27,7 @@ test("new users are routed to onboarding and completed users cannot remain there
 test("onboarding owns a focused shell without dashboard navigation", async () => {
   const shell = await read("components/saatyar-shell.tsx");
   assert.match(shell, /onboardingRoute(?: \|\| publicRoute)? \? \(/);
-  assert.match(shell, /<main id="main-content" role="main"/);
+  assert.match(shell, /id="main-content" role="main"/);
   assert.match(shell, /<SidebarNav/);
   assert.match(shell, /<MobileBottomNav/);
   const branchStart = shell.indexOf("{onboardingRoute || publicRoute ? (") >= 0

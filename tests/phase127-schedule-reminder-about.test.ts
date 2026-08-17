@@ -60,7 +60,7 @@ test("about page documents local-first usage and exposes the requested contact l
   assert.match(page, /https:\/\/daramet\.com\/hamedtkd/);
   assert.match(page, /https:\/\/www\.linkedin\.com\/in\/hamed-ahmadi1\//);
   assert.match(page, /https:\/\/t\.me\/hamed_tkd/);
-  assert.match(footer, /href="\/about"/);
+  assert.match(footer, /href="\/help"/);
   assert.match(metadata, /ABOUT_METADATA/);
 });
 
@@ -72,9 +72,11 @@ test("about is an allowed supplemental route and phase 126 lint warning is remov
   ]);
   assert.equal(isSupplementalRoute("/about"), true);
   assert.equal(isSupplementalRoute("/import/"), true);
+  assert.equal(isSupplementalRoute("/help"), true);
   assert.equal(isSupplementalRoute("/privacy"), true);
   assert.equal(isSupplementalRoute("/terms"), true);
   assert.equal(isPublicRoute("/about"), true);
+  assert.equal(isPublicRoute("/help"), true);
   assert.equal(isPublicRoute("/privacy"), true);
   assert.equal(isPublicRoute("/terms"), true);
   assert.equal(isPublicRoute("/import"), false);

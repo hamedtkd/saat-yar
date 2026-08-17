@@ -17,7 +17,7 @@ export function AppFooter({ online }: { online: boolean }) {
           <ShieldCheck className="size-4" />{t("footer.privacy")}
         </GuardedLink>
         <GuardedLink
-          href="/about"
+          href="/help"
           className="inline-flex items-center gap-1.5 font-bold text-[var(--accent-strong)] underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]"
         >
           <CircleHelp className="size-4" />
