@@ -17,7 +17,7 @@ import { RouteGuard } from "@/components/layout/navigation/route-guard";
 import { RouteSync } from "@/components/layout/route-sync";
 import { useSaatyarController } from "@/hooks/use-saatyar-controller";
 import { cn } from "@/lib/cn";
-import { normalizePathname } from "@/lib/navigation";
+import { isPublicRoute, normalizePathname } from "@/lib/navigation";
 import { useLocale } from "@/components/i18n/locale-provider";
 import { ProductAnalyticsRuntime } from "@/components/analytics/product-analytics-runtime";
 import { AppLoadingState } from "@/components/motion/app-loading-state";
@@ -43,7 +43,9 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
     return <AppLoadingState label={t("app.loading")} logoLabel={t("app.logoLabel")} pathname={pathname} />;
 
   const { setData } = controller;
-  const onboardingRoute = normalizePathname(pathname) === "/onboarding";
+  const normalizedPath = normalizePathname(pathname);
+  const onboardingRoute = normalizedPath === "/onboarding";
+  const publicRoute = isPublicRoute(normalizedPath);
 
   return (
     <SaatyarContext.Provider value={controller}>
@@ -57,12 +59,12 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
           onboarded={data.settings.onboarded}
         />
 
-        {onboardingRoute ? (
+        {onboardingRoute || publicRoute ? (
           <>
             <SkipLink />
-            <main id="main-content" role="main" tabIndex={-1} className="min-h-screen bg-[var(--page)]" dir={direction}>
+            <main id="main-content" role="main" tabIndex={-1} className="min-h-screen bg-[var(--page)] px-3 py-5 sm:px-5" dir={direction}>
               {controller.toast && <AppToast message={controller.toast} />}
-              <RouteMotionBoundary pathname={pathname}>{children}</RouteMotionBoundary>
+              <div className="mx-auto w-full max-w-[1180px]"><RouteMotionBoundary pathname={pathname}>{children}</RouteMotionBoundary></div>
             </main>
           </>
         ) : (

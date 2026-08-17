@@ -21,6 +21,7 @@ export const metadata: Metadata = {
   category: "productivity",
   creator: SITE_NAME,
   publisher: SITE_NAME,
+  verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION } : undefined,
   alternates: { canonical: absoluteUrl("/") },
   manifest: `${basePath}/manifest.webmanifest`,
   formatDetection: { email: false, address: false, telephone: false },

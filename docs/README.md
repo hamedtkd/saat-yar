@@ -171,3 +171,6 @@
 - `releases/NEXT_RELEASE_FEATURES_FA.md`: فهرست تجمیعی قابلیت‌های نسخه بعدی برای Release Notes و LinkedIn.
 
 - 2.5.0 final release: [`releases/2.5.0.json`](./releases/2.5.0.json)
+
+- [Phase 195: OAuth Verification Readiness + GA4 Analytics](./phases/PHASE_195_NOTES_FA.md)
+- [Google OAuth Verification Kit](./google-oauth/GOOGLE_OAUTH_VERIFICATION_2.5_FA.md)

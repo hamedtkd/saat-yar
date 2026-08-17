@@ -4,32 +4,32 @@
 
 داده کاری ساعت‌یار Local-first است. Analytics نباید به مسیر دوم انتقال داده‌های شخصی تبدیل شود.
 
-## Provider
+## Provider فعال: Google Analytics 4
 
-Adapter فعلی Plausible است و به‌صورت دستی از Events API استفاده می‌کند. Script خودکار Analytics داخل Layout تزریق نمی‌شود.
+از Phase 195 transport اختیاری Analytics روی GA4 است. هیچ SDK یا dependency جدیدی اضافه نشده و `gtag.js` فقط **بعد از opt-in صریح کاربر** به‌صورت runtime بارگذاری می‌شود.
 
-فعال‌سازی Production فقط با هر دو متغیر زیر ممکن است:
-
-```env
-NEXT_PUBLIC_ANALYTICS_PROVIDER=plausible
-NEXT_PUBLIC_PLAUSIBLE_DOMAIN=saat-yar.vercel.app
-```
-
-برای endpoint سفارشی یا self-hosted compatible می‌توان این مقدار را نیز تعیین کرد:
+فعال‌سازی Production:
 
 ```env
-NEXT_PUBLIC_PLAUSIBLE_ENDPOINT=https://plausible.io/api/event
+NEXT_PUBLIC_ANALYTICS_PROVIDER=ga4
+NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
 ```
 
-اگر Provider یا Domain تنظیم نشده باشد، Runtime در حالت `none` است و حتی با Consent کاربر هیچ درخواست Analytics ارسال نمی‌شود.
+اگر Provider یا Measurement ID معتبر تنظیم نشده باشد، Runtime در حالت `none` است و حتی با Consent کاربر هیچ درخواست Analytics ارسال نمی‌شود.
 
 ## Consent
 
-Consent روی همان Browser نگه داشته می‌شود و بخشی از AppData، Backup یا Device Transfer نیست. حالت‌ها:
+Consent روی همان Browser نگه داشته می‌شود و بخشی از AppData، Backup یا Device Transfer نیست:
 
-- `unset`: هیچ Event به Network نمی‌رود؛ Eventهای امن همان Session فقط در حافظه محدود Buffer می‌شوند.
-- `granted`: فقط Eventهای taxonomy مجاز ارسال می‌شوند.
-- `denied`: Buffer پاک و همه ارسال‌ها متوقف می‌شوند.
+- `unset`: هیچ Tag یا Request Analytics به Network نمی‌رود؛ Eventهای امن همان Session فقط در حافظه محدود Buffer می‌شوند.
+- `granted`: GA4 tag بارگذاری می‌شود و فقط Eventهای taxonomy مجاز ارسال می‌شوند.
+- `denied`: Buffer پاک، ارسال متوقف و consent runtime برای Analytics denied می‌شود.
+
+Advertising storage، ad user data، ad personalization و Google signals برای این integration غیرفعال‌اند.
+
+## Page view در SPA
+
+Saatyar `send_page_view: false` تنظیم می‌کند و Route Viewهای خودش را به `page_view` تبدیل می‌کند تا App Router باعث double-count نشود. URL ارسالی فقط Origin + Route allowlisted است؛ query string و hash ارسال نمی‌شوند.
 
 ## داده مجاز
 
@@ -48,10 +48,18 @@ Properties فقط Enum یا Number محدود هستند: Route، Feature، Work
 - raw URL، query string، hash یا search term
 - متن Exception یا Stack trace
 
+## گزارش Event parameters در GA4
+
+Custom event parameterها collect می‌شوند؛ برای نمایش آن‌ها در Reports/Explore باید در GA4 از مسیر Admin → Data display → Custom definitions، dimension متناظر بسازی. پیشنهاد اولیه:
+
+- `saatyar_route`
+- `feature`
+- `mode`
+- `timing`
+- `path`
+- `area`
+- `code`
+
 ## افزودن Event جدید
 
 Event باید ابتدا به union تایپ‌شده `ProductAnalyticsEvent` اضافه شود و Contract تست داشته باشد. API عمومی `trackProductAnalytics` نباید به `Record<string, unknown>` یا Property آزاد تبدیل شود.
-
-## منابع تصمیم Provider
-
-بررسی رسمی Phase 184 بر مستندات Privacy/Events Plausible، Consent/Data collection Google Analytics و مستندات privacy/event tracking Umami تکیه دارد. نتیجه این فاز: Provider abstraction کوچک، Plausible adapter اختیاری، و عدم فعال‌سازی GA4/GTM یا Backend جدید به‌صورت پیش‌فرض.

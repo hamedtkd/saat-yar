@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
   ANALYTICS_CONSENT_STORAGE_KEY,
-  buildPlausiblePayload,
+  buildGa4Event,
   getAnalyticsRoute,
   getFeatureForRoute,
   resolveProductAnalyticsProviderConfig,
@@ -23,24 +23,17 @@ test("analytics consent stays browser-local and does not expand AppData or schem
 
 test("provider selection is explicit and defaults to no analytics transport", () => {
   assert.deepEqual(resolveProductAnalyticsProviderConfig({}), { provider: "none", configured: false, label: "Not configured" });
-  assert.deepEqual(resolveProductAnalyticsProviderConfig({ provider: "ga4", plausibleDomain: "example.com" }), { provider: "none", configured: false, label: "Not configured" });
-  const plausible = resolveProductAnalyticsProviderConfig({ provider: "plausible", plausibleDomain: "example.com" });
-  assert.equal(plausible.provider, "plausible");
-  assert.equal(plausible.configured, true);
-  if (plausible.provider === "plausible") assert.equal(plausible.endpoint, "https://plausible.io/api/event");
+  assert.deepEqual(resolveProductAnalyticsProviderConfig({ provider: "ga4" }), { provider: "none", configured: false, label: "Not configured" });
+  assert.deepEqual(resolveProductAnalyticsProviderConfig({ provider: "plausible", gaMeasurementId: "G-TEST123" }), { provider: "none", configured: false, label: "Not configured" });
+  const ga4 = resolveProductAnalyticsProviderConfig({ provider: "ga4", gaMeasurementId: "G-TEST123" });
+  assert.equal(ga4.provider, "ga4");
+  assert.equal(ga4.configured, true);
+  if (ga4.provider === "ga4") assert.equal(ga4.measurementId, "G-TEST123");
 });
 
 test("analytics payloads use an allowlisted taxonomy without personal work content", () => {
-  const config = resolveProductAnalyticsProviderConfig({ provider: "plausible", plausibleDomain: "example.com" });
-  assert.equal(config.provider, "plausible");
-  if (config.provider !== "plausible") return;
-  const payload = buildPlausiblePayload({ name: "work_started", properties: { mode: "employee", timing: "flexible" } }, config);
-  assert.deepEqual(payload, {
-    name: "work_started",
-    url: "https://example.com/event",
-    domain: "example.com",
-    props: { mode: "employee", timing: "flexible" },
-  });
+  const payload = buildGa4Event({ name: "work_started", properties: { mode: "employee", timing: "flexible" } });
+  assert.deepEqual(payload, { name: "work_started", parameters: { mode: "employee", timing: "flexible" } });
   const serialized = JSON.stringify(payload).toLowerCase();
   for (const forbidden of ["salary", "income", "client", "projectid", "note", "message", "recordid", "userid"]) {
     assert.equal(serialized.includes(forbidden), false, `payload unexpectedly contains ${forbidden}`);
@@ -88,7 +81,7 @@ test("Phase 184 instruments funnel events documents the privacy boundary and sta
   assert.match(attendance, /activity-segments/);
   assert.match(notifications, /notification-intelligence/);
   assert.match(docs, /Schema v19/);
-  assert.match(privacyDoc, /Plausible/);
+  assert.match(privacyDoc, /Google Analytics 4|GA4/);
   assert.match(packageJson.scripts.test, /tests\/phase184-privacy-safe-product-analytics\.test\.ts/);
   assert.equal(Object.keys(packageJson.dependencies).some((name) => name.includes("analytics") || name.includes("plausible") || name.includes("gtag")), false);
 });

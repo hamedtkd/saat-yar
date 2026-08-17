@@ -12,7 +12,7 @@ export function AnalyticsConsentControls({ compact = false }: { compact?: boolea
   const { consent, grant, deny } = useProductAnalyticsConsent();
   const provider = getProductAnalyticsProviderConfig();
   const enabled = consent === "granted" && provider.configured;
-  const providerLabel = provider.configured ? "Plausible" : s("Not configured");
+  const providerLabel = provider.configured ? provider.label : s("Not configured");
 
   return (
     <div data-product-analytics-consent className={cn("grid gap-3", compact && "mx-auto max-w-[680px]") }>

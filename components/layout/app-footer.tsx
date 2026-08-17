@@ -13,10 +13,9 @@ export function AppFooter({ online }: { online: boolean }) {
         {online ? t("footer.online") : t("footer.offline")}
       </span>
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <span className="flex items-center gap-2">
-          <ShieldCheck className="size-4 text-[var(--accent-strong)]" />
-          {t("footer.privacy")}
-        </span>
+        <GuardedLink href="/privacy" className="inline-flex items-center gap-1.5 font-bold text-[var(--accent-strong)] underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]">
+          <ShieldCheck className="size-4" />{t("footer.privacy")}
+        </GuardedLink>
         <GuardedLink
           href="/about"
           className="inline-flex items-center gap-1.5 font-bold text-[var(--accent-strong)] underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]"

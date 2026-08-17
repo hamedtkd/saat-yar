@@ -4,6 +4,7 @@ import test from "node:test";
 import { defaultSettings } from "../lib/constants.ts";
 import { durationWords } from "../lib/format.ts";
 import { applyWeeklyTargetHours, getScheduleTargetMinutes, weekdayOrder } from "../lib/work-schedule.ts";
+import { isPublicRoute, isSupplementalRoute } from "../lib/navigation.ts";
 
 const read = (path: string) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
@@ -69,7 +70,15 @@ test("about is an allowed supplemental route and phase 126 lint warning is remov
     read("components/layout/navigation/route-guard.tsx"),
     read("components/pages/settings/settings-navigation-model.ts"),
   ]);
-  assert.match(navigation, /SUPPLEMENTAL_ROUTES = \["\/about", "\/import"\]/);
+  assert.equal(isSupplementalRoute("/about"), true);
+  assert.equal(isSupplementalRoute("/import/"), true);
+  assert.equal(isSupplementalRoute("/privacy"), true);
+  assert.equal(isSupplementalRoute("/terms"), true);
+  assert.equal(isPublicRoute("/about"), true);
+  assert.equal(isPublicRoute("/privacy"), true);
+  assert.equal(isPublicRoute("/terms"), true);
+  assert.equal(isPublicRoute("/import"), false);
+  assert.match(navigation, /export const SUPPLEMENTAL_ROUTES/);
   assert.match(guard, /isSupplementalRoute\(normalized\)/);
   assert.doesNotMatch(settingsModel, /DatabaseBackup/);
 });
