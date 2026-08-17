@@ -11,7 +11,7 @@ test("onboarding is a first-class app route instead of a Today overlay", async (
   ]);
   assert.match(page, /useSaatyarContext/);
   assert.match(page, /<Onboarding/);
-  assert.match(shell, /onboardingRoute = normalizePathname\(pathname\) === "\/onboarding"/);
+  assert.match(shell, /onboardingRoute = (?:normalizePathname\(pathname\)|normalizedPath) === "\/onboarding"/);
   assert.doesNotMatch(shell, /!data\.settings\.onboarded\s*&&\s*\(\s*<Onboarding/);
 });
 
@@ -26,11 +26,15 @@ test("new users are routed to onboarding and completed users cannot remain there
 
 test("onboarding owns a focused shell without dashboard navigation", async () => {
   const shell = await read("components/saatyar-shell.tsx");
-  assert.match(shell, /onboardingRoute \? \(/);
-  assert.match(shell, /<main id="main-content" role="main"/);
+  assert.match(shell, /onboardingRoute(?: \|\| publicRoute)? \? \(/);
+  assert.match(shell, /id="main-content" role="main"/);
   assert.match(shell, /<SidebarNav/);
   assert.match(shell, /<MobileBottomNav/);
-  const onboardingBranch = shell.slice(shell.indexOf("{onboardingRoute ? ("), shell.indexOf(") : (", shell.indexOf("{onboardingRoute ? (")));
+  const branchStart = shell.indexOf("{onboardingRoute || publicRoute ? (") >= 0
+    ? shell.indexOf("{onboardingRoute || publicRoute ? (")
+    : shell.indexOf("{onboardingRoute ? (");
+  assert.ok(branchStart >= 0);
+  const onboardingBranch = shell.slice(branchStart, shell.indexOf(") : (", branchStart));
   assert.doesNotMatch(onboardingBranch, /SidebarNav|AppHeader|MobileBottomNav|PwaExperience/);
 });
 

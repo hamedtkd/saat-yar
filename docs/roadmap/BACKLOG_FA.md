@@ -338,3 +338,8 @@
 - [x] فاز ۱۹۲: Behavioral Test Modernization؛ Report Summary رفتاری و جلوگیری از رشد source-coupled tests.
 - [x] فاز ۱۹۳: Release Candidate 2.5.0؛ bump نسخه، Manifest Schema v20، Migration audit v17→v20، Release Notes دو‌زبانه و Browser/Production matrix روی Baseline `0c4c22e` با ۸۷۴/۸۷۴ تست و Candidate commit `d81e094`.
 - [x] فاز ۱۹۴: Finalization/Release 2.5.0؛ Final source و ۸۸۰-test contract، سپس Merge کنترل‌شده به `main`، Deploy، `audit:production` و Tag annotated `v2.5.0` فقط به همین ترتیب.
+
+
+## توسعه پس از ۲.۵.۰ — Trust & Measurement
+
+- [ ] فاز ۱۹۵: OAuth Verification Readiness + GA4 Analytics؛ صفحات عمومی About/Privacy/Terms، disclosure Google Calendar، Verification Kit و مهاجرت consent-safe از Plausible به GA4 بدون Schema/Dependency جدید.

@@ -6,6 +6,7 @@ import {
   getFirstAllowedTab,
   getPathTab,
   getTabHref,
+  isPublicRoute,
   isSupplementalRoute,
   isTabAllowed,
   LAST_ROUTE_STORAGE_KEY,
@@ -33,6 +34,8 @@ export function RouteGuard({ mode, pathname, ready, onboarded }: RouteGuardProps
     const currentTab = getPathTab(normalized);
     const fallback = getTabHref(getFirstAllowedTab(mode));
     const onboardingReentry = isOnboardingReentry(window.localStorage);
+
+    if (isPublicRoute(normalized)) return;
 
     if (!onboarded || onboardingReentry) {
       if (normalized !== ONBOARDING_PATH) router.replace(ONBOARDING_PATH);

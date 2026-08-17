@@ -848,6 +848,11 @@ export const faSystemCatalog = {
   "Links and contact": "لینک‌ها و ارتباط",
   "Source code, optional support, and direct contact links.": "کد منبع، حمایت اختیاری و راه‌های ارتباط مستقیم.",
   "Financial support is completely optional and unlocks no extra features. Report bugs and technical suggestions on GitHub; LinkedIn and Telegram are available for direct contact.": "حمایت مالی کاملاً اختیاری است و هیچ قابلیت اضافه‌ای را باز نمی‌کند. گزارش باگ و پیشنهاد فنی را می‌توانی در GitHub ثبت کنی؛ برای ارتباط مستقیم هم LinkedIn و Telegram در دسترس‌اند.",
+  "Google Calendar integration": "اتصال Google Calendar",
+  "Google Calendar is optional. Saatyar lists calendars so you can choose a source, then lets you view, create, edit, delete, synchronize, and resolve conflicts for events you explicitly manage. OAuth tokens stay in browser memory and the local sync cache stays on this device.": "اتصال Google Calendar اختیاری است. ساعت‌یار فهرست تقویم‌ها را برای انتخاب منبع نمایش می‌دهد و سپس امکان مشاهده، ساخت، ویرایش، حذف، همگام‌سازی و بررسی تداخل رویدادهایی را می‌دهد که خودت مدیریت می‌کنی. توکن OAuth در حافظه مرورگر و cache همگام‌سازی روی همین دستگاه می‌ماند.",
+  "Complete guide": "راهنمای جامع",
+  "Privacy Policy": "سیاست حریم خصوصی",
+  "Terms of Service": "شرایط استفاده",
 
 
   "Privacy-safe product analytics": "آمار محصول با حفظ حریم خصوصی",

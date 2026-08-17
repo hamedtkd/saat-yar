@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+- Phase 195: OAuth Verification readiness با Privacy Policy/Terms عمومی، disclosure شفاف Google Calendar و Verification Kit اضافه شد؛ Analytics اختیاری از Plausible به GA4 consent-gated مهاجرت کرد، `gtag.js` فقط پس از opt-in بارگذاری می‌شود و manual SPA pageview از double-count جلوگیری می‌کند. Schema v20 و dependencyها بدون تغییرند.
+
 ## [2.5.0] - 2026-08-17
 
 - Phase 194 Final Release: Candidate `d81e094` با 874/874 تست ثبت شد؛ Final source روی 880/880 قفل می‌شود و rollout فقط با ترتیب merge کنترل‌شده به `main` → deploy → `audit:production` → tag annotated `v2.5.0` مجاز است.
@@ -329,3 +331,5 @@
 - بازآرایی جزئیات پروژه و فاکتورها به کامپوننت‌ها و Hookهای متمرکز.
 - یکپارچه‌سازی نمایش اطلاعات مالی با PrivateMoney.
 - افزودن تست معماری صفحات تجاری.
+
+- Phase 195 R6: hardened responsive public pages, added a public navigation/language/theme header, and introduced the bilingual `/help` guide.

@@ -19,10 +19,15 @@ export const ALLOWED_TABS: Record<Mode, Tab[]> = {
 
 export const LAST_ROUTE_STORAGE_KEY = "saatyar:last-route";
 
-export const SUPPLEMENTAL_ROUTES = ["/about", "/import"] as const;
+export const SUPPLEMENTAL_ROUTES = ["/about", "/help", "/privacy", "/terms", "/import"] as const;
+export const PUBLIC_ROUTES = ["/about", "/help", "/privacy", "/terms"] as const;
 
 export function isSupplementalRoute(pathname: string) {
   return SUPPLEMENTAL_ROUTES.includes(normalizePathname(pathname) as (typeof SUPPLEMENTAL_ROUTES)[number]);
+}
+
+export function isPublicRoute(pathname: string) {
+  return PUBLIC_ROUTES.includes(normalizePathname(pathname) as (typeof PUBLIC_ROUTES)[number]);
 }
 
 export function normalizePathname(pathname: string) {
