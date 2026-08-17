@@ -287,6 +287,7 @@ The Persian deployment guide covers Windows, macOS, Linux, Docker, GitHub Pages,
 
 [Run and deployment guide](./RUN_AND_DEPLOY_FA.md)
 
+- [Saatyar 2.5.0 release candidate notes](./docs/releases/RELEASE_NOTES_2.5.0_EN.md)
 - [Latest stable Saatyar 2.4.0 release notes](./docs/releases/RELEASE_NOTES_2.4.0_EN.md)
 - [Latest stable Saatyar 2.3.2 release notes](./docs/releases/RELEASE_NOTES_2.3.2_EN.md)
 - [Historical Saatyar 2.3.1 release notes](./docs/releases/RELEASE_NOTES_2.3.1_EN.md)
@@ -301,6 +302,8 @@ Bug reports, UX suggestions, documentation fixes, and pull requests are welcome.
 Before opening a pull request, read [CONTRIBUTING.md](./CONTRIBUTING.md) and the [English agent guide](./docs/agents/AGENT_GUIDE_EN.md). Security vulnerabilities must not be reported in a public issue; use the responsible disclosure path in [SECURITY.md](./SECURITY.md).
 
 ## Roadmap
+
+Version **2.5.0** is currently a release candidate on `dev`, packaging Phases 181–193 from verified baseline `0c4c22e` (870/870 tests before candidate contracts). It uses AppData schema v20 and keeps the released 2.4.0 schema v17 contract immutable. `main`, production rollout, and `v2.5.0` tagging remain pending. See the [2.5.0 candidate notes](./docs/releases/RELEASE_NOTES_2.5.0_EN.md).
 
 Version **2.4.0** is the latest stable Saatyar release and packages Phases 166–180: dedicated recoverable onboarding, corrected leave entitlement, completed-day editing feedback, the Import Wizard, the shared live runtime clock, full Persian RTL / English LTR i18n hardening, and the final release contract.
 

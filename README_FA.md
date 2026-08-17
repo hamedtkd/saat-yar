@@ -276,6 +276,7 @@ tests/                         تست‌های دامنه، Regression و معم
 
 - [عیب‌یابی Windows و خطاهای npm](./docs/TROUBLESHOOTING_FA.md)
 - [جدول سازگاری مرورگر و محدودیت‌های Notification/PWA](./docs/BROWSER_COMPATIBILITY.md)
+- [یادداشت Release Candidate ساعت‌یار ۲.۵.۰](./docs/releases/RELEASE_NOTES_2.5.0_FA.md)
 - [یادداشت آخرین Release پایدار ساعت‌یار ۲.۴.۰](./docs/releases/RELEASE_NOTES_2.4.0_FA.md)
 - [آخرین انتشار پایدار ساعت‌یار ۲.۳.۲](./docs/releases/RELEASE_NOTES_2.3.2_FA.md)
 - [یادداشت انتشار تاریخی ۲.۳.۱](./docs/releases/RELEASE_NOTES_2.3.1_FA.md)
@@ -298,6 +299,8 @@ npm run test:browser:production
 سپس دستورالعمل [CONTRIBUTING.md](./CONTRIBUTING.md) را مطالعه کنید. آسیب‌پذیری امنیتی نباید در Issue عمومی منتشر شود؛ روش گزارش مسئولانه در [SECURITY.md](./SECURITY.md) آمده است.
 
 ## نقشه راه
+
+نسخه **۲.۵.۰** اکنون Release Candidate روی `dev` است و فازهای ۱۸۱ تا ۱۹۳ را از Baseline تأییدشده `0c4c22e` با ۸۷۰/۸۷۰ تست پیش از Contractهای Candidate بسته‌بندی می‌کند. Candidate روی AppData Schema v20 است و قرارداد منتشرشده ۲.۴.۰ روی Schema v17 immutable می‌ماند. `main`، Rollout Production و Tag `v2.5.0` هنوز Pending هستند. جزئیات در [یادداشت Candidate ۲.۵.۰](./docs/releases/RELEASE_NOTES_2.5.0_FA.md) آمده است.
 
 نسخه **۲.۴.۰** آخرین Release پایدار ساعت‌یار است و تغییرات فازهای ۱۶۶ تا ۱۸۰ را بسته‌بندی می‌کند: آنبوردینگ مستقل و قابل‌بازیابی، اصلاح سهمیه مرخصی، بازخورد ویرایش روز تکمیل‌شده، Import Wizard، Runtime Clock مشترک، تکمیل فارسی RTL / انگلیسی LTR و قرارداد Final Release.
 

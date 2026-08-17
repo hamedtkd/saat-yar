@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+- Finalization پس از Release Candidate 2.5.0 در فاز بعدی انجام می‌شود؛ Merge به `main`، Production Audit و Tag هنوز Pending هستند.
+
+## [2.5.0] - Release Candidate 2026-08-17
+
 - Phase 192: تست‌های Reports/Payroll از source-inspection به قراردادهای رفتاری منتقل شدند؛ Report Summary به helper خالص قابل‌تست استخراج شد و `audit:tests` بودجه بدهی تاریخی source-coupled/per-file wiring را ثبت می‌کند و برای Phase 192 به بعد هر تست وابسته به خواندن سورس را رد می‌کند. generic test discovery حفظ شده و Schema/dependency بدون تغییر است.
 - Phase 191: Payroll و Reports روی Payroll Period Facts مشترک همگرا شدند؛ تعطیل‌کاری دیگر کسری روز عادی را در balance ماهانه پنهان نمی‌کند، Paid Leave با credited time بین Today/Reports یکسان شده و Preview نرخ Base/Overtime/Holiday/Deficit را از یک Rate Engine نمایش می‌دهد؛ Schema v20 و dependencyها بدون تغییر ماندند.
 - Phase 190: Google Calendar با Incremental Sync مبتنی بر `syncToken` و fallback امن 410، cache مستقل مرورگر، ETag/`If-Match` برای جلوگیری از overwrite نسخه stale، تشخیص overlap و collapse duplicateها، Day/Week planner، Event → Activity صریح و recurring occurrence/series editing ارتقا یافت؛ Google همچنان روی WorkRecord/Payroll/تعطیلات داخلی اثر خودکار ندارد.

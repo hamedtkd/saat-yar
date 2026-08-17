@@ -19,9 +19,9 @@
 - Phase 191 — Payroll & Reports Hardening: Payroll Period Facts مشترک، جلوگیری از masking کسری توسط تعطیل‌کاری، Paid Leave consistency و Rate Summary واحد برای base/overtime/holiday/deficit.
 - Phase 192 — Behavioral Test Modernization: قرارداد pure برای Report Summary، تست رفتاری مشترک Reports/Payroll Preview و audit خودکار برای جلوگیری از رشد source/regex coupling در تست‌های جدید.
 
-## فازهای ثبت‌شده بعدی
+## Release Candidate فعال
 
-- Phase 193 — Next Release Candidate: آماده‌سازی Feature Release بعدی، migration audit، release manifest/notes و browser/production matrix.
+- Phase 193 — Release Candidate 2.5.0: بسته‌بندی فازهای 181–192، migration audit از v17 تا v20، manifest/notes دو‌زبانه و Release Matrix. Final rollout هنوز Pending است.
 
 ## پیام‌های مهم برای معرفی نسخه
 

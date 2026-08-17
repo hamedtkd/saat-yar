@@ -1,6 +1,6 @@
 {
   "name": "saatyar-worklog",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "private": true,
   "engines": {
     "node": "22.x"
@@ -45,7 +45,8 @@
     "audit:vercel": "node scripts/vercel-static-export-contract.mjs",
     "release:prepare:2.3.2": "node scripts/prepare-release-2.3.2.mjs",
     "release:prepare:2.4.0": "node scripts/prepare-release-2.4.0.mjs",
-    "audit:tests": "node scripts/audit-test-coupling.mjs"
+    "audit:tests": "node scripts/audit-test-coupling.mjs",
+    "release:prepare:2.5.0": "node scripts/prepare-release-2.5.0.mjs"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.1.23",

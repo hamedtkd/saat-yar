@@ -331,3 +331,10 @@
 - [x] ترجمه Validation/Toastهای تجاری و خروجی CSV/Excel/سطح چاپ مرتبط در فاز ۱۷۶، بدون تغییر داده دامنه.
 - [x] تکمیل متن‌های System/PWA و سطوح باقی‌مانده Settings/Onboarding/Import/About در فاز ۱۷۷؛ Metadata استاتیک فعلاً Canonical فارسی و Runtime title دو Locale است.
 - [x] فاز ۱۷۸: Audit نهایی Hard-coded UI، Metadata/PWA، Print/CSV و هندسه دو جهت پیش از تصمیم Rollout زبان دوم؛ Audit اجرایی به Quality Gate متصل شد.
+
+## آمادگی انتشار ۲.۵.۰
+
+- [x] فاز ۱۹۱: Payroll & Reports Hardening؛ Payroll Period Facts مشترک، Paid Leave consistency و rate summary واحد.
+- [x] فاز ۱۹۲: Behavioral Test Modernization؛ Report Summary رفتاری و جلوگیری از رشد source-coupled tests.
+- [ ] فاز ۱۹۳: Release Candidate 2.5.0؛ bump نسخه، Manifest Schema v20، Migration audit v17→v20، Release Notes دو‌زبانه و Browser/Production matrix روی Baseline `0c4c22e` با ۸۷۰/۸۷۰ تست.
+- [ ] فاز ۱۹۴: Finalization/Release؛ فقط پس از Candidate سبز، Merge کنترل‌شده به `main`، Deploy، `audit:production` و Tag annotated `v2.5.0`.

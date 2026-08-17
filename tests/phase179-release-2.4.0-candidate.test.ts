@@ -16,9 +16,6 @@ const manifest = JSON.parse(read("docs/releases/2.4.0.json")) as {
 };
 
 test("historical Phase 179 candidate identity is preserved after 2.4.0 finalization", () => {
-  assert.equal(packageJson.version, "2.4.0");
-  assert.equal(packageLock.version, "2.4.0");
-  assert.equal(packageLock.packages[""]?.version, "2.4.0");
   assert.equal(manifest.version, "2.4.0");
   assert.equal(manifest.candidateDate, "2026-08-11");
   assert.equal(manifest.releaseDate, "2026-08-12");

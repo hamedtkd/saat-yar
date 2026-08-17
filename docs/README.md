@@ -169,3 +169,9 @@
 - [قرارداد Privacy-safe Analytics](./product-analytics/PRIVACY_SAFE_ANALYTICS_FA.md)
 
 - `releases/NEXT_RELEASE_FEATURES_FA.md`: فهرست تجمیعی قابلیت‌های نسخه بعدی برای Release Notes و LinkedIn.
+
+## Release Candidate 2.5.0
+
+- [Manifest](./releases/2.5.0.json)
+- [فارسی](./releases/RELEASE_NOTES_2.5.0_FA.md)
+- [English](./releases/RELEASE_NOTES_2.5.0_EN.md)
