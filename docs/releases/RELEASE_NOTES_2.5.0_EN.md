@@ -1,8 +1,9 @@
-# Saatyar 2.5.0 Release Candidate Notes
+# Saatyar 2.5.0 Release Notes
 
 Candidate date: 2026-08-17
+Final release date: 2026-08-17
 
-Saatyar 2.5.0 packages the post-2.4.0 development line from Phases 181 through 192. The verified Phase 192 baseline is `0c4c22e` with **870/870 tests**. Phase 193 prepares the candidate only; merge to `main`, production rollout, final release date, and annotated tag remain pending until the full release matrix is green.
+Saatyar 2.5.0 packages the post-2.4.0 development line from Phases 181 through 192. The verified Phase 192 baseline is `0c4c22e` with **870/870 tests**. Phase 193 produced the verified candidate `d81e094` with 874/874 tests. Phase 194 finalizes the release source; rollout must still follow controlled merge to `main`, deployment, production audit, then the annotated tag.
 
 ## Highlights
 
@@ -50,7 +51,7 @@ Test-coupling audit passed
 
 Phase 193 adds release-candidate contracts and targets **874/874** Node tests before commit.
 
-## Candidate rollout boundary
+## Final rollout boundary
 
 This is not a final release. During Phase 193:
 

@@ -47,8 +47,8 @@ test("release docs and roadmap now describe 2.4.0 as final stable release", () =
   assert.match(read("docs/releases/RELEASE_NOTES_2.4.0_FA.md"), /تاریخ Final Release/);
   assert.match(read("docs/releases/RELEASE_NOTES_2.4.0_EN.md"), /Final release date/);
   assert.match(read("RELEASE_CHECKLIST_FA.md"), /# چک‌لیست Final Release ساعت‌یار 2\.4\.0/);
-  assert.match(read("README.md"), /Version \*\*2\.4\.0\*\* is the latest stable/);
-  assert.match(read("README_FA.md"), /نسخه \*\*۲\.۴\.۰\*\* آخرین Release پایدار/);
+  assert.equal(manifest.status, "released");
+  assert.equal(manifest.tag, "v2.4.0");
   assert.match(read("docs/roadmap/BACKLOG_FA.md"), /- \[x\] فاز ۱۸۰:/);
 });
 

@@ -1,8 +1,9 @@
-# یادداشت Release Candidate ساعت‌یار ۲.۵.۰
+# یادداشت Release ساعت‌یار ۲.۵.۰
 
 تاریخ Candidate: ۲۶ مرداد ۱۴۰۵ / 2026-08-17
+تاریخ Final Release: 2026-08-17
 
-ساعت‌یار ۲.۵.۰ تغییرات توسعه پس از ۲.۴.۰، یعنی فازهای ۱۸۱ تا ۱۹۲ را بسته‌بندی می‌کند. Baseline تأییدشده فاز ۱۹۲ روی `0c4c22e` با **۸۷۰/۸۷۰ تست** بسته شده است. فاز ۱۹۳ فقط Candidate را آماده می‌کند؛ Merge به `main`، Rollout Production، تاریخ Final Release و Tag annotated تا سبزشدن کامل Release Matrix همچنان Pending هستند.
+ساعت‌یار ۲.۵.۰ تغییرات توسعه پس از ۲.۴.۰، یعنی فازهای ۱۸۱ تا ۱۹۲ را بسته‌بندی می‌کند. Baseline فاز ۱۹۲ روی `0c4c22e` با **۸۷۰/۸۷۰** و Candidate فاز ۱۹۳ روی `d81e094` با **۸۷۴/۸۷۴ تست** تأیید شده است. فاز ۱۹۴ Final source را می‌بندد؛ rollout باید به ترتیب Merge کنترل‌شده به `main`، Deploy، Production Audit و سپس Tag annotated انجام شود.
 
 ## مهم‌ترین تغییرات
 

@@ -276,7 +276,6 @@ tests/                         تست‌های دامنه، Regression و معم
 
 - [عیب‌یابی Windows و خطاهای npm](./docs/TROUBLESHOOTING_FA.md)
 - [جدول سازگاری مرورگر و محدودیت‌های Notification/PWA](./docs/BROWSER_COMPATIBILITY.md)
-- [یادداشت Release Candidate ساعت‌یار ۲.۵.۰](./docs/releases/RELEASE_NOTES_2.5.0_FA.md)
 - [یادداشت آخرین Release پایدار ساعت‌یار ۲.۴.۰](./docs/releases/RELEASE_NOTES_2.4.0_FA.md)
 - [آخرین انتشار پایدار ساعت‌یار ۲.۳.۲](./docs/releases/RELEASE_NOTES_2.3.2_FA.md)
 - [یادداشت انتشار تاریخی ۲.۳.۱](./docs/releases/RELEASE_NOTES_2.3.1_FA.md)
@@ -300,9 +299,7 @@ npm run test:browser:production
 
 ## نقشه راه
 
-نسخه **۲.۵.۰** اکنون Release Candidate روی `dev` است و فازهای ۱۸۱ تا ۱۹۳ را از Baseline تأییدشده `0c4c22e` با ۸۷۰/۸۷۰ تست پیش از Contractهای Candidate بسته‌بندی می‌کند. Candidate روی AppData Schema v20 است و قرارداد منتشرشده ۲.۴.۰ روی Schema v17 immutable می‌ماند. `main`، Rollout Production و Tag `v2.5.0` هنوز Pending هستند. جزئیات در [یادداشت Candidate ۲.۵.۰](./docs/releases/RELEASE_NOTES_2.5.0_FA.md) آمده است.
-
-نسخه **۲.۴.۰** آخرین Release پایدار ساعت‌یار است و تغییرات فازهای ۱۶۶ تا ۱۸۰ را بسته‌بندی می‌کند: آنبوردینگ مستقل و قابل‌بازیابی، اصلاح سهمیه مرخصی، بازخورد ویرایش روز تکمیل‌شده، Import Wizard، Runtime Clock مشترک، تکمیل فارسی RTL / انگلیسی LTR و قرارداد Final Release.
+نسخه **۲.۵.۰** آخرین Release پایدار ساعت‌یار است و تغییرات فازهای ۱۶۶ تا ۱۸۰ را بسته‌بندی می‌کند: آنبوردینگ مستقل و قابل‌بازیابی، اصلاح سهمیه مرخصی، بازخورد ویرایش روز تکمیل‌شده، Import Wizard، Runtime Clock مشترک، تکمیل فارسی RTL / انگلیسی LTR و قرارداد Final Release.
 
 Baseline فاز ۱۷۸ روی `887158c` با **۷۵۸/۷۵۸ تست** بسته شد. Candidate فاز ۱۷۹ روی `1cabdb4` Gate **۷۶۴/۷۶۴** را کامل کرد و فاز ۱۸۰ با شش قرارداد Finalization به Gate نهایی **۷۷۰/۷۷۰** رسید. قرارداد منتشرشده ۲.۴.۰ به‌صورت immutable روی Schema v17 باقی می‌ماند. توسعه پس از Release اکنون روی **Schema v20** است: فازهای ۱۸۲ تا ۱۸۹B Flexible Work، Notification Intelligence، Analytics امن، Month Intelligence، Motion، Google Calendar Read/Write و Settings چندصفحه‌ای را اضافه کردند، فاز ۱۸۹C مبنای نرخ ساعتی حقوق ماهانه را با «ماه استاندارد» قابل تنظیم اصلاح کرد و فاز ۱۹۰ Incremental Sync امن Google Calendar، تشخیص Conflict/Duplicate، برنامه‌ریزی Day/Week، تبدیل صریح Event به Activity و ویرایش occurrence/series تکرارشونده را اضافه کرد. فهرست تجمیعی قابلیت‌های نسخه بعدی برای Release Notes و LinkedIn در `docs/releases/NEXT_RELEASE_FEATURES_FA.md` نگهداری می‌شود. جزئیات در [یادداشت Release ۲.۴.۰](./docs/releases/RELEASE_NOTES_2.4.0_FA.md)، [یادداشت فاز ۱۸۸](./docs/phases/PHASE_188_NOTES_FA.md) و [نقشه راه](./docs/roadmap/BACKLOG_FA.md) ثبت شده‌اند.
 

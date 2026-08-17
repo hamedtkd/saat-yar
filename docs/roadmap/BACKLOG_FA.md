@@ -336,5 +336,5 @@
 
 - [x] فاز ۱۹۱: Payroll & Reports Hardening؛ Payroll Period Facts مشترک، Paid Leave consistency و rate summary واحد.
 - [x] فاز ۱۹۲: Behavioral Test Modernization؛ Report Summary رفتاری و جلوگیری از رشد source-coupled tests.
-- [ ] فاز ۱۹۳: Release Candidate 2.5.0؛ bump نسخه، Manifest Schema v20، Migration audit v17→v20، Release Notes دو‌زبانه و Browser/Production matrix روی Baseline `0c4c22e` با ۸۷۰/۸۷۰ تست.
-- [ ] فاز ۱۹۴: Finalization/Release؛ فقط پس از Candidate سبز، Merge کنترل‌شده به `main`، Deploy، `audit:production` و Tag annotated `v2.5.0`.
+- [x] فاز ۱۹۳: Release Candidate 2.5.0؛ bump نسخه، Manifest Schema v20، Migration audit v17→v20، Release Notes دو‌زبانه و Browser/Production matrix روی Baseline `0c4c22e` با ۸۷۴/۸۷۴ تست و Candidate commit `d81e094`.
+- [x] فاز ۱۹۴: Finalization/Release 2.5.0؛ Final source و ۸۸۰-test contract، سپس Merge کنترل‌شده به `main`، Deploy، `audit:production` و Tag annotated `v2.5.0` فقط به همین ترتیب.

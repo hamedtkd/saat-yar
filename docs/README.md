@@ -170,8 +170,4 @@
 
 - `releases/NEXT_RELEASE_FEATURES_FA.md`: فهرست تجمیعی قابلیت‌های نسخه بعدی برای Release Notes و LinkedIn.
 
-## Release Candidate 2.5.0
-
-- [Manifest](./releases/2.5.0.json)
-- [فارسی](./releases/RELEASE_NOTES_2.5.0_FA.md)
-- [English](./releases/RELEASE_NOTES_2.5.0_EN.md)
+- 2.5.0 final release: [`releases/2.5.0.json`](./releases/2.5.0.json)

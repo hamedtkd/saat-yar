@@ -1,8 +1,8 @@
 ## [Unreleased]
 
-- Finalization پس از Release Candidate 2.5.0 در فاز بعدی انجام می‌شود؛ Merge به `main`، Production Audit و Tag هنوز Pending هستند.
+## [2.5.0] - 2026-08-17
 
-## [2.5.0] - Release Candidate 2026-08-17
+- Phase 194 Final Release: Candidate `d81e094` با 874/874 تست ثبت شد؛ Final source روی 880/880 قفل می‌شود و rollout فقط با ترتیب merge کنترل‌شده به `main` → deploy → `audit:production` → tag annotated `v2.5.0` مجاز است.
 
 - Phase 192: تست‌های Reports/Payroll از source-inspection به قراردادهای رفتاری منتقل شدند؛ Report Summary به helper خالص قابل‌تست استخراج شد و `audit:tests` بودجه بدهی تاریخی source-coupled/per-file wiring را ثبت می‌کند و برای Phase 192 به بعد هر تست وابسته به خواندن سورس را رد می‌کند. generic test discovery حفظ شده و Schema/dependency بدون تغییر است.
 - Phase 191: Payroll و Reports روی Payroll Period Facts مشترک همگرا شدند؛ تعطیل‌کاری دیگر کسری روز عادی را در balance ماهانه پنهان نمی‌کند، Paid Leave با credited time بین Today/Reports یکسان شده و Preview نرخ Base/Overtime/Holiday/Deficit را از یک Rate Engine نمایش می‌دهد؛ Schema v20 و dependencyها بدون تغییر ماندند.

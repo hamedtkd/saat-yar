@@ -1,47 +1,28 @@
-# چک‌لیست Release Candidate ساعت‌یار 2.5.0
+# چک‌لیست Final Release ساعت‌یار 2.5.0
 
-Baseline: `0c4c22e` — Phase 192 — `870/870`
+Candidate معتبر: `d81e094` — Phase 193 — `874/874`
 
-## مرز Candidate
+## Final source روی dev
 
-- [ ] فقط روی `dev` آماده شود.
+- [ ] `npm run release:prepare:2.5.0` روی `dev` و Candidate `d81e094` پاس شود.
 - [ ] `package.json` و `package-lock.json` روی `2.5.0` باشند.
-- [ ] Manifest `docs/releases/2.5.0.json` روی `release-candidate` و Schema v20 باشد.
-- [ ] Manifest تاریخی `2.4.0` روی `released` / Schema v17 دست‌نخورده بماند.
-- [ ] `releaseDate` در Candidate برابر `null` باشد.
-- [ ] هیچ `releaseCommit` در Candidate ثبت نشود.
-- [ ] Merge به `main` و Tag `v2.5.0` در Phase 193 انجام نشود.
+- [ ] Manifest نهایی `2.5.0` روی Schema v20 و status `released` باشد.
+- [ ] Manifest تاریخی `2.4.0` روی Schema v17 immutable بماند.
+- [ ] هیچ `releaseCommit` خودارجاع در Manifest ثبت نشود.
+- [ ] Node gate نهایی **880/880** باشد.
+- [ ] Production/Freelancer/Employee browser smoke، Pairing و Vercel audit سبز باشند.
 
-## Migration audit
+## Rollout اجباری
 
-- [ ] Migration v17 → v18 برای Flexible Work و Activity Segments پوشش داشته باشد.
-- [ ] Migration v18 → v19 برای Notification Intelligence پوشش داشته باشد.
-- [ ] Migration v19 → v20 برای Payroll Rate Basis پوشش داشته باشد.
-- [ ] Backup/Restore/Merge/Schema audit روی v20 سبز باشد.
-- [ ] Google Calendar cache بیرون AppData باقی بماند.
-
-## Gate
+1. Finalization commit روی `dev` ساخته و push شود.
+2. همان commit به‌صورت کنترل‌شده به `main` منتقل شود.
+3. Deploy production کامل شود.
+4. `npm run audit:production` روی production PASS شود.
+5. فقط بعد از Production Audit، tag annotated ساخته شود:
 
 ```powershell
-npm install
-npm run release:prepare:2.5.0
-npm run check:quality
-npm run check:release:audit
-npm run test:browser:production:built
-npm run test:browser:freelancer:built
-npm run test:browser:employee:built
-npm run test:browser:pairing
-npm run audit:vercel
-git diff --check
-git diff -- package-lock.json
+git tag -a v2.5.0 -m "Saatyar 2.5.0"
+git push origin v2.5.0
 ```
 
-نکته: در Phase 193 تغییر `package-lock.json` فقط برای bump نسخه ریشه از 2.4.0 به 2.5.0 مجاز است؛ Dependency graph نباید تغییر کند.
-
-## هدف Candidate
-
-- Node tests: **874/874**
-- Production/Freelancer/Employee browser smoke: PASS
-- Pairing browser smoke: PASS
-- Vercel audit: PASS
-- Production domain audit: بعد از Merge/Deploy نهایی، نه در Candidate محلی
+Tag قبل از Production Audit ممنوع است.
