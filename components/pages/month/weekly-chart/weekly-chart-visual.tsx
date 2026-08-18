@@ -6,16 +6,18 @@ import { cn } from "@/lib/cn";
 import type { WeeklyChartItem } from "./types";
 import { WeeklyTooltip } from "./weekly-tooltip";
 import { MONTH_CHART_THEME } from "./chart-theme";
+import { orderWeekForDirection } from "@/lib/week-order";
 
 type WeeklyChartVisualProps = { data: WeeklyChartItem[] };
 
 export function WeeklyChartVisual({ data }: WeeklyChartVisualProps) {
   const { t, duration, direction } = useLocaleUi();
+  const visualData = orderWeekForDirection(data, direction);
   return (
     <div className="mt-4 w-full min-w-0">
       <div className="h-[270px] w-full min-w-0 max-[900px]:h-[230px]">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} margin={{ top: 10, right: 4, bottom: 0, left: 4 }}>
+          <BarChart data={visualData} margin={{ top: 10, right: 4, bottom: 0, left: 4 }}>
             <CartesianGrid vertical={false} stroke={MONTH_CHART_THEME.grid} strokeDasharray="4 5" />
             <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: MONTH_CHART_THEME.text, fontSize: 10, fontFamily: "inherit" }} tickMargin={10} />
             <YAxis orientation={direction === "rtl" ? "right" : "left"} axisLine={false} tickLine={false} width={50} tick={{ fill: MONTH_CHART_THEME.text, fontSize: 9, fontFamily: "inherit" }} tickFormatter={(value: number) => duration(value)} />

@@ -6,6 +6,7 @@ import { getEffectiveWorkRecordForDate } from "../lib/leave-entitlement.ts";
 import { calc } from "../lib/time-engine.ts";
 import { buildMonthActivityCells, buildRecentActivityDays, summarizeMonthIntelligence } from "../lib/month-intelligence.ts";
 import { getGa4ConsentDefaults, resolveProductAnalyticsConsentValue } from "../lib/product-analytics.ts";
+import { orderWeekForDirection } from "../lib/week-order.ts";
 
 test("configured analytics defaults to enabled while an explicit opt-out remains authoritative", () => {
   assert.equal(resolveProductAnalyticsConsentValue(null), "granted");
@@ -57,4 +58,12 @@ test("month intelligence and recent activity split work from leave and do not co
   assert.equal(summary.leaveMinutes, target / 2);
   assert.equal(summary.leaveDays, 1);
   assert.equal(summary.deficitMinutes, 0);
+});
+
+
+test("weekly chart keeps Saturday on the right in RTL and preserves chronological LTR order", () => {
+  const week = ["sat", "sun", "mon", "tue", "wed", "thu", "fri"];
+  assert.deepEqual(orderWeekForDirection(week, "ltr"), week);
+  assert.deepEqual(orderWeekForDirection(week, "rtl"), [...week].reverse());
+  assert.deepEqual(week, ["sat", "sun", "mon", "tue", "wed", "thu", "fri"]);
 });

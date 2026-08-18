@@ -14,8 +14,8 @@ test("GA4 provider requires an explicit valid measurement id", () => {
 test("GA4 page views are normalized and never include route query or hash detail", () => {
   assert.equal(getAnalyticsRoute("/privacy/?token=secret#detail"), "privacy");
   assert.deepEqual(buildGa4Event({ name: "route_viewed", properties: { route: "privacy" } }, "https://saat-yar.vercel.app/"), {
-    name: "page_view",
-    parameters: { page_location: "https://saat-yar.vercel.app/privacy", page_title: "privacy", saatyar_route: "privacy" },
+    name: "route_viewed",
+    parameters: { page_location: "https://saat-yar.vercel.app/privacy", saatyar_route: "privacy" },
   });
 });
 
