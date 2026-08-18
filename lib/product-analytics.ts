@@ -4,6 +4,10 @@ export const ANALYTICS_CONSENT_STORAGE_KEY = "saatyar-product-analytics-consent-
 export const ANALYTICS_CONSENT_CHANGE_EVENT = "saatyar:product-analytics-consent-change";
 const ANALYTICS_SESSION_DISCOVERY_KEY = "saatyar-product-analytics-discovery-v1";
 const MAX_BUFFERED_EVENTS = 24;
+const CONSENT_REQUIRED_REGIONS = [
+  "AT", "BE", "BG", "HR", "CY", "CZ", "DE", "DK", "EE", "ES", "FI", "FR", "GR", "HU", "IE", "IS", "IT",
+  "LI", "LT", "LU", "LV", "MT", "NL", "NO", "PL", "PT", "RO", "SE", "SI", "SK", "CH", "GB",
+];
 
 export type AnalyticsConsent = "unset" | "granted" | "denied";
 export type AnalyticsRoute = "onboarding" | "today" | "month" | "leave" | "reports" | "clients" | "projects" | "invoices" | "import" | "settings" | "about" | "help" | "privacy" | "terms";
@@ -44,15 +48,25 @@ function safeWindow() {
   return typeof window === "undefined" ? null : window as unknown as AnalyticsWindow;
 }
 
+export function resolveProductAnalyticsConsentValue(value: string | null): AnalyticsConsent {
+  return value === "denied" ? "denied" : "granted";
+}
+
 export function getProductAnalyticsConsent(): AnalyticsConsent {
   const browser = safeWindow();
   if (!browser) return "unset";
   try {
-    const value = browser.localStorage.getItem(ANALYTICS_CONSENT_STORAGE_KEY);
-    return value === "granted" || value === "denied" ? value : "unset";
+    return resolveProductAnalyticsConsentValue(browser.localStorage.getItem(ANALYTICS_CONSENT_STORAGE_KEY));
   } catch {
-    return "unset";
+    return "granted";
   }
+}
+
+export function getGa4ConsentDefaults() {
+  return [
+    { analytics_storage: "granted", ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied" },
+    { analytics_storage: "denied", ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied", region: CONSENT_REQUIRED_REGIONS },
+  ] as const;
 }
 
 function updateLoadedGa4Consent(granted: boolean) {
@@ -158,12 +172,9 @@ function ensureGa4Loaded(config: Extract<ProductAnalyticsProviderConfig, { provi
   browser.dataLayer = browser.dataLayer || [];
   browser.gtag = browser.gtag || function gtag(...args: unknown[]) { browser.dataLayer?.push(args); };
   browser[`ga-disable-${config.measurementId}`] = false;
-  browser.gtag("consent", "default", {
-    analytics_storage: "granted",
-    ad_storage: "denied",
-    ad_user_data: "denied",
-    ad_personalization: "denied",
-  });
+  for (const consentDefault of getGa4ConsentDefaults()) {
+    browser.gtag("consent", "default", consentDefault);
+  }
   browser.gtag("js", new Date());
   browser.gtag("config", config.measurementId, {
     send_page_view: false,

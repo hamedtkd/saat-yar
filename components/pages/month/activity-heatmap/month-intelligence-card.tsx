@@ -1,16 +1,16 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { Flame, Gauge, MinusCircle, Sparkles, TrendingUp } from "lucide-react";
+import { BriefcaseBusiness, Flame, Gauge, MinusCircle, Palmtree, Sparkles, TrendingUp } from "lucide-react";
 import { SurfaceCard } from "@/components/common/surface-card";
 import { useLocaleUi } from "@/components/i18n/use-locale-ui";
 import { buildMonthActivityCells, summarizeMonthIntelligence } from "@/lib/month-intelligence";
-import type { Settings, WorkRecord } from "@/lib/types";
+import type { AppData } from "@/lib/types";
 import { AnalyticsCardHeader } from "./analytics-card-header";
 
-export function MonthIntelligenceCard({ selectedDate, records, settings }: { selectedDate: string; records: WorkRecord[]; settings: Settings }) {
+export function MonthIntelligenceCard({ selectedDate, data }: { selectedDate: string; data: AppData }) {
   const { t, calendar, date, duration, number } = useLocaleUi();
-  const summary = summarizeMonthIntelligence(buildMonthActivityCells(selectedDate, calendar, records, settings));
+  const summary = summarizeMonthIntelligence(buildMonthActivityCells(selectedDate, calendar, data));
   const balanceMagnitude = summary.overtimeMinutes + summary.deficitMinutes;
   const overtimeShare = balanceMagnitude > 0 ? (summary.overtimeMinutes / balanceMagnitude) * 100 : 0;
 
@@ -19,6 +19,8 @@ export function MonthIntelligenceCard({ selectedDate, records, settings }: { sel
       <AnalyticsCardHeader icon={<Sparkles />} title={t("month.intelligence.title")} description={t("month.intelligence.description")} />
 
       <div className="mt-3 grid grid-cols-2 gap-2">
+        <Metric icon={<BriefcaseBusiness />} label={t("month.intelligence.worked")} value={duration(summary.workedMinutes)} />
+        <Metric icon={<Palmtree />} label={t("month.intelligence.leave")} value={duration(summary.leaveMinutes)} hint={t("month.intelligence.leaveDayCount", { count: number(summary.leaveDays) })} tone="info" />
         <Metric icon={<Gauge />} label={t("month.intelligence.activeDays")} value={number(summary.activeDays)} />
         <Metric icon={<Flame />} label={t("month.intelligence.streak")} value={t("month.intelligence.daysValue", { count: number(summary.longestStreak) })} />
         <Metric icon={<TrendingUp />} label={t("month.intelligence.overtime")} value={duration(summary.overtimeMinutes, true)} hint={t("month.intelligence.dayCount", { count: number(summary.overtimeDays) })} tone="positive" />
@@ -51,8 +53,8 @@ export function MonthIntelligenceCard({ selectedDate, records, settings }: { sel
   );
 }
 
-function Metric({ icon, label, value, hint, tone = "neutral" }: { icon: ReactNode; label: string; value: string; hint?: string; tone?: "neutral" | "positive" | "negative" }) {
-  const toneClass = tone === "positive" ? "text-[var(--success)]" : tone === "negative" ? "text-[var(--warning)]" : "text-[var(--text)]";
+function Metric({ icon, label, value, hint, tone = "neutral" }: { icon: ReactNode; label: string; value: string; hint?: string; tone?: "neutral" | "positive" | "negative" | "info" }) {
+  const toneClass = tone === "positive" ? "text-[var(--success)]" : tone === "negative" ? "text-[var(--warning)]" : tone === "info" ? "text-[var(--info)]" : "text-[var(--text)]";
   return (
     <div className="min-w-0 rounded-xl border border-[var(--dashboard-border)] bg-[var(--surface-2)] p-2.5">
       <div className="flex items-center gap-1.5 text-[var(--accent)] [&_svg]:size-3.5"><span className="shrink-0">{icon}</span><span className="truncate text-[8px] font-bold text-[var(--text-muted)]">{label}</span></div>

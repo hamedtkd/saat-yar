@@ -1,5 +1,6 @@
 ## [Unreleased]
 
+- Fixed GA4 default delivery/consent behavior and made month intelligence/recent activity correctly credit registered leave without turning leave into worked time.
 - Phase 195: OAuth Verification readiness با Privacy Policy/Terms عمومی، disclosure شفاف Google Calendar و Verification Kit اضافه شد؛ Analytics اختیاری از Plausible به GA4 consent-gated مهاجرت کرد، `gtag.js` فقط پس از opt-in بارگذاری می‌شود و manual SPA pageview از double-count جلوگیری می‌کند. Schema v20 و dependencyها بدون تغییرند.
 
 ## [2.5.0] - 2026-08-17

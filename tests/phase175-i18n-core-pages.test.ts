@@ -78,7 +78,7 @@ test("Month surfaces consume locale UI and the active calendar system", async ()
   assert.match(joined, /shiftCalendarMonth/);
   assert.match(joined, /\[&_button>i\]:end-2/);
   assert.match(derived, /calendarMonthCells\(selectedDate, calendar\)/);
-  assert.match(derived, /selectedMonthDates\.has\(item\.date\)/);
+  assert.match(derived, /\[\.\.\.selectedMonthDates\][\s\S]*getEffectiveWorkRecordForDate/);
   assert.doesNotMatch(joined, /[\u0600-\u06FF]/);
 });
 

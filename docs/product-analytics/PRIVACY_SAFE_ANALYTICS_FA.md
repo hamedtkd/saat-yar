@@ -6,7 +6,7 @@
 
 ## Provider فعال: Google Analytics 4
 
-از Phase 195 transport اختیاری Analytics روی GA4 است. هیچ SDK یا dependency جدیدی اضافه نشده و `gtag.js` فقط **بعد از opt-in صریح کاربر** به‌صورت runtime بارگذاری می‌شود.
+از Phase 195 transport اختیاری Analytics روی GA4 است. هیچ SDK یا dependency جدیدی اضافه نشده و `gtag.js` فقط **بعد از opt-out صریح کاربر** به‌صورت runtime بارگذاری می‌شود.
 
 فعال‌سازی Production:
 
@@ -63,3 +63,10 @@ Custom event parameterها collect می‌شوند؛ برای نمایش آن‌
 ## افزودن Event جدید
 
 Event باید ابتدا به union تایپ‌شده `ProductAnalyticsEvent` اضافه شود و Contract تست داشته باشد. API عمومی `trackProductAnalytics` نباید به `Record<string, unknown>` یا Property آزاد تبدیل شود.
+
+
+## رفتار پیش‌فرض GA4 در Phase 196
+- در buildهایی که GA4 پیکربندی شده، آمار ناشناس محصول به‌صورت پیش‌فرض فعال است و کاربر در Settings > Privacy می‌تواند آن را خاموش کند.
+- سیگنال‌های تبلیغاتی، `ad_storage`، `ad_user_data` و `ad_personalization` همیشه غیرفعال‌اند.
+- برای EEA/UK/CH، `analytics_storage` با Consent Mode به‌صورت denied شروع می‌شود تا تا زمان اجازه صریح storage تحلیلی ایجاد نشود.
+- payload همچنان فقط taxonomy محدود محصول را می‌فرستد و داده کاری/مالی/متن آزاد ارسال نمی‌شود.

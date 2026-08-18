@@ -11,7 +11,7 @@ export function AnalyticsConsentControls({ compact = false }: { compact?: boolea
   const { s } = useSystemUi();
   const { consent, grant, deny } = useProductAnalyticsConsent();
   const provider = getProductAnalyticsProviderConfig();
-  const enabled = consent === "granted" && provider.configured;
+  const enabled = consent !== "denied" && provider.configured;
   const providerLabel = provider.configured ? provider.label : s("Not configured");
 
   return (
@@ -25,7 +25,7 @@ export function AnalyticsConsentControls({ compact = false }: { compact?: boolea
           </span>
         </div>
         <div className="mt-3 grid gap-2 text-[9px] leading-5 text-[var(--text-muted)] sm:grid-cols-2">
-          <span className="flex items-start gap-2"><ShieldCheck className="mt-0.5 size-4 shrink-0 text-[var(--success)]" />{s("Nothing is sent before you explicitly opt in. You can turn analytics off again at any time.")}</span>
+          <span className="flex items-start gap-2"><ShieldCheck className="mt-0.5 size-4 shrink-0 text-[var(--success)]" />{s("Anonymous product analytics is enabled by default when configured. You can turn it off at any time; advertising signals stay disabled.")}</span>
           <span className="flex items-start gap-2"><CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[var(--accent-strong)]" />{s("Provider: {provider}", { provider: providerLabel })}</span>
         </div>
       </div>
@@ -38,10 +38,10 @@ export function AnalyticsConsentControls({ compact = false }: { compact?: boolea
 
       <div className="flex flex-wrap gap-2">
         <Button type="button" size="sm" onClick={grant} disabled={!provider.configured} aria-pressed={enabled} data-analytics-opt-in>
-          <CheckCircle2 /> {s("Allow anonymous analytics")}
+          <CheckCircle2 /> {enabled ? s("Anonymous analytics is on") : s("Turn anonymous analytics on")}
         </Button>
         <Button type="button" size="sm" variant={consent === "denied" ? "secondary" : "outline"} onClick={deny} aria-pressed={consent === "denied"} data-analytics-opt-out>
-          <XCircle /> {s("Keep analytics off")}
+          <XCircle /> {s("Turn analytics off")}
         </Button>
       </div>
     </div>
