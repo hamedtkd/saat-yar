@@ -60,6 +60,17 @@ export const faSystemCatalog = {
   "Loaded": "بارگذاری‌شده",
 
   "Welcome to Saatyar": "به ساعت‌یار خوش آمدی",
+
+  "Your first step toward calmer work and clearer income": "اولین قدم برای نظم بیشتر در زمان و درآمد",
+  "Set your name, workspace, schedule, income rules, and appearance once. Everything stays on this device and remains editable later.": "نام، نوع استفاده، برنامه کاری، قواعد درآمد و ظاهر را یک‌بار تنظیم کن؛ همه‌چیز روی همین دستگاه می‌ماند و بعداً هم قابل ویرایش است.",
+  "No account is required. Your setup is saved locally on this device.": "نیازی به ساخت حساب نیست؛ تنظیمات روی همین دستگاه ذخیره می‌شوند.",
+  "Choose a client, set a project rate in the unit that makes sense to you, and Saatyar will normalize it for timer income.": "مشتری را انتخاب کن و نرخ پروژه را با واحدی که برایت طبیعی‌تر است وارد کن؛ ساعت‌یار آن را برای محاسبه درآمد تایمر یکدست می‌کند.",
+  "Project rate": "نرخ پروژه",
+  "Per hour": "ساعتی",
+  "Per day": "روزانه",
+  "Equivalent to {amount} Toman per 8-hour day": "معادل {amount} تومان برای روز کاری ۸ ساعته",
+  "Equivalent to {amount} Toman per hour": "معادل {amount} تومان در ساعت",
+  "Time budget is optional and only powers progress and near-limit warnings.": "بودجه زمانی اختیاری است و فقط برای پیشرفت پروژه و هشدار نزدیک‌شدن به سقف استفاده می‌شود.",
   "Set your name, schedule, payroll, and appearance now. Everything stays on this device and can be changed later.": "نام، برنامه کاری، حقوق و ظاهر را همین ابتدا تنظیم کن؛ همه‌چیز روی همین دستگاه ذخیره می‌شود و بعداً هم قابل ویرایش است.",
   "Setup takes less than two minutes": "راه‌اندازی کمتر از دو دقیقه",
   "What should we call you?": "دوست داری چه صدایت کنیم؟",

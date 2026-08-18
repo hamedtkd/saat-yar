@@ -1,5 +1,26 @@
 # بک‌لاگ ساعت‌یار
 
+## مسیر فعال پس از 2.5.0
+
+- [x] Phase 195 — OAuth Verification Readiness + GA4 + Public Help.
+- [x] Phase 196 — GA4 Runtime + Leave Intelligence Hardening.
+- [ ] Phase 197 — Tooltip System + Production Observability (در حال Gate؛ lint ref carry-over در Phase198 اصلاح شد).
+- [ ] **Phase 198 — Onboarding + Freelancer Workflow Redesign (فعال)**
+  - بازطراحی Welcome/Step shell بر اساس reference جدید و اتصال شماره مراحل با خط progress.
+  - ارتقای نرخ پروژه Freelancer با amount grouping، unit ساعتی/روزانه و معادل واضح.
+  - حذف semantics ورود/خروج/ناهار از مسیر اصلی Freelancer Today.
+  - یکپارچه‌سازی CTA زمان‌سنج Freelancer روی Project Timer و اصلاح Running/Stop state.
+  - کاهش فضای خالی و اصلاح alignment کارت Focus/Timer.
+
+## Backlog محصول
+
+- [ ] Analytics Dashboard & Product Insights پیشرفته (custom dimensions/funnels/dashboard) — **deferred**؛ فعلاً GA4 برای شمارش usage و رفتار کلی کافی است.
+- [ ] Month Intelligence v2 — drill-down توضیح‌پذیر work/leave/overtime/deficit.
+- [ ] Reports v2 — فیلتر و breakdown پیشرفته و export/print تکمیلی.
+- [ ] Backup & Device Transfer v2 — health/conflict/restore UX.
+- [ ] Calendar Integration v2 — sync diagnostics و multi-calendar UX.
+- [ ] PWA Reliability v2، Accessibility pass و Performance budget پیش از RC بعدی.
+
 ## تنظیمات و الگوی ویرایش — برنامه‌ریزی‌شده برای فازهای بعد
 
 - تمام کارت‌های تنظیمات در حالت مشاهده باز شوند و ویرایش فقط با دکمه مداد آغاز شود.
@@ -342,4 +363,6 @@
 
 ## توسعه پس از ۲.۵.۰ — Trust & Measurement
 
-- [ ] فاز ۱۹۵: OAuth Verification Readiness + GA4 Analytics؛ صفحات عمومی About/Privacy/Terms، disclosure Google Calendar، Verification Kit و مهاجرت consent-safe از Plausible به GA4 بدون Schema/Dependency جدید.
+- [x] فاز ۱۹۵: OAuth Verification Readiness + GA4 Analytics؛ صفحات عمومی About/Privacy/Terms/Help، disclosure Google Calendar، Verification Kit و مهاجرت consent-safe از Plausible به GA4 بدون Schema/Dependency جدید.
+- [x] فاز ۱۹۶: GA4 Runtime + Leave Intelligence Hardening؛ ارسال واقعی GA4 روی Production، opt-out محلی، اتصال مرخصی ثبت‌شده به Month Intelligence/Recent 7 Days، تفکیک کار/مرخصی/کسری و اصلاح ترتیب نمودار هفتگی RTL.
+- [ ] فاز ۱۹۷: Tooltip System + Production Observability؛ یکپارچه‌سازی Tooltipهای توضیحی/Heatmap روی primitive مشترک portal-safe و viewport-aware، پوشش routeهای عمومی جدید در Production Audit و بستن diagnostics اعتمادپذیر بعد از 2.5.0.

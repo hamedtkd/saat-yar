@@ -20,7 +20,8 @@ test("progress labels are personalized for employee freelancer and hybrid worksp
   assert.match(progress, /freelancer: \["Welcome", "Workspace", "Client", "Project name"/);
   assert.match(progress, /hybrid: \["Welcome", "Workspace", "Work schedule", "Combined income"/);
   assert.match(progress, /data-onboarding-progress-mode/);
-  assert.match(progress, /grid-cols-7/);
+  assert.match(progress, /flex w-full max-w-\[1120px\]/);
+  assert.match(progress, /end-1\/2 top-\[18px\]/);
 });
 
 test("onboarding renders relevant step three and four content for each workspace", async () => {

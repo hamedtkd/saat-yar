@@ -10,6 +10,7 @@ import { cn } from "@/lib/cn";
 import { localDateKey } from "@/lib/format";
 import { getHolidayInfo } from "@/lib/holidays";
 import { isScheduledDayOff } from "@/lib/work-schedule";
+import { getTodayWorkspaceCapabilities } from "@/lib/workspace-capabilities";
 import { CompletedDayEditor } from "./completed-day-editor";
 import { ActivitySegmentsCard } from "./activity-segments-card";
 import { FirstRunGuide } from "./first-run-guide";
@@ -27,6 +28,8 @@ export function TodayPage(props: TodayPageProps) {
   const { date, locale, t } = useLocaleUi();
   const { requestNavigation } = useUnsavedNavigation();
   const isToday = props.selectedDate === localDateKey();
+  const capabilities = getTodayWorkspaceCapabilities(props.data.settings.mode);
+  const isFreelancer = !capabilities.attendance;
   const holiday = getHolidayInfo(props.selectedDate, {
     mode: props.data.settings.mode,
     manualHoliday: props.record.holiday,
@@ -92,9 +95,9 @@ export function TodayPage(props: TodayPageProps) {
           <span className="shrink-0 rounded-full border border-[color-mix(in_srgb,var(--warning)_28%,var(--border))] bg-[var(--surface-1)] px-2.5 py-1 text-[9px] font-bold">{t("today.scheduleOff.zeroTarget")}</span>
         </div>
       )}
-      <RecordHealthBanner record={props.record} onReset={props.resetRecord} />
-      <RecordResetUndo date={props.resetUndoDate} onUndo={props.undoResetRecord} onDismiss={props.dismissResetUndo} />
-      <TodaySmartSummary
+      {!isFreelancer && <RecordHealthBanner record={props.record} onReset={props.resetRecord} />}
+      {!isFreelancer && <RecordResetUndo date={props.resetUndoDate} onUndo={props.undoResetRecord} onDismiss={props.dismissResetUndo} />}
+      {!isFreelancer && <TodaySmartSummary
         record={props.record}
         result={props.todayCalc}
         dailyTarget={props.dailyTarget}
@@ -103,10 +106,10 @@ export function TodayPage(props: TodayPageProps) {
         lunchRunning={props.lunchRunning}
         scheduledDayOff={scheduledDayOff}
         flexible={props.data.settings.workTimingMode === "flexible"}
-      />
+      />}
       <CalendarAgendaCard dateKey={props.selectedDate} data={props.data} setData={props.setData} setToast={props.setToast} />
       <CompletedDayEditor key={`${props.selectedDate}:${props.record.start && props.record.end ? "completed" : "active"}`} {...props} scheduledDayOff={scheduledDayOff} />
-      <ActivitySegmentsCard record={props.record} projects={props.data.projects} activeSegment={props.activeActivitySegment} activeBreak={props.activeBreak} lunchRunning={props.lunchRunning} trackingAllowed={isToday} onStart={props.startActivitySegment} onStop={props.stopActivitySegment} />
+      {capabilities.activitySegments && <ActivitySegmentsCard record={props.record} projects={props.data.projects} activeSegment={props.activeActivitySegment} activeBreak={props.activeBreak} lunchRunning={props.lunchRunning} trackingAllowed={isToday} onStart={props.startActivitySegment} onStop={props.stopActivitySegment} />}
       {props.editingEntry === "manual" && props.data.settings.mode !== "employee" && <ManualEntryForm {...props} />}
       {props.data.settings.mode === "employee" ? <TodayAttendanceLog record={props.record} /> : <TodayTimeline {...props} />}
       <TodayMetrics
@@ -118,7 +121,7 @@ export function TodayPage(props: TodayPageProps) {
         financialsHidden={props.financialsHidden}
         scheduledDayOff={scheduledDayOff}
       />
-      {props.record.start && !props.record.end && props.todayCalc.worked > 4 * 60 && (
+      {!isFreelancer && props.record.start && !props.record.end && props.todayCalc.worked > 4 * 60 && (
         <div className={cn("mt-5 flex items-center gap-3 rounded-[var(--card-radius)] border border-amber-500/25 bg-amber-500/10 px-5 py-4 text-amber-500 [&>svg]:size-7 [&>div]:grid [&>div]:flex-1 [&_span]:text-[10px] [&_span]:text-[var(--text-muted)] print:hidden")}>
           <AlertTriangle />
           <div>

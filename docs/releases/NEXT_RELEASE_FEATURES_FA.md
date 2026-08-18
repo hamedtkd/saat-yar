@@ -30,3 +30,15 @@
 - Google Calendar اختیاری است؛ کاربران بدون Google هیچ workflow اضافه‌ای نمی‌بینند.
 - Google Event به‌صورت خودکار کارکرد یا حقوق تولید نمی‌کند.
 - حریم خصوصی و least-privilege OAuth جزو قرارداد محصول است.
+
+
+## پس از Release 2.5.0 — Trust & Measurement
+
+- Phase 195 — OAuth Verification Readiness + GA4 Analytics: صفحات عمومی About/Help/Privacy/Terms، disclosure Google Calendar و GA4 privacy-safe.
+- Phase 196 — GA4 Runtime + Leave Intelligence Hardening: ارسال واقعی GA4، opt-out محلی، Leave credit در Month/Recent 7 Days و اصلاح RTL نمودار هفتگی.
+- Phase 197 — Tooltip System + Production Observability: Tooltip مشترک portal-safe/viewport-aware و گسترش remote production audit به routeهای عمومی جدید.
+- Phase 198 — Onboarding + Freelancer Workflow Redesign: بازطراحی First-run، نرخ پروژه ساعتی/روزانه با نمایش مبلغ خوانا، و Project Timer واحد برای فضای Freelancer.
+
+## Backlog پس از Phase 198
+
+- Analytics Dashboard & Product Insights پیشرفته فعلاً ضروری نیست؛ GA4 فعلی برای فهم usage کلی کاربران کافی است و طراحی funnel/custom dimensions به backlog منتقل شد.

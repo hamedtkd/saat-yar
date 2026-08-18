@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 
 export const DEFAULT_PRODUCTION_URL = "https://saat-yar.vercel.app/";
 
-const EXPECTED_ROUTE_PATHS = [
+export const EXPECTED_ROUTE_PATHS = [
   "/",
   "/today/",
   "/month/",
@@ -14,6 +14,9 @@ const EXPECTED_ROUTE_PATHS = [
   "/invoices/",
   "/settings/",
   "/about/",
+  "/help/",
+  "/privacy/",
+  "/terms/",
 ];
 
 const EXPECTED_ICON_PATHS = [

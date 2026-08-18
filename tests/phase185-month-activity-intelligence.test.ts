@@ -80,9 +80,8 @@ test("activity cells reuse the canonical schedule and time engine instead of inv
   assert.equal(recent[1]?.hasRecord, true);
 });
 
-test("Month exposes a keyboard-accessible GitHub-style heatmap tooltip and bilingual month intelligence", () => {
+test("Month exposes a keyboard-accessible activity heatmap and bilingual month intelligence", () => {
   const heatmap = read("components/pages/month/activity-heatmap/activity-heatmap.tsx");
-  const tooltip = read("components/pages/month/activity-heatmap/activity-heatmap-tooltip.tsx");
   const recent = read("components/pages/month/activity-heatmap/recent-activity-card.tsx");
   const intelligence = read("components/pages/month/activity-heatmap/month-intelligence-card.tsx");
   const monthPage = read("components/pages/month/month-page.tsx");
@@ -97,10 +96,6 @@ test("Month exposes a keyboard-accessible GitHub-style heatmap tooltip and bilin
   assert.match(heatmap, /onFocus=/);
   assert.match(heatmap, /onBlur=/);
   assert.match(heatmap, /data-activity-tooltip-id/);
-  assert.match(tooltip, /createPortal/);
-  assert.match(tooltip, /role="tooltip"/);
-  assert.match(tooltip, /data-activity-tooltip/);
-  assert.match(tooltip, /z-\[2200\]/);
   assert.match(recent, /data-month-recent-activity/);
   assert.match(recent, /buildRecentActivityDays/);
   assert.match(intelligence, /data-month-intelligence/);

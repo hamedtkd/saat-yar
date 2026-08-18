@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+- Phase 197: Tooltipهای توضیحی و Heatmap روی primitive مشترک portal-safe/viewport-aware یکپارچه شدند؛ عرض و موقعیت tooltip در RTL/LTR و لبه‌های viewport clamp می‌شود و Production Audit مسیرهای `/help/`, `/privacy/`, `/terms/` را نیز پوشش می‌دهد.
+
 - Phase 196 R4: GA4 loading now uses Next.js `next/script` with the standard gtag dataLayer contract; Month Intelligence shows a blue leave segment alongside overtime/deficit, and the weekly chart aligns Saturday→Friday correctly in RTL.
 
 - Fixed GA4 default delivery/consent behavior and made month intelligence/recent activity correctly credit registered leave without turning leave into worked time.

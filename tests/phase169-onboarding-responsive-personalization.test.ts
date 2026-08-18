@@ -46,8 +46,8 @@ test("welcome step uses a focused profile card instead of the old stretched labe
     read("components/layout/onboarding.tsx"),
   ]);
   assert.match(welcome, /data-onboarding-name/);
-  assert.match(welcome, /max-w-\[560px\]/);
-  assert.match(welcome, /rounded-\[22px\]/);
+  assert.match(welcome, /max-w-\[760px\]/);
+  assert.match(welcome, /rounded-\[28px\]/);
   assert.match(onboarding, /max-w-\[1320px\]/);
 });
 
