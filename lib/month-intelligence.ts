@@ -1,13 +1,29 @@
 import { calendarMonthCells, localDateKey, shiftDateKey } from "./format.ts";
 import type { CalendarSystem } from "./i18n/calendars.ts";
+import { getEffectiveWorkRecordForDate } from "./leave-entitlement.ts";
 import { calc } from "./time-engine.ts";
-import type { Settings, WorkRecord } from "./types.ts";
+import type { AppData, Settings, WorkRecord } from "./types.ts";
 import { getDailyTargetMinutes } from "./work-schedule.ts";
 
+
+type MonthIntelligenceData = Pick<AppData, "settings" | "records" | "leaves" | "holidayOverrides">;
+
+function resolveMonthIntelligenceData(dataOrRecords: MonthIntelligenceData | WorkRecord[], settings?: Settings): MonthIntelligenceData {
+  if (!Array.isArray(dataOrRecords)) return dataOrRecords;
+  if (!settings) throw new Error("Settings are required when building month intelligence from raw records.");
+  return {
+    settings,
+    records: Object.fromEntries(dataOrRecords.map((record) => [record.date, record])),
+    leaves: [],
+    holidayOverrides: [],
+  };
+}
 export type MonthActivityCell = {
   key: string;
   inMonth: boolean;
   worked: number;
+  leave: number;
+  credited: number;
   target: number;
   balance: number;
   intensity: 0 | 1 | 2 | 3 | 4;
@@ -18,6 +34,8 @@ export type MonthActivityCell = {
 export type RecentActivityDay = {
   key: string;
   worked: number;
+  leave: number;
+  credited: number;
   target: number;
   balance: number;
   hasRecord: boolean;
@@ -31,6 +49,9 @@ export type MonthIntelligenceSummary = {
   balancedDays: number;
   overtimeMinutes: number;
   deficitMinutes: number;
+  workedMinutes: number;
+  leaveMinutes: number;
+  leaveDays: number;
   bestDay: MonthActivityCell | null;
 };
 
@@ -47,24 +68,27 @@ export function getActivityIntensity(worked: number, target: number): 0 | 1 | 2 
 export function buildMonthActivityCells(
   selectedDate: string,
   calendar: CalendarSystem,
-  records: WorkRecord[],
-  settings: Settings,
+  dataOrRecords: MonthIntelligenceData | WorkRecord[],
+  settings?: Settings,
 ): MonthActivityCell[] {
-  const recordMap = new Map(records.map((record) => [record.date, record]));
+  const data = resolveMonthIntelligenceData(dataOrRecords, settings);
   return calendarMonthCells(selectedDate, calendar).map((cell) => {
-    const record = cell.inMonth ? recordMap.get(cell.key) : undefined;
-    if (!record) {
-      return { key: cell.key, inMonth: cell.inMonth, worked: 0, target: 0, balance: 0, intensity: 0, hasRecord: false };
+    if (!cell.inMonth) {
+      return { key: cell.key, inMonth: false, worked: 0, leave: 0, credited: 0, target: 0, balance: 0, intensity: 0, hasRecord: false };
     }
-    const result = calc(record, getDailyTargetMinutes(record.date, settings));
+    const record = getEffectiveWorkRecordForDate(cell.key, data);
+    const result = calc(record, getDailyTargetMinutes(cell.key, data.settings));
+    const hasRecord = Boolean(data.records[cell.key]) || result.leave > 0;
     return {
       key: cell.key,
-      inMonth: cell.inMonth,
+      inMonth: true,
       worked: result.worked,
+      leave: result.leave,
+      credited: result.credited,
       target: result.target,
       balance: result.balance,
       intensity: getActivityIntensity(result.worked, result.target),
-      hasRecord: true,
+      hasRecord,
     };
   });
 }
@@ -72,23 +96,36 @@ export function buildMonthActivityCells(
 export function buildRecentActivityDays(
   selectedDate: string,
   calendar: CalendarSystem,
-  records: WorkRecord[],
-  settings: Settings,
-  count = 7,
-  today = localDateKey(),
+  dataOrRecords: MonthIntelligenceData | WorkRecord[],
+  settingsOrCount?: Settings | number,
+  countOrToday?: number | string,
+  legacyToday?: string,
 ): RecentActivityDay[] {
+  const legacy = Array.isArray(dataOrRecords);
+  const data = resolveMonthIntelligenceData(dataOrRecords, legacy ? settingsOrCount as Settings : undefined);
+  const count = legacy
+    ? typeof countOrToday === "number" ? countOrToday : 7
+    : typeof settingsOrCount === "number" ? settingsOrCount : 7;
+  const today = legacy
+    ? legacyToday ?? localDateKey()
+    : typeof countOrToday === "string" ? countOrToday : localDateKey();
   const monthKeys = calendarMonthCells(selectedDate, calendar).filter((cell) => cell.inMonth).map((cell) => cell.key);
   const firstDay = monthKeys[0] ?? selectedDate;
   const lastDay = monthKeys[monthKeys.length - 1] ?? selectedDate;
   const anchorDate = today >= firstDay && today <= lastDay ? today : lastDay;
-  const recordMap = new Map(records.map((record) => [record.date, record]));
   return Array.from({ length: count }, (_, index) => {
     const key = shiftDateKey(anchorDate, -index);
-    const target = getDailyTargetMinutes(key, settings);
-    const record = recordMap.get(key);
-    if (!record) return { key, worked: 0, target, balance: 0, hasRecord: false };
-    const result = calc(record, target);
-    return { key, worked: result.worked, target: result.target, balance: result.balance, hasRecord: true };
+    const record = getEffectiveWorkRecordForDate(key, data);
+    const result = calc(record, getDailyTargetMinutes(key, data.settings));
+    return {
+      key,
+      worked: result.worked,
+      leave: result.leave,
+      credited: result.credited,
+      target: result.target,
+      balance: result.balance,
+      hasRecord: Boolean(data.records[key]) || result.leave > 0,
+    };
   });
 }
 
@@ -102,9 +139,15 @@ export function summarizeMonthIntelligence(cells: MonthActivityCell[], balanceTo
   let balancedDays = 0;
   let overtimeMinutes = 0;
   let deficitMinutes = 0;
+  let workedMinutes = 0;
+  let leaveMinutes = 0;
+  let leaveDays = 0;
   let bestDay: MonthActivityCell | null = null;
 
   for (const cell of monthCells) {
+    workedMinutes += cell.worked;
+    leaveMinutes += cell.leave;
+    if (cell.leave > 0) leaveDays += 1;
     if (cell.worked > 0) {
       activeDays += 1;
       streak += 1;
@@ -134,6 +177,9 @@ export function summarizeMonthIntelligence(cells: MonthActivityCell[], balanceTo
     balancedDays,
     overtimeMinutes,
     deficitMinutes,
+    workedMinutes,
+    leaveMinutes,
+    leaveDays,
     bestDay,
   };
 }

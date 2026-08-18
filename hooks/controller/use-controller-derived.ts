@@ -5,7 +5,7 @@ import { recordMatchesReportFilter } from "@/lib/report-filters";
 import type { CalendarSystem } from "@/lib/i18n";
 import { calc, minutesToTime } from "@/lib/time-engine";
 import { getDailyTargetMinutes, getWorkScheduleDay } from "@/lib/work-schedule";
-import { calculateLeaveEntitlementSummary } from "@/lib/leave-entitlement";
+import { calculateLeaveEntitlementSummary, getEffectiveWorkRecordForDate } from "@/lib/leave-entitlement";
 import { getActiveActivitySegment } from "@/lib/activity-segments";
 import type { AppData, ReportFilter } from "@/lib/types";
 
@@ -28,13 +28,9 @@ export function useControllerDerived(data: AppData, selectedDate: string, select
   const selectedMonthDates = useMemo(() => new Set(calendarMonthCells(selectedDate, calendar)
     .filter((cell) => cell.inMonth)
     .map((cell) => cell.key)), [calendar, selectedDate]);
-  const monthRecords = useMemo(() => Object.values(data.records)
-    .filter((item) => selectedMonthDates.has(item.date))
-    .map((item) => ({ ...item, holiday: getHolidayInfo(item.date, {
-      mode: data.settings.mode, manualHoliday: item.holiday,
-      includeOfficialHolidays: data.settings.autoOfficialHolidays,
-      includeWeeklyHoliday: data.settings.autoWeeklyHoliday, overrides: data.holidayOverrides,
-    }).isHoliday }))
+  const monthRecords = useMemo(() => [...selectedMonthDates]
+    .map((date) => getEffectiveWorkRecordForDate(date, data))
+    .filter((item) => Boolean(data.records[item.date]) || item.leaveType !== "none" || item.leaveMinutes > 0)
     .sort((a, b) => b.date.localeCompare(a.date)), [data, selectedMonthDates]);
   const monthStats = useMemo(() => monthRecords.reduce((acc, item) => {
     const target = getDailyTargetMinutes(item.date, data.settings);

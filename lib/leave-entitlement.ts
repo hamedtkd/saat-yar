@@ -1,4 +1,4 @@
-import { jalaliParts, shiftDateKey } from "./format.ts";
+import { emptyRecord, jalaliParts, shiftDateKey } from "./format.ts";
 import { getHolidayInfo } from "./holidays.ts";
 import { getDailyTargetMinutes } from "./work-schedule.ts";
 import type { AppData, LeaveEntry, Settings } from "./types.ts";
@@ -111,5 +111,47 @@ export function calculateLeaveEntitlementSummary(data: AppData, referenceDate: s
     carryover,
     used,
     available: annualEntitlement + carryover - used,
+  };
+}
+
+export function getRegisteredLeaveMinutesForDate(date: string, data: Pick<AppData, "settings" | "records" | "leaves" | "holidayOverrides">) {
+  const target = getDailyTargetMinutes(date, data.settings);
+  if (target <= 0) return 0;
+  const record = data.records[date];
+  const holiday = getHolidayInfo(date, {
+    mode: data.settings.mode,
+    manualHoliday: Boolean(record?.holiday),
+    includeOfficialHolidays: data.settings.autoOfficialHolidays,
+    includeWeeklyHoliday: data.settings.autoWeeklyHoliday,
+    overrides: data.holidayOverrides,
+  });
+  if (holiday.isHoliday) return 0;
+
+  const registered = data.leaves.reduce((sum, entry) => {
+    if (date < entry.startDate || date > entry.endDate) return sum;
+    if (entry.type === "hourly") return sum + (date === entry.startDate ? Math.max(0, entry.minutes) : 0);
+    return sum + (entry.type === "half" ? target / 2 : target);
+  }, 0);
+  return Math.min(target, registered);
+}
+
+export function getEffectiveWorkRecordForDate(date: string, data: Pick<AppData, "settings" | "records" | "leaves" | "holidayOverrides">) {
+  const base = data.records[date] ?? emptyRecord(date, data.settings);
+  const target = getDailyTargetMinutes(date, data.settings);
+  const registeredLeave = getRegisteredLeaveMinutesForDate(date, data);
+  const recordLeave = base.leaveType === "full" ? target : base.leaveType === "hourly" ? Math.max(0, base.leaveMinutes) : 0;
+  const effectiveLeave = Math.min(target, Math.max(recordLeave, registeredLeave));
+  const holiday = getHolidayInfo(date, {
+    mode: data.settings.mode,
+    manualHoliday: Boolean(base.holiday),
+    includeOfficialHolidays: data.settings.autoOfficialHolidays,
+    includeWeeklyHoliday: data.settings.autoWeeklyHoliday,
+    overrides: data.holidayOverrides,
+  });
+  return {
+    ...base,
+    holiday: holiday.isHoliday,
+    leaveType: effectiveLeave >= target && target > 0 ? "full" as const : effectiveLeave > 0 ? "hourly" as const : "none" as const,
+    leaveMinutes: effectiveLeave >= target ? 0 : effectiveLeave,
   };
 }

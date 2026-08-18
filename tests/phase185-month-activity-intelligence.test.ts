@@ -17,6 +17,8 @@ const cell = (overrides: Partial<MonthActivityCell> = {}): MonthActivityCell => 
   key: "2026-08-01",
   inMonth: true,
   worked: 0,
+  leave: 0,
+  credited: 0,
   target: 480,
   balance: 0,
   intensity: 0,

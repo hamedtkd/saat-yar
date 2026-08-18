@@ -6,7 +6,7 @@ import { SurfaceCard } from "@/components/common/surface-card";
 import { useLocaleUi } from "@/components/i18n/use-locale-ui";
 import { cn } from "@/lib/cn";
 import { buildMonthActivityCells } from "@/lib/month-intelligence";
-import type { Settings, WorkRecord } from "@/lib/types";
+import type { AppData } from "@/lib/types";
 import { ActivityHeatmapTooltip } from "./activity-heatmap-tooltip";
 import { AnalyticsCardHeader } from "./analytics-card-header";
 
@@ -25,18 +25,16 @@ type ActiveTooltip = { id: string; target: HTMLButtonElement; content: string } 
 export function ActivityHeatmap({
   selectedDate,
   setSelectedDate,
-  records,
-  settings,
+  data,
 }: {
   selectedDate: string;
   setSelectedDate: (value: string) => void;
-  records: WorkRecord[];
-  settings: Settings;
+  data: AppData;
 }) {
   const { t, calendar, date, direction, duration } = useLocaleUi();
   const cells = useMemo(
-    () => buildMonthActivityCells(selectedDate, calendar, records, settings),
-    [calendar, records, selectedDate, settings],
+    () => buildMonthActivityCells(selectedDate, calendar, data),
+    [calendar, data, selectedDate],
   );
   const buttonRefs = useRef(new Map<string, HTMLButtonElement>());
   const gridRef = useRef<HTMLDivElement>(null);
@@ -97,7 +95,7 @@ export function ActivityHeatmap({
               const tooltipId = `activity-${cell.key}`;
               const dateLabel = date(cell.key, { weekday: "long", day: "numeric", month: "long" });
               const detail = cell.hasRecord
-                ? t("month.activity.tooltip", { date: dateLabel, worked: duration(cell.worked), balance: duration(cell.balance, true) })
+                ? t("month.activity.tooltip", { date: dateLabel, worked: duration(cell.worked), leave: duration(cell.leave), balance: duration(cell.balance, true) })
                 : t("month.activity.tooltipEmpty", { date: dateLabel });
               const horizontalStep = direction === "rtl" ? -7 : 7;
               return (

@@ -5,22 +5,20 @@ import { SurfaceCard } from "@/components/common/surface-card";
 import { useLocaleUi } from "@/components/i18n/use-locale-ui";
 import { cn } from "@/lib/cn";
 import { buildRecentActivityDays } from "@/lib/month-intelligence";
-import type { Settings, WorkRecord } from "@/lib/types";
+import type { AppData } from "@/lib/types";
 import { AnalyticsCardHeader } from "./analytics-card-header";
 
 export function RecentActivityCard({
   selectedDate,
   setSelectedDate,
-  records,
-  settings,
+  data,
 }: {
   selectedDate: string;
   setSelectedDate: (value: string) => void;
-  records: WorkRecord[];
-  settings: Settings;
+  data: AppData;
 }) {
   const { t, calendar, date, duration } = useLocaleUi();
-  const days = buildRecentActivityDays(selectedDate, calendar, records, settings);
+  const days = buildRecentActivityDays(selectedDate, calendar, data);
 
   return (
     <SurfaceCard as="article" className="flex h-full flex-col p-4" data-month-recent-activity>
@@ -28,7 +26,7 @@ export function RecentActivityCard({
 
       <div className="mt-3 flex-1 divide-y divide-[var(--dashboard-border)]">
         {days.map((day) => {
-          const progress = day.target > 0 ? Math.min(100, (day.worked / day.target) * 100) : day.worked > 0 ? 100 : 0;
+          const progress = day.target > 0 ? Math.min(100, (day.credited / day.target) * 100) : day.worked > 0 ? 100 : 0;
           const balanceTone = day.balance > 5 ? "text-[var(--success)]" : day.balance < -5 ? "text-[var(--warning)]" : "text-[var(--text-muted)]";
           return (
             <button
@@ -51,10 +49,12 @@ export function RecentActivityCard({
                   <span className="block h-full rounded-full bg-[var(--accent)] transition-[width]" style={{ width: `${progress}%` }} />
                 </span>
               </span>
-              <span className="min-w-[66px] text-end">
-                <strong className="block text-[11px] font-black tabular-nums text-[var(--text)]">{duration(day.worked)}</strong>
-                <span className={cn("mt-0.5 block text-[8px] font-bold tabular-nums", balanceTone)}>
-                  {day.hasRecord ? duration(day.balance, true) : t("month.recent.noRecord")}
+              <span className="min-w-[88px] text-end">
+                <strong className="block text-[10px] font-black tabular-nums text-[var(--text)]">{t("month.recent.workedValue", { value: duration(day.worked) })}</strong>
+                <span className={cn("mt-0.5 block text-[8px] font-bold tabular-nums", day.leave > 0 ? "text-[var(--info)]" : balanceTone)}>
+                  {day.leave > 0
+                    ? t("month.recent.leaveValue", { value: duration(day.leave) })
+                    : day.hasRecord ? t("month.recent.balanceValue", { value: duration(day.balance, true) }) : t("month.recent.noRecord")}
                 </span>
               </span>
             </button>
