@@ -38,7 +38,6 @@ export type Ga4Event = {
 type AnalyticsWindow = Window & {
   dataLayer?: unknown[];
   gtag?: (...args: unknown[]) => void;
-  __saatyarGa4Ready?: Promise<void>;
   [key: `ga-disable-${string}`]: boolean | undefined;
 };
 
@@ -153,10 +152,9 @@ export function getFeatureForRoute(route: AnalyticsRoute): AnalyticsFeature | nu
 export function buildGa4Event(event: ProductAnalyticsEvent, origin = "https://saat-yar.vercel.app"): Ga4Event {
   if (event.name === "route_viewed") {
     return {
-      name: "page_view",
+      name: "route_viewed",
       parameters: {
         page_location: `${origin.replace(/\/$/, "")}/${event.properties.route}`,
-        page_title: event.properties.route,
         saatyar_route: event.properties.route,
       },
     };
@@ -164,63 +162,35 @@ export function buildGa4Event(event: ProductAnalyticsEvent, origin = "https://sa
   return { name: event.name, parameters: { ...event.properties } };
 }
 
-function ensureGa4Loaded(config: Extract<ProductAnalyticsProviderConfig, { provider: "ga4" }>) {
-  const browser = safeWindow();
-  if (!browser || typeof document === "undefined") return Promise.resolve();
-  if (browser.__saatyarGa4Ready) return browser.__saatyarGa4Ready;
-
-  browser.dataLayer = browser.dataLayer || [];
-  browser.gtag = browser.gtag || function gtag(...args: unknown[]) { browser.dataLayer?.push(args); };
-  browser[`ga-disable-${config.measurementId}`] = false;
-  for (const consentDefault of getGa4ConsentDefaults()) {
-    browser.gtag("consent", "default", consentDefault);
-  }
-  browser.gtag("js", new Date());
-  browser.gtag("config", config.measurementId, {
-    send_page_view: false,
-    allow_google_signals: false,
-    allow_ad_personalization_signals: false,
-  });
-
-  browser.__saatyarGa4Ready = new Promise<void>((resolve) => {
-    const existing = document.querySelector<HTMLScriptElement>(`script[data-saatyar-ga4="${config.measurementId}"]`);
-    if (existing) { resolve(); return; }
-    const script = document.createElement("script");
-    script.async = true;
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(config.measurementId)}`;
-    script.dataset.saatyarGa4 = config.measurementId;
-    script.onload = () => resolve();
-    script.onerror = () => resolve();
-    document.head.appendChild(script);
-  });
-  return browser.__saatyarGa4Ready;
+function bufferAnalyticsEvent(event: ProductAnalyticsEvent) {
+  bufferedEvents = [...bufferedEvents.slice(-(MAX_BUFFERED_EVENTS - 1)), event];
 }
 
-async function sendAnalyticsEvent(event: ProductAnalyticsEvent) {
+function sendAnalyticsEvent(event: ProductAnalyticsEvent) {
   const config = getProductAnalyticsProviderConfig();
   const browser = safeWindow();
-  if (!config.configured || !browser || getProductAnalyticsConsent() !== "granted") return;
-  await ensureGa4Loaded(config);
-  if (!browser.gtag || browser[`ga-disable-${config.measurementId}`]) return;
+  if (!config.configured || !browser || getProductAnalyticsConsent() !== "granted") return false;
+  if (!browser.gtag || browser[`ga-disable-${config.measurementId}`]) return false;
   const ga4 = buildGa4Event(event, browser.location.origin);
   browser.gtag("event", ga4.name, ga4.parameters);
+  return true;
 }
 
 export function trackProductAnalytics(event: ProductAnalyticsEvent) {
-  const consent = getProductAnalyticsConsent();
-  if (consent === "denied") return;
-  if (consent === "unset") {
-    bufferedEvents = [...bufferedEvents.slice(-(MAX_BUFFERED_EVENTS - 1)), event];
-    return;
-  }
-  void sendAnalyticsEvent(event);
+  if (getProductAnalyticsConsent() === "denied") return;
+  if (!sendAnalyticsEvent(event)) bufferAnalyticsEvent(event);
 }
 
 export async function flushBufferedAnalyticsEvents() {
   if (getProductAnalyticsConsent() !== "granted" || bufferedEvents.length === 0) return;
   const pending = bufferedEvents;
   bufferedEvents = [];
-  for (const event of pending) await sendAnalyticsEvent(event);
+  for (const event of pending) {
+    if (!sendAnalyticsEvent(event)) {
+      bufferAnalyticsEvent(event);
+      break;
+    }
+  }
 }
 
 export function markFeatureDiscovered(feature: AnalyticsFeature) {

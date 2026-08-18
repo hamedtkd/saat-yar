@@ -6,3 +6,11 @@
 - Month stats, Month Intelligence, activity tooltip, and Recent 7 Days distinguish worked minutes from leave credit.
 - Full/half/hourly leave credit prevents registered leave from appearing as work deficit.
 - Schema, dependency set, and package lock remain unchanged.
+
+## R4 — GA delivery + month intelligence visual fixes
+
+- GA4 loader از `document.createElement("script")` سفارشی به `next/script` منتقل شد تا مطابق راهنمای رسمی Next.js بعد از hydration بارگذاری شود.
+- shim استاندارد `gtag(){ dataLayer.push(arguments) }` استفاده می‌شود و eventهای زودهنگام تا آماده‌شدن tag در buffer می‌مانند.
+- pageview دستی حذف شد تا با Enhanced Measurement / history pageview خود GA4 دوباره‌شماری نشود؛ `route_viewed` به‌عنوان event محصولی coarse باقی می‌ماند.
+- نوار هوشمندی ماه اکنون سه سهم اضافه‌کار، مرخصی و کسری را با رنگ‌های سبز، آبی و زرد نشان می‌دهد.
+- نمودار کارکرد هفتگی در RTL داده‌ی نمایشی را معکوس می‌کند تا شنبه در سمت راست و جمعه در سمت چپ باشد؛ date key و محاسبات زمانی تغییر نکرده‌اند.

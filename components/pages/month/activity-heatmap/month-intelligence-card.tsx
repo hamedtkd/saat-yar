@@ -11,8 +11,10 @@ import { AnalyticsCardHeader } from "./analytics-card-header";
 export function MonthIntelligenceCard({ selectedDate, data }: { selectedDate: string; data: AppData }) {
   const { t, calendar, date, duration, number } = useLocaleUi();
   const summary = summarizeMonthIntelligence(buildMonthActivityCells(selectedDate, calendar, data));
-  const balanceMagnitude = summary.overtimeMinutes + summary.deficitMinutes;
-  const overtimeShare = balanceMagnitude > 0 ? (summary.overtimeMinutes / balanceMagnitude) * 100 : 0;
+  const distributionMagnitude = summary.overtimeMinutes + summary.leaveMinutes + summary.deficitMinutes;
+  const overtimeShare = distributionMagnitude > 0 ? (summary.overtimeMinutes / distributionMagnitude) * 100 : 0;
+  const leaveShare = distributionMagnitude > 0 ? (summary.leaveMinutes / distributionMagnitude) * 100 : 0;
+  const deficitShare = distributionMagnitude > 0 ? (summary.deficitMinutes / distributionMagnitude) * 100 : 0;
 
   return (
     <SurfaceCard as="article" className="flex h-full flex-col p-4" data-month-intelligence>
@@ -33,14 +35,16 @@ export function MonthIntelligenceCard({ selectedDate, data }: { selectedDate: st
           <span>{t("month.intelligence.balancedDays", { count: number(summary.balancedDays) })}</span>
         </div>
         <div className="mt-2 flex h-1.5 overflow-hidden rounded-full bg-[var(--surface-3)]" aria-label={t("month.intelligence.balanceDistribution")}>
-          {balanceMagnitude > 0 && <>
+          {distributionMagnitude > 0 && <>
             <span className="h-full bg-[var(--success)]" style={{ width: `${overtimeShare}%` }} />
-            <span className="h-full bg-[var(--warning)]" style={{ width: `${100 - overtimeShare}%` }} />
+            <span className="h-full bg-[var(--info)]" style={{ width: `${leaveShare}%` }} />
+            <span className="h-full bg-[var(--warning)]" style={{ width: `${deficitShare}%` }} />
           </>}
         </div>
-        <div className="mt-1.5 flex items-center justify-between text-[8px] text-[var(--text-muted)]">
-          <span>{t("month.intelligence.overtimeShort", { value: duration(summary.overtimeMinutes) })}</span>
-          <span>{t("month.intelligence.deficitShort", { value: duration(summary.deficitMinutes) })}</span>
+        <div className="mt-1.5 grid grid-cols-3 gap-2 text-[8px] text-[var(--text-muted)]">
+          <span className="text-start">{t("month.intelligence.overtimeShort", { value: duration(summary.overtimeMinutes) })}</span>
+          <span className="text-center text-[var(--info)]">{t("month.intelligence.leaveShort", { value: duration(summary.leaveMinutes) })}</span>
+          <span className="text-end">{t("month.intelligence.deficitShort", { value: duration(summary.deficitMinutes) })}</span>
         </div>
       </div>
 
