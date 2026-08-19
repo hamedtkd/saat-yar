@@ -10,6 +10,7 @@ const labelKeys: Record<string, SystemMessageKey> = {
   records: "Work records",
   leaves: "Leave",
   clients: "Clients",
+  workProjects: "Work projects",
   projects: "Projects",
   timeEntries: "Time entries",
   expenses: "Expenses",

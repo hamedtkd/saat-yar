@@ -1,3 +1,5 @@
+- [x] فاز ۱۹۹ R11: Browser contract hotfix؛ بازگرداندن marker عنوان Activity زنده در Running panel بدون تغییر رفتار محصول، Schema یا dependency.
+- [x] Phase 199 R8 — Footer GitHub brand-icon compile hotfix بدون dependency جدید.
 # بک‌لاگ ساعت‌یار
 
 ## مسیر فعال پس از 2.5.0
@@ -447,6 +449,11 @@
 
 ## توسعه پس از ۲.۵.۰ — Trust & Measurement
 
+- [x] Phase 198.1: Workspace-specific Today + Freelancer Work Session Controller؛ routeهای `/employee/today`، `/freelancer/today` و `/hybrid/today`، Pickerهای responsive و tiny-mobile hardening تا 320px روی baseline commit `d0d71cd` نهایی و Visual QA شد.
+- [x] فاز ۱۹۹ R2: Employee Activity Context؛ عنوان اختیاری Work Item و Project context مستقل از ActivityKind برای Employee/Hybrid، پروژه‌های کاری مستقل در `workProjects` با ساخت Inline، عدم نمایش پروژه‌های Freelancer در Employee، امکان انتخاب هر دو context در Hybrid، Recent title، Running/Recent context، Calendar Event title import و Migration AppData v20→v21 بدون ساخت Task Manager مستقل.
+- [x] فاز ۱۹۹ R3: Activity UX polish؛ optional label هم‌خط، Live FlipClock کوچک برای فعالیت جاری، live-state مبتنی بر accent به‌جای success surface بزرگ، و edit/delete برای Segmentهای کامل‌شده با ویرایش فقط مدت‌زمان و بدون دست‌کاری مستقیم Start/End.
+- [x] فاز ۱۹۹ R4: Visual alignment نهایی Activity؛ Duration editor جهت‌پذیر RTL/LTR با ترتیب منطقی ساعت/دقیقه و stepper، Live surface دو‌بخشی context/timer، FlipClock activity با ratio و baseline متوازن‌تر، و Category/Recent cards مرتب‌تر بدون تغییر Schema v21.
+
 - [x] فاز ۱۹۵: OAuth Verification Readiness + GA4 Analytics؛ صفحات عمومی About/Privacy/Terms/Help، disclosure Google Calendar، Verification Kit و مهاجرت consent-safe از Plausible به GA4 بدون Schema/Dependency جدید.
 - [x] فاز ۱۹۶: GA4 Runtime + Leave Intelligence Hardening؛ ارسال واقعی GA4 روی Production، opt-out محلی، اتصال مرخصی ثبت‌شده به Month Intelligence/Recent 7 Days، تفکیک کار/مرخصی/کسری و اصلاح ترتیب نمودار هفتگی RTL.
 - [x] فاز ۱۹۷: Tooltip System + Production Observability؛ یکپارچه‌سازی Tooltipهای توضیحی/Heatmap روی primitive مشترک portal-safe و viewport-aware، پوشش routeهای عمومی جدید در Production Audit و بستن diagnostics اعتمادپذیر بعد از 2.5.0.
@@ -498,3 +505,10 @@
 - [x] Runtime Browser Smoke برای `/freelancer/today` و `/employee/today` روی viewport 320×800 no-horizontal-overflow check دارد.
 - [ ] Full dependency-backed R17 Gate در محیط اصلی توسعه.
 - [ ] Visual QA روی 320/360/375/425px در Running/Paused و Picker states؛ Commit فقط بعد از سبز شدن هر دو.
+
+- Phase 199 R5: فشرده‌سازی حالت Running داخل shell اصلی و تثبیت ترتیب ساعت چپ/دقیقه راست در Duration Dialog تکمیل شد؛ Visual QA نهایی و Full Gate محلی پیش از commit لازم است.
+- [x] فاز ۱۹۹ R6: polish نهایی Running Activity؛ انتقال status زنده به inline-start جهت‌محور (RTL راست/LTR چپ)، حفظ کامل FlipClock تأییدشده و جداکردن CTA پایان فعالیت از Timer با divider منطقی، بدون تغییر AppData v21 یا dependency.
+
+- [x] فاز ۱۹۹ R7: History/Attendance/Shell polish؛ اسکرول داخلی همه Activityهای روز، ویرایش مستقیم Clock-in/Clock-out/Lunch/Break، هم‌ترازی Timer و Stop بدون تغییر FlipClock، Help RTL/LTR alignment، Footer با About/Help/Privacy/Terms + GitHub Star و Header موبایل compact؛ AppData v21 و dependencyها بدون تغییر.
+
+- [x] فاز ۱۹۹ R9: GitHub star count زنده/Cache شده در Footer و حذف outline بزرگ محتوای اصلی روی tap موبایل؛ AppData v21 و dependencyها بدون تغییر.

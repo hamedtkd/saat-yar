@@ -144,6 +144,13 @@
   outline-offset: 2px;
 }
 
+/* Touch browsers may mark the programmatic skip-link target as focus-visible after a page tap. */
+@media (hover: none) and (pointer: coarse) {
+  #main-content:focus-visible {
+    outline: none;
+  }
+}
+
 :where(button, [role="button"], input, select) {
   touch-action: manipulation;
 }

@@ -45,8 +45,11 @@ export default function TodayRoute() {
       finishLunch={controller.finishLunch}
       startBreak={controller.startBreak}
       finishBreak={controller.finishBreak}
+      createWorkProject={controller.createWorkProject}
       startActivitySegment={controller.startActivitySegment}
       stopActivitySegment={controller.stopActivitySegment}
+      updateActivitySegmentDuration={controller.updateActivitySegmentDuration}
+      deleteActivitySegment={controller.deleteActivitySegment}
       toggleProjectTimer={controller.toggleProjectTimer}
       startProjectTimer={controller.startProjectTimer}
       pauseProjectTimer={controller.pauseProjectTimer}

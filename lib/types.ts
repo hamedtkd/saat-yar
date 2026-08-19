@@ -60,11 +60,15 @@ export type ActivityKind = "deep-work" | "meeting" | "learning" | "admin" | "pro
 export type ActivitySegment = {
   id: string;
   kind: ActivityKind;
+  title?: string;
   start: string;
   end: string;
   startedAt?: string;
   endedAt?: string;
+  /** Optional freelancer project context, used only in hybrid mode. */
   projectId?: string;
+  /** Optional employee/hybrid work-project context. */
+  workProjectId?: string;
 };
 
 export type WorkRecord = {
@@ -177,6 +181,17 @@ export type Client = {
   archived: boolean;
 };
 
+export type WorkProject = {
+  id: string;
+  name: string;
+  status: "active" | "archived";
+  createdAt: string;
+};
+
+export type ActivityProjectContext =
+  | { source: "work"; id: string }
+  | { source: "freelance"; id: string };
+
 export type Project = {
   id: string;
   clientId: string;
@@ -246,6 +261,7 @@ export type AppData = {
   records: Record<string, WorkRecord>;
   leaves: LeaveEntry[];
   clients: Client[];
+  workProjects: WorkProject[];
   projects: Project[];
   timeEntries: TimeEntry[];
   expenses: Expense[];

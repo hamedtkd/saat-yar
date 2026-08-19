@@ -109,9 +109,9 @@ export function TodayPage(props: TodayPageProps) {
       />}
       <CalendarAgendaCard dateKey={props.selectedDate} data={props.data} setData={props.setData} setToast={props.setToast} />
       <CompletedDayEditor key={`${props.selectedDate}:${props.record.start && props.record.end ? "completed" : "active"}`} {...props} scheduledDayOff={scheduledDayOff} />
-      {capabilities.activitySegments && <ActivitySegmentsCard record={props.record} projects={props.data.projects} activeSegment={props.activeActivitySegment} activeBreak={props.activeBreak} lunchRunning={props.lunchRunning} trackingAllowed={isToday} onStart={props.startActivitySegment} onStop={props.stopActivitySegment} />}
+      {capabilities.activitySegments && <ActivitySegmentsCard record={props.record} records={Object.values(props.data.records)} mode={props.data.settings.mode} workProjects={props.data.workProjects} freelanceProjects={props.data.projects} activeSegment={props.activeActivitySegment} activeBreak={props.activeBreak} lunchRunning={props.lunchRunning} trackingAllowed={isToday} onCreateWorkProject={props.createWorkProject} onStart={props.startActivitySegment} onStop={props.stopActivitySegment} onUpdateDuration={props.updateActivitySegmentDuration} onDelete={props.deleteActivitySegment} />}
       {props.editingEntry === "manual" && props.data.settings.mode !== "employee" && <ManualEntryForm {...props} />}
-      {props.data.settings.mode === "employee" ? <TodayAttendanceLog record={props.record} /> : <TodayTimeline {...props} />}
+      {props.data.settings.mode === "employee" ? <TodayAttendanceLog record={props.record} updateRecord={props.updateRecord} /> : <TodayTimeline {...props} />}
       <TodayMetrics
         data={props.data}
         record={props.record}

@@ -178,7 +178,7 @@ export function collectFinal250AuditFailures() {
   requireCondition(manifest.tag === "v2.5.0", "2.5.0 final manifest must reserve the v2.5.0 annotated tag.", failures);
   requireCondition(manifest.dataSchemaVersion === 20, "2.5.0 final schema must be v20.", failures);
   requireCondition(manifest.releasedSchemaBaseline === 17, "2.5.0 must preserve v17 as the released 2.4.0 schema baseline.", failures);
-  requireCondition(APP_DATA_SCHEMA_VERSION === 20, "Current AppData schema must be v20 for 2.5.0 finalization.", failures);
+  requireCondition(APP_DATA_SCHEMA_VERSION >= manifest.dataSchemaVersion, "Current development AppData schema cannot be older than the released 2.5.0 schema.", failures);
   requireCondition(released240.version === "2.4.0" && released240.status === "released" && released240.dataSchemaVersion === 17, "Historical 2.4.0 release manifest must remain released on schema v17.", failures);
   requireCondition(manifest.nodeEngine === packageJson.engines?.node, "2.5.0 Node engine must match package.json.", failures);
   requireCondition(manifest.verifiedBaselineCommitPrefix === "0c4c22e", "2.5.0 must preserve Phase 192 baseline 0c4c22e.", failures);

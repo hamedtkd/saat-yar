@@ -1,8 +1,9 @@
-import type { AppData, CustomReminderSettings, NotificationSettings, Settings, WeekdayKey } from "../types.ts";
+import type { AppData, CustomReminderSettings, NotificationSettings, Settings, WeekdayKey, WorkProject } from "../types.ts";
 import { getConfiguredWorkMinutes, weekdayOrder } from "../work-schedule.ts";
 import { createCompleteAppData } from "./app-data-factory.ts";
 import { normalizePayrollPolicy } from "../payroll-policy.ts";
 import { normalizeLeaveSettings } from "../leave-entitlement.ts";
+import { normalizeActivityTitle } from "../activity-segments.ts";
 
 
 function withoutLegacyCustomReminder(settings: NotificationSettings | undefined): Partial<NotificationSettings> {
@@ -88,7 +89,9 @@ export function normaliseData(value: AppData, defaults: Settings): AppData {
           })),
           activitySegments: (record.activitySegments ?? []).map((item) => ({
             ...item,
+            title: normalizeActivityTitle(item.title),
             projectId: item.projectId || undefined,
+            workProjectId: item.workProjectId || undefined,
           })),
           leaveMinutes: Math.max(0, record.leaveMinutes ?? 0),
           leaveType: record.leaveType ?? "none",
@@ -104,6 +107,16 @@ export function normaliseData(value: AppData, defaults: Settings): AppData {
       ...client,
       archived: Boolean(client.archived),
     })),
+    workProjects: (value.workProjects ?? []).flatMap((project): WorkProject[] => {
+      const name = typeof project.name === "string" ? project.name.trim().slice(0, 120) : "";
+      if (!project.id || !name) return [];
+      return [{
+        ...project,
+        name,
+        status: project.status === "archived" ? "archived" : "active",
+        createdAt: project.createdAt || new Date(0).toISOString(),
+      }];
+    }),
     projects: (value.projects ?? []).map((project) => ({
       ...project,
       status: project.status ?? "active",
@@ -138,7 +151,12 @@ export function normaliseData(value: AppData, defaults: Settings): AppData {
       record: {
         ...item.record,
         breaks: (item.record.breaks ?? []).map((entry) => ({ ...entry })),
-        activitySegments: (item.record.activitySegments ?? []).map((entry) => ({ ...entry })),
+        activitySegments: (item.record.activitySegments ?? []).map((entry) => ({
+          ...entry,
+          title: normalizeActivityTitle(entry.title),
+          projectId: entry.projectId || undefined,
+          workProjectId: entry.workProjectId || undefined,
+        })),
       },
     })),
   });

@@ -18,6 +18,7 @@ const expectedKeys = [
   "records",
   "leaves",
   "clients",
+  "workProjects",
   "projects",
   "timeEntries",
   "expenses",
@@ -47,6 +48,7 @@ test("runtime audit reports missing fields before storage or backup code receive
   assert.deepEqual(getMissingAppDataKeys(incomplete), [
     "leaves",
     "clients",
+    "workProjects",
     "projects",
     "timeEntries",
     "expenses",

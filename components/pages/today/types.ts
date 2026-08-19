@@ -1,6 +1,6 @@
 import type React from "react";
 import type { ReturnTypeCalc } from "@/lib/type-helpers";
-import type { ActivityKind, ActivitySegment, AppData, BreakItem, ClientDraft, ProjectDraft, Tab, TimeEntry, TimerDraft, WorkRecord, WorkRecordPatch } from "@/lib/types";
+import type { ActivityKind, ActivityProjectContext, ActivitySegment, AppData, BreakItem, ClientDraft, ProjectDraft, Tab, TimeEntry, TimerDraft, WorkRecord, WorkRecordPatch } from "@/lib/types";
 import type { ProjectTimerSession } from "@/lib/project-timer-session";
 
 export type TodayPageProps = {
@@ -35,8 +35,11 @@ export type TodayPageProps = {
   finishLunch: () => void;
   startBreak: () => void;
   finishBreak: (minutes?: number) => void;
-  startActivitySegment: (kind: ActivityKind, projectId?: string) => void;
+  createWorkProject: (name: string) => string | undefined;
+  startActivitySegment: (kind: ActivityKind, projectContext?: ActivityProjectContext, title?: string) => void;
   stopActivitySegment: () => void;
+  updateActivitySegmentDuration: (segmentId: string, minutes: number) => void;
+  deleteActivitySegment: (segmentId: string) => void;
   toggleProjectTimer: (projectId?: string) => void;
   startProjectTimer: (projectId?: string) => void;
   pauseProjectTimer: () => void;

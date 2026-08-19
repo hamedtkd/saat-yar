@@ -6,11 +6,12 @@ import { formatLocaleNumber } from "@/lib/i18n/formatters";
 import { translateSystem } from "@/lib/i18n/system";
 import { closePreviousRecordForNewDay, findPreviousOpenRecord } from "@/lib/previous-day-session";
 import type { Dispatch, SetStateAction } from "react";
-import type { ActivityKind, AppData, WorkRecord, WorkRecordPatch } from "@/lib/types";
+import type { ActivityKind, ActivityProjectContext, AppData, WorkRecord, WorkRecordPatch } from "@/lib/types";
 import { createDeletedWorkRecord } from "@/lib/record-recycle-bin";
 import { resumeAutoClosedRecord } from "@/lib/session-close";
-import { closeActiveActivitySegments } from "@/lib/activity-segments";
+import { closeActiveActivitySegments, createActivitySegment, removeCompletedActivitySegment, updateCompletedActivitySegmentDuration } from "@/lib/activity-segments";
 import { trackProductAnalytics } from "@/lib/product-analytics";
+import { createWorkProject as buildWorkProject, isDuplicateWorkProjectName } from "@/lib/work-projects";
 
 type Args = {
   data: AppData;
@@ -48,6 +49,18 @@ export function useAttendanceActions({ data, record, selectedDate, activeBreak, 
             needsReview: false,
             updatedAt: new Date().toISOString(),
           },
+        },
+      };
+    });
+  }
+  function updateActivitySegments(resolve: (segments: WorkRecord["activitySegments"]) => WorkRecord["activitySegments"]) {
+    setData((previous) => {
+      const current = previous.records[selectedDate] ?? record;
+      return {
+        ...previous,
+        records: {
+          ...previous.records,
+          [selectedDate]: { ...current, activitySegments: resolve(current.activitySegments), updatedAt: new Date().toISOString() },
         },
       };
     });
@@ -170,18 +183,34 @@ export function useAttendanceActions({ data, record, selectedDate, activeBreak, 
     setToast(minutes ? translateSystem(getBrowserLocale(), "{minutes}-minute break was recorded.", { minutes: formatLocaleNumber(getBrowserLocale(), minutes) }) : translateSystem(getBrowserLocale(), "Break ended."));
   }
 
-  function startActivitySegment(kind: ActivityKind, projectId?: string) {
+  function createWorkProject(name: string) {
+    if (isDuplicateWorkProjectName(data.workProjects, name)) return undefined;
+    const project = buildWorkProject({ id: crypto.randomUUID(), name, createdAt: new Date().toISOString() });
+    if (!project) return undefined;
+    setData((previous) => isDuplicateWorkProjectName(previous.workProjects, project.name)
+      ? previous
+      : { ...previous, workProjects: [...previous.workProjects, project] });
+    return project.id;
+  }
+
+  function startActivitySegment(kind: ActivityKind, projectContext?: ActivityProjectContext, title?: string) {
     if (!ensureLiveTimerOwnership()) return setToast(translateSystem(getBrowserLocale(), "Timer control is active in another tab."));
     if (!record.start || record.end) return setToast(translateSystem(getBrowserLocale(), "Start the workday before tracking an activity."));
     if (activeBreak || lunchRunning) return setToast(translateSystem(getBrowserLocale(), "Finish the active pause before starting an activity."));
     const start = nowTime();
     const startedAt = new Date().toISOString();
-    updateRecord((current) => ({
-      activitySegments: [
-        ...closeActiveActivitySegments(current.activitySegments, start, startedAt),
-        { id: crypto.randomUUID(), kind, start, end: "", startedAt, projectId: projectId || undefined },
-      ],
-    }));
+    updateActivitySegments((segments) => [
+      ...closeActiveActivitySegments(segments, start, startedAt),
+      createActivitySegment({
+        id: crypto.randomUUID(),
+        kind,
+        title,
+        projectId: projectContext?.source === "freelance" ? projectContext.id : undefined,
+        workProjectId: projectContext?.source === "work" ? projectContext.id : undefined,
+        start,
+        startedAt,
+      }),
+    ]);
     trackProductAnalytics({ name: "feature_used", properties: { feature: "activity-segments" } });
     setToast(translateSystem(getBrowserLocale(), "Activity segment started."));
   }
@@ -189,9 +218,17 @@ export function useAttendanceActions({ data, record, selectedDate, activeBreak, 
     if (!ensureLiveTimerOwnership()) return setToast(translateSystem(getBrowserLocale(), "Timer control is active in another tab."));
     const end = nowTime();
     const endedAt = new Date().toISOString();
-    updateRecord((current) => ({ activitySegments: closeActiveActivitySegments(current.activitySegments, end, endedAt) }));
+    updateActivitySegments((segments) => closeActiveActivitySegments(segments, end, endedAt));
     setToast(translateSystem(getBrowserLocale(), "Activity segment stopped."));
   }
-  return { updateRecord, resetRecord, undoResetRecord, dismissResetUndo, resetUndoDate: resetUndo?.date, startWork, resumeAutoClosedWork, finishWork, startLunch, finishLunch, startBreak, finishBreak, startActivitySegment, stopActivitySegment,
+  function updateActivitySegmentDuration(segmentId: string, minutes: number) {
+    updateActivitySegments((segments) => updateCompletedActivitySegmentDuration(segments, segmentId, minutes));
+    setToast(translateSystem(getBrowserLocale(), "Activity duration updated."));
+  }
+  function deleteActivitySegment(segmentId: string) {
+    updateActivitySegments((segments) => removeCompletedActivitySegment(segments, segmentId));
+    setToast(translateSystem(getBrowserLocale(), "Activity deleted."));
+  }
+  return { updateRecord, resetRecord, undoResetRecord, dismissResetUndo, resetUndoDate: resetUndo?.date, startWork, resumeAutoClosedWork, finishWork, startLunch, finishLunch, startBreak, finishBreak, createWorkProject, startActivitySegment, stopActivitySegment, updateActivitySegmentDuration, deleteActivitySegment,
     pendingPreviousRecord, closePreviousAndStart, reviewPreviousRecord, dismissPreviousRecord: () => setPendingPreviousRecord(undefined) };
 }

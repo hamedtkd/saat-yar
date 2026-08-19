@@ -31,7 +31,7 @@ test("workspace trigger is a single compact Radix trigger instead of a mismatche
   const source = await read("components/layout/app-header/workspace-switcher.tsx");
   assert.match(source, /min-w-\[132px\]/);
   assert.match(source, /max-\[520px\]:min-w-0/);
-  assert.match(source, /max-\[520px\]:flex-1/);
+  assert.match(source, /max-\[520px\]:size-10/);
   assert.match(source, /<SelectGroup>[\s\S]*<SelectLabel>[\s\S]*<SelectItem value="employee">[\s\S]*<\/SelectGroup>/);
   assert.doesNotMatch(source, /<div className="flex h-10/);
 });
@@ -43,7 +43,8 @@ test("profile trigger reads as a real profile with a round avatar and local iden
   assert.match(source, /bg-\[var\(--success\)\]/);
   assert.match(source, /t\("profile\.local"\)/);
   assert.match(source, /aria-label=\{t\("profile\.aria"/);
-  assert.match(source, /max-\[520px\]:w-11/);
+  assert.match(source, /max-\[520px\]:size-10/);
+  assert.match(source, /max-\[520px\]:border-0/);
 });
 
 test("sidebar brand is a guarded shortcut back to today", async () => {

@@ -96,7 +96,7 @@ export function ProfileMenu({
         className={cn(
           headerControlShell,
           "flex min-w-[158px] items-center gap-2 px-2 text-start",
-          "max-[520px]:w-11 max-[520px]:min-w-11 max-[520px]:justify-center max-[520px]:px-1.5 max-[359px]:w-10 max-[359px]:min-w-10 max-[359px]:px-1",
+          "max-[520px]:size-10 max-[520px]:min-w-10 max-[520px]:justify-center max-[520px]:border-0 max-[520px]:bg-transparent max-[520px]:px-1 max-[520px]:shadow-none max-[520px]:hover:bg-[var(--accent-soft)]",
           open && "border-[color-mix(in_srgb,var(--accent)_38%,var(--dashboard-border))] bg-[var(--accent-soft)]",
         )}
       >

@@ -358,6 +358,40 @@ function migrateV19ToV20(value: unknown): unknown {
   };
 }
 
+
+function migrateV20ToV21(value: unknown): unknown {
+  if (!isObject(value)) return value;
+
+  const normalizeSegments = (rawSegments: unknown) => Array.isArray(rawSegments)
+    ? rawSegments.map((rawSegment) => {
+        if (!isObject(rawSegment)) return rawSegment;
+        const rawTitle = typeof rawSegment.title === "string" ? rawSegment.title.trim().replace(/\s+/g, " ").slice(0, 120) : "";
+        return { ...rawSegment, title: rawTitle || undefined };
+      })
+    : [];
+
+  const records = isObject(value.records)
+    ? Object.fromEntries(Object.entries(value.records).map(([date, rawRecord]) => {
+        const record = isObject(rawRecord) ? rawRecord : {};
+        return [date, { ...record, activitySegments: normalizeSegments(record.activitySegments) }];
+      }))
+    : {};
+
+  const deletedRecords = Array.isArray(value.deletedRecords)
+    ? value.deletedRecords.map((rawItem) => {
+        if (!isObject(rawItem)) return rawItem;
+        const record = isObject(rawItem.record) ? rawItem.record : {};
+        return { ...rawItem, record: { ...record, activitySegments: normalizeSegments(record.activitySegments) } };
+      })
+    : [];
+
+  const workProjects = Array.isArray(value.workProjects)
+    ? value.workProjects
+    : [];
+
+  return { ...value, records, deletedRecords, workProjects };
+}
+
 const migrations: Record<number, (value: unknown) => unknown> = {
   1: migrateV1ToV2,
   2: migrateV2ToV3,
@@ -378,6 +412,7 @@ const migrations: Record<number, (value: unknown) => unknown> = {
   17: migrateV17ToV18,
   18: migrateV18ToV19,
   19: migrateV19ToV20,
+  20: migrateV20ToV21,
 };
 
 export function migrateAppData(value: unknown): MigrationResult {

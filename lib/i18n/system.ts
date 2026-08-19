@@ -268,6 +268,7 @@ export const faSystemCatalog = {
   "Clients": "مشتری‌ها",
   "Client names, emails, and notes": "نام، ایمیل و توضیحات مشتری‌ها",
   "Projects": "پروژه‌ها",
+  "Work projects": "پروژه‌های کاری",
   "Project, client, rate, budget, and status": "پروژه، مشتری، نرخ، بودجه و وضعیت",
   "Expenses": "هزینه‌ها",
   "Project/client expenses with date and category": "هزینه‌های پروژه/مشتری با تاریخ و دسته‌بندی",
@@ -382,6 +383,8 @@ export const faSystemCatalog = {
   "Finish the active pause before starting an activity.": "قبل از شروع فعالیت، ناهار یا وقفه فعال را تمام کن.",
   "Activity segment started.": "ثبت بخش فعالیت شروع شد.",
   "Activity segment stopped.": "بخش فعالیت ثبت شد.",
+  "Activity duration updated.": "زمان فعالیت به‌روزرسانی شد.",
+  "Activity deleted.": "فعالیت حذف شد.",
 
   "Restore and import": "بازیابی و واردسازی",
   "Import Wizard for existing data": "Import Wizard برای داده‌های موجود",

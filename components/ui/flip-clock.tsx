@@ -4,7 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/cn";
 import { flipClockBoxClass, flipClockSeamClass } from "./flip-clock-surface";
 
-type FlipClockSize = "hero" | "compact" | "project";
+type FlipClockSize = "hero" | "compact" | "project" | "activity";
 type FlipClockVariant = "plain" | "boxed";
 
 type DigitProps = {
@@ -25,6 +25,7 @@ function Digit({ value, displayValue, reducedMotion, size, variant }: DigitProps
         boxed ? flipClockBoxClass : "",
         size === "hero" && (boxed ? "h-16 w-11 sm:h-[72px] sm:w-12" : "h-[1.18em] w-[0.84em]"),
         size === "compact" && (boxed ? "h-12 w-8" : "h-[1.1em] w-[0.76em]"),
+        size === "activity" && (boxed ? "h-11 w-8 max-[359px]:h-10 max-[359px]:w-7 sm:h-12 sm:w-9" : "h-[1.08em] w-[0.72em]"),
         size === "project" && (boxed ? "h-[58px] w-10 max-[359px]:h-12 max-[359px]:w-[30px] sm:h-16 sm:w-11" : "h-[1.12em] w-[0.8em]"),
       )}
     >
@@ -51,8 +52,8 @@ function Separator({ size, boxed }: { size: FlipClockSize; boxed: boolean }) {
       aria-hidden="true"
       className={cn(
         "inline-flex shrink-0 items-center justify-center opacity-80",
-        boxed ? "pt-4 text-[var(--accent-strong)] max-[359px]:pt-3 sm:pt-5" : "",
-        size === "hero" ? "h-[1.18em] w-[0.38em]" : size === "project" ? "w-3 max-[359px]:w-2 sm:w-4" : "h-[1.1em] w-[0.34em]",
+        boxed ? (size === "activity" ? "h-11 text-[var(--accent-strong)] max-[359px]:h-10 sm:h-12" : "pt-4 text-[var(--accent-strong)] max-[359px]:pt-3 sm:pt-5") : "",
+        size === "hero" ? "h-[1.18em] w-[0.38em]" : size === "project" ? "w-3 max-[359px]:w-2 sm:w-4" : size === "activity" ? "w-2.5 max-[359px]:w-2" : "h-[1.1em] w-[0.34em]",
       )}
     >
       :
@@ -97,15 +98,15 @@ export function FlipClock({
       aria-label={ariaLabel}
       className={cn(
         "saatyar-timer-countdown inline-flex max-w-full items-start justify-center whitespace-nowrap text-current",
-        size === "hero" ? "text-[20px]" : size === "project" ? "text-[2rem] font-black leading-none max-[359px]:text-[1.55rem] sm:text-[2.25rem]" : "text-lg",
-        boxed && "gap-1 max-[359px]:gap-0.5 sm:gap-2",
+        size === "hero" ? "text-[20px]" : size === "project" ? "text-[2rem] font-black leading-none max-[359px]:text-[1.55rem] sm:text-[2.25rem]" : size === "activity" ? "text-[1.35rem] font-black leading-none max-[359px]:text-[1.15rem] sm:text-[1.5rem]" : "text-lg",
+        boxed && (size === "activity" ? "gap-0.5 sm:gap-1" : "gap-1 max-[359px]:gap-0.5 sm:gap-2"),
         className,
       )}
     >
       {groups.map((group, groupIndex) => (
         <span key={groupIndex} className="contents">
           <span className={cn(boxed ? "grid justify-items-center gap-1.5" : "contents")}>
-            <span className={cn(boxed ? "inline-flex gap-1 max-[359px]:gap-0.5" : "contents")}>
+            <span className={cn(boxed ? (size === "activity" ? "inline-flex gap-0.5" : "inline-flex gap-1 max-[359px]:gap-0.5") : "contents")}>
               {group.split("").map((digit, digitIndex) => (
                 <Digit
                   key={`${groupIndex}-${digitIndex}`}

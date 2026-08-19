@@ -66,7 +66,7 @@ export function AppHeader(props: Props) {
         </div>
       </div>
 
-      <div className="hidden shrink-0 max-[520px]:block max-[359px]:scale-90"><BrandMark size={34} animated={false} label={t("app.logoLabel")} /></div>
+      <div className="hidden shrink-0 max-[520px]:block"><BrandMark size={40} animated={false} label={t("app.logoLabel")} /></div>
 
       <div className="flex min-w-0 items-center gap-1.5 sm:gap-2 max-[520px]:flex-1 max-[520px]:justify-end max-[359px]:gap-0.5">
         <HeaderActions

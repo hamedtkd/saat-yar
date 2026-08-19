@@ -49,6 +49,7 @@ export type BackupImportAnalysis = {
     records: { additions: number; conflicts: number };
     leaves: { additions: number; conflicts: number };
     clients: { additions: number; conflicts: number };
+    workProjects: { additions: number; conflicts: number };
     projects: { additions: number; conflicts: number };
     timeEntries: { additions: number; conflicts: number };
     expenses: { additions: number; conflicts: number };

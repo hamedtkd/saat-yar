@@ -122,11 +122,13 @@ const breakSchema = z.object({
 const activitySegmentSchema = z.object({
   id: z.string(),
   kind: z.enum(["deep-work", "meeting", "learning", "admin", "project", "other"]),
+  title: z.string().trim().max(120).optional(),
   start: timeSchema,
   end: timeSchema,
   startedAt: z.string().optional(),
   endedAt: z.string().optional(),
   projectId: z.string().optional(),
+  workProjectId: z.string().optional(),
 }).passthrough();
 
 const workRecordSchema = z.object({
@@ -166,6 +168,13 @@ const clientSchema = z.object({
   email: z.string().optional(),
   note: z.string().optional(),
   archived: z.boolean(),
+}).passthrough();
+
+const workProjectSchema = z.object({
+  id: z.string(),
+  name: z.string().trim().min(1).max(120),
+  status: z.enum(["active", "archived"]),
+  createdAt: z.string(),
 }).passthrough();
 
 const projectSchema = z.object({
@@ -251,6 +260,7 @@ export const appDataSchema = z.object({
   records: z.record(z.string(), workRecordSchema),
   leaves: z.array(leaveSchema),
   clients: z.array(clientSchema),
+  workProjects: z.array(workProjectSchema).default([]),
   projects: z.array(projectSchema),
   timeEntries: z.array(timeEntrySchema),
   expenses: z.array(expenseSchema),
