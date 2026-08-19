@@ -16,7 +16,7 @@ export function createTabId() {
 }
 
 export function getSyncChangeKind(path: string): SyncChangeKind {
-  if (path === "/today" || path === "/month" || path === "/leave") return "attendance";
+  if (path === "/today" || path.endsWith("/today") || path === "/month" || path === "/leave") return "attendance";
   if (path === "/settings" || path.startsWith("/settings/")) return "settings";
   if (path === "/clients" || path === "/projects" || path === "/invoices") return "business";
   if (path === "/reports") return "reporting";

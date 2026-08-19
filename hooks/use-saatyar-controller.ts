@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createLeaveDraft } from "@/lib/constants";
 import { localDateKey } from "@/lib/format";
 import { getBrowserLocale, type CalendarSystem } from "@/lib/i18n";
@@ -16,6 +16,8 @@ import { useNotificationReminders } from "./controller/use-notification-reminder
 import { useLiveTimerOwnership } from "./use-live-timer-ownership";
 import { useReportActions } from "./controller/use-report-actions";
 import { useOnboardingSession } from "./use-onboarding-session";
+import { getProjectTimerRecoveryAction } from "@/lib/project-timer-session";
+import { useProjectTimerSession } from "./use-project-timer-session";
 
 export function useSaatyarController(calendar: CalendarSystem = "persian") {
   const persisted = usePersistedAppData();
@@ -41,7 +43,25 @@ export function useSaatyarController(calendar: CalendarSystem = "persian") {
   }
 
   const derived = useControllerDerived(data, selectedDate, selectedProjectId, reportFilter, calendar);
-  const liveTimerActive = Boolean(derived.activeEntry || Object.values(data.records).some((item) =>
+  const { session: projectTimerSession, setSession: setProjectTimerSession } = useProjectTimerSession();
+  const projectTimerRecoveryChecked = useRef(false);
+  useEffect(() => {
+    if (!persisted.ready || projectTimerRecoveryChecked.current) return;
+    projectTimerRecoveryChecked.current = true;
+    const action = getProjectTimerRecoveryAction(projectTimerSession, data.timeEntries);
+    if (action.type === "clear-session") {
+      setProjectTimerSession(null);
+      return;
+    }
+    if (action.type === "close-entry") {
+      setData((previous) => ({
+        ...previous,
+        timeEntries: previous.timeEntries.map((entry) =>
+          entry.id === action.entryId && !entry.endedAt ? { ...entry, endedAt: action.endedAt } : entry),
+      }));
+    }
+  }, [data.timeEntries, persisted.ready, projectTimerSession, setProjectTimerSession, setData]);
+  const liveTimerActive = Boolean(derived.activeEntry || projectTimerSession || Object.values(data.records).some((item) =>
     (item.start && !item.end) || (item.lunchStart && !item.lunchEnd) || item.breaks.some((entry) => !entry.end) || (item.activitySegments ?? []).some((entry) => !entry.end),
   ));
   const liveTimerOwnership = useLiveTimerOwnership(liveTimerActive);
@@ -54,6 +74,7 @@ export function useSaatyarController(calendar: CalendarSystem = "persian") {
     data, setData, setToast, clientDraft, setClientDraft, projectDraft, setProjectDraft,
     timerDraft, setTimerDraft, leaveDraft, setLeaveDraft, setSelectedProjectId,
     setShowClientForm, setShowProjectForm, activeEntry: derived.activeEntry,
+    projectTimerSession, setProjectTimerSession,
     ensureLiveTimerOwnership: liveTimerOwnership.ensureOwnership,
   });
   const backup = useBackupActions({ data, setData, setToast, importPreview, setImportPreview, storage });
@@ -81,7 +102,7 @@ export function useSaatyarController(calendar: CalendarSystem = "persian") {
     projectDraft, setProjectDraft, timerDraft, setTimerDraft,
     editingEntry, setEditingEntry, reportFilter, setReportFilter,
     leaveDraft, setLeaveDraft, importPreview, financialsHidden, setFinancialsHidden,
-    ...derived, ...attendance, ...business, ...backup, ...reports, ...notifications,
+    ...derived, projectTimerSession, ...attendance, ...business, ...backup, ...reports, ...notifications,
     requestPersistence, liveTimerOwnership,
   };
 }

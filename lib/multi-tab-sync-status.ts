@@ -84,6 +84,7 @@ export function formatSyncSourcePath(path: string) {
     "/projects": "پروژه‌ها",
     "/invoices": "صورتحساب‌ها",
   };
+  if (path.endsWith("/today")) return labels["/today"];
   if (path.startsWith("/settings/")) return labels["/settings"];
   return labels[path] ?? path;
 }

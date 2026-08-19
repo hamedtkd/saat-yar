@@ -38,7 +38,17 @@ test("all live attendance and project timer actions require ownership", async ()
     assert.notEqual(start, -1, `${action} must exist`);
     assert.match(attendance.slice(start, start + 220), /ensureLiveTimerOwnership\(\)/);
   }
-  assert.match(business, /function toggleProjectTimer[\s\S]*ensureLiveTimerOwnership\(\)/);
+  for (const action of ["startProjectTimer", "pauseProjectTimer", "resumeProjectTimer", "finishProjectTimer"]) {
+    const start = business.indexOf(`function ${action}`);
+    assert.notEqual(start, -1, `${action} must exist`);
+    assert.match(business.slice(start, start + 520), /ensureLiveTimerOwnership\(\)/);
+  }
+  const toggleStart = business.indexOf("function toggleProjectTimer");
+  assert.notEqual(toggleStart, -1, "toggleProjectTimer must exist");
+  const toggleBlock = business.slice(toggleStart, toggleStart + 620);
+  assert.match(toggleBlock, /resumeProjectTimer\(\)/);
+  assert.match(toggleBlock, /finishProjectTimer\(\)/);
+  assert.match(toggleBlock, /startProjectTimer\(projectId\)/);
 });
 
 test("shell warns about another tab and offers explicit takeover", async () => {

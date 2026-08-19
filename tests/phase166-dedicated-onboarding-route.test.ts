@@ -54,7 +54,7 @@ test("production smoke proves the initial redirect and completion route", async 
   const smoke = await read("scripts/production-browser-smoke.mjs");
   assert.match(smoke, /dedicated onboarding route/);
   assert.match(smoke, /\["\/onboarding", "\/onboarding\/"\]\.includes\(location\.pathname\)/);
-  assert.match(smoke, /\['\/today', '\/today\/'\]\.includes\(location\.pathname\)/);
+  assert.match(smoke, /\['\/employee\/today', '\/employee\/today\/'\]\.includes\(location\.pathname\)/);
 });
 
 test("Phase 166 documents dedicated onboarding and future onboarding growth", async () => {

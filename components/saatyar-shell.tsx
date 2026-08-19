@@ -84,7 +84,7 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
             <SkipLink />
             <main
               className={cn(
-                "dashboard-shell min-h-screen w-full min-w-0 overflow-x-clip bg-[var(--page)] p-2 pb-28 sm:p-3 sm:pb-28 xl:px-0 xl:pb-3 [&_label]:grid [&_label]:gap-[7px] [&_label]:text-[11px] [&_label]:font-semibold [&_label]:text-[var(--text-muted)] [&_button]:cursor-pointer [&_svg.lucide]:h-[18px] [&_svg.lucide]:w-[18px] [&_svg.lucide]:stroke-[1.85]",
+                "dashboard-shell min-h-screen w-full min-w-0 overflow-x-clip bg-[var(--page)] p-2 pb-28 max-[359px]:p-1 max-[359px]:pb-24 sm:p-3 sm:pb-28 xl:px-0 xl:pb-3 [&_label]:grid [&_label]:gap-[7px] [&_label]:text-[11px] [&_label]:font-semibold [&_label]:text-[var(--text-muted)] [&_button]:cursor-pointer [&_svg.lucide]:h-[18px] [&_svg.lucide]:w-[18px] [&_svg.lucide]:stroke-[1.85]",
               )}
               dir={direction}
             >
@@ -120,7 +120,7 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
                 role="main"
                 tabIndex={-1}
                 className={cn(
-                  "shell-main-offset mx-auto w-full min-w-0 max-w-[var(--shell-content-max)] px-1 pb-6 pt-4 sm:px-3 sm:pt-5 lg:px-5",
+                  "shell-main-offset mx-auto w-full min-w-0 max-w-[var(--shell-content-max)] px-1 pb-6 pt-4 max-[359px]:px-0.5 max-[359px]:pt-3 sm:px-3 sm:pt-5 lg:px-5",
                 )}
               >
                 <RouteMotionBoundary pathname={pathname}>{children}</RouteMotionBoundary>

@@ -39,11 +39,11 @@ export function TodayMetrics({ data, record, selectedDate, result, dailyTarget, 
   const income = isEmployee ? employeeIncome : isHybrid ? employeeIncome + projectIncome : projectIncome;
 
   return (
-    <section className="mb-4 grid grid-cols-4 gap-2.5 max-[1180px]:grid-cols-2 max-[620px]:grid-cols-1 [&>article]:min-h-[104px] [&>article]:shadow-[0_5px_16px_rgba(0,0,0,.03)]">
+    <section className="mb-4 grid grid-cols-4 gap-2.5 max-[1180px]:grid-cols-2 max-[620px]:grid-cols-1 max-[359px]:gap-2 [&>article]:min-h-[104px] max-[359px]:[&>article]:min-h-[88px] max-[359px]:[&>article]:p-3 [&>article]:shadow-[0_5px_16px_rgba(0,0,0,.03)]">
       <MetricCard icon={<Clock3 />} label={t("today.metrics.netWorked")} value={duration(liveResult.worked)} suffix={t("common.hour")} />
       <MetricCard icon={<Tag />} label={isEmployee ? t("today.metrics.calculable") : t("common.billable")} value={duration(isEmployee ? liveResult.credited : billableMinutes)} suffix={t("common.hour")} tone="amber" />
       <MetricCard icon={<WalletCards />} label={isEmployee ? t("today.metrics.salaryToday") : isHybrid ? t("today.metrics.hybridIncome") : t("today.metrics.projectIncome")} value={<PrivateMoney value={income} hidden={financialsHidden} />} suffix={t("common.currency.toman")} tone="green" />
-      <SurfaceCard as="article" className="dashboard-card flex min-h-[104px] items-center justify-center gap-4 p-4">
+      <SurfaceCard as="article" className="dashboard-card flex min-h-[104px] items-center justify-center gap-4 p-4 max-[359px]:min-h-[88px] max-[359px]:gap-3 max-[359px]:p-3">
         <ProgressRing value={progress} size="sm"><strong className="text-sm font-black">{hasTarget ? percent(progress) : "—"}</strong></ProgressRing>
         <div>
           <small className="block text-[10px] text-[var(--text-muted)]">{scheduledDayOff ? t("today.summary.scheduledOff") : hasTarget ? t("today.metrics.dailyTarget") : t("today.metrics.noTarget")}</small>

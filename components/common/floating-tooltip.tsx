@@ -12,11 +12,13 @@ export function FloatingTooltip({
   target,
   children,
   className,
+  activity = false,
 }: {
   id?: string;
   target: HTMLElement | null;
   children: ReactNode;
   className?: string;
+  activity?: boolean;
 }) {
   const tooltipRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState<Position>({ left: 0, top: 0, side: "top", ready: false });
@@ -56,6 +58,7 @@ export function FloatingTooltip({
       id={id}
       role="tooltip"
       data-floating-tooltip
+      data-activity-tooltip={activity ? "" : undefined}
       data-side={position.side}
       className={cn(
         "pointer-events-none fixed z-[2200] w-fit min-w-0 max-w-[min(260px,calc(100vw-24px))] overflow-hidden rounded-lg border border-[var(--dashboard-border)] bg-[var(--surface-glass)] px-2.5 py-2 text-start text-[10px] font-semibold leading-5 text-[var(--text)] shadow-[0_16px_42px_rgba(0,0,0,.24)] backdrop-blur-xl [overflow-wrap:anywhere]",

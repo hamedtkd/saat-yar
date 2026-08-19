@@ -97,8 +97,11 @@ test("loading skeletons follow the active Today or Month route instead of showin
   const routes = read("components/motion/route-loading-skeleton.tsx");
   assert.match(shell, /<AppLoadingState[\s\S]*pathname=\{pathname\}/);
   assert.match(loading, /<RouteLoadingSkeleton pathname=\{pathname\}/);
-  assert.match(routes, /data-loading-route="today"/);
+  assert.match(routes, /data-loading-route="employee-today"/);
+  assert.match(routes, /data-loading-route="freelancer-today"/);
   assert.match(routes, /data-loading-route="month"/);
+  assert.match(routes, /route === "\/employee\/today"/);
+  assert.match(routes, /route === "\/freelancer\/today"/);
   assert.match(routes, /route === "\/today"/);
   assert.match(routes, /route === "\/month"/);
   assert.match(routes, /min-h-\[124px\]/);

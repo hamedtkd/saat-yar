@@ -24,9 +24,11 @@ test("audited responsive modules use semantic theme surfaces", () => {
 test("modal overlays and chart colors use shared tokens", () => {
   const dateDialog = readFileSync("components/pickers/jalali-date-picker/date-picker-dialog.tsx", "utf8");
   const timeDialog = readFileSync("components/pickers/time-picker/time-picker-dialog.tsx", "utf8");
+  const pickerSurface = readFileSync("components/pickers/responsive-picker-surface.tsx", "utf8");
   const chart = readFileSync("components/pages/month/weekly-chart/weekly-chart-visual.tsx", "utf8");
-  assert.match(dateDialog, /var\(--overlay\)/);
-  assert.match(timeDialog, /var\(--overlay\)/);
+  assert.match(dateDialog, /<ResponsivePickerSurface/);
+  assert.match(timeDialog, /<ResponsivePickerSurface/);
+  assert.match(pickerSurface, /var\(--overlay\)/);
   assert.match(chart, /MONTH_CHART_THEME/);
 });
 

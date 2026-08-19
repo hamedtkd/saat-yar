@@ -4,13 +4,97 @@
 
 - [x] Phase 195 — OAuth Verification Readiness + GA4 + Public Help.
 - [x] Phase 196 — GA4 Runtime + Leave Intelligence Hardening.
-- [ ] Phase 197 — Tooltip System + Production Observability (در حال Gate؛ lint ref carry-over در Phase198 اصلاح شد).
-- [ ] **Phase 198 — Onboarding + Freelancer Workflow Redesign (فعال)**
+- [x] Phase 197 — Tooltip System + Production Observability.
+- [x] **Phase 198 — Onboarding + Freelancer Workflow Redesign**
   - بازطراحی Welcome/Step shell بر اساس reference جدید و اتصال شماره مراحل با خط progress.
   - ارتقای نرخ پروژه Freelancer با amount grouping، unit ساعتی/روزانه و معادل واضح.
   - حذف semantics ورود/خروج/ناهار از مسیر اصلی Freelancer Today.
   - یکپارچه‌سازی CTA زمان‌سنج Freelancer روی Project Timer و اصلاح Running/Stop state.
   - کاهش فضای خالی و اصلاح alignment کارت Focus/Timer.
+- [ ] **Phase 198.1 — Today Timer Experience Redesign (فعال)**
+  - [x] R2: بستن i18n/type regressionهای R1.
+  - [x] R2: اتصال Local Clock به Runtime Clock مشترک و حذف CTA تکراری Freelancer.
+  - [x] R2: بازگردانی Heatmap Tooltip browser-smoke contract.
+  - [x] Date/Time Picker foundation برای Manual Entry و مسیرهای Calendar/Edit.
+  - [x] R4: هم‌راستا کردن تست‌های تاریخی Accessibility/Theme با Responsive Picker Surface مشترک.
+  - [x] R4 Full Gate confirmed: 900/900 tests plus Production/Freelancer/Employee/Pairing browser gates and Vercel audit.
+  - [x] R5 source: visual timer redesign, wheel time picker, and shared DateTimePicker replacement for native datetime editing.
+  - [x] R5 Full Gate جای خود را به R6 Visual QA follow-up داد؛ R5 به‌دلیل UI/interaction رد شد و baseline commit نیست.
+  - [x] R6 source: Freelancer Work Session Controller با stateهای IDLE/RUNNING/PAUSED، Start/Pause/Resume/Finish و حذف کامل Analog/Local Clock از Hero.
+  - [x] R6 source: Activity Details دوپنله، Today summary/timeline و mini 7-day trend فقط از داده واقعی.
+  - [x] R6 source: DateTimePicker desktop روی body portal/fixed collision-safe و Time Wheel با mouse/pen drag علاوه بر touch/keyboard.
+  - [x] R6 Full Gate در Visual QA بعدی جای خود را به R7 داد؛ R6 به دلیل End edit/Timeline density/Recent Projects conflict/Trend readability هنوز baseline commit نیست.
+  - [x] R7 source: End DateTime edit برای TimeEntryهای تکمیل‌شده؛ live end همچنان فقط از Finish ثبت می‌شود تا state machine desync نشود.
+  - [x] R7 source: Timeline table با max-height و scroll داخلی/sticky header تا تعداد زیاد رکورد ارتفاع صفحه را منفجر نکند.
+  - [x] R7 source: Recent Projects هنگام session فعال یا paused دیگر Start متداخل نشان نمی‌دهد؛ پروژه جاری status می‌گیرد و بقیه قفل توضیح‌دار می‌شوند.
+  - [x] R7 source: Timer در display box compact قرار گرفت و mini trend هفت‌روزه به barهای روزانه با توضیح قابل‌فهم و tooltip دسترس‌پذیر تبدیل شد.
+  - [x] R7 Visual QA رد شد؛ timer box، trend card و Recent Projects هنوز با reference نهایی هم‌راستا نبودند و R7 baseline commit نیست.
+  - [x] R8 source: elapsed timer به سه tile مستقل ساعت/دقیقه/ثانیه با geometry ثابت و radius/tokenهای ساعت‌یار تبدیل شد.
+  - [x] R8 source: Timer Hero و Today Summary داخل یک Work Session Controller واحد ادغام شدند؛ nested card اضافی و radius ناهماهنگ حذف شد.
+  - [x] R8 source: 7-day trend داخل Today Summary و با همان chart theme صفحه Month رندر می‌شود؛ کارت مستقل و padding نامتناسب R7 حذف شد.
+  - [x] R8 source: Recent Projects برای Running/Paused/Blocked shrink-safe شد و status دیگر layout را عمودی نمی‌شکند.
+  - [x] R9 source: mobile density/minimal polish روی Timer Controller؛ checkpoint بصری و نه commit baseline.
+  - [x] R10 source: Project Timer به FlipClock موجود `components/ui` با digit box کوچک و animation reduced-motion-safe مهاجرت کرد؛ dependency جدیدی اضافه نشد.
+  - [x] R10 source: Today routeها به `/employee/today`، `/freelancer/today` و `/hybrid/today` تفکیک شدند؛ `/today` compatibility entry باقی ماند و پس از resolve شدن mode به route اختصاصی همان workspace هدایت می‌شود.
+  - [x] R10 source: loading/skeleton مستقل Employee/Freelancer و route-aware AppLoading اضافه شد؛ analytics/multi-tab همچنان logical Today واحد می‌مانند.
+  - [x] R16 Full Gate: 927/927 tests + production build + Production/Freelancer/Employee/Pairing browser smokes + release/Vercel audits سبز شد.
+  - [x] R17 source: responsive hardening اختصاصی <=359px برای Todayهای mode-specific، FlipClock/Header/BottomNav/Pickers/Skeletons و runtime smoke مستقیم 320×800.
+  - [ ] R17 Full Gate + final visual QA across 320/360/375/425px before commit.
+
+
+
+## Phase 198.1 R6 historical checkpoint
+
+- [x] R4 full gate remains the last dependency-backed green baseline: 900/900 tests plus production build and all browser gates.
+- [x] R5 visual QA was rejected; its analog-clock-heavy composition and picker interaction are not a commit baseline.
+- [x] R6 source: remove Analog Clock and Local Clock from the Freelancer centerpiece and reduce timer scale.
+- [x] R6 source: explicit IDLE/RUNNING/PAUSED controller with Start, Pause, Resume and Finish; paused time is excluded by closing/reopening normal TimeEntry segments.
+- [x] R6 source: paused controller metadata is browser-local and recoverable without changing AppData v20.
+- [x] R6 source: Current Activity panel follows the approved reference; Client/Project stay locked while active, Task/Description/Billable remain editable.
+- [x] R6 source: no Tags invented because the current Freelancer TimeEntry/Project contract has no tag field.
+- [x] R6 source: DateTimePicker desktop content is portaled to `document.body` with fixed positioning, viewport collision handling and z-index above app surfaces.
+- [x] R6 source: Time Wheel supports mouse/pen press-drag while retaining touch momentum and keyboard navigation.
+- [x] R6 source: Today summary, work/gap timeline and 7-day mini trend use real persisted time entries only.
+- [x] R6 source: no package, lockfile or schema change.
+- [x] R6 gate superseded by R7 before commit; do not use R6 as release baseline.
+- [x] R6 Visual QA produced the R7 follow-up issues; continue validation on R7.
+- [x] No commit was created from R6.
+
+
+## Phase 198.1 R7 current checkpoint
+
+- [x] End DateTimePicker برای TimeEntry تکمیل‌شده در Timeline فعال است؛ entry زنده عمداً End editor ندارد چون تعیین End معادل Finish است و باید همراه با session metadata انجام شود.
+- [x] تغییر Start/End نامعتبر که End <= Start شود reject می‌شود و Toast توضیحی می‌دهد.
+- [x] Timeline table در Desktop روی 360px و Mobile روی 320px سقف ارتفاع دارد، scroll داخلی و header sticky دارد.
+- [x] Recent Projects از projectTimerSession/activeEntry آگاه است: پروژه جاری Running/Paused badge می‌گیرد؛ پروژه‌های دیگر تا پایان session CTA Start ندارند.
+- [x] elapsed timer داخل display box کم‌ارتفاع و token-driven قرار گرفت؛ shared FlipClock تاریخی تغییر نکرد تا قرارداد Phase 179 نشکند.
+- [x] 7-day trend به seven-bar visualization با weekday label، visible hint، DescriptionTooltip و tooltip دقیق هر روز تبدیل شد.
+- [x] AppData v20، dependencyها و package-lock بدون تغییر.
+- [ ] Run full dependency-backed R7 gate.
+- [ ] Final visual QA: completed end edit, long Timeline scroll, active/paused Recent Projects, boxed timer, week-trend hover/focus on Desktop/Mobile.
+- [ ] Credential scan, commit and push only after Gate + Visual QA are green.
+
+## Phase 198.1 R8 current checkpoint
+
+- [x] Approved reference is authoritative for the Freelancer timer/activity module; no unrelated page redesign.
+- [x] Hour, minute and second values render in independent tiles with LTR numeric geometry inside RTL UI.
+- [x] IDLE/RUNNING/PAUSED retain the same controller geometry; only status, elapsed value and actions change.
+- [x] Today summary owns the 7-day chart; Month chart theme tokens and bar-chart language are reused instead of a new standalone card style.
+- [x] Recent Projects active/paused/busy states remain readable in a 300px aside without vertical status text.
+- [x] Timeline max-height/end-time editing/portal picker/mouse-drag wheel behavior from R6/R7 are preserved.
+- [x] AppData v20, package.json and package-lock.json remain unchanged.
+- [x] R8/R9 توسط Visual QA supersede شدند؛ commit baseline نیستند.
+
+## Phase 198.1 R10 current checkpoint
+
+- [x] Compact boxed FlipClock روی Project Timer با استفاده از `framer-motion` از قبل نصب‌شده.
+- [x] route ownership مستقل برای Employee/Freelancer/Hybrid Today؛ `/today` فقط compatibility entry است و به route mode-specific هدایت می‌شود.
+- [x] Freelancer و Employee loading skeleton ownership جدا.
+- [x] navigation/route guard/analytics/multi-tab semantics با mode-specific Today هماهنگ شدند.
+- [x] AppData v20 و package/lockfile بدون تغییر.
+- [ ] Full dependency-backed R10 gate.
+- [ ] Final visual QA روی 425px + desktop برای سه workspace.
+- [ ] Credential scan و commit فقط پس از Gate + Visual QA.
 
 ## Backlog محصول
 
@@ -365,4 +449,52 @@
 
 - [x] فاز ۱۹۵: OAuth Verification Readiness + GA4 Analytics؛ صفحات عمومی About/Privacy/Terms/Help، disclosure Google Calendar، Verification Kit و مهاجرت consent-safe از Plausible به GA4 بدون Schema/Dependency جدید.
 - [x] فاز ۱۹۶: GA4 Runtime + Leave Intelligence Hardening؛ ارسال واقعی GA4 روی Production، opt-out محلی، اتصال مرخصی ثبت‌شده به Month Intelligence/Recent 7 Days، تفکیک کار/مرخصی/کسری و اصلاح ترتیب نمودار هفتگی RTL.
-- [ ] فاز ۱۹۷: Tooltip System + Production Observability؛ یکپارچه‌سازی Tooltipهای توضیحی/Heatmap روی primitive مشترک portal-safe و viewport-aware، پوشش routeهای عمومی جدید در Production Audit و بستن diagnostics اعتمادپذیر بعد از 2.5.0.
+- [x] فاز ۱۹۷: Tooltip System + Production Observability؛ یکپارچه‌سازی Tooltipهای توضیحی/Heatmap روی primitive مشترک portal-safe و viewport-aware، پوشش routeهای عمومی جدید در Production Audit و بستن diagnostics اعتمادپذیر بعد از 2.5.0.
+- [x] فاز ۱۹۸: Onboarding + Freelancer Workflow Redesign؛ بازطراحی First-run، نرخ پروژه ساعتی/روزانه و جداسازی Project Timer از Attendance در فضای Freelancer.
+- [x] فاز ۱۹۸.۱ R2: Today Timer Stabilization؛ بستن regressionهای i18n/type/tooltip، اتصال Local Clock به Runtime Clock مشترک و حذف CTA تکراری Freelancer. Gate کامل محیط توسعه اصلی با ۸۹۸/۸۹۸ تست، Build استاتیک و Browser Smokeهای Production/Freelancer/Employee/Pairing سبز شد.
+- [x] فاز ۱۹۸.۱ R3: Date/Time Picker Foundation؛ Surface مشترک Responsive برای Date/Time با Popover دسکتاپ و Drawer موبایل زیر ۸۰۰px، SSR-safe presentation store و modal focus/scroll فقط روی Drawer؛ بدون Schema/Dependency جدید.
+- [x] فاز ۱۹۸.۱ R4: Gate Contract Hotfix؛ اصلاح دو تست تاریخی source-coupled برای دنبال‌کردن delegation به ResponsivePickerSurface و مالکیت مشترک Accessibility/Overlay، بدون تغییر Product code یا داده.
+- [x] فاز ۱۹۸.۱ R11: Gate Hotfix؛ حذف `Date.now()` از renderهای Timer/Summary، تثبیت dependency recovery و پاک‌سازی خودکار `project-clock-face.tsx` باقی‌مانده از Revisionهای قبلی.
+- [x] فاز ۱۹۸.۱ R12: Full Test Gate Contract Hotfix؛ به‌روزرسانی قراردادهای تاریخی route برای Todayهای workspace-specific، رفع import alias تست مستقیم Time Picker و حفظ ownership guard روی Start/Pause/Resume/Finish پروژه بدون تغییر Schema/Dependency.
+- [ ] فاز ۱۹۸.۱ Final Visual QA: بررسی Today و Pickerها در Freelancer/Employee/Hybrid، تم روشن/تاریک، فارسی RTL/انگلیسی LTR و Mobile/Desktop پیش از Commit.
+- [ ] فاز ۱۹۹: Month Intelligence v2؛ explainability مانده، drill-down روزها، work/leave/overtime/deficit و anomaly detection.
+
+
+## Phase 198.1 R13 current checkpoint
+
+- [x] Hard Reload lock قدیمی همان تب را در pagehide آزاد می‌کند و Resume به takeover اشتباه نیاز ندارد.
+- [x] release فقط روی lock متعلق به همان tabId انجام می‌شود و lock تب دیگر دست‌نخورده می‌ماند.
+- [ ] Full Browser Gate روی R13 در محیط اصلی توسعه.
+## Phase 198.1 R14 current checkpoint
+
+- [x] Resume timer elapsed از persisted `segmentStartedAt` استفاده می‌کند و در render transition به activeEntry قدیمی وابسته نیست.
+- [x] Shared Runtime Clock در طول Paused session گرم می‌ماند ولی elapsed domain در Pause ثابت است.
+- [x] Freelancer Browser Smoke تغییر واقعی timer بعد Resume را با wait condition بررسی می‌کند، نه fixed sleep.
+- [ ] Full Browser Gate روی R14 در محیط اصلی توسعه.
+## Phase 198.1 R15 current checkpoint
+
+- [x] R14 Full Gate تا مرحله ESLint رسید و تنها یک warning بدون استفاده در smoke harness مانع Build تازه شد.
+- [x] R15 warning متغیر `resumedElapsed` را حذف می‌کند.
+- [x] Browser input helper برای Expense/Invoice، focus و native React-compatible setter را در یک transaction انجام می‌دهد تا rerender بین دو CDP call فوکوس را از بین نبرد.
+- [x] Timer flow واقعی `Pause → Reload → Resume → Finish` در Browser Smoke محیط اصلی سبز شد.
+- [x] R15 failure بعدی به false negative مقایسه `125000` با نمایش localized برابر `۱۲۵۰۰۰` محدود شد.
+
+## Phase 198.1 R16 current checkpoint
+
+- [x] Browser input verification ارقام فارسی/عربی NumberField را فقط در صورت برابری عددی semantic می‌پذیرد.
+- [x] متن عادی exact باقی می‌ماند و مقدار عددی متفاوت fail می‌شود.
+- [x] قرارداد native setter + React InputEvent تاریخی حفظ شده است.
+- [x] Full dependency-backed Gate روی R16 در محیط اصلی توسعه: 927/927 و همه Browser Gateها سبز.
+- [x] Freelancer Browser Smoke روی Build تازه R16 کامل سبز شد.
+- [ ] Final Visual QA قبل از Commit.
+
+## Phase 198.1 R17 current checkpoint
+
+- [x] Tiny-mobile density layer برای viewportهای <=359px بدون تغییر عمدی layout پذیرفته‌شده 375/425px.
+- [x] Freelancer Timer/Activity/Today Summary/Timeline/Recent Projects در 320px shrink-safe و بدون CTA overflow.
+- [x] Employee Today editor و route-aware loading skeleton برای 320px فشرده شد.
+- [x] Header controls، Workspace/Profile controls و Mobile Bottom Nav در 320px fit می‌شوند و safe-area حفظ می‌شود.
+- [x] DateTime/Jalali/Time Wheel drawer surfaces برای 320px compact شدند.
+- [x] Runtime Browser Smoke برای `/freelancer/today` و `/employee/today` روی viewport 320×800 no-horizontal-overflow check دارد.
+- [ ] Full dependency-backed R17 Gate در محیط اصلی توسعه.
+- [ ] Visual QA روی 320/360/375/425px در Running/Paused و Picker states؛ Commit فقط بعد از سبز شدن هر دو.

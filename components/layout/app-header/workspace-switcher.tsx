@@ -19,7 +19,7 @@ export function WorkspaceSwitcher({ mode, onChange }: { mode: Mode; onChange: (m
           headerControlShell,
           "w-auto min-w-[132px] justify-start gap-2 py-0 ps-2.5 pe-9 text-xs font-extrabold",
           "max-[520px]:min-w-0 max-[520px]:max-w-[132px] max-[520px]:flex-1 max-[520px]:ps-2 max-[520px]:text-[10px]",
-          "max-[380px]:size-11 max-[380px]:min-w-11 max-[380px]:justify-center max-[380px]:px-0 max-[380px]:[&>svg]:hidden",
+          "max-[380px]:size-11 max-[380px]:min-w-11 max-[380px]:justify-center max-[380px]:px-0 max-[359px]:size-10 max-[359px]:min-w-10 max-[380px]:[&>svg]:hidden",
           "[&>svg]:end-2.5",
         )}
       >
@@ -28,7 +28,7 @@ export function WorkspaceSwitcher({ mode, onChange }: { mode: Mode; onChange: (m
         </span>
         <span className="min-w-0 max-[380px]:hidden"><SelectValue /></span>
       </SelectTrigger>
-      <SelectContent className="min-w-[250px]">
+      <SelectContent className="min-w-[250px] max-[359px]:min-w-[calc(100vw-20px)]">
         <div className="mx-1 mb-1 grid gap-1 rounded-lg bg-[var(--surface-2)] px-2.5 py-2 text-[9px] leading-5 text-[var(--text-muted)]">
           <span><b className="text-[var(--text)]">{t("mode.employee")}:</b> {t("mode.employeeDescription")}</span>
           <span><b className="text-[var(--text)]">{t("mode.freelancer")}:</b> {t("mode.freelancerDescription")}</span>

@@ -1,6 +1,7 @@
 import type React from "react";
 import type { ReturnTypeCalc } from "@/lib/type-helpers";
 import type { ActivityKind, ActivitySegment, AppData, BreakItem, ClientDraft, ProjectDraft, Tab, TimeEntry, TimerDraft, WorkRecord, WorkRecordPatch } from "@/lib/types";
+import type { ProjectTimerSession } from "@/lib/project-timer-session";
 
 export type TodayPageProps = {
   data: AppData;
@@ -12,6 +13,7 @@ export type TodayPageProps = {
   dailyTarget: number;
   suggestedExit: string;
   activeEntry?: TimeEntry;
+  projectTimerSession: ProjectTimerSession | null;
   activeBreak?: BreakItem;
   activeActivitySegment?: ActivitySegment;
   lunchRunning: boolean;
@@ -36,6 +38,11 @@ export type TodayPageProps = {
   startActivitySegment: (kind: ActivityKind, projectId?: string) => void;
   stopActivitySegment: () => void;
   toggleProjectTimer: (projectId?: string) => void;
+  startProjectTimer: (projectId?: string) => void;
+  pauseProjectTimer: () => void;
+  resumeProjectTimer: () => void;
+  finishProjectTimer: () => void;
+  updateProjectTimerDetails: (patch: Partial<Pick<TimeEntry, "task" | "note" | "billable">>) => void;
   createClient: (draft: ClientDraft) => string | undefined;
   createProject: (draft: ProjectDraft) => string | undefined;
   editingEntry: string;

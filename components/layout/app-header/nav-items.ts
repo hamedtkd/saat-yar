@@ -2,6 +2,7 @@ import { BarChart3, CalendarDays, CircleHelp, Folder, LayoutDashboard, ReceiptTe
 import type { LucideIcon } from "lucide-react";
 import type { MessageKey } from "@/lib/i18n";
 import type { Mode, Tab } from "@/lib/types";
+import { getPathTab, getTodayHref } from "@/lib/navigation";
 
 type NavItem = {
   id: Tab;
@@ -30,11 +31,13 @@ const mobilePrimaryIds: Record<Mode, string[]> = {
 };
 
 export function getVisibleNavItems(mode: Mode) {
-  return appNavItems.filter((item) => {
-    if (mode === "employee") return !["clients", "projects", "invoices"].includes(item.id);
-    if (mode === "freelancer") return !["month", "leave"].includes(item.id);
-    return true;
-  });
+  return appNavItems
+    .filter((item) => {
+      if (mode === "employee") return !["clients", "projects", "invoices"].includes(item.id);
+      if (mode === "freelancer") return !["month", "leave"].includes(item.id);
+      return true;
+    })
+    .map((item) => item.id === "today" ? { ...item, href: getTodayHref(mode) } : item);
 }
 
 export function getMobilePrimaryNavItems(mode: Mode) {
@@ -47,5 +50,6 @@ export function getRouteNavItem(pathname: string) {
   const normalized = pathname.replace(/\/+$/, "") || "/";
   if (normalized === settingsNavItem.href || normalized.startsWith(`${settingsNavItem.href}/`)) return settingsNavItem;
   if (normalized === aboutNavItem.href) return aboutNavItem;
-  return appNavItems.find((item) => item.href === normalized) ?? appNavItems[0];
+  const tab = getPathTab(normalized);
+  return appNavItems.find((item) => item.id === tab) ?? appNavItems[0];
 }

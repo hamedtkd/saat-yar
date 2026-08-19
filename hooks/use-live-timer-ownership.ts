@@ -5,7 +5,7 @@ import { useLocale } from "@/components/i18n/locale-provider";
 import { createTabId } from "@/lib/multi-tab-sync";
 import {
   createLiveTimerLock, describeTimerDevice, isOwnedByAnotherTab, LIVE_TIMER_CHANNEL,
-  LIVE_TIMER_HEARTBEAT_MS, LIVE_TIMER_LOCK_KEY, parseLiveTimerLock, type LiveTimerLock,
+  LIVE_TIMER_HEARTBEAT_MS, LIVE_TIMER_LOCK_KEY, parseLiveTimerLock, releaseOwnedLiveTimerLock, type LiveTimerLock,
 } from "@/lib/live-timer-lock";
 
 export function useLiveTimerOwnership(active: boolean) {
@@ -39,9 +39,7 @@ export function useLiveTimerOwnership(active: boolean) {
   }, [publish]);
 
   const releaseLock = useCallback(() => {
-    const lock = parseLiveTimerLock(window.localStorage.getItem(LIVE_TIMER_LOCK_KEY));
-    if (lock?.tabId !== tabIdRef.current) return;
-    window.localStorage.removeItem(LIVE_TIMER_LOCK_KEY);
+    if (!releaseOwnedLiveTimerLock(window.localStorage, tabIdRef.current)) return;
     channelRef.current?.postMessage({ releasedBy: tabIdRef.current });
   }, []);
 
@@ -63,6 +61,20 @@ export function useLiveTimerOwnership(active: boolean) {
     refresh();
     return () => window.removeEventListener("storage", handleStorage);
   }, [refresh]);
+
+  useEffect(() => {
+    const handlePageHide = () => releaseLock();
+    const handlePageShow = () => {
+      if (active) ensureOwnership();
+      else refresh();
+    };
+    window.addEventListener("pagehide", handlePageHide);
+    window.addEventListener("pageshow", handlePageShow);
+    return () => {
+      window.removeEventListener("pagehide", handlePageHide);
+      window.removeEventListener("pageshow", handlePageShow);
+    };
+  }, [active, ensureOwnership, refresh, releaseLock]);
 
   useEffect(() => {
     if (!active) {

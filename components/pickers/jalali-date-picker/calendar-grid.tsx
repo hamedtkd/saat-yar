@@ -37,17 +37,17 @@ export function CalendarGrid({
 }: CalendarGridProps) {
   return (
     <>
-      <div className="grid grid-cols-7 gap-1.5">
+      <div className="grid grid-cols-7 gap-1.5 max-[359px]:gap-1">
         {WEEK_DAY_KEYS.map((key) => (
           <span
             key={key}
-            className="py-2 text-center text-[10px] font-bold text-[var(--text-muted)]"
+            className="py-2 text-center text-[10px] font-bold text-[var(--text-muted)] max-[359px]:py-1.5 max-[359px]:text-[9px]"
           >
             {translate(locale, key)}
           </span>
         ))}
       </div>
-      <div className="mt-1 grid grid-cols-7 gap-1.5">
+      <div className="mt-1 grid grid-cols-7 gap-1.5 max-[359px]:gap-1">
         {cells.map((cell) => (
           <CalendarDay
             key={cell.key}

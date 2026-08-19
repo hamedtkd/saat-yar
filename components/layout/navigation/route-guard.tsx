@@ -6,6 +6,8 @@ import {
   getFirstAllowedTab,
   getPathTab,
   getTabHref,
+  getTodayHref,
+  getTodayRouteMode,
   isPublicRoute,
   isSupplementalRoute,
   isTabAllowed,
@@ -32,7 +34,7 @@ export function RouteGuard({ mode, pathname, ready, onboarded }: RouteGuardProps
 
     const normalized = normalizePathname(pathname);
     const currentTab = getPathTab(normalized);
-    const fallback = getTabHref(getFirstAllowedTab(mode));
+    const fallback = getTabHref(getFirstAllowedTab(mode), mode);
     const onboardingReentry = isOnboardingReentry(window.localStorage);
 
     if (isPublicRoute(normalized)) return;
@@ -54,14 +56,23 @@ export function RouteGuard({ mode, pathname, ready, onboarded }: RouteGuardProps
         router.replace(fallback);
         return;
       }
-      window.localStorage.setItem(LAST_ROUTE_STORAGE_KEY, getTabHref(currentTab));
+      const todayRouteMode = currentTab === "today" ? getTodayRouteMode(normalized) : null;
+      if (currentTab === "today" && normalized === "/today") {
+        router.replace(getTodayHref(mode));
+        return;
+      }
+      if (todayRouteMode && todayRouteMode !== mode) {
+        router.replace(getTodayHref(mode));
+        return;
+      }
+      window.localStorage.setItem(LAST_ROUTE_STORAGE_KEY, getTabHref(currentTab, mode));
       return;
     }
 
     if (normalized === "/") {
       const storedPath = window.localStorage.getItem(LAST_ROUTE_STORAGE_KEY) ?? "";
       const storedTab = getPathTab(storedPath);
-      router.replace(storedTab && isTabAllowed(mode, storedTab) ? getTabHref(storedTab) : fallback);
+      router.replace(storedTab && isTabAllowed(mode, storedTab) ? getTabHref(storedTab, mode) : fallback);
       return;
     }
 

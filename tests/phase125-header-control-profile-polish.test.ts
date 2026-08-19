@@ -48,7 +48,7 @@ test("profile trigger reads as a real profile with a round avatar and local iden
 
 test("sidebar brand is a guarded shortcut back to today", async () => {
   const source = await read("components/layout/navigation/sidebar-nav.tsx");
-  assert.match(source, /<GuardedLink[\s\S]*href="\/today"[\s\S]*aria-label=\{t\("nav\.goToday"\)\}[\s\S]*<Brand/);
+  assert.match(source, /<GuardedLink[\s\S]*href=\{getTodayHref\(mode\)\}[\s\S]*aria-label=\{t\("nav\.goToday"\)\}[\s\S]*<Brand/);
 });
 
 test("phase 125 stays inside architecture limits and is wired into quality", async () => {

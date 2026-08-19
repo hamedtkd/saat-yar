@@ -378,7 +378,7 @@ async function seedEmployeeData(client) {
       request.onerror = () => reject(request.error);
     });
     db.close();
-    localStorage.setItem("saatyar:last-route", "/today");
+    localStorage.setItem("saatyar:last-route", "/employee/today");
     const payload = current?.format === "saatyar-app-data" ? current.data : current;
     const weekdays = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
     const weekday = weekdays[new Date().getDay()];
@@ -459,7 +459,7 @@ async function main() {
     const date = await currentDateKey(client);
 
     await client.call("Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
-    await navigate(client, `${server.origin}/today`, "یادداشت روز کاری");
+    await navigate(client, `${server.origin}/employee/today`, "یادداشت روز کاری");
 
     await startEmployeeDay(client);
     await waitFor(client, `document.body?.innerText.includes("پایان روز")`, "employee day start");
@@ -519,7 +519,7 @@ async function main() {
     console.log(`✓ Employee workflow is durable in IndexedDB (${completedPersistence.storageShape}, schema v${completedPersistence.schemaVersion ?? "legacy"})`);
 
     await client.call("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true, screenWidth: 390, screenHeight: 844 });
-    await navigate(client, `${server.origin}/today`, "یادداشت روز کاری");
+    await navigate(client, `${server.origin}/employee/today`, "یادداشت روز کاری");
     await waitFor(client, `(() => {
       const note = document.querySelector('textarea[placeholder*="کارهای انجام‌شده"]');
       return note instanceof HTMLTextAreaElement
@@ -548,6 +548,29 @@ async function main() {
     console.log("✓ Mobile completed-day edit actions remain visible without colliding with bottom navigation");
     await clickButton(client, "انصراف", true);
     await waitFor(client, `document.body?.innerText.includes("ثبت این روز کامل شده است")`, "completed-day mobile cancel");
+
+    await client.call("Emulation.setDeviceMetricsOverride", { width: 320, height: 800, deviceScaleFactor: 1, mobile: true, screenWidth: 320, screenHeight: 800 });
+    await navigate(client, `${server.origin}/employee/today`, "یادداشت روز کاری");
+    await waitFor(client, `window.innerWidth === 320 && Boolean(document.querySelector('[data-mobile-bottom-nav]'))`, "320px employee Today render");
+    const compactEmployeeContract = await evaluate(client, `(() => {
+      const viewportWidth = window.innerWidth;
+      const nav = document.querySelector('[data-mobile-bottom-nav]');
+      const navRect = nav instanceof HTMLElement ? nav.getBoundingClientRect() : null;
+      const focusCard = document.querySelector('[data-completed-day-editor]');
+      const focusRect = focusCard instanceof HTMLElement ? focusCard.getBoundingClientRect() : null;
+      return {
+        pageFits: document.documentElement.scrollWidth <= viewportWidth + 2,
+        navFits: Boolean(navRect && navRect.left >= -1 && navRect.right <= viewportWidth + 1),
+        focusFits: Boolean(focusRect && focusRect.left >= -1 && focusRect.right <= viewportWidth + 1),
+        viewportWidth,
+        nav: navRect ? { left: navRect.left, right: navRect.right, width: navRect.width } : null,
+        focus: focusRect ? { left: focusRect.left, right: focusRect.right, width: focusRect.width } : null,
+      };
+    })()`);
+    if (!compactEmployeeContract?.pageFits || !compactEmployeeContract.navFits || !compactEmployeeContract.focusFits) {
+      throw new Error(`320px employee Today overflowed viewport: ${JSON.stringify(compactEmployeeContract)}`);
+    }
+    console.log("✓ Employee Today remains usable without horizontal overflow at 320px");
 
     if (client.runtimeErrors.length) throw new Error(`Browser runtime errors:\n${client.runtimeErrors.join("\n")}`);
     console.log("Employee browser UX smoke passed.");

@@ -75,7 +75,7 @@ export function TodayPage(props: TodayPageProps) {
         />
       )}
       {holiday.isHoliday && (
-        <div className="mb-5 flex items-center justify-between gap-3 rounded-[var(--card-radius)] border border-red-500/20 bg-red-500/10 px-4 py-3 text-red-500">
+        <div className="mb-5 flex items-center justify-between gap-3 rounded-[var(--card-radius)] border border-red-500/20 bg-red-500/10 px-4 py-3 text-red-500 max-[359px]:grid max-[359px]:gap-2 max-[359px]:px-3">
           <div className="grid gap-0.5">
             <strong className="text-xs font-extrabold">{t("today.holiday.title")}</strong>
             <span className="text-[10px]">{locale === "fa-IR" ? holiday.title : t("today.holiday.title")}</span>
@@ -84,7 +84,7 @@ export function TodayPage(props: TodayPageProps) {
         </div>
       )}
       {scheduledDayOff && !holiday.isHoliday && (
-        <div className="mb-5 flex items-center justify-between gap-3 rounded-[var(--card-radius)] border border-[color-mix(in_srgb,var(--warning)_30%,var(--border))] bg-[var(--warning-soft)] px-4 py-3 text-[var(--warning)]">
+        <div className="mb-5 flex items-center justify-between gap-3 rounded-[var(--card-radius)] border border-[color-mix(in_srgb,var(--warning)_30%,var(--border))] bg-[var(--warning-soft)] px-4 py-3 text-[var(--warning)] max-[359px]:grid max-[359px]:gap-2 max-[359px]:px-3">
           <div className="flex items-start gap-3">
             <CalendarOff aria-hidden="true" className="mt-0.5 size-5 shrink-0" />
             <div className="grid gap-0.5">
@@ -92,7 +92,7 @@ export function TodayPage(props: TodayPageProps) {
               <span className="text-[10px] text-[var(--text-muted)]">{t("today.scheduleOff.description")}</span>
             </div>
           </div>
-          <span className="shrink-0 rounded-full border border-[color-mix(in_srgb,var(--warning)_28%,var(--border))] bg-[var(--surface-1)] px-2.5 py-1 text-[9px] font-bold">{t("today.scheduleOff.zeroTarget")}</span>
+          <span className="shrink-0 rounded-full border border-[color-mix(in_srgb,var(--warning)_28%,var(--border))] max-[359px]:justify-self-start bg-[var(--surface-1)] px-2.5 py-1 text-[9px] font-bold">{t("today.scheduleOff.zeroTarget")}</span>
         </div>
       )}
       {!isFreelancer && <RecordHealthBanner record={props.record} onReset={props.resetRecord} />}
@@ -122,7 +122,7 @@ export function TodayPage(props: TodayPageProps) {
         scheduledDayOff={scheduledDayOff}
       />
       {!isFreelancer && props.record.start && !props.record.end && props.todayCalc.worked > 4 * 60 && (
-        <div className={cn("mt-5 flex items-center gap-3 rounded-[var(--card-radius)] border border-amber-500/25 bg-amber-500/10 px-5 py-4 text-amber-500 [&>svg]:size-7 [&>div]:grid [&>div]:flex-1 [&_span]:text-[10px] [&_span]:text-[var(--text-muted)] print:hidden")}>
+        <div className={cn("mt-5 flex items-center gap-3 rounded-[var(--card-radius)] max-[359px]:grid max-[359px]:gap-2 border border-amber-500/25 bg-amber-500/10 px-5 py-4 text-amber-500 [&>svg]:size-7 [&>div]:grid [&>div]:flex-1 [&_span]:text-[10px] [&_span]:text-[var(--text-muted)] print:hidden")}>
           <AlertTriangle />
           <div>
             <strong>{t("today.longSession.title")}</strong>

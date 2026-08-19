@@ -36,7 +36,7 @@ export function LocaleRuntime() {
     root.dataset.locale = locale;
     root.dataset.calendar = calendar;
 
-    const routeKey = pathname.startsWith("/settings/") ? "nav.settings" : routeTitleKeys[pathname];
+    const routeKey = pathname.endsWith("/today") ? "nav.today" : pathname.startsWith("/settings/") ? "nav.settings" : routeTitleKeys[pathname];
     const routeTitle = routeKey
       ? t(routeKey)
       : pathname === "/import"

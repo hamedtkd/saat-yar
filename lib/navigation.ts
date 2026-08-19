@@ -1,5 +1,11 @@
 import type { Mode, Tab } from "./types.ts";
 
+export const TODAY_ROUTES: Record<Mode, string> = {
+  employee: "/employee/today",
+  freelancer: "/freelancer/today",
+  hybrid: "/hybrid/today",
+};
+
 export const TAB_ROUTES: Record<Tab, string> = {
   today: "/today",
   month: "/month",
@@ -34,13 +40,29 @@ export function normalizePathname(pathname: string) {
   return pathname.split("?")[0].split("#")[0].replace(/\/+$/, "") || "/";
 }
 
+export function getTodayHref(mode: Mode) {
+  return TODAY_ROUTES[mode];
+}
+
+export function getTodayRouteMode(pathname: string): Mode | null {
+  const normalized = normalizePathname(pathname);
+  return (Object.keys(TODAY_ROUTES) as Mode[]).find((mode) => TODAY_ROUTES[mode] === normalized) ?? null;
+}
+
+export function isTodayPath(pathname: string) {
+  const normalized = normalizePathname(pathname);
+  return normalized === TAB_ROUTES.today || getTodayRouteMode(normalized) !== null;
+}
+
 export function getPathTab(pathname: string): Tab | null {
   const normalized = normalizePathname(pathname);
   if (normalized === "/settings" || normalized.startsWith("/settings/")) return "settings";
+  if (isTodayPath(normalized)) return "today";
   return (Object.keys(TAB_ROUTES) as Tab[]).find((tab) => TAB_ROUTES[tab] === normalized) ?? null;
 }
 
-export function getTabHref(tab: Tab) {
+export function getTabHref(tab: Tab, mode?: Mode) {
+  if (tab === "today" && mode) return getTodayHref(mode);
   return TAB_ROUTES[tab];
 }
 

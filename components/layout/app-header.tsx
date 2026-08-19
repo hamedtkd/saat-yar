@@ -5,6 +5,7 @@ import { useUnsavedNavigation } from "@/components/layout/navigation/unsaved-nav
 import { BrandMark } from "@/components/common/brand-mark";
 import { cn } from "@/lib/cn";
 import type { AppearanceSettings, Mode, ThemeMode } from "@/lib/types";
+import { getPathTab, getTodayHref } from "@/lib/navigation";
 import { HeaderActions } from "./app-header/header-actions";
 import { getRouteNavItem } from "./app-header/nav-items";
 import { ProfileMenu } from "./app-header/profile-menu";
@@ -32,13 +33,15 @@ export function AppHeader(props: Props) {
   const RouteIcon = routeItem.icon;
 
   const changeMode = (mode: Mode) => {
+    const currentTab = getPathTab(currentPath);
     const needsRedirect =
+      currentTab === "today" ||
       (mode === "employee" && ["/clients", "/projects", "/invoices"].includes(currentPath)) ||
       (mode === "freelancer" && ["/month", "/leave"].includes(currentPath));
     if (!needsRedirect) return props.onModeChange(mode);
     requestNavigation(() => {
       props.onModeChange(mode);
-      router.push("/today");
+      router.push(getTodayHref(mode));
     });
   };
 
@@ -50,7 +53,7 @@ export function AppHeader(props: Props) {
     <header
       className={cn(
         "shell-main-offset sticky top-2 z-50 mx-auto flex w-full min-w-0 min-h-[62px] max-w-[var(--shell-content-max)] items-center justify-between gap-3 rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] px-3.5 py-2 shadow-[0_6px_20px_rgba(0,0,0,.035)] backdrop-blur-xl sm:px-4",
-        "max-[640px]:min-h-[58px] max-[640px]:rounded-[18px] max-[640px]:px-2.5 max-[640px]:py-1.5 max-[520px]:gap-1.5",
+        "max-[640px]:min-h-[58px] max-[640px]:rounded-[18px] max-[640px]:px-2.5 max-[640px]:py-1.5 max-[520px]:gap-1.5 max-[359px]:min-h-[54px] max-[359px]:rounded-[16px] max-[359px]:px-1.5 max-[359px]:py-1 max-[359px]:gap-1",
       )}
     >
       <div className="flex min-w-0 items-center gap-2.5 max-[520px]:hidden">
@@ -63,9 +66,9 @@ export function AppHeader(props: Props) {
         </div>
       </div>
 
-      <div className="hidden shrink-0 max-[520px]:block"><BrandMark size={34} animated={false} label={t("app.logoLabel")} /></div>
+      <div className="hidden shrink-0 max-[520px]:block max-[359px]:scale-90"><BrandMark size={34} animated={false} label={t("app.logoLabel")} /></div>
 
-      <div className="flex min-w-0 items-center gap-1.5 sm:gap-2 max-[520px]:flex-1 max-[520px]:justify-end">
+      <div className="flex min-w-0 items-center gap-1.5 sm:gap-2 max-[520px]:flex-1 max-[520px]:justify-end max-[359px]:gap-0.5">
         <HeaderActions
           mode={props.mode}
           saveState={props.saveState}

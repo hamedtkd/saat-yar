@@ -139,6 +139,7 @@ export function getAnalyticsRoute(pathname: string): AnalyticsRoute | null {
     "/clients": "clients", "/projects": "projects", "/invoices": "invoices", "/import": "import", "/settings": "settings",
     "/about": "about", "/help": "help", "/privacy": "privacy", "/terms": "terms",
   };
+  if (route.endsWith("/today")) return "today";
   if (route.startsWith("/settings/")) return "settings";
   return allowed[route] ?? null;
 }

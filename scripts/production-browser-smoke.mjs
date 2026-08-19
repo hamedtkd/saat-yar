@@ -564,7 +564,7 @@ export async function runProductionBrowserSmoke() {
     })()`, "onboarding Import persistence without premature completion");
     console.log("✓ Personalized onboarding keeps employee setup relevant and imports existing data before completion");
     await clickButton(client, "شروع ساعت‌یار");
-    await waitFor(client, "['/today', '/today/'].includes(location.pathname) && !document.body?.innerText.includes('شروع ساعت‌یار')", "today route after onboarding");
+    await waitFor(client, "['/employee/today', '/employee/today/'].includes(location.pathname) && !document.body?.innerText.includes('شروع ساعت‌یار')", "employee Today route after onboarding");
     await new Promise((resolveWait) => setTimeout(resolveWait, 700));
 
     const onboardingSettings = await readStoredSettings(client);
@@ -587,23 +587,23 @@ export async function runProductionBrowserSmoke() {
     console.log("✓ Today exposes activity-segment tracking without requiring a separate route");
     await evaluate(client, `document.querySelector('[data-first-run-dismiss]')?.click()`);
 
-    await waitFor(client, `Boolean(document.querySelector('[data-route-motion][data-route-motion-path="/today"]'))`, "Today route motion boundary");
+    await waitFor(client, `Boolean(document.querySelector('[data-route-motion][data-route-motion-path="/employee/today"]'))`, "Employee Today route motion boundary");
     await client.call("Emulation.setEmulatedMedia", { media: "", features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
     const reducedMotionReload = waitForEvent(client, "Page.loadEventFired", "reduced-motion route reload");
     await client.call("Page.reload", { ignoreCache: false });
     await reducedMotionReload;
-    await waitFor(client, `matchMedia('(prefers-reduced-motion: reduce)').matches && document.querySelector('[data-route-motion][data-route-motion-path="/today"]')?.getAttribute('data-route-motion-reduced') === 'true'`, "reduced-motion route contract");
+    await waitFor(client, `matchMedia('(prefers-reduced-motion: reduce)').matches && document.querySelector('[data-route-motion][data-route-motion-path="/employee/today"]')?.getAttribute('data-route-motion-reduced') === 'true'`, "reduced-motion route contract");
     await client.call("Emulation.setEmulatedMedia", { media: "", features: [{ name: "prefers-reduced-motion", value: "no-preference" }] });
     const restoredMotionReload = waitForEvent(client, "Page.loadEventFired", "restored route motion reload");
     await client.call("Page.reload", { ignoreCache: false });
     await restoredMotionReload;
-    await waitFor(client, `!matchMedia('(prefers-reduced-motion: reduce)').matches && document.querySelector('[data-route-motion][data-route-motion-path="/today"]')?.getAttribute('data-route-motion-reduced') === 'false'`, "restored route motion preference");
+    await waitFor(client, `!matchMedia('(prefers-reduced-motion: reduce)').matches && document.querySelector('[data-route-motion][data-route-motion-path="/employee/today"]')?.getAttribute('data-route-motion-reduced') === 'false'`, "restored route motion preference");
     const openedMonthThroughAppNav = await evaluate(client, `(() => { const link = Array.from(document.querySelectorAll('a[href]')).find((candidate) => { if (!(candidate instanceof HTMLAnchorElement)) return false; const pathname = new URL(candidate.href, location.href).pathname; const normalizedPathname = pathname.length > 1 && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname; return normalizedPathname === '/month'; }); if (!(link instanceof HTMLAnchorElement)) return false; link.click(); return true; })()`);
     if (!openedMonthThroughAppNav) throw new Error("In-app Month navigation link was unavailable for route motion smoke.");
     await waitFor(client, `['/month', '/month/'].includes(location.pathname) && document.querySelector('[data-route-motion]')?.getAttribute('data-route-motion-path') === '/month'`, "state-driven Month route motion");
-    const returnedTodayThroughAppNav = await evaluate(client, `(() => { const link = Array.from(document.querySelectorAll('a[href]')).find((candidate) => { if (!(candidate instanceof HTMLAnchorElement)) return false; const pathname = new URL(candidate.href, location.href).pathname; const normalizedPathname = pathname.length > 1 && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname; return normalizedPathname === '/today'; }); if (!(link instanceof HTMLAnchorElement)) return false; link.click(); return true; })()`);
+    const returnedTodayThroughAppNav = await evaluate(client, `(() => { const link = Array.from(document.querySelectorAll('a[href]')).find((candidate) => { if (!(candidate instanceof HTMLAnchorElement)) return false; const pathname = new URL(candidate.href, location.href).pathname; const normalizedPathname = pathname.length > 1 && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname; return normalizedPathname === '/employee/today'; }); if (!(link instanceof HTMLAnchorElement)) return false; link.click(); return true; })()`);
     if (!returnedTodayThroughAppNav) throw new Error("In-app Today navigation link was unavailable for route motion smoke.");
-    await waitFor(client, `['/today', '/today/'].includes(location.pathname) && document.querySelector('[data-route-motion]')?.getAttribute('data-route-motion-path') === '/today'`, "state-driven Today route motion");
+    await waitFor(client, `['/employee/today', '/employee/today/'].includes(location.pathname) && document.querySelector('[data-route-motion]')?.getAttribute('data-route-motion-path') === '/employee/today'`, "state-driven Employee Today route motion");
     console.log("✓ Route motion is state-driven, reduced-motion aware, and keeps navigation responsive");
 
     const themeRevealContract = await evaluate(client, `(async () => {
@@ -723,9 +723,9 @@ export async function runProductionBrowserSmoke() {
     console.log("✓ Import Wizard CSV persisted a client after preview and explicit apply");
 
     const returnToday = waitForEvent(client, "Page.loadEventFired", "return to Today after Import Wizard");
-    await client.call("Page.navigate", { url: `${origin}/today/` });
+    await client.call("Page.navigate", { url: `${origin}/employee/today/` });
     await returnToday;
-    await waitFor(client, `["/today", "/today/"].includes(location.pathname) && document.body?.innerText.includes("ساعت‌یار")`, "Today after Import Wizard");
+    await waitFor(client, `["/employee/today", "/employee/today/"].includes(location.pathname) && document.body?.innerText.includes("ساعت‌یار")`, "Today after Import Wizard");
 
     const settingsLocaleLoad = waitForEvent(client, "Page.loadEventFired", "Settings profile locale route");
     await client.call("Page.navigate", { url: `${origin}/settings/profile/` });
@@ -756,9 +756,9 @@ export async function runProductionBrowserSmoke() {
     await waitFor(client, `document.documentElement.lang === "en" && document.documentElement.dir === "ltr" && document.documentElement.dataset.calendar === "gregory" && Boolean(document.querySelector('#settings-profile')) && Boolean(document.querySelector('[data-settings-language]'))`, "English locale persistence after reload with automatic Gregorian calendar");
 
     const englishTodayLoad = waitForEvent(client, "Page.loadEventFired", "English Today route");
-    await client.call("Page.navigate", { url: `${origin}/today/` });
+    await client.call("Page.navigate", { url: `${origin}/employee/today/` });
     await englishTodayLoad;
-    await waitFor(client, `["/today", "/today/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Today summary") && document.body?.innerText.includes("Daily target") && Boolean(document.querySelector('[data-activity-segments]'))`, "English Today core surface");
+    await waitFor(client, `["/employee/today", "/employee/today/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Today summary") && document.body?.innerText.includes("Daily target") && Boolean(document.querySelector('[data-activity-segments]'))`, "English Today core surface");
 
     const englishMonthLoad = waitForEvent(client, "Page.loadEventFired", "English Month route");
     await client.call("Page.navigate", { url: `${origin}/month/` });
@@ -971,9 +971,9 @@ export async function runProductionBrowserSmoke() {
     console.log("✓ Local-first locale switch persists English LTR across reload and restores Persian RTL");
 
     const localeReturnToday = waitForEvent(client, "Page.loadEventFired", "return to Today after locale smoke");
-    await client.call("Page.navigate", { url: `${origin}/today/` });
+    await client.call("Page.navigate", { url: `${origin}/employee/today/` });
     await localeReturnToday;
-    await waitFor(client, `["/today", "/today/"].includes(location.pathname) && document.body?.innerText.includes("ساعت‌یار")`, "Today after locale smoke");
+    await waitFor(client, `["/employee/today", "/employee/today/"].includes(location.pathname) && document.body?.innerText.includes("ساعت‌یار")`, "Today after locale smoke");
 
     await waitFor(client, `navigator.serviceWorker?.ready.then(() => true).catch(() => false)`, "PWA service worker readiness");
     const firstInstallWorker = await evaluate(client, `(async () => {

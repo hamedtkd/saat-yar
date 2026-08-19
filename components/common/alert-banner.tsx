@@ -22,15 +22,15 @@ const toneClasses: Record<AlertTone, string> = {
 export function AlertBanner({ title, children, icon, action, tone = "info", className }: AlertBannerProps) {
   const role = tone === "danger" || tone === "warning" ? "alert" : "status";
   return (
-    <div role={role} className={cn("flex items-center justify-between gap-3 rounded-[var(--control-radius)] border px-4 py-3", toneClasses[tone], className)}>
-      <div className="flex min-w-0 items-start gap-3">
+    <div role={role} className={cn("flex items-center justify-between gap-3 rounded-[var(--control-radius)] border px-4 py-3 max-[359px]:grid max-[359px]:gap-2.5 max-[359px]:px-3", toneClasses[tone], className)}>
+      <div className="flex min-w-0 items-start gap-3 max-[359px]:gap-2">
         {icon && <span className="mt-0.5 shrink-0 text-current">{icon}</span>}
         <div className="min-w-0">
           {title && <strong className="block text-sm font-extrabold">{title}</strong>}
           {children && <div className="mt-1 text-xs leading-6 text-[var(--text-muted)]">{children}</div>}
         </div>
       </div>
-      {action && <div className="shrink-0">{action}</div>}
+      {action && <div className="shrink-0 max-[359px]:justify-self-start">{action}</div>}
     </div>
   );
 }
