@@ -1,3 +1,17 @@
+## Phase 200 R3 — Work Calendar naming + gate compatibility
+
+- «ماه من» در UI به **«تقویم کاری»** و در English به **`Work Calendar`** تغییر کرد؛ route `/month` برای compatibility ثابت ماند.
+- Navigation، page metadata، Help، Google Calendar copy، multi-tab status، PWA shortcut و browser smoke با نام جدید همگام شدند.
+- Manifest دوباره `name: PWA_APP_NAME` را مستقیماً نگه می‌دارد و قراردادهای تاریخی Phase 105/177 با PWA identity دوزبانه فعلی reconcile شدند.
+- AppData v21، dependencyها و package-lock بدون تغییرند.
+
+## Phase 200 R1 — Release hardening polish
+
+- PWA install identity به `Saatyar | ساعت یار` ارتقا یافت و short name برای launcher روی `Saatyar` فشرده ماند.
+- نمایش تاریخ بلند در فارسی و انگلیسی از ترتیب مستقل و طبیعی هر زبان پیروی می‌کند؛ override تقویم باعث مخلوط‌شدن زبان‌ها نمی‌شود.
+- runtime favicon/brand theming به helper تست‌پذیر منتقل شد و از accent فعال پیروی می‌کند؛ icon نصب‌شده PWA برای حفظ identity ثابت می‌ماند.
+- AppData v21، dependencyها و package version در این hardening checkpoint تغییر نکردند.
+
 - Phase 199 R11: marker معنایی عنوان Activity زنده برای Employee Browser Smoke بعد از refactor بصری Running panel بازگردانده شد؛ بدون تغییر UI، Timer، Schema v21، dependency یا lockfile.
 - Phase 199 R8: Footer GitHub CTA بدون dependency جدید با GitHub mark داخلی compile-safe شد؛ لینک‌های About/Help/Privacy/Terms و responsive polish R7 حفظ شدند.
 - Phase 199 R5 — Compact Active Activity + Duration Order: حالت Running دوباره داخل همان shell فشرده فرم شروع فعالیت قرار گرفت؛ نوع فعالیت، عنوان کار و پروژه به داده‌های read-only تبدیل می‌شوند و FlipClock موجود همراه دکمه پایان در همان ناحیه اکشن قرار می‌گیرد. در مودال ویرایش مدت نیز ساعت همیشه سمت چپ و دقیقه همیشه سمت راست است، درحالی‌که labelها RTL/LTR و ورودی عددی LTR باقی می‌مانند. Schema همچنان v21 و dependency/lockfile بدون تغییر است.

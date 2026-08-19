@@ -33,7 +33,7 @@ export function DatePickerTrigger({
       <CalendarDays aria-hidden="true" className="size-5 shrink-0 text-[var(--accent-strong)] max-[359px]:size-4" />
       <span className="grid min-w-0 gap-0.5">
         <small className="text-[9px] font-medium text-[var(--text-muted)] max-[359px]:text-[8px]">{placeholder}</small>
-        <strong className="truncate text-[11px] font-extrabold text-[var(--text)] max-[359px]:text-[10px]">
+        <strong data-date-picker-selected-label className="truncate text-[11px] font-extrabold text-[var(--text)] max-[359px]:text-[10px]">
           {selectedLabel}
         </strong>
       </span>

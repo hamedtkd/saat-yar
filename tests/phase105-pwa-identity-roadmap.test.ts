@@ -11,8 +11,8 @@ function pngSize(path: string) {
 
 test("PWA install identity uses the approved Saatyar mark and compact app name", () => {
   const manifest = read("app/manifest.ts");
-  assert.match(manifest, /name: SITE_NAME,/);
-  assert.match(manifest, /short_name: SITE_NAME,/);
+  assert.match(manifest, /name: PWA_APP_NAME,/);
+  assert.match(manifest, /short_name: PWA_SHORT_NAME,/);
   assert.doesNotMatch(manifest, /name: `\$\{SITE_NAME\} — مدیریت زمان و کارکرد`/);
   assert.match(read("public/icons/app-icon-source.svg"), /saatyar-app-mark\.svg/);
   assert.match(read("public/icons/maskable-icon-source.svg"), /saatyar-app-mark\.svg/);

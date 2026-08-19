@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 
 export const SITE_NAME = "ساعت‌یار";
+export const PWA_APP_NAME = "Saatyar | ساعت یار";
+export const PWA_SHORT_NAME = "Saatyar";
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://saat-yar.vercel.app";
 export const SITE_DESCRIPTION = "مدیریت فارسی و آفلاین ساعت کاری، حضور، مرخصی، پروژه و گزارش‌های شخصی";
 export const SOCIAL_IMAGE_PATH = "/og/saatyar-social-card.png";
@@ -12,7 +14,7 @@ export const ROUTE_METADATA = {
     path: "/today/",
   },
   month: {
-    title: "ماه من",
+    title: "تقویم کاری",
     description: "نمای ماهانه کارکرد، هدف روزانه و وضعیت روزهای کاری در ساعت‌یار.",
     path: "/month/",
   },

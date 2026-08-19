@@ -76,7 +76,7 @@ export function formatSyncSourcePath(path: string) {
   const labels: Record<string, string> = {
     "/": "خانه",
     "/today": "امروز",
-    "/month": "ماه من",
+    "/month": "تقویم کاری",
     "/leave": "مرخصی‌ها",
     "/reports": "گزارش‌ها",
     "/settings": "تنظیمات",

@@ -670,9 +670,9 @@ async function main() {
     await waitFor(client, `document.body?.innerText.includes("ثبت این روز کامل شده است") && document.body?.innerText.includes(${JSON.stringify(NET_DURATION)})`, "employee net duration");
     console.log(`✓ Completed-day draft persists the full 08:00–17:00 / lunch / unpaid-break contract before verifying 8:15 (${completedPersistence.storageShape})`);
 
-    await navigateInApp(client, "/month", "ماه من");
+    await navigateInApp(client, "/month", "تقویم کاری");
     await waitFor(client, `document.body?.innerText.includes("جزئیات روز انتخاب‌شده") && document.body?.innerText.includes(${JSON.stringify(NET_DURATION)})`, "employee month details");
-    console.log("✓ Month view reflects the completed employee attendance calculation");
+    console.log("✓ Work Calendar reflects the completed employee attendance calculation");
 
     await navigateInApp(client, "/reports", "گزارش کارکرد و حقوق");
     await waitFor(client, `document.body?.innerText.includes("فیش حقوقی تخمینی ماه") && document.body?.innerText.includes("کارکرد این ماه")`, "employee payroll report");

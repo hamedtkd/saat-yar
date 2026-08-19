@@ -117,7 +117,7 @@ test("static SEO and PWA metadata stay canonical Persian while runtime titles co
   assert.match(runtime, /MutationObserver/);
   assert.match(layout, /<html lang="fa" dir="rtl"/);
   assert.match(manifest, /lang: "fa"/);
-  assert.match(manifest, /dir: "rtl"/);
+  assert.match(manifest, /dir: "auto"/);
 });
 
 test("the Persian UI allowlist is limited to metadata parser compatibility and toast classification", async () => {

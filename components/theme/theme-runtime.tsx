@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { themeBrandSvg } from "@/lib/brand-theme";
 import { resolveAccent, resolveAccentTokens, THEME_STORAGE_KEY } from "@/lib/theme";
 import type { AppearanceSettings } from "@/lib/types";
 
@@ -22,12 +23,7 @@ function loadBrandSvg() {
 async function applyDynamicFavicon(accent: string, strong: string) {
   try {
     const source = await loadBrandSvg();
-    const themed = source
-      .replaceAll('fill="rgb(38,38,38)"', `fill="${accent}"`)
-      .replaceAll('fill="rgb(11,12,12)"', `fill="${strong}"`)
-      .replace('viewBox="0 0 2048 2048"', 'viewBox="560 480 960 960"')
-      .replace('width="1024" height="1024"', 'width="512" height="512"')
-      .replace('preserveAspectRatio="none"', 'preserveAspectRatio="xMidYMid meet"');
+    const themed = themeBrandSvg(source, accent, strong);
     const url = URL.createObjectURL(new Blob([themed], { type: "image/svg+xml" }));
     let link = document.querySelector<HTMLLinkElement>('link[rel="icon"][data-saatyar-dynamic]');
     if (!link) {

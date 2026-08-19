@@ -1,5 +1,3 @@
-- [x] فاز ۱۹۹ R11: Browser contract hotfix؛ بازگرداندن marker عنوان Activity زنده در Running panel بدون تغییر رفتار محصول، Schema یا dependency.
-- [x] Phase 199 R8 — Footer GitHub brand-icon compile hotfix بدون dependency جدید.
 # بک‌لاگ ساعت‌یار
 
 ## مسیر فعال پس از 2.5.0
@@ -13,7 +11,7 @@
   - حذف semantics ورود/خروج/ناهار از مسیر اصلی Freelancer Today.
   - یکپارچه‌سازی CTA زمان‌سنج Freelancer روی Project Timer و اصلاح Running/Stop state.
   - کاهش فضای خالی و اصلاح alignment کارت Focus/Timer.
-- [ ] **Phase 198.1 — Today Timer Experience Redesign (فعال)**
+- [x] **Phase 198.1 — Today Timer Experience Redesign**
   - [x] R2: بستن i18n/type regressionهای R1.
   - [x] R2: اتصال Local Clock به Runtime Clock مشترک و حذف CTA تکراری Freelancer.
   - [x] R2: بازگردانی Heatmap Tooltip browser-smoke contract.
@@ -41,7 +39,20 @@
   - [x] R10 source: loading/skeleton مستقل Employee/Freelancer و route-aware AppLoading اضافه شد؛ analytics/multi-tab همچنان logical Today واحد می‌مانند.
   - [x] R16 Full Gate: 927/927 tests + production build + Production/Freelancer/Employee/Pairing browser smokes + release/Vercel audits سبز شد.
   - [x] R17 source: responsive hardening اختصاصی <=359px برای Todayهای mode-specific، FlipClock/Header/BottomNav/Pickers/Skeletons و runtime smoke مستقیم 320×800.
-  - [ ] R17 Full Gate + final visual QA across 320/360/375/425px before commit.
+  - [x] R17 Full Gate + final visual QA across 320/360/375/425px completed; baseline committed before Phase 199.
+
+- [x] **Phase 199 — Employee Activity Context & Today Polish**
+  - Work Item اختیاری، Work Project مستقل از پروژه‌های Freelancer، live activity timer و edit/delete activity history.
+  - ویرایش مستقیم ورود/خروج/ناهار/وقفه، Recent Activity scroll، Footer/About/Policy، GitHub stars و responsive shell polish.
+  - Full Gate نهایی: 949/949 tests + Production/Freelancer/Employee/Pairing browser smokes + Vercel audit؛ commit `1bf65ed` روی dev.
+
+- [ ] **Phase 200 — Release Hardening & Scope Freeze (فعال)**
+  - [x] R1: PWA install identity دوزبانه `Saatyar | ساعت یار` با short name فشرده `Saatyar`.
+  - [x] R1: ترتیب تاریخ locale-aware؛ فارسی `روز هفته، روز ماه سال` و English `Weekday, Month Day, Year` بدون mixing.
+  - [x] R1: favicon/brand runtime از accent فعال پیروی می‌کند؛ launcher icon نصب‌شده به‌دلیل محدودیت استاندارد PWA identity ثابت می‌ماند.
+  - [x] R3: نام صفحه `/month` به «تقویم کاری» / `Work Calendar` تغییر کرد و nav/metadata/help/PWA shortcut/browser smoke با آن همگام شد؛ route فنی برای compatibility ثابت ماند.
+  - [ ] Full release-hardening gate، visual matrix، backup/restore/device-transfer sanity، accessibility/performance/security pass.
+  - [ ] Scope freeze نهایی و handoff به Phase 201 RC.
 
 
 

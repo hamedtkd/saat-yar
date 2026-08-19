@@ -9,7 +9,7 @@ import { shortTabId, type MultiTabSyncStatus } from "@/lib/multi-tab-sync-status
 import type { SyncChangeKind } from "@/lib/multi-tab-sync";
 import type { SystemMessageKey } from "@/lib/i18n/system";
 
-const pathKeys: Record<string, SystemMessageKey> = { "/": "Home", "/today": "Today", "/month": "My month", "/leave": "Leave", "/reports": "Reports", "/settings": "Settings", "/clients": "Clients", "/projects": "Projects", "/invoices": "Invoices" };
+const pathKeys: Record<string, SystemMessageKey> = { "/": "Home", "/today": "Today", "/month": "Work Calendar", "/leave": "Leave", "/reports": "Reports", "/settings": "Settings", "/clients": "Clients", "/projects": "Projects", "/invoices": "Invoices" };
 const changeKeys: Record<SyncChangeKind, SystemMessageKey> = { attendance: "Attendance and time", settings: "Settings", business: "Work information", reporting: "Reports", general: "General data" };
 
 export function MultiTabHealthPanel({ status, onClear }: { status: MultiTabSyncStatus; onClear: () => void }) {
