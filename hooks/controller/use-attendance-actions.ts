@@ -10,7 +10,6 @@ import type { ActivityKind, ActivityProjectContext, AppData, WorkRecord, WorkRec
 import { createDeletedWorkRecord } from "@/lib/record-recycle-bin";
 import { resumeAutoClosedRecord } from "@/lib/session-close";
 import { closeActiveActivitySegments, createActivitySegment, removeCompletedActivitySegment, updateCompletedActivitySegmentDuration } from "@/lib/activity-segments";
-import { trackProductAnalytics } from "@/lib/product-analytics";
 import { createWorkProject as buildWorkProject, isDuplicateWorkProjectName } from "@/lib/work-projects";
 
 type Args = {
@@ -96,7 +95,6 @@ export function useAttendanceActions({ data, record, selectedDate, activeBreak, 
   }
   function beginCurrentDay() {
     updateRecord({ start: nowTime(), end: "", startedAt: new Date().toISOString(), endedAt: undefined });
-    trackProductAnalytics({ name: "work_started", properties: { mode: data.settings.mode, timing: data.settings.workTimingMode } });
     setToast(translateSystem(getBrowserLocale(), "Workday started."));
   }
   function startWork() {
@@ -146,7 +144,6 @@ export function useAttendanceActions({ data, record, selectedDate, activeBreak, 
     const end = nowTime();
     const endedAt = new Date().toISOString();
     updateRecord((current) => ({ end, endedAt, activitySegments: closeActiveActivitySegments(current.activitySegments, end, endedAt) }));
-    trackProductAnalytics({ name: "work_completed", properties: { mode: data.settings.mode, timing: data.settings.workTimingMode } });
     setToast(translateSystem(getBrowserLocale(), "Clock-out was recorded."));
   }
   function startLunch() {
@@ -211,7 +208,6 @@ export function useAttendanceActions({ data, record, selectedDate, activeBreak, 
         startedAt,
       }),
     ]);
-    trackProductAnalytics({ name: "feature_used", properties: { feature: "activity-segments" } });
     setToast(translateSystem(getBrowserLocale(), "Activity segment started."));
   }
   function stopActivitySegment() {

@@ -69,18 +69,18 @@ test("Settings navigation and search share route-aware destinations while keepin
   assert.match(search, /router\.push\(`\$\{item\.href\}#\$\{item\.id\}`\)/);
 });
 
-test("settings subroutes remain one allowed app tab across shell locale analytics and sync", async () => {
-  const [navigation, navItems, localeRuntime, analytics, sync] = await Promise.all([
+test("settings subroutes remain one allowed app tab across shell locale and sync after analytics simplification", async () => {
+  const [navigation, navItems, localeRuntime, cloudflare, sync] = await Promise.all([
     read("lib/navigation.ts"),
     read("components/layout/app-header/nav-items.ts"),
     read("components/i18n/locale-runtime.tsx"),
-    read("lib/product-analytics.ts"),
+    read("components/analytics/cloudflare-web-analytics.tsx"),
     read("lib/multi-tab-sync.ts"),
   ]);
   assert.match(navigation, /normalized\.startsWith\("\/settings\/"\)/);
   assert.match(navItems, /normalized\.startsWith\(`\$\{settingsNavItem\.href\}\/`\)/);
   assert.match(localeRuntime, /pathname\.startsWith\("\/settings\/"\)/);
-  assert.match(analytics, /route\.startsWith\("\/settings\/"\)/);
+  assert.doesNotMatch(cloudflare, /pathname|settings\//);
   assert.match(sync, /path\.startsWith\("\/settings\/"\)/);
 });
 

@@ -274,13 +274,9 @@ export function getRelease250Snapshot() {
 export function collectCandidate260AuditFailures() {
   const failures = [];
   const packageJson = readJson("package.json");
-  const packageLock = readJson("package-lock.json");
   const manifest = readJson("docs/releases/2.6.0.json");
   const released250 = readJson("docs/releases/2.5.0.json");
 
-  requireCondition(packageJson.version === "2.6.0", "package.json must remain 2.6.0 after the verified Phase 201 candidate.", failures);
-  requireCondition(packageLock.version === "2.6.0", "package-lock.json root version must remain 2.6.0.", failures);
-  requireCondition(packageLock.packages?.[""]?.version === "2.6.0", "package-lock root package version must remain 2.6.0.", failures);
   requireCondition(manifest.version === "2.6.0", "2.6.0 manifest version is stale.", failures);
   requireCondition(manifest.candidateDate === "2026-08-20", "2.6.0 candidate date must stay 2026-08-20.", failures);
   requireCondition(manifest.tag === "v2.6.0", "2.6.0 manifest must reserve the v2.6.0 tag name.", failures);
@@ -356,8 +352,8 @@ export function collectFinal260AuditFailures() {
   requireCondition(readText(manifest.releaseNotes.en).includes("Final release date: 2026-08-20"), "English 2.6.0 notes must record the final release date.", failures);
   requireCondition(readText(manifest.releaseNotes.fa).includes("تاریخ Final Release: 2026-08-20"), "Persian 2.6.0 notes must record the final release date.", failures);
   requireCondition(readText("CHANGELOG.md").includes("## [2.6.0] - 2026-08-20"), "CHANGELOG is missing the final 2.6.0 heading.", failures);
-  requireCondition(readText("README.md").includes("Version **2.6.0** is the latest stable Saatyar release"), "English README must identify 2.6.0 as the latest stable release.", failures);
-  requireCondition(readText("README_FA.md").includes("نسخه **۲.۶.۰** آخرین Release پایدار ساعت‌یار است"), "Persian README must identify 2.6.0 as the latest stable release.", failures);
+  requireCondition(readText("README.md").includes("2.6.0"), "English README must retain historical 2.6.0 release documentation.", failures);
+  requireCondition(readText("README_FA.md").includes("۲.۶.۰"), "Persian README must retain historical 2.6.0 release documentation.", failures);
   requireCondition(readText("docs/README.md").includes("2.6.0 final release"), "Docs index must identify the 2.6.0 final release.", failures);
   requireCondition(readText("docs/roadmap/BACKLOG_FA.md").includes("- [x] **Phase 201 — Release Candidate 2.6.0**"), "Roadmap must close Phase 201.", failures);
   requireCondition(readText("docs/roadmap/BACKLOG_FA.md").includes("- [x] **Phase 202 — Final Release 2.6.0**"), "Roadmap must close the Phase 202 source contract.", failures);
@@ -411,25 +407,89 @@ export function getRelease260Snapshot() {
   };
 }
 
+
+export function collectCandidate261AuditFailures() {
+  const failures = [];
+  const packageJson = readJson("package.json");
+  const packageLock = readJson("package-lock.json");
+  const manifest = readJson("docs/releases/2.6.1.json");
+  const released260 = readJson("docs/releases/2.6.0.json");
+
+  requireCondition(packageJson.version === "2.6.1", "package.json must be 2.6.1 during Phase 203.", failures);
+  requireCondition(packageLock.version === "2.6.1", "package-lock root version must be 2.6.1.", failures);
+  requireCondition(packageLock.packages?.[""]?.version === "2.6.1", "package-lock root package version must be 2.6.1.", failures);
+  requireCondition(manifest.version === "2.6.1", "2.6.1 manifest version is stale.", failures);
+  requireCondition(manifest.status === "candidate", "2.6.1 manifest must remain candidate until the verified rollout.", failures);
+  requireCondition(manifest.candidateDate === "2026-08-20", "2.6.1 candidate date must be 2026-08-20.", failures);
+  requireCondition(manifest.tag === "v2.6.1", "2.6.1 manifest must reserve v2.6.1.", failures);
+  requireCondition(manifest.dataSchemaVersion === 21 && APP_DATA_SCHEMA_VERSION === 21, "2.6.1 must keep AppData v21.", failures);
+  requireCondition(manifest.releasedSchemaBaseline === 21, "2.6.1 must use released 2.6.0 schema v21 as its baseline.", failures);
+  requireCondition(released260.version === "2.6.0" && released260.status === "released" && released260.dataSchemaVersion === 21, "2.6.0 must remain the released v21 baseline.", failures);
+  requireCondition(manifest.verifiedBaselineCommitPrefix === "d95f6a2", "2.6.1 must preserve released baseline d95f6a2.", failures);
+  requireCondition(manifest.verifiedBaselineTestCount === 970, "2.6.1 must preserve the 970-test 2.6.0 baseline.", failures);
+  requireCondition(manifest.candidatePhase === 203, "2.6.1 candidate phase must be 203.", failures);
+  requireCondition(manifest.expectedCandidateTestCount === 976, "Phase 203 candidate Node-test target must be 976.", failures);
+  requireCondition(manifest.nodeEngine === packageJson.engines?.node, "2.6.1 Node engine must match package.json.", failures);
+  requireCondition(Object.keys(packageJson.dependencies ?? {}).length + Object.keys(packageJson.devDependencies ?? {}).length === 33, "2.6.1 must not add direct dependencies.", failures);
+  requireCondition(packageJson.scripts?.["release:prepare:2.6.1"] === "node scripts/prepare-release-2.6.1.mjs", "2.6.1 preparation command is missing.", failures);
+  requireCondition(packageJson.scripts?.["check:release:candidate:2.6.1"] === "npm run release:prepare:2.6.1 && npm run check:release:full", "2.6.1 candidate gate command is missing.", failures);
+
+  const requiredFiles = [
+    "docs/releases/2.6.1.json",
+    manifest.releaseNotes?.fa,
+    manifest.releaseNotes?.en,
+    "docs/releases/RELEASE_CHECKLIST_2.6.1_FA.md",
+    "docs/phases/PHASE_203_NOTES_FA.md",
+    "docs/product-analytics/PRIVACY_SAFE_ANALYTICS_FA.md",
+    "scripts/prepare-release-2.6.1.mjs",
+    "components/analytics/cloudflare-web-analytics.tsx",
+    "components/analytics/cloudflare-analytics-info.tsx",
+    "lib/cloudflare-web-analytics.ts",
+  ].filter(Boolean);
+  for (const path of requiredFiles) requireCondition(existsSync(resolve(ROOT, path)), `Required Phase 203 file is missing: ${path}`, failures);
+
+  for (const stale of [
+    "components/analytics/google-analytics-runtime.tsx",
+    "components/analytics/product-analytics-runtime.tsx",
+    "components/analytics/analytics-consent-controls.tsx",
+    "hooks/use-product-analytics-consent.ts",
+    "lib/product-analytics.ts",
+  ]) requireCondition(!existsSync(resolve(ROOT, stale)), `Stale GA4/product analytics runtime remains: ${stale}`, failures);
+
+  const activeRuntime = [
+    readText("app/layout.tsx"),
+    readText("components/analytics/cloudflare-web-analytics.tsx"),
+    readText("components/analytics/cloudflare-analytics-info.tsx"),
+    readText("components/pages/settings/analytics-privacy-card.tsx"),
+    readText("lib/legal-content.ts"),
+    readText("lib/help-content.ts"),
+  ].join("\n");
+  requireCondition(!/googletagmanager\.com|Google Analytics 4|Google Consent Mode|NEXT_PUBLIC_GA_MEASUREMENT_ID|gtag\(/.test(activeRuntime), "Current 2.6.1 runtime/legal surfaces must not reference GA4 delivery.", failures);
+  requireCondition(activeRuntime.includes("Cloudflare Web Analytics"), "Current 2.6.1 surfaces must disclose Cloudflare Web Analytics.", failures);
+  requireCondition(readText("app/layout.tsx").includes("CloudflareWebAnalytics"), "Root layout must mount Cloudflare Web Analytics.", failures);
+  requireCondition(readText("docs/product-analytics/PRIVACY_SAFE_ANALYTICS_FA.md").includes("NEXT_PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN"), "Cloudflare deployment variable must be documented.", failures);
+  return failures;
+}
+
 export function runReleaseAudit() {
   const historical240Failures = collectReleaseAuditFailures();
   const historical250Failures = collectFinal250AuditFailures();
   const final260Failures = collectFinal260AuditFailures();
-  const failures = [...historical240Failures, ...historical250Failures, ...final260Failures];
+  const candidate261Failures = collectCandidate261AuditFailures();
+  const failures = [...historical240Failures, ...historical250Failures, ...final260Failures, ...candidate261Failures];
   if (failures.length > 0) {
     console.error("Saatyar release audit failed\n");
     for (const failure of failures) console.error(`- ${failure}`);
     process.exitCode = 1;
     return false;
   }
-  const manifest = readJson("docs/releases/2.6.0.json");
-  console.log(`Saatyar ${manifest.version} Phase 202 finalization audit passed.`);
+  const manifest = readJson("docs/releases/2.6.1.json");
+  console.log(`Saatyar ${manifest.version} Phase 203 candidate audit passed.`);
   console.log(`Current AppData schema: v${APP_DATA_SCHEMA_VERSION}`);
-  console.log(`Released 2.5.0 AppData schema: v${manifest.releasedSchemaBaseline}`);
-  console.log(`Final manifest status: ${manifest.status}`);
-  console.log(`Verified Phase 201 candidate: ${manifest.verifiedCandidateCommitPrefix} (${manifest.verifiedCandidateTestCount} tests)`);
-  console.log(`Phase 202 Node test target: ${manifest.expectedFinalTestCount}`);
-  console.log("Release order: controlled main merge -> Vercel production deploy -> npm run audit:production -> annotated v2.6.0 tag.");
+  console.log(`Released 2.6.0 baseline: ${manifest.verifiedBaselineCommitPrefix} (${manifest.verifiedBaselineTestCount} tests)`);
+  console.log(`Analytics migration: ${manifest.releaseEvidence?.analyticsMigration}`);
+  console.log(`Phase 203 Node test target: ${manifest.expectedCandidateTestCount}`);
+  console.log("Release order: verify candidate on dev -> controlled main merge -> configure Cloudflare token -> production audit -> annotated v2.6.1 tag.");
   return true;
 }
 

@@ -19,7 +19,6 @@ import { useSaatyarController } from "@/hooks/use-saatyar-controller";
 import { cn } from "@/lib/cn";
 import { isPublicRoute, normalizePathname } from "@/lib/navigation";
 import { useLocale } from "@/components/i18n/locale-provider";
-import { ProductAnalyticsRuntime } from "@/components/analytics/product-analytics-runtime";
 import { AppLoadingState } from "@/components/motion/app-loading-state";
 import { RouteMotionBoundary } from "@/components/motion/route-motion-boundary";
 import { CalendarIntegrationProvider } from "@/components/calendar/calendar-integration-provider";
@@ -52,7 +51,6 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
     <SaatyarContext.Provider value={controller}>
       <CalendarIntegrationProvider onToast={controller.setToast}>
         <ThemeRuntime appearance={data.settings.appearance} />
-        <ProductAnalyticsRuntime pathname={pathname} saveError={Boolean(controller.saveError)} />
         <RouteGuard
           mode={mode}
           pathname={pathname}

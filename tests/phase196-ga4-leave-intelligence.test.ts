@@ -5,21 +5,15 @@ import { getDailyTargetMinutes } from "../lib/work-schedule.ts";
 import { getEffectiveWorkRecordForDate } from "../lib/leave-entitlement.ts";
 import { calc } from "../lib/time-engine.ts";
 import { buildMonthActivityCells, buildRecentActivityDays, summarizeMonthIntelligence } from "../lib/month-intelligence.ts";
-import { getGa4ConsentDefaults, resolveProductAnalyticsConsentValue } from "../lib/product-analytics.ts";
+import { resolveCloudflareWebAnalyticsConfig } from "../lib/cloudflare-web-analytics.ts";
 import { orderWeekForDirection } from "../lib/week-order.ts";
 
-test("configured analytics defaults to enabled while an explicit opt-out remains authoritative", () => {
-  assert.equal(resolveProductAnalyticsConsentValue(null), "granted");
-  assert.equal(resolveProductAnalyticsConsentValue("granted"), "granted");
-  assert.equal(resolveProductAnalyticsConsentValue("denied"), "denied");
-  const defaults = getGa4ConsentDefaults();
-  assert.equal(defaults[0].analytics_storage, "granted");
-  assert.equal(defaults[0].ad_storage, "denied");
-  assert.equal(defaults[0].ad_user_data, "denied");
-  assert.equal(defaults[0].ad_personalization, "denied");
-  assert.equal(defaults[1].analytics_storage, "denied");
-  assert.ok(defaults[1].region.includes("GB"));
-  assert.ok(defaults[1].region.includes("DE"));
+test("current aggregate analytics requires an explicit Cloudflare site token and has no app consent state", () => {
+  assert.deepEqual(resolveCloudflareWebAnalyticsConfig(), { provider: "none", configured: false, label: "Not configured" });
+  assert.deepEqual(resolveCloudflareWebAnalyticsConfig("bad token"), { provider: "none", configured: false, label: "Not configured" });
+  const configured = resolveCloudflareWebAnalyticsConfig("0123456789abcdef0123456789abcdef");
+  assert.equal(configured.provider, "cloudflare");
+  assert.equal(configured.configured, true);
 });
 
 test("a registered full-day leave credits the daily target without inventing worked minutes", () => {

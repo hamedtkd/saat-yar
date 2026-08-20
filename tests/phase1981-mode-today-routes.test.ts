@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { getAnalyticsRoute } from "../lib/product-analytics.ts";
 import { getPathTab, getTabHref, getTodayHref, getTodayRouteMode } from "../lib/navigation.ts";
 import { getSyncChangeKind } from "../lib/multi-tab-sync.ts";
 import { formatSyncSourcePath } from "../lib/multi-tab-sync-status.ts";
@@ -22,9 +21,7 @@ test("Phase 198.1 R10 recognizes mode-specific Today routes as the Today tab", (
   assert.equal(getTodayRouteMode("/today"), null);
 });
 
-test("Phase 198.1 R10 keeps analytics and multi-tab semantics stable across Today routes", () => {
-  assert.equal(getAnalyticsRoute("/employee/today"), "today");
-  assert.equal(getAnalyticsRoute("/freelancer/today/"), "today");
+test("Phase 198.1 R10 keeps multi-tab semantics stable across Today routes", () => {
   assert.equal(getSyncChangeKind("/hybrid/today"), "attendance");
   assert.equal(formatSyncSourcePath("/freelancer/today"), "امروز");
 });

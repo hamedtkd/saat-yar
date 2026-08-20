@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "vazirmatn/Vazirmatn-font-face.css";
 import "vazirmatn/misc/Farsi-Digits/Vazirmatn-FD-font-face.css";
 import { PwaRegister } from "@/app/pwa-register";
-import { GoogleAnalyticsRuntime } from "@/components/analytics/google-analytics-runtime";
+import { CloudflareWebAnalytics } from "@/components/analytics/cloudflare-web-analytics";
 import { LocaleBootstrap } from "@/components/i18n/locale-bootstrap";
 import { LocaleProvider } from "@/components/i18n/locale-provider";
 import { LocaleRuntime } from "@/components/i18n/locale-runtime";
@@ -67,7 +67,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       </head>
       <body className="saatyar-app-font m-0 min-h-screen bg-[var(--page)] font-normal text-[var(--text)] antialiased transition-colors">
         <PwaRegister />
-        <GoogleAnalyticsRuntime />
+        <CloudflareWebAnalytics />
         <LocaleProvider>
           <LocaleRuntime />
           <SaatyarShell>{children}</SaatyarShell>

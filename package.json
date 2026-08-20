@@ -1,6 +1,6 @@
 {
   "name": "saatyar-worklog",
-  "version": "2.6.0",
+  "version": "2.6.1",
   "private": true,
   "engines": {
     "node": "22.x"
@@ -53,7 +53,9 @@
     "release:prepare:2.6.0": "node scripts/prepare-release-2.6.0.mjs",
     "check:release:candidate:2.6.0": "npm run release:prepare:2.6.0 && npm run check:release:full",
     "release:finalize:2.6.0": "node scripts/prepare-release-2.6.0-final.mjs",
-    "check:release:final:2.6.0": "npm run release:finalize:2.6.0 && npm run check:release:full"
+    "check:release:final:2.6.0": "npm run release:finalize:2.6.0 && npm run check:release:full",
+    "release:prepare:2.6.1": "node scripts/prepare-release-2.6.1.mjs",
+    "check:release:candidate:2.6.1": "npm run release:prepare:2.6.1 && npm run check:release:full"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.1.23",

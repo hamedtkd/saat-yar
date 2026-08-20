@@ -67,6 +67,13 @@
   - Rollout اجرایی: merge کنترل‌شده Finalization commit به `main` → Deploy → `audit:production` → tag annotated `v2.6.0`.
   - Phase از نظر source contract بسته است؛ هیچ tag یا ادعای Production قبل از audit سبز مجاز نیست.
 
+- [ ] **Phase 203 — Cloudflare Web Analytics Privacy Hotfix / 2.6.1**
+  - حذف GA4/gtag، consent state و custom product eventهای ساعت‌یار از Runtime فعلی.
+  - جایگزینی با Cloudflare Web Analytics برای traffic/page-performance aggregate فقط با Site Token پیکربندی‌شده.
+  - بدون Cookie/Browser-storage identifier تحلیلی در اپ، بدون ارسال WorkData و بدون Schema/Dependency جدید.
+  - baseline رسمی: Release `v2.6.0` روی commit `d95f6a2` با 970/970.
+  - Candidate target: 976 Node tests + Full Release Gate؛ سپس main deploy، Production Audit و تأیید Cloudflare Dashboard قبل از tag `v2.6.1`.
+
 
 
 ## Phase 198.1 R6 historical checkpoint
@@ -124,7 +131,7 @@
 
 ## Backlog محصول
 
-- [ ] Analytics Dashboard & Product Insights پیشرفته (custom dimensions/funnels/dashboard) — **deferred**؛ فعلاً GA4 برای شمارش usage و رفتار کلی کافی است.
+- [ ] Analytics Dashboard & Product Insights پیشرفته (custom dimensions/funnels/dashboard) — **deferred**؛ فعلاً Cloudflare Web Analytics فقط برای شمارش بازدید کلی و performance کافی است و custom behavioral tracking عمداً نداریم.
 - [ ] Month Intelligence v2 — drill-down توضیح‌پذیر work/leave/overtime/deficit.
 - [ ] Reports v2 — فیلتر و breakdown پیشرفته و export/print تکمیلی.
 - [ ] Backup & Device Transfer v2 — health/conflict/restore UX.

@@ -13,6 +13,12 @@ const obsoletePaths = [
   "components/pages/today/project-timer/project-clock-face.tsx",
   // Stale static manifest from older local builds conflicts with the App Router metadata route.
   "public/manifest.webmanifest",
+  // Phase 203 removed the GA4/custom-product-analytics runtime in favor of Cloudflare Web Analytics.
+  "components/analytics/google-analytics-runtime.tsx",
+  "components/analytics/product-analytics-runtime.tsx",
+  "components/analytics/analytics-consent-controls.tsx",
+  "hooks/use-product-analytics-consent.ts",
+  "lib/product-analytics.ts",
 ];
 
 await Promise.all(obsoletePaths.map((path) => rm(path, { force: true })));

@@ -77,6 +77,16 @@ function assertHtmlContract(path, html) {
   }
 }
 
+
+export function assertProductionAnalyticsContract(html) {
+  if (/googletagmanager\.com|google-analytics\.com|gtag\(/i.test(html)) {
+    throw new Error("Production still exposes a Google Analytics/gtag runtime.");
+  }
+  if (!/static\.cloudflareinsights\.com\/beacon\.min\.js/i.test(html)) {
+    throw new Error("Production is missing the configured Cloudflare Web Analytics beacon.");
+  }
+}
+
 export function assertProductionManifestContract(manifest) {
   if (manifest?.name !== "Saatyar | ساعت یار" || manifest?.short_name !== "Saatyar") {
     throw new Error(`Manifest identity mismatch: ${JSON.stringify({ name: manifest?.name, short_name: manifest?.short_name })}`);
@@ -141,6 +151,7 @@ export async function runRemoteProductionAudit(inputUrl = process.env.SAATYAR_PR
   const origin = base.origin;
   console.log(`Saatyar production audit: ${base.toString()}`);
 
+  let rootHtml = "";
   for (const path of EXPECTED_ROUTE_PATHS) {
     const url = sameOriginPath(base, path);
     const { response, body } = await request(url);
@@ -149,8 +160,11 @@ export async function runRemoteProductionAudit(inputUrl = process.env.SAATYAR_PR
     const contentType = response.headers.get("content-type") || "";
     if (!contentType.toLowerCase().includes("text/html")) throw new Error(`Route ${path} is not HTML: ${contentType}`);
     assertHtmlContract(path, body);
+    if (path === "/") rootHtml = body;
   }
   console.log(`✓ ${EXPECTED_ROUTE_PATHS.length} production routes return the Persian RTL app shell with hardened security headers`);
+  assertProductionAnalyticsContract(rootHtml);
+  console.log("✓ Cloudflare Web Analytics beacon is live and the GA4/gtag runtime is absent");
 
   const manifestUrl = sameOriginPath(base, "/manifest.webmanifest");
   const manifestResult = await request(manifestUrl);

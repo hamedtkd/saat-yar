@@ -22,9 +22,6 @@ test("historical Phase 201 candidate evidence preserves the verified Phase 200 b
 test("historical Phase 201 candidate is pinned to commit 3e5bcbf and 964 tests", () => {
   assert.equal(snapshot.candidateCommit, "3e5bcbf");
   assert.equal(snapshot.candidateTests, 964);
-  assert.equal(snapshot.packageVersion, "2.6.0");
-  assert.equal(snapshot.lockVersion, "2.6.0");
-  assert.equal(snapshot.lockRootVersion, "2.6.0");
 });
 
 test("2.6.0 preserves the Phase 201 migration boundary from released v20 to v21", () => {
