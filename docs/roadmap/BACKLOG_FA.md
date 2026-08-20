@@ -46,14 +46,25 @@
   - ویرایش مستقیم ورود/خروج/ناهار/وقفه، Recent Activity scroll، Footer/About/Policy، GitHub stars و responsive shell polish.
   - Full Gate نهایی: 949/949 tests + Production/Freelancer/Employee/Pairing browser smokes + Vercel audit؛ commit `1bf65ed` روی dev.
 
-- [ ] **Phase 200 — Release Hardening & Scope Freeze (فعال)**
+- [x] **Phase 200 — Release Hardening & Scope Freeze**
   - [x] R1: PWA install identity دوزبانه `Saatyar | ساعت یار` با short name فشرده `Saatyar`.
   - [x] R1: ترتیب تاریخ locale-aware؛ فارسی `روز هفته، روز ماه سال` و English `Weekday, Month Day, Year` بدون mixing.
   - [x] R1: favicon/brand runtime از accent فعال پیروی می‌کند؛ launcher icon نصب‌شده به‌دلیل محدودیت استاندارد PWA identity ثابت می‌ماند.
   - [x] R3: نام صفحه `/month` به «تقویم کاری» / `Work Calendar` تغییر کرد و nav/metadata/help/PWA shortcut/browser smoke با آن همگام شد؛ route فنی برای compatibility ثابت ماند.
   - [x] R4 Full Gate: 954/954 tests + build 37/37 + Production/Freelancer/Employee/Pairing smokes + Vercel audit؛ baseline روی commit `81fd22c` در dev ثبت شد.
   - [x] R5 source: security/runtime audit، Vercel security headers، SW/Manifest revalidation، migration v17→v21 + backup/device-transfer behavioral sanity و responsive matrix گسترده‌تر.
-  - [ ] R5 Full Gate + Visual QA نهایی؛ سپس Scope Freeze و handoff به Phase 201 RC.
+  - [x] R6 Full Gate نهایی: 958/958 + build 37/37 + Production/Freelancer/Employee/Pairing + Hardening/Vercel audits؛ baseline commit `15f5af8` روی dev و Scope Freeze فعال شد.
+
+- [ ] **Phase 201 — Release Candidate 2.6.0**
+  - bump package/root lock از 2.5.0 به 2.6.0 بدون تغییر dependency graph.
+  - Manifest و Release Notes دو‌زبانه با Schema v21 و migration رسمی v20→v21.
+  - baseline قفل‌شده Phase 200: `15f5af8` با 958/958 و Full Release Gate سبز.
+  - Candidate روی `dev` می‌ماند؛ target اولیه Node gate: 964/964.
+  - پس از Gate، commit پیشنهادی `release: prepare 2.6.0 candidate` ساخته می‌شود و hash آن ورودی Phase 202 است.
+
+- [ ] **Phase 202 — Final Release 2.6.0**
+  - Candidate تأییدشده → merge کنترل‌شده به `main` → Deploy → `audit:production` → tag annotated `v2.6.0`.
+  - هیچ tag یا ادعای Production قبل از audit سبز مجاز نیست.
 
 
 

@@ -1,3 +1,10 @@
+## Phase 201 — Release Candidate 2.6.0
+
+- Baseline Phase 200 روی `15f5af8` با 958/958 و Full Release Gate سبز قفل شده است.
+- package/root lock به 2.6.0 bump می‌شود، AppData v21 و migration رسمی v20→v21 است.
+- Release Notes و Manifest دو‌زبانه ساخته می‌شوند؛ هیچ Feature جدیدی بعد از Scope Freeze وارد Candidate نمی‌شود.
+- `main`، Production Audit و tag `v2.6.0` فقط در Phase 202 انجام می‌شوند.
+
 ## Phase 200 R5 — Final Release Hardening
 
 - Quality Gate یک `audit:hardening` جدید دارد: dynamic-code primitiveهای خطرناک، persistent OAuth token storage، unreviewed inline HTML و لینک خارجی ناامن fail می‌شوند.

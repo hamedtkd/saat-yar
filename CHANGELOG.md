@@ -37,6 +37,13 @@
 - Fixed GA4 default delivery/consent behavior and made month intelligence/recent activity correctly credit registered leave without turning leave into worked time.
 - Phase 195: OAuth Verification readiness با Privacy Policy/Terms عمومی، disclosure شفاف Google Calendar و Verification Kit اضافه شد؛ Analytics اختیاری از Plausible به GA4 consent-gated مهاجرت کرد، `gtag.js` فقط پس از opt-in بارگذاری می‌شود و manual SPA pageview از double-count جلوگیری می‌کند. Schema v20 و dependencyها بدون تغییرند.
 
+## [2.6.0] - Release Candidate 2026-08-20
+
+- Phase 201 Release Candidate: package/root lock version به 2.6.0 ارتقا یافت؛ baseline نهایی Phase 200 روی `15f5af8` با 958/958 و Full Release Gate سبز ثبت شده است.
+- Candidate فازهای 195–200 را بسته‌بندی می‌کند: public trust/OAuth surfaces، GA4 runtime، Leave/Tooltip hardening، Onboarding/Freelancer Work Session، mode-specific Today routes، responsive Date/Time Picker، Employee Activity Context و Attendance editing، PWA bilingual identity، Work Calendar naming و Release Hardening.
+- AppData Candidate روی v21 است و migration رسمی این Release از v20 نسخه 2.5.0 به v21 است؛ dependency graph تغییر نکرده است.
+- `main`، Production Audit و tag annotated `v2.6.0` در Phase 201 ممنوع و فقط متعلق به Phase 202 هستند.
+
 ## [2.5.0] - 2026-08-17
 
 - Phase 194 Final Release: Candidate `d81e094` با 874/874 تست ثبت شد؛ Final source روی 880/880 قفل می‌شود و rollout فقط با ترتیب merge کنترل‌شده به `main` → deploy → `audit:production` → tag annotated `v2.5.0` مجاز است.

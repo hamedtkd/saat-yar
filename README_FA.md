@@ -276,8 +276,10 @@ tests/                         تست‌های دامنه، Regression و معم
 
 - [عیب‌یابی Windows و خطاهای npm](./docs/TROUBLESHOOTING_FA.md)
 - [جدول سازگاری مرورگر و محدودیت‌های Notification/PWA](./docs/BROWSER_COMPATIBILITY.md)
-- [یادداشت آخرین Release پایدار ساعت‌یار ۲.۴.۰](./docs/releases/RELEASE_NOTES_2.4.0_FA.md)
-- [آخرین انتشار پایدار ساعت‌یار ۲.۳.۲](./docs/releases/RELEASE_NOTES_2.3.2_FA.md)
+- [یادداشت Release Candidate ساعت‌یار ۲.۶.۰](./docs/releases/RELEASE_NOTES_2.6.0_FA.md)
+- [یادداشت آخرین Release پایدار ساعت‌یار ۲.۵.۰](./docs/releases/RELEASE_NOTES_2.5.0_FA.md)
+- [یادداشت Release تاریخی ساعت‌یار ۲.۴.۰](./docs/releases/RELEASE_NOTES_2.4.0_FA.md)
+- [انتشار تاریخی ساعت‌یار ۲.۳.۲](./docs/releases/RELEASE_NOTES_2.3.2_FA.md)
 - [یادداشت انتشار تاریخی ۲.۳.۱](./docs/releases/RELEASE_NOTES_2.3.1_FA.md)
 - [یادداشت انتشار تاریخی ۲.۳.۰](./docs/releases/RELEASE_NOTES_2.3.0_FA.md)
 - [یادداشت انتشار تاریخی ۲.۲.۰](./docs/releases/RELEASE_NOTES_2.2.0_FA.md)
@@ -299,11 +301,15 @@ npm run test:browser:production
 
 ## نقشه راه
 
+## Release Candidate ۲.۶.۰
+
+**Release Candidate ۲.۶.۰** تغییرات پس از ۲.۵.۰، یعنی فازهای ۱۹۵ تا ۲۰۰ را روی AppData v21 بسته‌بندی می‌کند. Candidate فعلاً روی `dev` می‌ماند و انتقال به Production و tag `v2.6.0` فقط در Phase 202 انجام می‌شود. [یادداشت RC ۲.۶.۰](./docs/releases/RELEASE_NOTES_2.6.0_FA.md)
+
 نسخه **۲.۵.۰** آخرین Release پایدار ساعت‌یار است و تغییرات فازهای ۱۶۶ تا ۱۸۰ را بسته‌بندی می‌کند: آنبوردینگ مستقل و قابل‌بازیابی، اصلاح سهمیه مرخصی، بازخورد ویرایش روز تکمیل‌شده، Import Wizard، Runtime Clock مشترک، تکمیل فارسی RTL / انگلیسی LTR و قرارداد Final Release.
 
-Baseline فاز ۱۷۸ روی `887158c` با **۷۵۸/۷۵۸ تست** بسته شد. Candidate فاز ۱۷۹ روی `1cabdb4` Gate **۷۶۴/۷۶۴** را کامل کرد و فاز ۱۸۰ با شش قرارداد Finalization به Gate نهایی **۷۷۰/۷۷۰** رسید. قرارداد منتشرشده ۲.۴.۰ به‌صورت immutable روی Schema v17 باقی می‌ماند. توسعه پس از Release اکنون روی **Schema v20** است: فازهای ۱۸۲ تا ۱۸۹B Flexible Work، Notification Intelligence، Analytics امن، Month Intelligence، Motion، Google Calendar Read/Write و Settings چندصفحه‌ای را اضافه کردند، فاز ۱۸۹C مبنای نرخ ساعتی حقوق ماهانه را با «ماه استاندارد» قابل تنظیم اصلاح کرد و فاز ۱۹۰ Incremental Sync امن Google Calendar، تشخیص Conflict/Duplicate، برنامه‌ریزی Day/Week، تبدیل صریح Event به Activity و ویرایش occurrence/series تکرارشونده را اضافه کرد. فهرست تجمیعی قابلیت‌های نسخه بعدی برای Release Notes و LinkedIn در `docs/releases/NEXT_RELEASE_FEATURES_FA.md` نگهداری می‌شود. جزئیات در [یادداشت Release ۲.۴.۰](./docs/releases/RELEASE_NOTES_2.4.0_FA.md)، [یادداشت فاز ۱۸۸](./docs/phases/PHASE_188_NOTES_FA.md) و [نقشه راه](./docs/roadmap/BACKLOG_FA.md) ثبت شده‌اند.
+Baseline نهایی Phase 200 روی `15f5af8` با **۹۵۸/۹۵۸ تست**، Full Browser/Pairing Gate، Hardening Audit، Vercel Audit و Build کامل ۳۷ route بسته شده است. Candidate فعلی روی **Schema v21** قرار دارد و قرارداد منتشرشده ۲.۵.۰ روی Schema v20 تاریخی و immutable باقی می‌ماند. جزئیات در [یادداشت RC ۲.۶.۰](./docs/releases/RELEASE_NOTES_2.6.0_FA.md)، [فهرست قابلیت‌های نسخه بعدی](./docs/releases/NEXT_RELEASE_FEATURES_FA.md) و [نقشه راه](./docs/roadmap/BACKLOG_FA.md) ثبت شده‌اند.
 
-Manifest ۲.۴.۰ در وضعیت `released` است اما عمداً SHA نهایی خودش را داخل Manifest ذخیره نمی‌کند. بعد از Merge نهایی `dev -> main` و Deploy Vercel، `npm run audit:production` باید سبز شود و فقط سپس Tag annotated `v2.4.0` روی همان Commit نهایی ساخته شود. این Tag منبع حقیقت SHA Release است. Manifest و Tagهای ۲.۳.۲ و قدیمی‌تر تاریخی و immutable باقی می‌مانند.
+Phase 201 فقط Candidate را بسته‌بندی می‌کند. انتقال Candidate تأییدشده به `main`، Production Audit و Tag annotated `v2.6.0` فقط در Phase 202 انجام می‌شود. Manifest و Tagهای Releaseهای قبلی تاریخی و immutable باقی می‌مانند.
 
 ## حمایت مالی
 
