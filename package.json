@@ -51,7 +51,9 @@
     "check:release:full": "npm run check:quality && npm run check:release:audit && npm run test:browser:production:built && npm run test:browser:freelancer:built && npm run test:browser:employee:built && npm run test:browser:pairing && npm run audit:vercel",
     "test:phase200:hardening": "node --test --experimental-strip-types tests/phase200-final-hardening.test.ts tests/phase200-final-hardening-backup.test.ts",
     "release:prepare:2.6.0": "node scripts/prepare-release-2.6.0.mjs",
-    "check:release:candidate:2.6.0": "npm run release:prepare:2.6.0 && npm run check:release:full"
+    "check:release:candidate:2.6.0": "npm run release:prepare:2.6.0 && npm run check:release:full",
+    "release:finalize:2.6.0": "node scripts/prepare-release-2.6.0-final.mjs",
+    "check:release:final:2.6.0": "npm run release:finalize:2.6.0 && npm run check:release:full"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.1.23",

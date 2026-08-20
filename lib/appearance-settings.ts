@@ -110,7 +110,7 @@ export function createAppearancePreviewTokens(
   resolvedMode: ResolvedThemeMode,
 ): Record<string, string> {
   const safeValue = value.preset === "custom" && !isHexColor(value.accent)
-    ? { ...value, accent: themePresets.spotify }
+    ? { ...value, accent: themePresets.violet }
     : value;
   const accent = resolveAccent(safeValue);
   const accentTokens = resolveAccentTokens(accent, resolvedMode);

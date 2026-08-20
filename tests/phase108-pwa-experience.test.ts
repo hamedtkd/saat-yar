@@ -19,8 +19,8 @@ test("PWA registration captures install availability and checks for updates", ()
 
 test("service worker waits for explicit approval before activating an update", () => {
   const sw = read("public/sw.js");
-  assert.match(sw, /saatyar-shell-v7/);
-  assert.match(sw, /saatyar-static-v7/);
+  assert.match(sw, /const CACHE_NAME = "saatyar-shell-v\d+";/);
+  assert.match(sw, /const STATIC_CACHE = "saatyar-static-v\d+";/);
   assert.match(sw, /event\.data\?\.type === "SKIP_WAITING"/);
   const installBlock = sw.match(/self\.addEventListener\("install",[\s\S]*?\n\}\);/)?.[0] ?? "";
   assert.doesNotMatch(installBlock, /skipWaiting/);

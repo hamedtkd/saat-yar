@@ -1,11 +1,21 @@
-# یادداشت Release Candidate ساعت‌یار ۲.۶.۰
+# یادداشت Release ساعت‌یار ۲.۶.۰
 
 تاریخ Candidate: ۲۹ مرداد ۱۴۰۵ / 2026-08-20
-تاریخ Final Release: هنوز تعیین نشده
+تاریخ Final Release: 2026-08-20
 
-ساعت‌یار ۲.۶.۰ یک Minor Release واقعی پس از ۲.۵.۰ است و تغییرات محصولی و hardening فازهای ۱۹۵ تا ۲۰۰ را بسته‌بندی می‌کند. Baseline نهایی Phase 200 روی commit `15f5af8` با **958/958 تست** و Full Release Gate سبز تأیید شده است. Phase 201 فقط Candidate را بسته‌بندی می‌کند؛ هیچ Feature جدیدی وارد این نسخه نمی‌شود.
+ساعت‌یار ۲.۶.۰ Final Minor Release پس از ۲.۵.۰ است و تغییرات محصولی و hardening فازهای ۱۹۵ تا ۲۰۰ را بسته‌بندی می‌کند. Phase 200 روی commit `15f5af8` با **958/958 تست** بسته شد. Candidate فاز ۲۰۱ روی commit `3e5bcbf` با **964/964 تست** و Full Production/Freelancer/Employee/Pairing/Vercel Gate تأیید شده است. Phase 202 فقط Release است و Feature جدیدی وارد این نسخه نمی‌شود.
+
+## قرارداد Final Release
+
+- Candidate تأییدشده: `3e5bcbf` با `964/964` تست Node و Full Browser/Pairing/Vercel Gate.
+- Target سورس نهایی Phase 202: **970/970** تست Node پس از اضافه‌شدن قراردادهای Release.
+- AppData: **v21** با migration رسمی از Schema **v20** نسخه ۲.۵.۰.
+- ترتیب Rollout اجباری است: merge commit نهایی به `main` → صبر برای Deploy Production در Vercel → اجرای `npm run audit:production` → سپس و فقط سپس tag annotated `v2.6.0`.
+- Tag باید دقیقاً روی همان commit از `main` باشد که در Production audit شده است.
 
 ## مهم‌ترین تغییرات
+
+- Visual lock نهایی: Violet (`#8b5cf6`) preset پیش‌فرض برند است، آیکون‌های نصب/اشتراک‌گذاری بازسازی شده‌اند و رسانه‌های README از Build واقعی دوباره Capture می‌شوند.
 
 - صفحات عمومی About / Help / Privacy / Terms و disclosure شفاف Google Calendar برای آمادگی OAuth Verification.
 - GA4 واقعی با Consent و Opt-out محلی، payload محدود و بدون ارسال متن فعالیت، عنوان پروژه یا محتوای کاری کاربر.
@@ -28,7 +38,7 @@
 ## قرارداد داده و Migration
 
 - Schema نسخه منتشرشده ۲.۵.۰: **v20**
-- Schema Candidate ۲.۶.۰: **v21**
+- Schema Release ۲.۶.۰: **v21**
 - Migration تحت Audit: **v20 → v21**
 - v21: `ActivitySegment.title?`، `workProjects` و `workProjectId?` برای Activity Context فضای Employee/Hybrid.
 - پروژه‌های کاری Employee از پروژه‌های مشتری Freelancer مستقل‌اند؛ Hybrid می‌تواند هر دو context را بدون leakage ببیند.
@@ -54,14 +64,15 @@ PWA offline reload passed
 RTL 360/375/425 + LTR 375 + Employee/Freelancer 320 passed
 ```
 
-## مرز Release Candidate
+## مرز Rollout نهایی
 
-Phase 201 **Final Release نیست**:
+Phase 202 سورس و اسناد Final Release را می‌بندد، اما Release عمومی تا قبل از Gate سبز Production تمام‌شده محسوب نمی‌شود:
 
-- Candidate روی `dev` می‌ماند.
-- `main` در این فاز تغییر نمی‌کند.
-- `releaseDate` برابر `null` باقی می‌ماند.
-- Manifest وضعیت `release-candidate` دارد.
-- `candidateCommit` تا زمانی که خود Candidate commit روی `dev` ساخته و Full Gate دوباره سبز نشود `null` است.
-- Tag `v2.6.0` ساخته نمی‌شود.
-- Phase 202 تنها فازی است که مجاز است Candidate تأییدشده را به `main` ببرد، Production Audit را اجرا کند و سپس tag annotated بسازد.
+- سورس Finalization روی `dev` commit شود؛
+- همان commit دقیق به `main` merge شود؛
+- Deploy Production همان commit در Vercel کامل شود؛
+- `npm run audit:production` سبز شود؛
+- فقط بعد از آن tag annotated `v2.6.0` ساخته شود؛
+- Tag باید دقیقاً روی همان commit audit‌شده `main` باشد.
+
+در Phase 202 هیچ Feature جدید، Schema change، dependency update یا code change پس از Production Audit مجاز نیست.

@@ -3,8 +3,8 @@
   "package": "saatyar-worklog",
   "version": "2.6.0",
   "candidateDate": "2026-08-20",
-  "releaseDate": null,
-  "status": "release-candidate",
+  "releaseDate": "2026-08-20",
+  "status": "released",
   "dataSchemaVersion": 21,
   "releasedSchemaBaseline": 20,
   "nodeEngine": "22.x",
@@ -36,22 +36,30 @@
     "phase200BaselineTestCount": 958,
     "developmentSchema": 21,
     "released250Schema": 20,
-    "migrationChain": [21],
-    "productionBrowserSmoke": "passed-on-phase200-baseline",
-    "freelancerBrowserSmoke": "passed-on-phase200-baseline",
-    "employeeBrowserSmoke": "passed-on-phase200-baseline",
-    "pairingBrowserSmoke": "passed-on-phase200-baseline",
-    "vercelStaticExportAudit": "passed-on-phase200-baseline",
-    "hardeningAudit": "passed-on-phase200-baseline",
-    "i18nClosureAudit": "passed-on-phase200-baseline",
-    "testCouplingAudit": "passed-on-phase200-baseline",
-    "productionDomainAudit": "required-after-main-deploy"
+    "migrationChain": [
+      21
+    ],
+    "productionBrowserSmoke": "passed-on-candidate",
+    "freelancerBrowserSmoke": "passed-on-candidate",
+    "employeeBrowserSmoke": "passed-on-candidate",
+    "pairingBrowserSmoke": "passed-on-candidate",
+    "vercelStaticExportAudit": "passed-on-candidate",
+    "hardeningAudit": "passed-on-candidate",
+    "i18nClosureAudit": "passed-on-candidate",
+    "testCouplingAudit": "passed-on-candidate",
+    "productionDomainAudit": "required-after-main-deploy",
+    "phase201CandidateCommitPrefix": "3e5bcbf",
+    "phase201CandidateTestCount": 964,
+    "finalPhase": 202
   },
-  "candidateCommit": null,
   "rollout": {
-    "branch": "dev",
-    "mainMerge": "phase-202-only",
-    "productionAudit": "phase-202-only",
-    "annotatedTag": "phase-202-only"
-  }
+    "branch": "main",
+    "mainMerge": "required-before-tag",
+    "productionAudit": "required-before-tag",
+    "annotatedTag": "required-after-production-audit"
+  },
+  "verifiedCandidateCommitPrefix": "3e5bcbf",
+  "verifiedCandidateTestCount": 964,
+  "finalPhase": 202,
+  "expectedFinalTestCount": 970
 }

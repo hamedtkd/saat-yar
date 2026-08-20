@@ -1,3 +1,10 @@
+## Phase 202 — Final Release 2.6.0
+
+- Candidate commit `3e5bcbf` با 964/964 و Full Release Gate تأیید شده است.
+- Final source فقط Release contract را اضافه می‌کند؛ AppData v21 و dependency graph ثابت می‌مانند و target Node gate به 970/970 می‌رسد.
+- Remote Production Audit با PWA identity دوزبانه `Saatyar | ساعت یار` / `Saatyar` و security headerهای Vercel همگام شده است.
+- ترتیب نهایی اجباری: merge به `main` → Vercel Production Deploy → `npm run audit:production` → tag annotated `v2.6.0` روی همان commit audit‌شده.
+
 ## Phase 201 — Release Candidate 2.6.0
 
 - Baseline Phase 200 روی `15f5af8` با 958/958 و Full Release Gate سبز قفل شده است.

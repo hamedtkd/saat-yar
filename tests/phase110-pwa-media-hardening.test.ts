@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import { Script } from "node:vm";
+import { FRESH_ONBOARDING_READY_EXPRESSION } from "../scripts/media/capture-expressions.mjs";
 
 const read = (path: string) => readFileSync(path, "utf8");
 
@@ -17,8 +19,8 @@ test("static builds finalize a generated Next asset precache manifest", () => {
 test("service worker precaches generated build assets before offline use", () => {
   const sw = read("public/sw.js");
   assert.match(sw, /importScripts\("pwa-precache-manifest\.js"\)/);
-  assert.match(sw, /saatyar-shell-v7/);
-  assert.match(sw, /saatyar-static-v7/);
+  assert.match(sw, /const CACHE_NAME = "saatyar-shell-v\d+";/);
+  assert.match(sw, /const STATIC_CACHE = "saatyar-static-v\d+";/);
   assert.match(sw, /\.\.\.BUILD_ASSETS/);
   assert.match(read("public/pwa-precache-manifest.js"), /__SAATYAR_PRECACHE = \[\]/);
 });
@@ -40,6 +42,13 @@ test("media capture starts clean before app boot and reports browser exceptions"
   assert.doesNotMatch(source, /indexedDB\.deleteDatabase/);
   assert.match(source, /exception\?\.description/);
   assert.match(source, /Browser runtime errors during media capture/);
+  assert.match(source, /saatyar-media-frames-/);
+  assert.match(source, /data-onboarding-step-index/);
+  assert.match(source, /fresh onboarding route before demo seed/);
+  assert.match(source, /rm\(frameDir, \{ recursive: true, force: true \}\)/);
+  assert.doesNotMatch(source, /ساعت‌یار را برای خودت تنظیم کن/);
+  assert.doesNotThrow(() => new Script(FRESH_ONBOARDING_READY_EXPRESSION));
+  assert.match(FRESH_ONBOARDING_READY_EXPRESSION, /path === "\/onboarding"/);
 });
 
 test("phase 110 is wired into quality and roadmap advances payroll after hardening", () => {

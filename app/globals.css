@@ -8,10 +8,10 @@
 }
 
 :root {
-  --accent: #06b6d4;
-  --accent-fill: #0e7490;
+  --accent: #8b5cf6;
+  --accent-fill: #8b5cf6;
   --accent-foreground: #ffffff;
-  --accent-strong: #0e7490;
+  --accent-strong: #5c3da2;
   --accent-soft: color-mix(in srgb, var(--accent) 14%, transparent);
   --page: color-mix(in srgb, var(--accent) 2.2%, #f6f8fb);
   --surface-1: #ffffff;
@@ -44,7 +44,7 @@
 
 :root[data-theme="dark"] {
   --accent-foreground: #ffffff;
-  --accent-strong: #67e8f9;
+  --accent-strong: #c4b5fd;
   --page: color-mix(in srgb, var(--accent) 4.2%, #071017);
   --surface-1: color-mix(in srgb, var(--accent) 3.2%, #0d161d);
   --surface-2: color-mix(in srgb, var(--accent) 4.8%, #121d25);

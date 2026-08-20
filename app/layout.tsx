@@ -62,7 +62,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <head>
         <meta name="saatyar-base" content={basePath} />
         <LocaleBootstrap />
-        <meta name="theme-color" content="#06b6d4" data-saatyar-theme-color />
+        <meta name="theme-color" content="#8b5cf6" data-saatyar-theme-color />
         <ThemeBootstrap />
       </head>
       <body className="saatyar-app-font m-0 min-h-screen bg-[var(--page)] font-normal text-[var(--text)] antialiased transition-colors">

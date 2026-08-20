@@ -1,4 +1,11 @@
 ## [Unreleased]
+- Phase 202 R6: fixed the real-media CDP readiness expression that could compile into invalid JavaScript after onboarding capture; the generated expression is now regex-free and parser-checked by the historical media hardening test.
+
+- Phase 202 R5: hardened real-media capture after browser-storage reset by waiting on the structural onboarding route instead of stale copy, moved transient onboarding GIF frames to OS temp storage, and switched final release installation guidance to `npm ci` to keep the lockfile byte-stable under the Node 22 release contract.
+
+- Phase 202 R4: hardened historical PWA cache-version tests so the intentional violet-brand Service Worker cache bump to v8 no longer produces a false release failure.
+
+- Phase 202 R3 pre-release visual lock: رنگ برند اولیه از cyan به Violet (`#8b5cf6`) تغییر کرد، PWA/App icon بر اساس آیکون تأییدشده با گوشه‌ی تمیز بازسازی شد، social cards بنفش شدند و README حالا از اسکرین‌شات‌های واقعی Build برای Today، Work Calendar، Reports، Settings و موبایل استفاده می‌کند. AppData v21، dependencies و package-lock بدون تغییرند.
 
 - Phase 200 R3: صفحه `/month` از «ماه من» به «تقویم کاری» / `Work Calendar` تغییر نام داد؛ nav، metadata، Help، Google Calendar copy، multi-tab labels، PWA shortcut و browser smoke همگام شدند. هم‌زمان قرارداد manifest دوباره `name: PWA_APP_NAME` شد تا Phase 105 و Phase 177 هر دو با identity دوزبانه فعلی سازگار بمانند؛ AppData v21 و dependencies بدون تغییرند.
 - Phase 200 R1: Release hardening با PWA identity دوزبانه `Saatyar | ساعت یار`، short name فشرده، ترتیب طبیعی تاریخ فارسی/English و helper تست‌پذیر برای theme-aware runtime favicon آغاز شد؛ AppData v21 و dependencyها بدون تغییر ماندند.
@@ -37,12 +44,13 @@
 - Fixed GA4 default delivery/consent behavior and made month intelligence/recent activity correctly credit registered leave without turning leave into worked time.
 - Phase 195: OAuth Verification readiness با Privacy Policy/Terms عمومی، disclosure شفاف Google Calendar و Verification Kit اضافه شد؛ Analytics اختیاری از Plausible به GA4 consent-gated مهاجرت کرد، `gtag.js` فقط پس از opt-in بارگذاری می‌شود و manual SPA pageview از double-count جلوگیری می‌کند. Schema v20 و dependencyها بدون تغییرند.
 
-## [2.6.0] - Release Candidate 2026-08-20
+## [2.6.0] - 2026-08-20
 
+- Phase 202 Final Release: Candidate `3e5bcbf` با 964/964 و Full Release Gate ثبت شد؛ Final source target روی 970/970 قفل می‌شود و rollout فقط با ترتیب merge کنترل‌شده به `main` → Vercel production deploy → `npm run audit:production` → tag annotated `v2.6.0` مجاز است. Remote production audit نیز با PWA identity دوزبانه فعلی و security headers Phase 200 همگام شد.
 - Phase 201 Release Candidate: package/root lock version به 2.6.0 ارتقا یافت؛ baseline نهایی Phase 200 روی `15f5af8` با 958/958 و Full Release Gate سبز ثبت شده است.
 - Candidate فازهای 195–200 را بسته‌بندی می‌کند: public trust/OAuth surfaces، GA4 runtime، Leave/Tooltip hardening، Onboarding/Freelancer Work Session، mode-specific Today routes، responsive Date/Time Picker، Employee Activity Context و Attendance editing، PWA bilingual identity، Work Calendar naming و Release Hardening.
 - AppData Candidate روی v21 است و migration رسمی این Release از v20 نسخه 2.5.0 به v21 است؛ dependency graph تغییر نکرده است.
-- `main`، Production Audit و tag annotated `v2.6.0` در Phase 201 ممنوع و فقط متعلق به Phase 202 هستند.
+- Phase 201 روی candidate commit `3e5bcbf` با 964/964 بسته شد؛ `main`، Production Audit و tag annotated `v2.6.0` فقط با قرارداد Phase 202 انجام می‌شوند.
 
 ## [2.5.0] - 2026-08-17
 

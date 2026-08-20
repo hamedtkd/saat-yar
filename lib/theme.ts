@@ -20,7 +20,7 @@ export function isHexColor(value: string) {
 type Rgb = { r: number; g: number; b: number };
 
 function hexToRgb(value: string): Rgb {
-  const safe = isHexColor(value) ? value : themePresets.spotify;
+  const safe = isHexColor(value) ? value : themePresets.violet;
   return {
     r: Number.parseInt(safe.slice(1, 3), 16),
     g: Number.parseInt(safe.slice(3, 5), 16),

@@ -1,66 +1,98 @@
-# چک‌لیست Release Candidate ساعت‌یار 2.6.0
+# چک‌لیست Final Release ساعت‌یار 2.6.0
 
-Baseline قابل قبول Phase 201:
+## Baseline تأییدشده
 
 ```text
 branch: dev
-commit: 15f5af8
-Phase 200 gate: 958/958
+Phase 200 baseline: 15f5af8 — 958/958
+Phase 201 candidate: 3e5bcbf — 964/964 + full release gate
+package: 2.6.0
 AppData: v21
 released 2.5.0 AppData: v20
 ```
 
-## 1. قبل از Gate
+Phase 202 فقط Release است؛ Feature، dependency و schema جدید مجاز نیست.
+
+## 1. Final source gate روی dev
+
+بعد از جایگزینی سورس Phase 202 و در حالی که HEAD هنوز `3e5bcbf` است:
 
 ```powershell
-git status
-git log -1 --oneline
-npm install
-npm run release:prepare:2.6.0
-```
+Set-Location "D:\my-workspace\saat-yar"
 
-`release:prepare:2.6.0` باید HEAD=`15f5af8` و branch=`dev` را تأیید کند. Working tree در این نقطه عمداً تغییرات Candidate را دارد.
-
-## 2. Candidate Gate
-
-```powershell
-npm run check:release:full
+npm ci
+npm run check:release:final:2.6.0
 
 git diff --check
 git diff -- package-lock.json
 git status
 ```
 
-تغییر lockfile مجاز در Phase 201 فقط bump نسخه root از 2.5.0 به 2.6.0 است؛ dependency graph نباید تغییر کند.
-
-هدف Node Test پس از شش Contract Test فاز ۲۰۱:
+انتظار:
 
 ```text
-964 / 964
+970 / 970 tests
+package-lock.json: no diff from Phase 201 candidate
+AppData: v21
 ```
 
-## 3. Visual sanity
+`check:release:final:2.6.0` ابتدا branch=`dev` و HEAD=`3e5bcbf` را تأیید می‌کند و سپس Full Release Gate را اجرا می‌کند.
 
-Feature جدیدی وجود ندارد؛ فقط regression sanity روی baseline تثبیت‌شده:
+## 2. Finalization commit روی dev
 
-- Employee / Freelancer / Hybrid Today
-- Work Calendar
-- Persian RTL / English LTR
-- 320 / 360 / 375 / 425 / Desktop
-- Light / Dark و accent بنفش
-- PWA install identity و offline reload
-
-## 4. Candidate commit
-
-فقط بعد از Gate و Visual sanity سبز:
+فقط بعد از Gate سبز:
 
 ```powershell
 git add .
 git diff --cached --check
-git commit -m "release: prepare 2.6.0 candidate"
+git status
+
+git commit -m "release: finalize 2.6.0"
 git push origin dev
+
+git status
 git log -1 --oneline
+```
+
+Hash این commit را نگه دار؛ همین commit باید به `main` برسد و در Production audit شود.
+
+## 3. Merge کنترل‌شده به main
+
+```powershell
+git checkout main
+git pull --ff-only origin main
+git merge --no-ff dev
+git push origin main
+
+git status
+git log -1 --oneline
+```
+
+اگر سیاست repository شما fast-forward است، به‌جای `--no-ff` همان روش ثابت repository را استفاده کن؛ نکته مهم این است که محتوای Finalization بدون تغییر به `main` برسد.
+
+## 4. Production deploy و Audit
+
+صبر کن Vercel همان `main` commit را Production کند. سپس:
+
+```powershell
+npm run audit:production
+```
+
+Audit باید routeها، PWA identity دوزبانه، Service Worker/Precache، install iconها، sitemap/robots، security headerها و revalidation Manifest/SW را سبز کند.
+
+## 5. Tag فقط بعد از Production Audit
+
+روی `main` و همان commit audit‌شده:
+
+```powershell
+git status
+git rev-parse --short=7 HEAD
+
+git tag -a v2.6.0 -m "Saatyar 2.6.0"
+git push origin v2.6.0
+
+git show --no-patch --decorate v2.6.0
 git status
 ```
 
-Hash این commit ورودی Phase 202 خواهد بود. در Phase 201 `main`، Production و Tag دست نمی‌خورند.
+Tag قبل از Production Audit ممنوع است.

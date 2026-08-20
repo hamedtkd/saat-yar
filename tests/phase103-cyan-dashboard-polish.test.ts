@@ -6,9 +6,10 @@ import { themePresets } from "../lib/theme.ts";
 
 const read = (path: string) => readFileSync(path, "utf8");
 
-test("cyan is the default brand palette while alternate themes remain available", () => {
-  assert.equal(defaultSettings.appearance.preset, "spotify");
-  assert.equal(defaultSettings.appearance.accent, "#06b6d4");
+test("violet is the current default brand palette while historical presets remain available", () => {
+  assert.equal(defaultSettings.appearance.preset, "violet");
+  assert.equal(defaultSettings.appearance.accent, "#8b5cf6");
+  assert.equal(themePresets.violet, "#8b5cf6");
   assert.equal(themePresets.spotify, "#06b6d4");
   assert.equal(themePresets.emerald, "#10b981");
   assert.equal(themePresets.ocean, "#0ea5e9");
@@ -16,10 +17,12 @@ test("cyan is the default brand palette while alternate themes remain available"
   assert.match(card, /spotify: "Turquoise"/);
   assert.match(card, /emerald: "Green"/);
   assert.match(card, /ocean: "Blue"/);
+  assert.match(card, /violet: "Violet"/);
   const system = read("lib/i18n/system.ts");
   assert.match(system, /"Turquoise": "فیروزه‌ای"/);
   assert.match(system, /"Green": "سبز"/);
   assert.match(system, /"Blue": "آبی"/);
+  assert.match(system, /"Violet": "بنفش"/);
 });
 
 test("zero-target days never masquerade as one hundred percent complete", () => {

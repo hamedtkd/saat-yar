@@ -77,15 +77,36 @@ function assertHtmlContract(path, html) {
   }
 }
 
-function assertManifestContract(manifest) {
-  if (manifest?.name !== "ساعت‌یار" || manifest?.short_name !== "ساعت‌یار") {
+export function assertProductionManifestContract(manifest) {
+  if (manifest?.name !== "Saatyar | ساعت یار" || manifest?.short_name !== "Saatyar") {
     throw new Error(`Manifest identity mismatch: ${JSON.stringify({ name: manifest?.name, short_name: manifest?.short_name })}`);
   }
-  if (manifest?.dir !== "rtl" || manifest?.lang !== "fa" || manifest?.display !== "standalone") {
+  if (manifest?.dir !== "auto" || manifest?.lang !== "fa" || manifest?.display !== "standalone") {
     throw new Error(`Manifest locale/display mismatch: ${JSON.stringify({ dir: manifest?.dir, lang: manifest?.lang, display: manifest?.display })}`);
   }
   if (manifest?.start_url !== "/today/") throw new Error(`Manifest start_url mismatch: ${manifest?.start_url}`);
   if (!Array.isArray(manifest?.icons) || manifest.icons.length < 3) throw new Error("Manifest does not expose the expected install icons.");
+}
+
+export function assertProductionSecurityHeaders(headers) {
+  const expected = {
+    "x-content-type-options": "nosniff",
+    "x-frame-options": "DENY",
+    "referrer-policy": "strict-origin-when-cross-origin",
+    "permissions-policy": "camera=(self), microphone=(), geolocation=()",
+    "strict-transport-security": "max-age=31536000",
+  };
+  for (const [key, value] of Object.entries(expected)) {
+    const actual = headers?.get?.(key);
+    if (actual !== value) throw new Error(`Production security header mismatch for ${key}: ${actual ?? "missing"}`);
+  }
+}
+
+export function assertRevalidationHeader(label, headers) {
+  const value = headers?.get?.("cache-control") || "";
+  if (!/max-age=0/i.test(value) || !/must-revalidate/i.test(value)) {
+    throw new Error(`${label} must be served with max-age=0, must-revalidate: ${value || "missing"}`);
+  }
 }
 
 function extractSitemapLocations(xml) {
@@ -124,11 +145,12 @@ export async function runRemoteProductionAudit(inputUrl = process.env.SAATYAR_PR
     const url = sameOriginPath(base, path);
     const { response, body } = await request(url);
     assertOk(`Route ${path}`, response, origin);
+    assertProductionSecurityHeaders(response.headers);
     const contentType = response.headers.get("content-type") || "";
     if (!contentType.toLowerCase().includes("text/html")) throw new Error(`Route ${path} is not HTML: ${contentType}`);
     assertHtmlContract(path, body);
   }
-  console.log(`✓ ${EXPECTED_ROUTE_PATHS.length} production routes return the Persian RTL app shell`);
+  console.log(`✓ ${EXPECTED_ROUTE_PATHS.length} production routes return the Persian RTL app shell with hardened security headers`);
 
   const manifestUrl = sameOriginPath(base, "/manifest.webmanifest");
   const manifestResult = await request(manifestUrl);
@@ -139,11 +161,13 @@ export async function runRemoteProductionAudit(inputUrl = process.env.SAATYAR_PR
   } catch {
     throw new Error("PWA manifest is not valid JSON.");
   }
-  assertManifestContract(manifest);
-  console.log("✓ PWA manifest exposes Saatyar standalone/RTL install metadata");
+  assertProductionManifestContract(manifest);
+  assertRevalidationHeader("PWA manifest", manifestResult.response.headers);
+  console.log("✓ PWA manifest exposes bilingual Saatyar standalone install metadata and revalidates");
 
   const swResult = await request(sameOriginPath(base, "/sw.js"));
   assertOk("Service worker", swResult.response, origin);
+  assertRevalidationHeader("Service worker", swResult.response.headers);
   if (!/importScripts\(["']pwa-precache-manifest\.js["']\)/.test(swResult.body) || !/saatyar-shell-v\d+/.test(swResult.body)) {
     throw new Error("Service worker does not expose the expected Saatyar cache/precache contract.");
   }

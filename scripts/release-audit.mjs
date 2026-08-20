@@ -221,8 +221,8 @@ export function collectFinal250AuditFailures() {
   requireCondition(readText(manifest.releaseNotes.en).includes("Final release date: 2026-08-17"), "English 2.5.0 notes lost the final release date.", failures);
   requireCondition(readText(manifest.releaseNotes.fa).includes("تاریخ Final Release: 2026-08-17"), "Persian 2.5.0 notes lost the final release date.", failures);
   requireCondition(readText("CHANGELOG.md").includes("## [2.5.0] - 2026-08-17"), "CHANGELOG is missing the historical 2.5.0 heading.", failures);
-  requireCondition(readText("README.md").includes("Version **2.5.0** is the latest stable"), "English README must keep identifying 2.5.0 as the latest stable release until Phase 202.", failures);
-  requireCondition(readText("README_FA.md").includes("نسخه **۲.۵.۰** آخرین Release پایدار"), "Persian README must keep identifying 2.5.0 as the latest stable release until Phase 202.", failures);
+  requireCondition(readText("README.md").includes("Historical Saatyar 2.5.0 release notes"), "English README must keep the historical 2.5.0 release notes reachable after 2.6.0.", failures);
+  requireCondition(readText("README_FA.md").includes("Release تاریخی ساعت‌یار ۲.۵.۰"), "Persian README must keep the historical 2.5.0 release notes reachable after 2.6.0.", failures);
   requireCondition(readText("docs/README.md").includes("2.5.0 final release"), "Docs index must preserve the 2.5.0 final-release entry.", failures);
   requireCondition(readText("docs/roadmap/BACKLOG_FA.md").includes("- [x] فاز ۱۹۳:"), "Roadmap must keep Phase 193 closed.", failures);
   requireCondition(readText("docs/roadmap/BACKLOG_FA.md").includes("- [x] فاز ۱۹۴:"), "Roadmap must keep Phase 194 closed.", failures);
@@ -278,43 +278,63 @@ export function collectCandidate260AuditFailures() {
   const manifest = readJson("docs/releases/2.6.0.json");
   const released250 = readJson("docs/releases/2.5.0.json");
 
-  requireCondition(packageJson.version === "2.6.0", "package.json must be 2.6.0 for Phase 201 candidate packaging.", failures);
-  requireCondition(packageLock.version === "2.6.0", "package-lock.json root version must be 2.6.0.", failures);
-  requireCondition(packageLock.packages?.[""]?.version === "2.6.0", "package-lock root package version must be 2.6.0.", failures);
-  requireCondition(manifest.version === "2.6.0", "2.6.0 candidate manifest version is stale.", failures);
-  requireCondition(manifest.status === "release-candidate", "2.6.0 manifest must remain release-candidate during Phase 201.", failures);
-  requireCondition(manifest.candidateDate === "2026-08-20", "2.6.0 candidate date must be 2026-08-20.", failures);
-  requireCondition(manifest.releaseDate === null, "2.6.0 releaseDate must stay null during Phase 201.", failures);
-  requireCondition(manifest.candidateCommit === null, "Phase 201 source must not invent or self-reference a candidate commit before the local commit exists.", failures);
-  requireCondition(manifest.tag === "v2.6.0", "2.6.0 manifest must reserve the v2.6.0 tag name without creating it.", failures);
-  requireCondition(manifest.dataSchemaVersion === 21, "2.6.0 candidate schema must be v21.", failures);
-  requireCondition(manifest.releasedSchemaBaseline === 20, "2.6.0 must use released 2.5.0 schema v20 as its migration baseline.", failures);
-  requireCondition(APP_DATA_SCHEMA_VERSION === 21, "Phase 201 candidate source must stay on AppData v21.", failures);
+  requireCondition(packageJson.version === "2.6.0", "package.json must remain 2.6.0 after the verified Phase 201 candidate.", failures);
+  requireCondition(packageLock.version === "2.6.0", "package-lock.json root version must remain 2.6.0.", failures);
+  requireCondition(packageLock.packages?.[""]?.version === "2.6.0", "package-lock root package version must remain 2.6.0.", failures);
+  requireCondition(manifest.version === "2.6.0", "2.6.0 manifest version is stale.", failures);
+  requireCondition(manifest.candidateDate === "2026-08-20", "2.6.0 candidate date must stay 2026-08-20.", failures);
+  requireCondition(manifest.tag === "v2.6.0", "2.6.0 manifest must reserve the v2.6.0 tag name.", failures);
+  requireCondition(manifest.dataSchemaVersion === 21, "2.6.0 schema must stay v21.", failures);
+  requireCondition(manifest.releasedSchemaBaseline === 20, "2.6.0 must keep released 2.5.0 schema v20 as its migration baseline.", failures);
+  requireCondition(APP_DATA_SCHEMA_VERSION === 21, "2.6.0 source must stay on AppData v21.", failures);
   requireCondition(released250.version === "2.5.0" && released250.status === "released" && released250.dataSchemaVersion === 20, "2.5.0 must remain the released v20 historical baseline.", failures);
   requireCondition(manifest.nodeEngine === packageJson.engines?.node, "2.6.0 Node engine must match package.json.", failures);
-  requireCondition(manifest.verifiedBaselineCommitPrefix === "15f5af8", "2.6.0 must pin the verified Phase 200 baseline 15f5af8.", failures);
-  requireCondition(manifest.verifiedBaselineTestCount === 958, "2.6.0 must pin the 958-test Phase 200 baseline.", failures);
-  requireCondition(manifest.candidatePhase === 201, "2.6.0 candidate phase must be 201.", failures);
-  requireCondition(manifest.expectedCandidateTestCount === 964, "Phase 201 candidate Node-test target must be 964.", failures);
+  requireCondition(manifest.verifiedBaselineCommitPrefix === "15f5af8", "2.6.0 must preserve the verified Phase 200 baseline 15f5af8.", failures);
+  requireCondition(manifest.verifiedBaselineTestCount === 958, "2.6.0 must preserve the 958-test Phase 200 baseline.", failures);
+  requireCondition(manifest.candidatePhase === 201, "2.6.0 candidate phase must remain 201.", failures);
+  requireCondition(manifest.expectedCandidateTestCount === 964, "Phase 201 candidate Node-test target must remain 964.", failures);
+  requireCondition(manifest.verifiedCandidateCommitPrefix === "3e5bcbf", "2.6.0 must preserve the verified Phase 201 candidate commit 3e5bcbf.", failures);
+  requireCondition(manifest.verifiedCandidateTestCount === 964, "2.6.0 must preserve the verified 964-test Phase 201 candidate gate.", failures);
 
   const evidence = manifest.releaseEvidence ?? {};
   requireCondition(evidence.baselinePhase === 200, "2.6.0 must identify Phase 200 as the verified baseline.", failures);
   requireCondition(evidence.candidatePhase === 201, "2.6.0 must identify Phase 201 as the candidate phase.", failures);
   requireCondition(evidence.phase200BaselineCommitPrefix === "15f5af8", "2.6.0 evidence must preserve Phase 200 commit 15f5af8.", failures);
   requireCondition(evidence.phase200BaselineTestCount === 958, "2.6.0 evidence must preserve 958 baseline tests.", failures);
+  requireCondition(evidence.phase201CandidateCommitPrefix === "3e5bcbf", "2.6.0 evidence must preserve Phase 201 candidate commit 3e5bcbf.", failures);
+  requireCondition(evidence.phase201CandidateTestCount === 964, "2.6.0 evidence must preserve the 964-test Phase 201 candidate.", failures);
   requireCondition(evidence.developmentSchema === 21, "2.6.0 evidence must identify development schema v21.", failures);
   requireCondition(evidence.released250Schema === 20, "2.6.0 evidence must identify released 2.5.0 schema v20.", failures);
   requireCondition(JSON.stringify(evidence.migrationChain) === JSON.stringify([21]), "2.6.0 release migration chain must be v20 -> v21.", failures);
   for (const key of ["productionBrowserSmoke", "freelancerBrowserSmoke", "employeeBrowserSmoke", "pairingBrowserSmoke", "vercelStaticExportAudit", "hardeningAudit", "i18nClosureAudit", "testCouplingAudit"]) {
-    requireCondition(evidence[key] === "passed-on-phase200-baseline", `2.6.0 baseline evidence ${key} must preserve the green Phase 200 gate.`, failures);
+    requireCondition(evidence[key] === "passed-on-candidate", `2.6.0 candidate evidence ${key} must preserve the green Phase 201 gate.`, failures);
   }
-  requireCondition(evidence.productionDomainAudit === "required-after-main-deploy", "2.6.0 production-domain audit must remain a Phase 202 requirement.", failures);
+  requireCondition(evidence.productionDomainAudit === "required-after-main-deploy", "2.6.0 production-domain audit must remain required after the main deployment.", failures);
+
+  requireCondition(packageJson.dependencies?.["framer-motion"] === "^12.42.2", "2.6.0 must not change the existing framer-motion contract.", failures);
+  requireCondition(Object.keys(packageJson.dependencies ?? {}).length + Object.keys(packageJson.devDependencies ?? {}).length === 33, "2.6.0 must not change the direct dependency count.", failures);
+  return failures;
+}
+
+export function collectFinal260AuditFailures() {
+  const failures = [...collectCandidate260AuditFailures()];
+  const packageJson = readJson("package.json");
+  const manifest = readJson("docs/releases/2.6.0.json");
+
+  requireCondition(manifest.status === "released", "2.6.0 manifest must be released during Phase 202 finalization.", failures);
+  requireCondition(manifest.releaseDate === "2026-08-20", "2.6.0 final release date must be 2026-08-20.", failures);
+  requireCondition(manifest.finalPhase === 202, "2.6.0 final phase must be 202.", failures);
+  requireCondition(manifest.expectedFinalTestCount === 970, "Phase 202 final Node-test target must be 970.", failures);
+  requireCondition(!Object.prototype.hasOwnProperty.call(manifest, "releaseCommit"), "2.6.0 final manifest must avoid a self-referential releaseCommit field.", failures);
+
+  const evidence = manifest.releaseEvidence ?? {};
+  requireCondition(evidence.finalPhase === 202, "2.6.0 release evidence must identify Phase 202 as finalization.", failures);
 
   const rollout = manifest.rollout ?? {};
-  requireCondition(rollout.branch === "dev", "Phase 201 candidate must stay on dev.", failures);
-  requireCondition(rollout.mainMerge === "phase-202-only", "Phase 201 must not merge the candidate to main.", failures);
-  requireCondition(rollout.productionAudit === "phase-202-only", "Phase 201 must not claim a production audit.", failures);
-  requireCondition(rollout.annotatedTag === "phase-202-only", "Phase 201 must not create the annotated tag.", failures);
+  requireCondition(rollout.branch === "main", "Phase 202 rollout target must be main.", failures);
+  requireCondition(rollout.mainMerge === "required-before-tag", "Phase 202 must require the controlled main merge before tagging.", failures);
+  requireCondition(rollout.productionAudit === "required-before-tag", "Phase 202 must require the production audit before tagging.", failures);
+  requireCondition(rollout.annotatedTag === "required-after-production-audit", "Phase 202 annotated tag must remain blocked until the production audit passes.", failures);
 
   const requiredFiles = [
     "docs/releases/2.6.0.json",
@@ -322,32 +342,29 @@ export function collectCandidate260AuditFailures() {
     manifest.releaseNotes?.en,
     "docs/releases/RELEASE_CHECKLIST_2.6.0_FA.md",
     "docs/phases/PHASE_201_NOTES_FA.md",
+    "docs/phases/PHASE_202_NOTES_FA.md",
     "scripts/prepare-release-2.6.0.mjs",
+    "scripts/prepare-release-2.6.0-final.mjs",
     "docs/releases/2.5.0.json",
-    "docs/phases/PHASE_200_FINAL_QA_FA.md",
     "CHANGELOG.md",
     "README.md",
     "README_FA.md",
     "docs/README.md",
   ].filter(Boolean);
-  for (const path of requiredFiles) requireCondition(existsSync(resolve(ROOT, path)), `Required Phase 201 candidate file is missing: ${path}`, failures);
+  for (const path of requiredFiles) requireCondition(existsSync(resolve(ROOT, path)), `Required Phase 202 final-release file is missing: ${path}`, failures);
 
-  requireCondition(readText(manifest.releaseNotes.en).includes("Final release date: not set yet"), "English 2.6.0 notes must keep the final release date unset.", failures);
-  requireCondition(readText(manifest.releaseNotes.fa).includes("تاریخ Final Release: هنوز تعیین نشده"), "Persian 2.6.0 notes must keep the final release date unset.", failures);
-  requireCondition(readText("CHANGELOG.md").includes("## [2.6.0] - Release Candidate 2026-08-20"), "CHANGELOG is missing the 2.6.0 candidate heading.", failures);
-  requireCondition(readText("README.md").includes("2.6.0 Release Candidate"), "English README must link the 2.6.0 candidate without calling it stable.", failures);
-  requireCondition(readText("README_FA.md").includes("Release Candidate ۲.۶.۰"), "Persian README must link the 2.6.0 candidate without calling it stable.", failures);
-  requireCondition(readText("docs/README.md").includes("2.6.0 release candidate"), "Docs index must identify the 2.6.0 release candidate.", failures);
-  requireCondition(readText("docs/roadmap/BACKLOG_FA.md").includes("- [x] **Phase 200 — Release Hardening & Scope Freeze**"), "Roadmap must close Phase 200 before Phase 201 candidate packaging.", failures);
-  requireCondition(readText("docs/roadmap/BACKLOG_FA.md").includes("- [ ] **Phase 201 — Release Candidate 2.6.0**"), "Roadmap must keep Phase 201 pending until its local candidate commit is verified.", failures);
+  requireCondition(readText(manifest.releaseNotes.en).includes("Final release date: 2026-08-20"), "English 2.6.0 notes must record the final release date.", failures);
+  requireCondition(readText(manifest.releaseNotes.fa).includes("تاریخ Final Release: 2026-08-20"), "Persian 2.6.0 notes must record the final release date.", failures);
+  requireCondition(readText("CHANGELOG.md").includes("## [2.6.0] - 2026-08-20"), "CHANGELOG is missing the final 2.6.0 heading.", failures);
+  requireCondition(readText("README.md").includes("Version **2.6.0** is the latest stable Saatyar release"), "English README must identify 2.6.0 as the latest stable release.", failures);
+  requireCondition(readText("README_FA.md").includes("نسخه **۲.۶.۰** آخرین Release پایدار ساعت‌یار است"), "Persian README must identify 2.6.0 as the latest stable release.", failures);
+  requireCondition(readText("docs/README.md").includes("2.6.0 final release"), "Docs index must identify the 2.6.0 final release.", failures);
+  requireCondition(readText("docs/roadmap/BACKLOG_FA.md").includes("- [x] **Phase 201 — Release Candidate 2.6.0**"), "Roadmap must close Phase 201.", failures);
+  requireCondition(readText("docs/roadmap/BACKLOG_FA.md").includes("- [x] **Phase 202 — Final Release 2.6.0**"), "Roadmap must close the Phase 202 source contract.", failures);
 
-  requireCondition(packageJson.scripts?.["release:prepare:2.6.0"] === "node scripts/prepare-release-2.6.0.mjs", "2.6.0 baseline preparation command is missing.", failures);
-  requireCondition(packageJson.scripts?.["check:release:candidate:2.6.0"] === "npm run release:prepare:2.6.0 && npm run check:release:full", "2.6.0 candidate aggregate gate command is missing.", failures);
-  requireCondition(packageJson.scripts?.["check:release:full"] === "npm run check:quality && npm run check:release:audit && npm run test:browser:production:built && npm run test:browser:freelancer:built && npm run test:browser:employee:built && npm run test:browser:pairing && npm run audit:vercel", "Full release gate must preserve the Phase 200 order.", failures);
-  requireCondition(packageJson.scripts?.["audit:hardening"] === "node scripts/release-hardening-audit.mjs", "Release hardening audit must remain wired in Phase 201.", failures);
-  requireCondition(packageJson.dependencies?.["framer-motion"] === "^12.42.2", "Phase 201 must not change the existing framer-motion contract.", failures);
-  requireCondition(Object.keys(packageJson.dependencies ?? {}).length + Object.keys(packageJson.devDependencies ?? {}).length === 33, "Phase 201 must not change the direct dependency count.", failures);
-
+  requireCondition(packageJson.scripts?.["release:finalize:2.6.0"] === "node scripts/prepare-release-2.6.0-final.mjs", "2.6.0 finalization preparation command is missing.", failures);
+  requireCondition(packageJson.scripts?.["check:release:final:2.6.0"] === "npm run release:finalize:2.6.0 && npm run check:release:full", "2.6.0 final aggregate gate command is missing.", failures);
+  requireCondition(packageJson.scripts?.["audit:production"] === "node scripts/remote-production-audit.mjs", "Production audit command must remain available for Phase 202 rollout.", failures);
   return failures;
 }
 
@@ -364,7 +381,8 @@ export function getRelease260Snapshot() {
     status: manifest.status,
     candidateDate: manifest.candidateDate,
     releaseDate: manifest.releaseDate,
-    candidateCommit: manifest.candidateCommit,
+    candidateCommit: manifest.verifiedCandidateCommitPrefix,
+    candidateTests: manifest.verifiedCandidateTestCount,
     dataSchemaVersion: manifest.dataSchemaVersion,
     releasedSchemaBaseline: manifest.releasedSchemaBaseline,
     baselinePhase: manifest.releaseEvidence?.baselinePhase,
@@ -372,6 +390,8 @@ export function getRelease260Snapshot() {
     baselineTests: manifest.verifiedBaselineTestCount,
     candidatePhase: manifest.candidatePhase,
     candidateTargetTests: manifest.expectedCandidateTestCount,
+    finalPhase: manifest.finalPhase,
+    finalTargetTests: manifest.expectedFinalTestCount,
     migrationChain: manifest.releaseEvidence?.migrationChain,
     rollout: manifest.rollout,
     historical250: {
@@ -380,9 +400,13 @@ export function getRelease260Snapshot() {
       schema: released250.dataSchemaVersion,
       tag: released250.tag,
     },
+    hasReleaseCommit: Object.prototype.hasOwnProperty.call(manifest, "releaseCommit"),
     prepareCommand: packageJson.scripts?.["release:prepare:2.6.0"],
+    finalPrepareCommand: packageJson.scripts?.["release:finalize:2.6.0"],
     candidateCommand: packageJson.scripts?.["check:release:candidate:2.6.0"],
+    finalCommand: packageJson.scripts?.["check:release:final:2.6.0"],
     hardeningCommand: packageJson.scripts?.["audit:hardening"],
+    productionAuditCommand: packageJson.scripts?.["audit:production"],
     directDependencyCount: Object.keys(packageJson.dependencies ?? {}).length + Object.keys(packageJson.devDependencies ?? {}).length,
   };
 }
@@ -390,8 +414,8 @@ export function getRelease260Snapshot() {
 export function runReleaseAudit() {
   const historical240Failures = collectReleaseAuditFailures();
   const historical250Failures = collectFinal250AuditFailures();
-  const candidate260Failures = collectCandidate260AuditFailures();
-  const failures = [...historical240Failures, ...historical250Failures, ...candidate260Failures];
+  const final260Failures = collectFinal260AuditFailures();
+  const failures = [...historical240Failures, ...historical250Failures, ...final260Failures];
   if (failures.length > 0) {
     console.error("Saatyar release audit failed\n");
     for (const failure of failures) console.error(`- ${failure}`);
@@ -399,13 +423,13 @@ export function runReleaseAudit() {
     return false;
   }
   const manifest = readJson("docs/releases/2.6.0.json");
-  console.log(`Saatyar ${manifest.version} release-candidate audit passed.`);
+  console.log(`Saatyar ${manifest.version} Phase 202 finalization audit passed.`);
   console.log(`Current AppData schema: v${APP_DATA_SCHEMA_VERSION}`);
   console.log(`Released 2.5.0 AppData schema: v${manifest.releasedSchemaBaseline}`);
-  console.log(`Candidate manifest status: ${manifest.status}`);
-  console.log(`Verified Phase 200 baseline: ${manifest.verifiedBaselineCommitPrefix} (${manifest.verifiedBaselineTestCount} tests)`);
-  console.log(`Phase 201 Node test target: ${manifest.expectedCandidateTestCount}`);
-  console.log("Phase 201 stays on dev. Main merge -> production audit -> annotated v2.6.0 tag belong to Phase 202.");
+  console.log(`Final manifest status: ${manifest.status}`);
+  console.log(`Verified Phase 201 candidate: ${manifest.verifiedCandidateCommitPrefix} (${manifest.verifiedCandidateTestCount} tests)`);
+  console.log(`Phase 202 Node test target: ${manifest.expectedFinalTestCount}`);
+  console.log("Release order: controlled main merge -> Vercel production deploy -> npm run audit:production -> annotated v2.6.0 tag.");
   return true;
 }
 

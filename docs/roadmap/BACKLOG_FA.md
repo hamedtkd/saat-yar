@@ -55,16 +55,17 @@
   - [x] R5 source: security/runtime audit، Vercel security headers، SW/Manifest revalidation، migration v17→v21 + backup/device-transfer behavioral sanity و responsive matrix گسترده‌تر.
   - [x] R6 Full Gate نهایی: 958/958 + build 37/37 + Production/Freelancer/Employee/Pairing + Hardening/Vercel audits؛ baseline commit `15f5af8` روی dev و Scope Freeze فعال شد.
 
-- [ ] **Phase 201 — Release Candidate 2.6.0**
+- [x] **Phase 201 — Release Candidate 2.6.0**
   - bump package/root lock از 2.5.0 به 2.6.0 بدون تغییر dependency graph.
   - Manifest و Release Notes دو‌زبانه با Schema v21 و migration رسمی v20→v21.
   - baseline قفل‌شده Phase 200: `15f5af8` با 958/958 و Full Release Gate سبز.
   - Candidate روی `dev` می‌ماند؛ target اولیه Node gate: 964/964.
-  - پس از Gate، commit پیشنهادی `release: prepare 2.6.0 candidate` ساخته می‌شود و hash آن ورودی Phase 202 است.
+  - Full Candidate Gate: 964/964 + build 37/37 + Production/Freelancer/Employee/Pairing + Hardening/Vercel audits؛ candidate commit `3e5bcbf` روی dev ثبت شد.
 
-- [ ] **Phase 202 — Final Release 2.6.0**
-  - Candidate تأییدشده → merge کنترل‌شده به `main` → Deploy → `audit:production` → tag annotated `v2.6.0`.
-  - هیچ tag یا ادعای Production قبل از audit سبز مجاز نیست.
+- [x] **Phase 202 — Final Release 2.6.0**
+  - Candidate `3e5bcbf` مبنای Final source است؛ target نهایی 970/970 و AppData v21 بدون Feature جدید.
+  - Rollout اجرایی: merge کنترل‌شده Finalization commit به `main` → Deploy → `audit:production` → tag annotated `v2.6.0`.
+  - Phase از نظر source contract بسته است؛ هیچ tag یا ادعای Production قبل از audit سبز مجاز نیست.
 
 
 
