@@ -75,3 +75,25 @@ Phase 200 فاز Feature Expansion نیست. هدف، بستن regressionها و
 - label داخلی waitFor به همان marker تاریخی برگردانده شد، اما predicate واقعی Smoke همچنان وجود `Work Calendar` در UI را assert می‌کند؛ بنابراین compatibility تست قدیمی بدون عقب‌گرد در نام محصول حفظ شده است.
 - route `/month`، AppData v21، package 2.5.0، dependencyها و lockfile بدون تغییر باقی مانده‌اند.
 
+## R5 — Final release hardening
+
+- یک audit اجرایی جدید با نام `audit:hardening` به Quality Gate اضافه شد. این audit نبودن `eval`/`new Function`/`document.write`، نبود persistent storage برای Google OAuth access token، نبود لینک `_blank` بدون `noreferrer/noopener` و محدود ماندن `dangerouslySetInnerHTML` به دو bootstrap بازبینی‌شده Theme/Locale را بررسی می‌کند.
+- Vercel برای تمام routeها headerهای `nosniff`، `DENY` frame policy، `strict-origin-when-cross-origin`، Permissions Policy محدود به camera روی same-origin و HSTS یک‌ساله دریافت کرد. برای `sw.js` و `manifest.webmanifest` نیز revalidation صریح فعال شد تا update و identity جدید PWA پشت cache قدیمی نماند.
+- `audit:vercel` اکنون همین header contract و PWA revalidation را نیز بررسی می‌کند.
+- یک behavioral suite جدید مسیر واقعی Migration `v17 -> v21`، Backup round-trip با `workProjects`/Activity title و Device Transfer merge را پوشش می‌دهد؛ تست جدید source inspection ندارد.
+- Production Browser Smoke ماتریس responsive فارسی را برای Work Calendar/Leave/Settings روی 360/375/425px اجرا می‌کند و Work Calendar انگلیسی LTR را نیز روی 375px می‌سنجد. 320px همچنان در Employee/Freelancer Browser Smoke مالکیت مستقیم دارد.
+- command تجمیعی `npm run check:release:full` برای Phase 201 اضافه شد؛ قرارداد تاریخی `check:release` دست‌نخورده مانده است.
+- تغییر business logic، AppData، payroll، attendance یا timer در R5 وجود ندارد؛ Schema همچنان v21 و package version تا Phase 201 برابر 2.5.0 است.
+
+## شرط بستن Phase 200
+
+1. `npm run check:quality` شامل `audit:hardening` سبز باشد.
+2. `npm run check:release:audit`، Production/Freelancer/Employee/Pairing Browser Smoke و `npm run audit:vercel` سبز باشند.
+3. Visual QA نهایی در RTL/LTR، Light/Dark و 320/360/375/425/Desktop blocker نداشته باشد.
+4. سپس Scope Freeze فعال می‌شود و هر قابلیت جدید به backlog بعد از 2.6.0 منتقل خواهد شد.
+
+## R6 — Historical 425px viewport contract compatibility
+
+- شکست R5 محصولی نبود؛ `957/958` تست سبز بود و تنها assertion تاریخی Phase 182 انتظار داشت literal قدیمی `width: 425, height: 608` هنوز در Production Browser Smoke وجود داشته باشد.
+- ماتریس responsive فارسی به آرایه صریح viewportها تبدیل شد: `360x608`، `375x608` و `425x608`. رفتار واقعی R5 بدون کاهش coverage حفظ شده و قرارداد تاریخی 425px نیز دوباره قابل مشاهده است.
+- هیچ تغییر UI، business logic، AppData، dependency، package version یا lockfile در R6 وجود ندارد.

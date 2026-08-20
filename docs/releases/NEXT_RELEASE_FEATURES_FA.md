@@ -1,3 +1,11 @@
+## Phase 200 R5 — Final Release Hardening
+
+- Quality Gate یک `audit:hardening` جدید دارد: dynamic-code primitiveهای خطرناک، persistent OAuth token storage، unreviewed inline HTML و لینک خارجی ناامن fail می‌شوند.
+- Vercel security headers و revalidation برای Service Worker/Manifest اضافه و داخل `audit:vercel` enforce شدند.
+- مسیر واقعی Migration v17→v21، Backup round-trip با Activity/Work Project و Device Transfer merge به behavioral regression تبدیل شد.
+- Browser matrix فارسی روی 360/375/425px و Work Calendar انگلیسی LTR روی 375px تقویت شد؛ Employee/Freelancer همچنان 320px را جداگانه تست می‌کنند.
+- AppData v21 و نسخه package 2.5.0 تا Phase 201 بدون تغییر مانده‌اند.
+
 ## Phase 200 R3 — Work Calendar naming + gate compatibility
 
 - «ماه من» در UI به **«تقویم کاری»** و در English به **`Work Calendar`** تغییر کرد؛ route `/month` برای compatibility ثابت ماند.

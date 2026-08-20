@@ -51,8 +51,9 @@
   - [x] R1: ترتیب تاریخ locale-aware؛ فارسی `روز هفته، روز ماه سال` و English `Weekday, Month Day, Year` بدون mixing.
   - [x] R1: favicon/brand runtime از accent فعال پیروی می‌کند؛ launcher icon نصب‌شده به‌دلیل محدودیت استاندارد PWA identity ثابت می‌ماند.
   - [x] R3: نام صفحه `/month` به «تقویم کاری» / `Work Calendar` تغییر کرد و nav/metadata/help/PWA shortcut/browser smoke با آن همگام شد؛ route فنی برای compatibility ثابت ماند.
-  - [ ] Full release-hardening gate، visual matrix، backup/restore/device-transfer sanity، accessibility/performance/security pass.
-  - [ ] Scope freeze نهایی و handoff به Phase 201 RC.
+  - [x] R4 Full Gate: 954/954 tests + build 37/37 + Production/Freelancer/Employee/Pairing smokes + Vercel audit؛ baseline روی commit `81fd22c` در dev ثبت شد.
+  - [x] R5 source: security/runtime audit، Vercel security headers، SW/Manifest revalidation، migration v17→v21 + backup/device-transfer behavioral sanity و responsive matrix گسترده‌تر.
+  - [ ] R5 Full Gate + Visual QA نهایی؛ سپس Scope Freeze و handoff به Phase 201 RC.
 
 
 
@@ -474,8 +475,8 @@
 - [x] فاز ۱۹۸.۱ R4: Gate Contract Hotfix؛ اصلاح دو تست تاریخی source-coupled برای دنبال‌کردن delegation به ResponsivePickerSurface و مالکیت مشترک Accessibility/Overlay، بدون تغییر Product code یا داده.
 - [x] فاز ۱۹۸.۱ R11: Gate Hotfix؛ حذف `Date.now()` از renderهای Timer/Summary، تثبیت dependency recovery و پاک‌سازی خودکار `project-clock-face.tsx` باقی‌مانده از Revisionهای قبلی.
 - [x] فاز ۱۹۸.۱ R12: Full Test Gate Contract Hotfix؛ به‌روزرسانی قراردادهای تاریخی route برای Todayهای workspace-specific، رفع import alias تست مستقیم Time Picker و حفظ ownership guard روی Start/Pause/Resume/Finish پروژه بدون تغییر Schema/Dependency.
-- [ ] فاز ۱۹۸.۱ Final Visual QA: بررسی Today و Pickerها در Freelancer/Employee/Hybrid، تم روشن/تاریک، فارسی RTL/انگلیسی LTR و Mobile/Desktop پیش از Commit.
-- [ ] فاز ۱۹۹: Month Intelligence v2؛ explainability مانده، drill-down روزها، work/leave/overtime/deficit و anomaly detection.
+- [x] فاز ۱۹۸.۱ Final Visual QA: Today و Pickerها در Freelancer/Employee/Hybrid روی RTL/LTR و Mobile/Desktop پیش از baseline Phase 199 بسته شد.
+- [ ] Backlog پس از 2.6.0: Month/Work Calendar Intelligence v2؛ explainability، drill-down روزها، work/leave/overtime/deficit و anomaly detection بدون بازکردن Scope Freeze نسخه 2.6.0.
 
 
 ## Phase 198.1 R13 current checkpoint

@@ -635,18 +635,25 @@ export async function runProductionBrowserSmoke() {
     }
     console.log("✓ Theme changes reveal from the header control and restore the original mode");
 
-    await client.call("Emulation.setDeviceMetricsOverride", { width: 425, height: 608, deviceScaleFactor: 1, mobile: true, screenWidth: 425, screenHeight: 608 });
-    for (const [route, label] of [["month", "Work Calendar"], ["leave", "Leave"], ["settings", "Settings"]]) {
-      const mobileLoad = waitForEvent(client, "Page.loadEventFired", `${label} mobile responsive route`);
-      await client.call("Page.navigate", { url: `${origin}/${route}/` });
-      await mobileLoad;
-      await waitFor(client, `["/${route}", "/${route}/"].includes(location.pathname) && Boolean(document.querySelector('#main-content'))`, `${label} mobile responsive render`);
-      if (route === "month") {
-        await waitFor(client, `document.documentElement.dataset.calendar === "persian" && Boolean(document.querySelector('[data-month-activity-heatmap]')) && Boolean(document.querySelector('[data-month-recent-activity]')) && Boolean(document.querySelector('[data-month-intelligence]'))`, "Persian month activity intelligence on mobile");
+    const persianResponsiveViewports = [
+      { width: 360, height: 608 },
+      { width: 375, height: 608 },
+      { width: 425, height: 608 },
+    ];
+    for (const { width, height } of persianResponsiveViewports) {
+      await client.call("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: 1, mobile: true, screenWidth: width, screenHeight: height });
+      for (const [route, label] of [["month", "Work Calendar"], ["leave", "Leave"], ["settings", "Settings"]]) {
+        const mobileLoad = waitForEvent(client, "Page.loadEventFired", `${label} ${width}px responsive route`);
+        await client.call("Page.navigate", { url: `${origin}/${route}/` });
+        await mobileLoad;
+        await waitFor(client, `["/${route}", "/${route}/"].includes(location.pathname) && Boolean(document.querySelector('#main-content'))`, `${label} ${width}px responsive render`);
+        if (route === "month") {
+          await waitFor(client, `document.documentElement.dataset.calendar === "persian" && Boolean(document.querySelector('[data-month-activity-heatmap]')) && Boolean(document.querySelector('[data-month-recent-activity]')) && Boolean(document.querySelector('[data-month-intelligence]'))`, `Persian month activity intelligence at ${width}px`);
+        }
+        await assertMobileShellFits(client, `${label} ${width}px`);
       }
-      await assertMobileShellFits(client, `${label} 425px`);
     }
-    console.log("✓ Work Calendar intelligence follows Persian calendar and Work Calendar, Leave, and Settings fit a 425px viewport");
+    console.log("✓ Work Calendar, Leave, and Settings keep the Persian RTL shell inside 360/375/425px viewports");
 
     await waitFor(client, `Boolean(document.querySelector('[data-settings-mobile-trigger]'))`, "Settings compact mobile navigation trigger");
     const compactSettingsNav = await evaluate(client, `(() => {
@@ -768,6 +775,12 @@ export async function runProductionBrowserSmoke() {
     await client.call("Page.navigate", { url: `${origin}/month/` });
     await englishMonthLoad;
     await waitFor(client, `["/month", "/month/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.documentElement.dataset.calendar === "gregory" && document.body?.innerText.includes("Work Calendar") && document.body?.innerText.includes("Activity map and month intelligence") && Boolean(document.querySelector('[data-month-activity-heatmap]')) && Boolean(document.querySelector('[data-month-recent-activity]')) && Boolean(document.querySelector('[data-month-intelligence]'))`, "English Month activity intelligence surface");
+    await client.call("Emulation.setDeviceMetricsOverride", { width: 375, height: 812, deviceScaleFactor: 1, mobile: true, screenWidth: 375, screenHeight: 812 });
+    await evaluate(client, `new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))`);
+    await assertMobileShellFits(client, "Work Calendar English LTR 375px");
+    await client.call("Emulation.setDeviceMetricsOverride", { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false, screenWidth: 1440, screenHeight: 1000 });
+    await evaluate(client, `new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))`);
+    console.log("✓ Work Calendar keeps English LTR geometry inside a 375px viewport");
     const monthHierarchy = await evaluate(client, `(() => {
       const overview = document.querySelector('[data-month-overview-section]')?.getBoundingClientRect();
       const intelligence = document.querySelector('[data-month-intelligence-section]')?.getBoundingClientRect();
