@@ -1,72 +1,72 @@
-# قرارداد Privacy-safe Product Analytics ساعت‌یار
+# Privacy-safe Traffic Analytics — Cloudflare Web Analytics
 
-## اصل صفر
+از نسخه 2.6.1 ساعت‌یار برای پاسخ به یک سؤال ساده از Cloudflare Web Analytics استفاده می‌کند:
 
-داده کاری ساعت‌یار Local-first است. Analytics نباید به مسیر دوم انتقال داده‌های شخصی تبدیل شود.
+> آیا کاربران وارد ساعت‌یار می‌شوند و کدام صفحه‌ها بیشتر دیده می‌شوند؟
 
-## Provider فعال: Google Analytics 4
+هدف این integration ساخت funnel رفتاری، دنبال‌کردن کاربر یا ارسال محتوای کاری نیست.
 
-از Phase 195 transport اختیاری Analytics روی GA4 است. هیچ SDK یا dependency جدیدی اضافه نشده و `gtag.js` فقط **بعد از opt-out صریح کاربر** به‌صورت runtime بارگذاری می‌شود.
+## Provider فعال
 
-فعال‌سازی Production:
+`Cloudflare Web Analytics`
+
+ساعت‌یار Beacon رسمی Cloudflare را فقط وقتی بارگذاری می‌کند که token معتبر در Build تنظیم شده باشد:
 
 ```env
-NEXT_PUBLIC_ANALYTICS_PROVIDER=ga4
-NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+NEXT_PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN=YOUR_SITE_TOKEN
 ```
 
-اگر Provider یا Measurement ID معتبر تنظیم نشده باشد، Runtime در حالت `none` است و حتی با Consent کاربر هیچ درخواست Analytics ارسال نمی‌شود.
+اگر این مقدار وجود نداشته باشد یا نامعتبر باشد، Beacon اصلاً بارگذاری نمی‌شود و اپ بدون Analytics کار می‌کند.
 
-## Consent
+## چه چیزی اندازه‌گیری می‌شود؟
 
-Consent روی همان Browser نگه داشته می‌شود و بخشی از AppData، Backup یا Device Transfer نیست:
+Cloudflare Web Analytics برای آمار کلی ترافیک و عملکرد صفحه استفاده می‌شود، از جمله page view، visitor، referrer و معیارهای عملکرد صفحه‌ای که خود Cloudflare Web Analytics ارائه می‌کند.
 
-- `unset`: هیچ Tag یا Request Analytics به Network نمی‌رود؛ Eventهای امن همان Session فقط در حافظه محدود Buffer می‌شوند.
-- `granted`: GA4 tag بارگذاری می‌شود و فقط Eventهای taxonomy مجاز ارسال می‌شوند.
-- `denied`: Buffer پاک، ارسال متوقف و consent runtime برای Analytics denied می‌شود.
+Routing ساعت‌یار SPA است. Beacon رسمی Cloudflare تغییرات History API را برای SPA track می‌کند؛ ساعت‌یار هیچ pageview دستی یا custom event جداگانه‌ای ارسال نمی‌کند.
 
-Advertising storage، ad user data، ad personalization و Google signals برای این integration غیرفعال‌اند.
+## چه چیزی ارسال نمی‌شود؟
 
-## Page view در SPA
+ساعت‌یار custom product event ندارد و این موارد را به Analytics نمی‌فرستد:
 
-Saatyar `send_page_view: false` تنظیم می‌کند و Route Viewهای خودش را به `page_view` تبدیل می‌کند تا App Router باعث double-count نشود. URL ارسالی فقط Origin + Route allowlisted است؛ query string و hash ارسال نمی‌شوند.
+- Start / Pause / Resume / Finish تایمر
+- مراحل یا انتخاب‌های Onboarding
+- WorkRecord یا ActivitySegment
+- نام مشتری یا پروژه
+- عنوان فعالیت یا یادداشت
+- حقوق، درآمد، نرخ یا مبلغ
+- تاریخ کاری یا ساعت دقیق
+- شناسه رکورد یا شناسه دستگاه
+- payload انتقال دستگاه
+- Backup یا AppData
+- متن آزاد کاربر
 
-## داده مجاز
+## Cookie و Browser Storage
 
-Properties فقط Enum یا Number محدود هستند: Route، Feature، Workspace mode، Scheduled/Flexible، Onboarding step/path و Error category عمومی.
+Cloudflare Web Analytics برای Analytics از cookie یا شناسه ذخیره‌شده در `localStorage`، `sessionStorage` یا `IndexedDB` ساعت‌یار استفاده نمی‌کند. ساعت‌یار هم consent state تحلیلی جداگانه‌ای در AppData یا storage ایجاد نمی‌کند.
 
-## داده ممنوع
+انتخاب قبلی GA4 که در نسخه 2.6.0 ممکن بود در `saatyar-product-analytics-consent-v1` ذخیره شده باشد، از 2.6.1 دیگر خوانده یا استفاده نمی‌شود.
 
-هرگز Property یا Payload شامل این موارد اضافه نکن:
+## GA4
 
-- نام کاربر، Client یا Project
-- Salary، Income، Rate، Invoice/Expense amount
-- Note، Task، Reminder text یا هر Free-text
-- تاریخ روز کاری یا Clock time دقیق
-- Record/Client/Project/Invoice/Device IDs
-- Backup، QR/WebRTC payload یا هر Snapshot
-- raw URL، query string، hash یا search term
-- متن Exception یا Stack trace
+Runtime فعلی ساعت‌یار هیچ Google Analytics / `gtag.js` / Google Tag Manager برای Analytics بارگذاری نمی‌کند. فایل‌ها، hookها، event taxonomy و consent controls مربوط به GA4 از runtime حذف شده‌اند.
 
-## گزارش Event parameters در GA4
+اسناد Phase 195 و Phase 196 فقط به عنوان تاریخچه نسخه 2.6.0 باقی مانده‌اند.
 
-Custom event parameterها collect می‌شوند؛ برای نمایش آن‌ها در Reports/Explore باید در GA4 از مسیر Admin → Data display → Custom definitions، dimension متناظر بسازی. پیشنهاد اولیه:
+## راه‌اندازی روی Vercel
 
-- `saatyar_route`
-- `feature`
-- `mode`
-- `timing`
-- `path`
-- `area`
-- `code`
+1. در Cloudflare Dashboard وارد Web Analytics شو.
+2. برای hostname تولیدی ساعت‌یار یک Site بساز.
+3. Site Token را از snippet رسمی Cloudflare بردار.
+4. در Vercel Project Settings → Environment Variables این متغیر را برای Production تعریف کن:
 
-## افزودن Event جدید
+```text
+NEXT_PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN
+```
 
-Event باید ابتدا به union تایپ‌شده `ProductAnalyticsEvent` اضافه شود و Contract تست داشته باشد. API عمومی `trackProductAnalytics` نباید به `Record<string, unknown>` یا Property آزاد تبدیل شود.
+5. یک deployment جدید بساز.
+6. بعد از deploy، صفحه Production را باز کن و در Network مطمئن شو `static.cloudflareinsights.com/beacon.min.js` بارگذاری می‌شود.
+7. در Cloudflare Web Analytics چند دقیقه بعد page viewها را بررسی کن.
 
+## Privacy boundary
 
-## رفتار پیش‌فرض GA4 در Phase 196
-- در buildهایی که GA4 پیکربندی شده، آمار ناشناس محصول به‌صورت پیش‌فرض فعال است و کاربر در Settings > Privacy می‌تواند آن را خاموش کند.
-- سیگنال‌های تبلیغاتی، `ad_storage`، `ad_user_data` و `ad_personalization` همیشه غیرفعال‌اند.
-- برای EEA/UK/CH، `analytics_storage` با Consent Mode به‌صورت denied شروع می‌شود تا تا زمان اجازه صریح storage تحلیلی ایجاد نشود.
-- payload همچنان فقط taxonomy محدود محصول را می‌فرستد و داده کاری/مالی/متن آزاد ارسال نمی‌شود.
+Cloudflare Analytics جایگزین Local-first بودن ساعت‌یار نیست. داده‌های اصلی کاربر همچنان در IndexedDB همان مرورگر می‌مانند و هیچ backend مرکزی ساعت‌یار برای WorkData ایجاد نشده است.

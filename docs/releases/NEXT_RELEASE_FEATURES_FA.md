@@ -100,7 +100,7 @@
 
 ## Backlog پس از Phase 198
 
-- Analytics Dashboard & Product Insights پیشرفته فعلاً ضروری نیست؛ GA4 فعلی برای فهم usage کلی کاربران کافی است و طراحی funnel/custom dimensions به backlog منتقل شد.
+- Analytics Dashboard & Product Insights پیشرفته فعلاً ضروری نیست؛ از 2.6.1 Cloudflare Web Analytics فقط برای usage کلی و performance استفاده می‌شود و funnel/custom dimensions همچنان در backlog می‌ماند.
 - Phase 198.1 R7 — Timeline + Timer Readability QA: ویرایش تاریخ/زمان پایان برای رکوردهای تکمیل‌شده، سقف ارتفاع Timeline با scroll داخلی، جلوگیری از CTA «شروع» متداخل در Recent Projects هنگام session فعال/paused، Timer display باکس‌دار و compact، و نمودار ۷روزه خواناتر با bar/day labels و Tooltip توضیحی؛ بدون تغییر Schema/dependency/lockfile.
 - Phase 198.1 R8 — Reference-aligned Timer Polish: تایمر سه‌کاشی مستقل ساعت/دقیقه/ثانیه، یکپارچه‌سازی Hero و Today Summary داخل یک Controller Card با radius/padding اصلاح‌شده، انتقال نمودار ۷روزه به زبان بصری Bar Chart صفحه Month و بازطراحی shrink-safe وضعیت Recent Projects؛ بدون تغییر Schema/dependency/lockfile.
 - Phase 198.1 R9 — Mobile Density Follow-up: کاهش visual weight و padding تایمر در موبایل؛ checkpoint بصری و نه commit baseline.
@@ -110,3 +110,9 @@
 - Phase 198.1 R13 — Freelancer Reload Ownership Hotfix: آزادسازی lock خود تب روی pagehide و ارزیابی مجدد روی pageshow تا Pause/Hard Reload/Resume بدون takeover اشتباه کار کند؛ قفل واقعی تب دیگر همچنان محافظت می‌شود.
 
 - Phase 199 R9: Footer GitHub star count با cache/offline fallback و حذف outline ناخواسته‌ی `#main-content` روی tap موبایل؛ بدون تغییر schema/dependency.
+
+
+## Phase 203 / 2.6.1
+- مهاجرت Analytics runtime از GA4 به Cloudflare Web Analytics.
+- حذف consent state و custom product eventهای تایمر/onboarding/feature usage.
+- حفظ AppData v21، dependency graph و Local-first boundary.

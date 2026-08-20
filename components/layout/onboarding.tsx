@@ -1,14 +1,12 @@
 "use client";
 
 import { CheckCircle2 } from "lucide-react";
-import { useEffect } from "react";
 import type { FormEvent, KeyboardEvent } from "react";
 
 import { Brand } from "@/components/common/brand";
 import { useSystemUi } from "@/components/i18n/use-system-ui";
 import { cn } from "@/lib/cn";
 import { markBrowserFirstRunGuidePending } from "@/lib/first-run-guide";
-import { trackProductAnalytics, type OnboardingCompletionPath } from "@/lib/product-analytics";
 import { AppearanceStep } from "./onboarding/appearance-step";
 import { FreelancerClientStep } from "./onboarding/freelancer-client-step";
 import { FreelancerProjectStep } from "./onboarding/freelancer-project-step";
@@ -32,14 +30,11 @@ export function Onboarding({ data, setData, commitImport, step, setStep, reentry
   const canContinue = step !== 1 || Boolean(data.settings.name.trim());
   const mode = data.settings.mode;
 
-  useEffect(() => {
-    trackProductAnalytics({ name: "onboarding_step_viewed", properties: { step, mode } });
-  }, [step, mode]);
-
-  const finishInitialSetup = (path: OnboardingCompletionPath = "advanced") => {
+  const finishInitialSetup = (completionPath: "advanced" | "fast-setup" | "skip") => {
+    // Keep the historical local first-run completion paths without emitting analytics events.
+    void completionPath;
     setSetting("onboarded", true);
     if (!reentry) markBrowserFirstRunGuidePending();
-    trackProductAnalytics({ name: "onboarding_completed", properties: { path, mode, timing: data.settings.workTimingMode } });
     onComplete();
   };
 
@@ -53,7 +48,7 @@ export function Onboarding({ data, setData, commitImport, step, setStep, reentry
       });
       return;
     }
-    finishInitialSetup();
+    finishInitialSetup("advanced");
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLFormElement>) => {

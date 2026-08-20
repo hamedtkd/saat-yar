@@ -547,8 +547,8 @@ export async function runProductionBrowserSmoke() {
     await clickButton(client, "ادامه");
 
     await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="6"]'))`, "onboarding privacy step");
-    await waitFor(client, `Boolean(document.querySelector('[data-product-analytics-consent]')) && Boolean(document.querySelector('[data-analytics-opt-out]'))`, "onboarding privacy-safe analytics consent");
-    console.log("✓ Onboarding privacy step exposes explicit analytics opt-out before any provider is required");
+    await waitFor(client, `Boolean(document.querySelector('[data-cloudflare-web-analytics-info]'))`, "onboarding privacy-friendly traffic analytics disclosure");
+    console.log("✓ Onboarding privacy step explains cookie-free aggregate traffic analytics without a consent toggle");
     await clickButton(client, "ادامه");
     await waitFor(client, `Boolean(document.querySelector('[data-onboarding-step-index="7"] [data-onboarding-import]')) && Boolean(document.querySelector('[data-onboarding-step-index="7"] [data-import-source="csv"]'))`, "personalized onboarding import step");
     await evaluate(client, `document.querySelector('[data-onboarding-step-index="7"] [data-import-source="csv"]')?.click()`);
@@ -943,8 +943,8 @@ export async function runProductionBrowserSmoke() {
     const englishPrivacyLoad = waitForEvent(client, "Page.loadEventFired", "English Settings privacy route");
     await client.call("Page.navigate", { url: `${origin}/settings/privacy/` });
     await englishPrivacyLoad;
-    await waitFor(client, `Boolean(document.querySelector('[data-product-analytics-settings]')) && Boolean(document.querySelector('[data-analytics-opt-in]')) && Boolean(document.querySelector('[data-analytics-opt-out]')) && document.querySelector('#settings-analytics')?.textContent.includes("Privacy-safe product analytics")`, "English privacy-safe analytics settings");
-    console.log("✓ Privacy-safe analytics exposes explicit opt-in/opt-out without including work content in Settings");
+    await waitFor(client, `Boolean(document.querySelector('[data-cloudflare-web-analytics-settings]')) && Boolean(document.querySelector('[data-cloudflare-web-analytics-info]')) && document.querySelector('#settings-analytics')?.textContent.includes("Privacy-friendly traffic analytics")`, "English privacy-safe analytics settings");
+    console.log("✓ Privacy settings disclose Cloudflare aggregate traffic analytics without custom work events");
 
     const englishPayrollLoad = waitForEvent(client, "Page.loadEventFired", "English Settings payroll route");
     await client.call("Page.navigate", { url: `${origin}/settings/payroll/` });

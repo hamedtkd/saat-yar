@@ -10,7 +10,7 @@ const fa: HelpCopy = {
   note: "داده‌های اصلی ساعت‌یار Local-first هستند. قبل از تغییر مرورگر یا دستگاه، یک پشتیبان JSON تازه بگیر.",
   sections: [
     { title: "شروع و تنظیمات پایه", intro: "اگر تازه شروع کرده‌ای، اول پایه‌های محیط کاری را مشخص کن.", items: [
-      { title: "راه‌اندازی اولیه", body: "در onboarding نام، نوع محیط کاری، برنامه هفتگی، حقوق، ظاهر و انتخاب حریم خصوصی را تنظیم کن.", href: "/onboarding", action: "باز کردن راه‌اندازی" },
+      { title: "راه‌اندازی اولیه", body: "در onboarding نام، نوع محیط کاری، برنامه هفتگی، حقوق، ظاهر و تنظیمات اصلی را مشخص کن.", href: "/onboarding", action: "باز کردن راه‌اندازی" },
       { title: "پروفایل و زبان", body: "نام نمایشی، فارسی/English و تنظیمات شخصی را از بخش پروفایل تغییر بده.", href: "/settings/profile", action: "تنظیمات پروفایل" },
       { title: "برنامه کاری", body: "روزهای فعال، هدف هفتگی، ساعت شروع و پایان، ناهار و حالت انعطاف‌پذیر را تنظیم کن.", href: "/settings/work", action: "تنظیم برنامه کاری" },
     ]},
@@ -34,9 +34,9 @@ const fa: HelpCopy = {
       { title: "انتقال دستگاه", body: "با QR و WebRTC داده رمزنگاری‌شده را مستقیم بین دو دستگاه منتقل کن؛ merge و replace قبل از اعمال قابل بررسی‌اند.", href: "/settings/sync", action: "انتقال و همگام‌سازی" },
       { title: "PWA و آفلاین", body: "ساعت‌یار را نصب کن. داده محلی و shell اصلی بعد از نصب برای استفاده آفلاین در دسترس می‌مانند." },
     ]},
-    { title: "Google Calendar و حریم خصوصی", intro: "سرویس‌های خارجی کاملاً اختیاری‌اند و فقط با اقدام یا رضایت تو فعال می‌شوند.", items: [
+    { title: "Google Calendar و حریم خصوصی", intro: "اتصال‌های اختیاری و مرز داده‌های محلی ساعت‌یار را اینجا ببین.", items: [
       { title: "Google Calendar", body: "تقویم دلخواه را وصل کن، رویدادها را ببین و در صورت نیاز بساز، ویرایش یا حذف کن. Disconnect توکن حافظه و cache اتصال را پاک می‌کند.", href: "/settings/integrations", action: "اتصال‌ها" },
-      { title: "آمار محصول", body: "GA4 فقط بعد از opt-in فعال می‌شود و taxonomy آن محتوای کاری، نام‌ها، مبلغ‌ها، متن آزاد، شناسه‌ها و زمان دقیق را ارسال نمی‌کند.", href: "/settings/privacy", action: "تنظیمات حریم خصوصی" },
+      { title: "آمار محصول", body: "Cloudflare Web Analytics فقط بازدید کلی و عملکرد صفحات را اندازه می‌گیرد؛ ساعت‌یار هیچ رویداد سفارشی کاری، نام، مبلغ، یادداشت، رکورد یا AppData را به Analytics نمی‌فرستد.", href: "/settings/privacy", action: "تنظیمات حریم خصوصی" },
       { title: "سیاست‌ها", body: "جزئیات استفاده از داده و سرویس‌های خارجی در سیاست حریم خصوصی و شرایط استفاده آمده است.", href: "/privacy", action: "سیاست حریم خصوصی" },
     ]},
   ],
@@ -48,7 +48,7 @@ const en: HelpCopy = {
   note: "Saatyar core data is local-first. Create a fresh JSON backup before changing browser or device.",
   sections: [
     { title: "Setup and essentials", intro: "Start by defining the basics of your workspace.", items: [
-      { title: "Initial setup", body: "Use onboarding to set your name, workspace mode, weekly schedule, payroll, appearance, and privacy choice.", href: "/onboarding", action: "Open onboarding" },
+      { title: "Initial setup", body: "Use onboarding to set your name, workspace mode, weekly schedule, payroll, appearance, and core preferences.", href: "/onboarding", action: "Open onboarding" },
       { title: "Profile and language", body: "Change your display name, Persian/English language, and personal preferences from Profile settings.", href: "/settings/profile", action: "Profile settings" },
       { title: "Work schedule", body: "Configure active days, weekly target, start/end time, lunch, and flexible-work behavior.", href: "/settings/work", action: "Work settings" },
     ]},
@@ -72,9 +72,9 @@ const en: HelpCopy = {
       { title: "Device transfer", body: "Use QR and WebRTC for encrypted direct transfer. Review merge or replace outcomes before applying them.", href: "/settings/sync", action: "Transfer and sync" },
       { title: "PWA and offline", body: "Install Saatyar as an app. Local data and the installed shell remain available for offline workflows." },
     ]},
-    { title: "Google Calendar and privacy", intro: "External services are optional and activate only after your action or consent.", items: [
+    { title: "Google Calendar and privacy", intro: "Review optional integrations and Saatyar's local-data boundary here.", items: [
       { title: "Google Calendar", body: "Connect a calendar to view events and, when needed, create, edit, or delete them. Disconnect clears the in-memory token and local connection cache.", href: "/settings/integrations", action: "Integrations" },
-      { title: "Product analytics", body: "GA4 loads only after opt-in. The analytics taxonomy excludes work content, names, money amounts, free text, IDs, and exact times.", href: "/settings/privacy", action: "Privacy settings" },
+      { title: "Product analytics", body: "Cloudflare Web Analytics measures only aggregate visits and page performance. Saatyar does not send custom work events, names, money amounts, notes, records, or AppData to analytics.", href: "/settings/privacy", action: "Privacy settings" },
       { title: "Policies", body: "Read the Privacy Policy and Terms for details about local data and optional external services.", href: "/privacy", action: "Privacy Policy" },
     ]},
   ],
