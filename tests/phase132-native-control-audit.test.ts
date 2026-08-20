@@ -64,7 +64,7 @@ test("product surfaces contain no visible raw date time range select or number c
       const path = `${root}/${entry}`.replace(/\\/g, "/");
       if (allowedNativeWrappers.has(path)) continue;
       const source = await read(path);
-      if (/type=["'](?:date|time|range|number|color|file)["']|<select\b/.test(source)) failures.push(path);
+      if (/type=["'](?:date|datetime-local|time|range|number|color|file)["']|<select\b/.test(source)) failures.push(path);
     }
   }
   assert.deepEqual(failures, []);

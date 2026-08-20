@@ -5,6 +5,7 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createMediaDemoData } from "./media/demo-data.ts";
+import { FRESH_ONBOARDING_READY_EXPRESSION } from "./media/capture-expressions.mjs";
 import { cleanupBrowserProfile } from "./browser-profile-cleanup.mjs";
 import { findBrowserExecutable } from "./production-browser-smoke.mjs";
 import { startStaticExportServer } from "./static-export-server.mjs";
@@ -119,7 +120,7 @@ async function seedAppData(client, data) {
 }
 
 async function setTheme(client, mode) {
-  await evaluate(client, `localStorage.setItem("saatyar-appearance", JSON.stringify({mode:${JSON.stringify(mode)},preset:"spotify",accent:"#06b6d4",radius:"rounded",surface:"tinted"}));`);
+  await evaluate(client, `localStorage.setItem("saatyar-appearance", JSON.stringify({mode:${JSON.stringify(mode)},preset:"violet",accent:"#8b5cf6",radius:"rounded",surface:"tinted"}));`);
 }
 
 async function navigate(client, url, readyText) {
@@ -133,13 +134,13 @@ async function viewport(client, width, height, mobile = false) {
   await client.call("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: 1, mobile, screenWidth: width, screenHeight: height });
 }
 
-async function screenshot(client, filename) {
+async function screenshot(client, filename, outputDirectory = SCREENSHOT_DIR) {
   const response = await client.call("Page.captureScreenshot", { format: "png", fromSurface: true, captureBeyondViewport: false });
-  await writeFile(resolve(SCREENSHOT_DIR, filename), Buffer.from(response.data, "base64"));
+  await writeFile(resolve(outputDirectory, filename), Buffer.from(response.data, "base64"));
   console.log(`✓ ${filename}`);
 }
 
-async function captureOnboardingFrames(client, origin) {
+async function captureOnboardingFrames(client, origin, frameDirectory) {
   await navigate(client, origin, "به ساعت‌یار خوش آمدی");
   await evaluate(client, `(() => {
     const input = document.querySelector('[data-onboarding-step-index="1"] input');
@@ -153,8 +154,8 @@ async function captureOnboardingFrames(client, origin) {
   const frames = [];
   for (let index = 1; index <= 7; index += 1) {
     const frame = `onboarding-frame-${String(index).padStart(2, "0")}.png`;
-    await screenshot(client, frame);
-    frames.push(resolve(SCREENSHOT_DIR, frame));
+    await screenshot(client, frame, frameDirectory);
+    frames.push(resolve(frameDirectory, frame));
     const label = index < 7 ? "ادامه" : "شروع ساعت‌یار";
     const clicked = await evaluate(client, `(() => { const b=[...document.querySelectorAll('button')].find(x => !x.disabled && (x.textContent||'').includes(${JSON.stringify(label)})); if(!b)return false;b.click();return true; })()`);
     if (!clicked) break;
@@ -163,13 +164,13 @@ async function captureOnboardingFrames(client, origin) {
   return frames;
 }
 
-function buildGif() {
+function buildGif(frameDirectory) {
   const ffmpeg = spawnSync(process.platform === "win32" ? "where" : "which", ["ffmpeg"], { encoding: "utf8" });
   if (ffmpeg.status !== 0) {
     console.warn("! ffmpeg not found; onboarding PNG frames were generated, GIF skipped.");
     return false;
   }
-  const input = resolve(SCREENSHOT_DIR, "onboarding-frame-%02d.png");
+  const input = resolve(frameDirectory, "onboarding-frame-%02d.png");
   const output = resolve(MEDIA_DIR, "onboarding.gif");
   const result = spawnSync("ffmpeg", ["-y", "-framerate", "0.8", "-start_number", "1", "-i", input, "-vf", "fps=8,scale=960:-1:flags=lanczos", output], { stdio: "ignore" });
   if (result.status === 0) {
@@ -205,7 +206,8 @@ async function main() {
 
   await mkdir(SCREENSHOT_DIR, { recursive: true });
   await mkdir(MEDIA_DIR, { recursive: true });
-  const profileDir = await mkdtemp(join(tmpdir(), "saatyar-media-"));
+  const profileDir = await mkdtemp(join(tmpdir(), "saatyar-media-profile-"));
+  const frameDir = await mkdtemp(join(tmpdir(), "saatyar-media-frames-"));
   const debugPort = await freePort();
   const server = await startStaticExportServer({ outputDirectory });
   const browserArgs = ["--headless=new", `--remote-debugging-port=${debugPort}`, `--user-data-dir=${profileDir}`, "--no-first-run", "--no-default-browser-check", "--disable-dev-shm-usage", "about:blank"];
@@ -214,7 +216,6 @@ async function main() {
   let browserOutput = "";
   browser.stderr.on("data", (chunk) => { browserOutput += chunk; });
   let client;
-  let gifCreated = false;
   try {
     await waitForJson(`http://127.0.0.1:${debugPort}/json/version`);
     const target = await waitForJson(`http://127.0.0.1:${debugPort}/json/new?${encodeURIComponent("about:blank")}`, { method: "PUT" });
@@ -230,11 +231,16 @@ async function main() {
     await client.call("Page.addScriptToEvaluateOnNewDocument", { source: `(() => { const RealDate=Date; const fixed=${JSON.stringify(ANCHOR_ISO)}; class FixedDate extends RealDate { constructor(...args){ super(...(args.length?args:[fixed])); } static now(){ return new RealDate(fixed).getTime(); } } FixedDate.parse=RealDate.parse; FixedDate.UTC=RealDate.UTC; window.Date=FixedDate; })();` });
 
     await viewport(client, 1440, 960);
-    await captureOnboardingFrames(client, server.origin);
+    await captureOnboardingFrames(client, server.origin, frameDir);
 
     await navigate(client, "about:blank");
     await client.call("Storage.clearDataForOrigin", { origin: server.origin, storageTypes: "all" });
-    await navigate(client, server.origin, "ساعت‌یار را برای خودت تنظیم کن");
+    await navigate(client, server.origin);
+    await waitFor(
+      client,
+      FRESH_ONBOARDING_READY_EXPRESSION,
+      "fresh onboarding route before demo seed",
+    );
     const data = createMediaDemoData(ANCHOR_ISO);
     await seedAppData(client, data);
     await setTheme(client, "light");
@@ -251,6 +257,14 @@ async function main() {
     await screenshot(client, "today-mobile.png");
 
     await viewport(client, 1440, 960);
+    await setTheme(client, "light");
+    await navigate(client, `${server.origin}/month`, "تقویم کاری");
+    await screenshot(client, "work-calendar-light-desktop.png");
+    await setTheme(client, "dark");
+    await navigate(client, `${server.origin}/month`, "تقویم کاری");
+    await screenshot(client, "work-calendar-dark-desktop.png");
+
+    await setTheme(client, "light");
     await navigate(client, `${server.origin}/reports`, "گزارش");
     await screenshot(client, "reports-light.png");
     await setTheme(client, "dark");
@@ -265,7 +279,7 @@ async function main() {
       throw new Error(`Browser runtime errors during media capture:\n${actionableRuntimeErrors.join("\n")}`);
     }
 
-    gifCreated = buildGif();
+    buildGif(frameDir);
     console.log(`Media captured in ${resolve(ROOT, "docs/assets")}`);
   } catch (error) {
     if (browserOutput.trim()) console.error(`\nBrowser output:\n${browserOutput.trim()}`);
@@ -275,11 +289,7 @@ async function main() {
     await terminateBrowser(browser);
     await server.close();
     await cleanupBrowserProfile(profileDir);
-    if (gifCreated) {
-      await rm(resolve(SCREENSHOT_DIR, "onboarding-frame-01.png"), { force: true });
-      await rm(resolve(SCREENSHOT_DIR, "onboarding-frame-02.png"), { force: true });
-      await rm(resolve(SCREENSHOT_DIR, "onboarding-frame-03.png"), { force: true });
-    }
+    await rm(frameDir, { recursive: true, force: true });
   }
 }
 

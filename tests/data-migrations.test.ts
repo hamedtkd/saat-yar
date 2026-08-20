@@ -56,6 +56,18 @@ test("migrates unversioned legacy data to the current schema", () => {
   assert.deepEqual(result.data.expenses, []);
 });
 
+
+test("migrates v20 activity segments to v21 without inventing work-item titles", () => {
+  const current = migrateAppData(legacyV1).data;
+  current.records["2026-08-03"].activitySegments = [{ id: "activity-1", kind: "deep-work", start: "09:00", end: "10:00" }];
+  const result = migrateAppData({ schemaVersion: 20, data: current });
+
+  assert.equal(result.fromVersion, 20);
+  assert.equal(result.toVersion, APP_DATA_SCHEMA_VERSION);
+  assert.equal(result.data.records["2026-08-03"].activitySegments[0].title, undefined);
+  assert.deepEqual(result.data.workProjects, []);
+});
+
 test("loads a current storage snapshot without remigrating it", () => {
   const migrated = migrateAppData(legacyV1).data;
   const snapshot = createAppDataSnapshot(migrated, "2026-08-03T08:00:00.000Z");

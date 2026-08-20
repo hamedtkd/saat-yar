@@ -6,6 +6,7 @@ import { useLocale } from "@/components/i18n/locale-provider";
 import { cn } from "@/lib/cn";
 import { LanguageSwitcher } from "../language-switcher";
 import type { Mode } from "@/lib/types";
+import { getTodayHref } from "@/lib/navigation";
 import { getVisibleNavItems } from "../app-header/nav-items";
 import { GuardedLink } from "./guarded-link";
 
@@ -23,7 +24,7 @@ export function SidebarNav({ mode, currentPath, name }: Props) {
     <aside className="fixed inset-y-2 start-2 z-40 hidden w-[var(--shell-sidebar-width)] flex-col overflow-hidden rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[linear-gradient(180deg,var(--surface-1),var(--surface-raised))] p-3 shadow-[0_10px_32px_rgba(0,0,0,.055)] xl:flex dark:shadow-[0_14px_38px_rgba(0,0,0,.24)]">
       <div className="border-b border-[var(--dashboard-border)] px-2 pb-4 pt-2">
         <GuardedLink
-          href="/today"
+          href={getTodayHref(mode)}
           aria-label={t("nav.goToday")}
           className="inline-flex rounded-[14px] outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]"
         >

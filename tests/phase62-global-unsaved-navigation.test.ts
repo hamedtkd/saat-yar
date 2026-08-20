@@ -32,7 +32,7 @@ test("header route pushes wait for the unsaved guard", async () => {
   assert.match(header, /const navigateToSettings = \(href: string\) => \{/);
   assert.match(header, /requestNavigation\(\(\) => router\.push\(href\)\)/);
   assert.match(header, /requestNavigation\(\(\) => \{/);
-  assert.match(header, /props\.onModeChange\(mode\);[\s\S]*router\.push\("\/today"\)/);
+  assert.match(header, /props\.onModeChange\(mode\);[\s\S]*router\.push\(getTodayHref\(mode\)\)/);
 });
 
 test("dirty draft labels are exposed in the confirmation dialog", async () => {

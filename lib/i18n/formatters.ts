@@ -57,6 +57,29 @@ export function formatLocalePercent(locale: Locale, value: number) {
   }).format(value / 100);
 }
 
+function orderedWeekdayDate(
+  locale: Locale,
+  formatter: Intl.DateTimeFormat,
+  date: Date,
+  options?: Intl.DateTimeFormatOptions,
+) {
+  if (!options?.weekday || !options.day || !options.month) return formatter.format(date);
+
+  const parts = formatter.formatToParts(date);
+  const valueOf = (type: Intl.DateTimeFormatPartTypes) => parts.find((part) => part.type === type)?.value ?? "";
+  const weekday = valueOf("weekday");
+  const day = valueOf("day");
+  const month = valueOf("month");
+  const year = options.year ? valueOf("year") : "";
+  const era = valueOf("era");
+
+  if (locale === "fa-IR") {
+    return `${weekday}، ${day} ${month}${year ? ` ${year}` : ""}${era ? ` ${era}` : ""}`;
+  }
+
+  return `${weekday}, ${month} ${day}${year ? `, ${year}` : ""}${era ? ` ${era}` : ""}`;
+}
+
 export function formatLocaleDate(
   locale: Locale,
   value: Date | string | number,
@@ -68,10 +91,11 @@ export function formatLocaleDate(
     : typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)
       ? new Date(`${value}T12:00:00`)
       : new Date(value);
-  return new Intl.DateTimeFormat(
+  const formatter = new Intl.DateTimeFormat(
     getCalendarLocale(locale, calendar),
     options ?? { year: "numeric", month: "2-digit", day: "2-digit" },
-  ).format(date);
+  );
+  return orderedWeekdayDate(locale, formatter, date, options);
 }
 
 export function formatLocaleTime(locale: Locale, value: Date | string | number) {

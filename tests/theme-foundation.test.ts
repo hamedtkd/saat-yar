@@ -7,7 +7,7 @@ import { APP_DATA_SCHEMA_VERSION } from "../lib/data/version.ts";
 
 test("appearance defaults are preserved in the current schema", () => {
   assert.ok(APP_DATA_SCHEMA_VERSION >= 19);
-  assert.equal(defaultSettings.appearance.preset, "spotify");
+  assert.equal(defaultSettings.appearance.preset, "violet");
   assert.equal(defaultSettings.appearance.mode, "system");
 });
 

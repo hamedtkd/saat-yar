@@ -1,6 +1,6 @@
 {
   "name": "saatyar-worklog",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "private": true,
   "engines": {
     "node": "22.x"
@@ -21,7 +21,7 @@
     "test:sites": "npm run build && node --test tests/rendered-html.test.mjs",
     "validate:artifact": "node scripts/validate-artifact.mjs",
     "lint": "eslint . --max-warnings=0 --ignore-pattern dist --ignore-pattern .next --ignore-pattern out",
-    "check": "npm run clean:obsolete && npm run clean:docs && npm run check:imports && npm run check:dependencies && npm run audit:schema && npm run audit:i18n && npm run audit:tests && npm run typecheck && npm run lint && npm test",
+    "check": "npm run clean:obsolete && npm run clean:docs && npm run check:imports && npm run check:dependencies && npm run audit:schema && npm run audit:i18n && npm run audit:tests && npm run audit:hardening && npm run typecheck && npm run lint && npm test",
     "test:architecture": "node --test --experimental-strip-types tests/clean-architecture.test.ts",
     "check:imports": "node scripts/check-local-imports.mjs",
     "check:quality": "npm run check && npm run build:vercel",
@@ -46,7 +46,14 @@
     "release:prepare:2.3.2": "node scripts/prepare-release-2.3.2.mjs",
     "release:prepare:2.4.0": "node scripts/prepare-release-2.4.0.mjs",
     "audit:tests": "node scripts/audit-test-coupling.mjs",
-    "release:prepare:2.5.0": "node scripts/prepare-release-2.5.0.mjs"
+    "release:prepare:2.5.0": "node scripts/prepare-release-2.5.0.mjs",
+    "audit:hardening": "node scripts/release-hardening-audit.mjs",
+    "check:release:full": "npm run check:quality && npm run check:release:audit && npm run test:browser:production:built && npm run test:browser:freelancer:built && npm run test:browser:employee:built && npm run test:browser:pairing && npm run audit:vercel",
+    "test:phase200:hardening": "node --test --experimental-strip-types tests/phase200-final-hardening.test.ts tests/phase200-final-hardening-backup.test.ts",
+    "release:prepare:2.6.0": "node scripts/prepare-release-2.6.0.mjs",
+    "check:release:candidate:2.6.0": "npm run release:prepare:2.6.0 && npm run check:release:full",
+    "release:finalize:2.6.0": "node scripts/prepare-release-2.6.0-final.mjs",
+    "check:release:final:2.6.0": "npm run release:finalize:2.6.0 && npm run check:release:full"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.1.23",

@@ -10,6 +10,7 @@ import { cn } from "@/lib/cn";
 import { localDateKey } from "@/lib/format";
 import { getHolidayInfo } from "@/lib/holidays";
 import { isScheduledDayOff } from "@/lib/work-schedule";
+import { getTodayWorkspaceCapabilities } from "@/lib/workspace-capabilities";
 import { CompletedDayEditor } from "./completed-day-editor";
 import { ActivitySegmentsCard } from "./activity-segments-card";
 import { FirstRunGuide } from "./first-run-guide";
@@ -27,6 +28,8 @@ export function TodayPage(props: TodayPageProps) {
   const { date, locale, t } = useLocaleUi();
   const { requestNavigation } = useUnsavedNavigation();
   const isToday = props.selectedDate === localDateKey();
+  const capabilities = getTodayWorkspaceCapabilities(props.data.settings.mode);
+  const isFreelancer = !capabilities.attendance;
   const holiday = getHolidayInfo(props.selectedDate, {
     mode: props.data.settings.mode,
     manualHoliday: props.record.holiday,
@@ -72,7 +75,7 @@ export function TodayPage(props: TodayPageProps) {
         />
       )}
       {holiday.isHoliday && (
-        <div className="mb-5 flex items-center justify-between gap-3 rounded-[var(--card-radius)] border border-red-500/20 bg-red-500/10 px-4 py-3 text-red-500">
+        <div className="mb-5 flex items-center justify-between gap-3 rounded-[var(--card-radius)] border border-red-500/20 bg-red-500/10 px-4 py-3 text-red-500 max-[359px]:grid max-[359px]:gap-2 max-[359px]:px-3">
           <div className="grid gap-0.5">
             <strong className="text-xs font-extrabold">{t("today.holiday.title")}</strong>
             <span className="text-[10px]">{locale === "fa-IR" ? holiday.title : t("today.holiday.title")}</span>
@@ -81,7 +84,7 @@ export function TodayPage(props: TodayPageProps) {
         </div>
       )}
       {scheduledDayOff && !holiday.isHoliday && (
-        <div className="mb-5 flex items-center justify-between gap-3 rounded-[var(--card-radius)] border border-[color-mix(in_srgb,var(--warning)_30%,var(--border))] bg-[var(--warning-soft)] px-4 py-3 text-[var(--warning)]">
+        <div className="mb-5 flex items-center justify-between gap-3 rounded-[var(--card-radius)] border border-[color-mix(in_srgb,var(--warning)_30%,var(--border))] bg-[var(--warning-soft)] px-4 py-3 text-[var(--warning)] max-[359px]:grid max-[359px]:gap-2 max-[359px]:px-3">
           <div className="flex items-start gap-3">
             <CalendarOff aria-hidden="true" className="mt-0.5 size-5 shrink-0" />
             <div className="grid gap-0.5">
@@ -89,12 +92,12 @@ export function TodayPage(props: TodayPageProps) {
               <span className="text-[10px] text-[var(--text-muted)]">{t("today.scheduleOff.description")}</span>
             </div>
           </div>
-          <span className="shrink-0 rounded-full border border-[color-mix(in_srgb,var(--warning)_28%,var(--border))] bg-[var(--surface-1)] px-2.5 py-1 text-[9px] font-bold">{t("today.scheduleOff.zeroTarget")}</span>
+          <span className="shrink-0 rounded-full border border-[color-mix(in_srgb,var(--warning)_28%,var(--border))] max-[359px]:justify-self-start bg-[var(--surface-1)] px-2.5 py-1 text-[9px] font-bold">{t("today.scheduleOff.zeroTarget")}</span>
         </div>
       )}
-      <RecordHealthBanner record={props.record} onReset={props.resetRecord} />
-      <RecordResetUndo date={props.resetUndoDate} onUndo={props.undoResetRecord} onDismiss={props.dismissResetUndo} />
-      <TodaySmartSummary
+      {!isFreelancer && <RecordHealthBanner record={props.record} onReset={props.resetRecord} />}
+      {!isFreelancer && <RecordResetUndo date={props.resetUndoDate} onUndo={props.undoResetRecord} onDismiss={props.dismissResetUndo} />}
+      {!isFreelancer && <TodaySmartSummary
         record={props.record}
         result={props.todayCalc}
         dailyTarget={props.dailyTarget}
@@ -103,12 +106,12 @@ export function TodayPage(props: TodayPageProps) {
         lunchRunning={props.lunchRunning}
         scheduledDayOff={scheduledDayOff}
         flexible={props.data.settings.workTimingMode === "flexible"}
-      />
+      />}
       <CalendarAgendaCard dateKey={props.selectedDate} data={props.data} setData={props.setData} setToast={props.setToast} />
       <CompletedDayEditor key={`${props.selectedDate}:${props.record.start && props.record.end ? "completed" : "active"}`} {...props} scheduledDayOff={scheduledDayOff} />
-      <ActivitySegmentsCard record={props.record} projects={props.data.projects} activeSegment={props.activeActivitySegment} activeBreak={props.activeBreak} lunchRunning={props.lunchRunning} trackingAllowed={isToday} onStart={props.startActivitySegment} onStop={props.stopActivitySegment} />
+      {capabilities.activitySegments && <ActivitySegmentsCard record={props.record} records={Object.values(props.data.records)} mode={props.data.settings.mode} workProjects={props.data.workProjects} freelanceProjects={props.data.projects} activeSegment={props.activeActivitySegment} activeBreak={props.activeBreak} lunchRunning={props.lunchRunning} trackingAllowed={isToday} onCreateWorkProject={props.createWorkProject} onStart={props.startActivitySegment} onStop={props.stopActivitySegment} onUpdateDuration={props.updateActivitySegmentDuration} onDelete={props.deleteActivitySegment} />}
       {props.editingEntry === "manual" && props.data.settings.mode !== "employee" && <ManualEntryForm {...props} />}
-      {props.data.settings.mode === "employee" ? <TodayAttendanceLog record={props.record} /> : <TodayTimeline {...props} />}
+      {props.data.settings.mode === "employee" ? <TodayAttendanceLog record={props.record} updateRecord={props.updateRecord} /> : <TodayTimeline {...props} />}
       <TodayMetrics
         data={props.data}
         record={props.record}
@@ -118,8 +121,8 @@ export function TodayPage(props: TodayPageProps) {
         financialsHidden={props.financialsHidden}
         scheduledDayOff={scheduledDayOff}
       />
-      {props.record.start && !props.record.end && props.todayCalc.worked > 4 * 60 && (
-        <div className={cn("mt-5 flex items-center gap-3 rounded-[var(--card-radius)] border border-amber-500/25 bg-amber-500/10 px-5 py-4 text-amber-500 [&>svg]:size-7 [&>div]:grid [&>div]:flex-1 [&_span]:text-[10px] [&_span]:text-[var(--text-muted)] print:hidden")}>
+      {!isFreelancer && props.record.start && !props.record.end && props.todayCalc.worked > 4 * 60 && (
+        <div className={cn("mt-5 flex items-center gap-3 rounded-[var(--card-radius)] max-[359px]:grid max-[359px]:gap-2 border border-amber-500/25 bg-amber-500/10 px-5 py-4 text-amber-500 [&>svg]:size-7 [&>div]:grid [&>div]:flex-1 [&_span]:text-[10px] [&_span]:text-[var(--text-muted)] print:hidden")}>
           <AlertTriangle />
           <div>
             <strong>{t("today.longSession.title")}</strong>

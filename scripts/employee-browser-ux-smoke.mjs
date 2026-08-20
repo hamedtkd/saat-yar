@@ -13,6 +13,10 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const TIMEOUT = 30_000;
 const EMPLOYEE_NOTE = "گزارش مرورگر کارمند؛ تحویل کارها و برنامه فردا";
 const NET_DURATION = "۸:۱۵";
+const ACTIVITY_TITLE = "بازطراحی صفحه ورود";
+const ACTIVITY_PROJECT = "سامانه داخلی";
+const ACTIVITY_DELETE_TITLE = "فعالیت آزمایشی حذف";
+const FREELANCE_PROJECT = "طراحی داشبورد";
 
 class CdpClient {
   constructor(url) {
@@ -239,6 +243,156 @@ async function replaceFocusedText(client, value) {
   if (!reflected) throw new Error(`Controlled field did not retain the expected value: ${value}`);
 }
 
+
+
+async function assertEmployeeProjectIsolation(client) {
+  const opened = await evaluate(client, `(() => {
+    const trigger = document.querySelector('[data-activity-project]');
+    if (!(trigger instanceof HTMLButtonElement)) return false;
+    trigger.click();
+    return true;
+  })()`);
+  if (!opened) throw new Error("Activity project selector was not found for isolation check.");
+  await settleUi(client);
+  const leaked = await evaluate(client, `(() => {
+    const norm = (value) => (value || "").replace(/\s+/g, " ").trim();
+    return [...document.querySelectorAll('[role="option"]')].some((option) => norm(option.textContent) === ${JSON.stringify(FREELANCE_PROJECT)});
+  })()`);
+  await client.call("Input.dispatchKeyEvent", { type: "keyDown", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27, nativeVirtualKeyCode: 27 });
+  await client.call("Input.dispatchKeyEvent", { type: "keyUp", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27, nativeVirtualKeyCode: 27 });
+  await settleUi(client);
+  if (leaked) throw new Error(`Freelance project leaked into employee activity selector: ${FREELANCE_PROJECT}`);
+}
+
+async function createEmployeeWorkProject(client, projectName) {
+  const opened = await evaluate(client, `(() => {
+    const button = document.querySelector('[data-create-work-project]');
+    if (!(button instanceof HTMLButtonElement)) return false;
+    button.click();
+    return true;
+  })()`);
+  if (!opened) throw new Error("Create work project action was not found.");
+  await waitFor(client, `Boolean(document.querySelector('[role="dialog"] input'))`, "work project dialog");
+  await focusBySelector(client, `document.querySelector('[role="dialog"] input')`, "work project name");
+  await replaceFocusedText(client, projectName);
+  await clickButton(client, "ساخت پروژه", true);
+  await waitFor(client, `!document.querySelector('[role="dialog"]')`, "work project dialog close");
+}
+
+async function selectActivityProject(client, projectName) {
+  const opened = await evaluate(client, `(() => {
+    const trigger = document.querySelector('[data-activity-project]');
+    if (!(trigger instanceof HTMLButtonElement)) return false;
+    trigger.click();
+    return true;
+  })()`);
+  if (!opened) throw new Error("Activity project selector was not found.");
+  await waitFor(client, `(() => {
+    const norm = (value) => (value || "").replace(/\\s+/g, " ").trim();
+    return [...document.querySelectorAll('[role="option"]')].some((option) => norm(option.textContent) === ${JSON.stringify(projectName)});
+  })()`, `activity project option ${projectName}`);
+  const selected = await evaluate(client, `(() => {
+    const norm = (value) => (value || "").replace(/\\s+/g, " ").trim();
+    const option = [...document.querySelectorAll('[role="option"]')].find((item) => norm(item.textContent) === ${JSON.stringify(projectName)});
+    if (!(option instanceof HTMLElement)) return false;
+    option.click();
+    return true;
+  })()`);
+  if (!selected) throw new Error(`Activity project option could not be selected: ${projectName}`);
+  await settleUi(client);
+}
+
+async function editEmployeeActivityDuration(client, title, minutes) {
+  const opened = await evaluate(client, `(() => {
+    const row = [...document.querySelectorAll('[data-recent-activity-segment]')].find((item) => (item.textContent || "").includes(${JSON.stringify(ACTIVITY_TITLE)}));
+    const button = row?.querySelector('button[aria-label="ویرایش زمان صرف‌شده"]');
+    if (!(button instanceof HTMLButtonElement)) return false;
+    button.click();
+    return true;
+  })()`);
+  if (!opened) throw new Error(`Activity duration editor was not found for ${title}.`);
+  await waitFor(client, `Boolean(document.querySelector('[data-activity-duration-minutes]'))`, "activity duration editor");
+  await focusBySelector(client, `document.querySelector('[data-activity-duration-hours]')`, "activity duration hours");
+  await replaceFocusedText(client, "0");
+  await focusBySelector(client, `document.querySelector('[data-activity-duration-minutes]')`, "activity duration minutes");
+  await replaceFocusedText(client, String(minutes));
+  await clickButton(client, "ذخیره زمان", true);
+  await waitFor(client, `!document.querySelector('[data-activity-duration-minutes]')`, "activity duration editor close");
+}
+
+async function deleteEmployeeActivity(client, title) {
+  const opened = await evaluate(client, `(() => {
+    const row = [...document.querySelectorAll('[data-recent-activity-segment]')].find((item) => (item.textContent || "").includes(${JSON.stringify(ACTIVITY_DELETE_TITLE)}));
+    const button = row?.querySelector('button[aria-label="حذف فعالیت"]');
+    if (!(button instanceof HTMLButtonElement)) return false;
+    button.click();
+    return true;
+  })()`);
+  if (!opened) throw new Error(`Activity delete action was not found for ${title}.`);
+  await waitFor(client, `Boolean(document.querySelector('[role="alertdialog"]'))`, "activity delete confirmation");
+  const confirmed = await evaluate(client, `(() => {
+    const dialog = document.querySelector('[role="alertdialog"]');
+    const button = [...(dialog?.querySelectorAll('button') || [])].find((item) => (item.textContent || "").replace(/\s+/g, " ").trim() === "حذف فعالیت");
+    if (!(button instanceof HTMLButtonElement)) return false;
+    button.click();
+    return true;
+  })()`);
+  if (!confirmed) throw new Error("Activity delete confirmation action was not found.");
+  await waitFor(client, `![...document.querySelectorAll('[data-recent-activity-segment]')].some((item) => (item.textContent || "").includes(${JSON.stringify(ACTIVITY_DELETE_TITLE)}))`, "deleted activity removal");
+}
+
+async function trackEmployeeActivityContext(client) {
+  await assertEmployeeProjectIsolation(client);
+  await createEmployeeWorkProject(client, ACTIVITY_PROJECT);
+  await focusBySelector(client, `document.querySelector('[data-activity-title]')`, "employee activity title");
+  await replaceFocusedText(client, ACTIVITY_TITLE);
+  await selectActivityProject(client, ACTIVITY_PROJECT);
+  await clickButton(client, "شروع فعالیت", true);
+  await waitFor(client, `document.querySelector('[data-active-activity-title]')?.textContent?.includes(${JSON.stringify(ACTIVITY_TITLE)}) && Boolean(document.querySelector('[data-activity-live-timer]'))`, "employee titled activity start");
+  await clickButton(client, "پایان فعالیت", true);
+  await waitFor(client, `(() => {
+    const rows = [...document.querySelectorAll('[data-recent-activity-segment]')];
+    return rows.some((row) => (row.textContent || "").includes(${JSON.stringify(ACTIVITY_TITLE)}) && (row.textContent || "").includes(${JSON.stringify(ACTIVITY_PROJECT)}));
+  })()`, "employee titled activity recent row");
+  await editEmployeeActivityDuration(client, ACTIVITY_TITLE, 7);
+
+  await focusBySelector(client, `document.querySelector('[data-activity-title]')`, "employee disposable activity title");
+  await replaceFocusedText(client, ACTIVITY_DELETE_TITLE);
+  await clickButton(client, "شروع فعالیت", true);
+  await waitFor(client, `document.querySelector('[data-active-activity-title]')?.textContent?.includes(${JSON.stringify(ACTIVITY_DELETE_TITLE)})`, "disposable activity start");
+  await clickButton(client, "پایان فعالیت", true);
+  await waitFor(client, `[...document.querySelectorAll('[data-recent-activity-segment]')].some((item) => (item.textContent || "").includes(${JSON.stringify(ACTIVITY_DELETE_TITLE)}))`, "disposable activity recent row");
+  await deleteEmployeeActivity(client, ACTIVITY_DELETE_TITLE);
+}
+
+async function waitForEmployeeActivityPersistence(client, date, timeout = TIMEOUT) {
+  const deadline = Date.now() + timeout;
+  let last = null;
+  while (Date.now() < deadline) {
+    last = await evaluate(client, `(async () => {
+      const db = await new Promise((resolve, reject) => {
+        const request = indexedDB.open("saatyar-db", 1);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      const stored = await new Promise((resolve, reject) => {
+        const tx = db.transaction("app-data", "readonly");
+        const request = tx.objectStore("app-data").get("current");
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      db.close();
+      const data = stored?.format === "saatyar-app-data" ? stored.data : stored;
+      const segment = data?.records?.[${JSON.stringify(date)}]?.activitySegments?.find((item) => item.title === ${JSON.stringify(ACTIVITY_TITLE)});
+      const elapsedMinutes = segment?.startedAt && segment?.endedAt ? Math.round((new Date(segment.endedAt).getTime() - new Date(segment.startedAt).getTime()) / 60000) : null;
+      return segment ? { ready: true, title: segment.title, kind: segment.kind, projectId: segment.projectId, workProjectId: segment.workProjectId, end: segment.end, elapsedMinutes, workProject: data?.workProjects?.find((item) => item.id === segment.workProjectId)?.name } : { ready: false };
+    })()`);
+    if (last?.ready) return last;
+    await new Promise((resolveWait) => setTimeout(resolveWait, 100));
+  }
+  throw new Error(`Employee activity context did not reach IndexedDB: ${JSON.stringify(last)}`);
+}
+
 async function pressKey(client, key, code = key) {
   const windowsVirtualKeyCode = key === "Enter" ? 13 : key === "Tab" ? 9 : 0;
   const text = key === "Enter" ? "\r" : undefined;
@@ -348,6 +502,7 @@ async function seedEmployeeData(client) {
   }
   data.records = {};
   data.leaves = [];
+  data.workProjects = [];
   data.deletedRecords = [];
   const snapshot = {
     format: APP_DATA_STORAGE_FORMAT,
@@ -378,7 +533,7 @@ async function seedEmployeeData(client) {
       request.onerror = () => reject(request.error);
     });
     db.close();
-    localStorage.setItem("saatyar:last-route", "/today");
+    localStorage.setItem("saatyar:last-route", "/employee/today");
     const payload = current?.format === "saatyar-app-data" ? current.data : current;
     const weekdays = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
     const weekday = weekdays[new Date().getDay()];
@@ -459,7 +614,7 @@ async function main() {
     const date = await currentDateKey(client);
 
     await client.call("Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
-    await navigate(client, `${server.origin}/today`, "یادداشت روز کاری");
+    await navigate(client, `${server.origin}/employee/today`, "یادداشت روز کاری");
 
     await startEmployeeDay(client);
     await waitFor(client, `document.body?.innerText.includes("پایان روز")`, "employee day start");
@@ -467,6 +622,13 @@ async function main() {
     console.log("✓ Active employee work clock advances live without a reload");
     await setTimeCardValue(client, "ورود", "08:00");
     console.log("✓ Employee day starts through the real attendance action and keeps an editable arrival time");
+
+    await trackEmployeeActivityContext(client);
+    const activityPersistence = await waitForEmployeeActivityPersistence(client, date);
+    if (activityPersistence.kind !== "deep-work" || activityPersistence.projectId || !activityPersistence.workProjectId || activityPersistence.workProject !== ACTIVITY_PROJECT || !activityPersistence.end || activityPersistence.elapsedMinutes !== 7) {
+      throw new Error(`Employee activity context persistence drifted: ${JSON.stringify(activityPersistence)}`);
+    }
+    console.log("✓ Employee activity creates isolated project context, shows a live timer, edits time spent, deletes history, and persists it");
 
     await clickButton(client, "شروع ناهار", true);
     await waitFor(client, `document.body?.innerText.includes("پایان ناهار")`, "lunch running");
@@ -508,9 +670,9 @@ async function main() {
     await waitFor(client, `document.body?.innerText.includes("ثبت این روز کامل شده است") && document.body?.innerText.includes(${JSON.stringify(NET_DURATION)})`, "employee net duration");
     console.log(`✓ Completed-day draft persists the full 08:00–17:00 / lunch / unpaid-break contract before verifying 8:15 (${completedPersistence.storageShape})`);
 
-    await navigateInApp(client, "/month", "ماه من");
+    await navigateInApp(client, "/month", "تقویم کاری");
     await waitFor(client, `document.body?.innerText.includes("جزئیات روز انتخاب‌شده") && document.body?.innerText.includes(${JSON.stringify(NET_DURATION)})`, "employee month details");
-    console.log("✓ Month view reflects the completed employee attendance calculation");
+    console.log("✓ Work Calendar reflects the completed employee attendance calculation");
 
     await navigateInApp(client, "/reports", "گزارش کارکرد و حقوق");
     await waitFor(client, `document.body?.innerText.includes("فیش حقوقی تخمینی ماه") && document.body?.innerText.includes("کارکرد این ماه")`, "employee payroll report");
@@ -519,13 +681,15 @@ async function main() {
     console.log(`✓ Employee workflow is durable in IndexedDB (${completedPersistence.storageShape}, schema v${completedPersistence.schemaVersion ?? "legacy"})`);
 
     await client.call("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true, screenWidth: 390, screenHeight: 844 });
-    await navigate(client, `${server.origin}/today`, "یادداشت روز کاری");
+    await navigate(client, `${server.origin}/employee/today`, "یادداشت روز کاری");
     await waitFor(client, `(() => {
       const note = document.querySelector('textarea[placeholder*="کارهای انجام‌شده"]');
       return note instanceof HTMLTextAreaElement
         && note.value === ${JSON.stringify(EMPLOYEE_NOTE)}
         && document.body?.innerText.includes("ثبت این روز کامل شده است")
-        && document.body?.innerText.includes(${JSON.stringify(NET_DURATION)});
+        && document.body?.innerText.includes(${JSON.stringify(NET_DURATION)})
+        && document.body?.innerText.includes(${JSON.stringify(ACTIVITY_TITLE)})
+        && document.body?.innerText.includes(${JSON.stringify(ACTIVITY_PROJECT)});
     })()`, "employee hard reload state");
     const mobileContract = await evaluate(client, `(() => {
       const note = document.querySelector('textarea[placeholder*="کارهای انجام‌شده"]');
@@ -533,9 +697,11 @@ async function main() {
         pageFits: document.documentElement.scrollWidth <= window.innerWidth + 2,
         noteVisible: note instanceof HTMLTextAreaElement && note.value === ${JSON.stringify(EMPLOYEE_NOTE)},
         completed: document.body?.innerText.includes("ثبت این روز کامل شده است"),
+        activityTitleVisible: document.body?.innerText.includes(${JSON.stringify(ACTIVITY_TITLE)}),
+        activityProjectVisible: document.body?.innerText.includes(${JSON.stringify(ACTIVITY_PROJECT)}),
       };
     })()`);
-    if (!mobileContract?.pageFits || !mobileContract.noteVisible || !mobileContract.completed) {
+    if (!mobileContract?.pageFits || !mobileContract.noteVisible || !mobileContract.completed || !mobileContract.activityTitleVisible || !mobileContract.activityProjectVisible) {
       throw new Error(`Mobile employee UX contract failed: ${JSON.stringify(mobileContract)}`);
     }
     console.log("✓ Hard reload restores the employee day and mobile Today stays within the viewport");
@@ -548,6 +714,29 @@ async function main() {
     console.log("✓ Mobile completed-day edit actions remain visible without colliding with bottom navigation");
     await clickButton(client, "انصراف", true);
     await waitFor(client, `document.body?.innerText.includes("ثبت این روز کامل شده است")`, "completed-day mobile cancel");
+
+    await client.call("Emulation.setDeviceMetricsOverride", { width: 320, height: 800, deviceScaleFactor: 1, mobile: true, screenWidth: 320, screenHeight: 800 });
+    await navigate(client, `${server.origin}/employee/today`, "یادداشت روز کاری");
+    await waitFor(client, `window.innerWidth === 320 && Boolean(document.querySelector('[data-mobile-bottom-nav]'))`, "320px employee Today render");
+    const compactEmployeeContract = await evaluate(client, `(() => {
+      const viewportWidth = window.innerWidth;
+      const nav = document.querySelector('[data-mobile-bottom-nav]');
+      const navRect = nav instanceof HTMLElement ? nav.getBoundingClientRect() : null;
+      const focusCard = document.querySelector('[data-completed-day-editor]');
+      const focusRect = focusCard instanceof HTMLElement ? focusCard.getBoundingClientRect() : null;
+      return {
+        pageFits: document.documentElement.scrollWidth <= viewportWidth + 2,
+        navFits: Boolean(navRect && navRect.left >= -1 && navRect.right <= viewportWidth + 1),
+        focusFits: Boolean(focusRect && focusRect.left >= -1 && focusRect.right <= viewportWidth + 1),
+        viewportWidth,
+        nav: navRect ? { left: navRect.left, right: navRect.right, width: navRect.width } : null,
+        focus: focusRect ? { left: focusRect.left, right: focusRect.right, width: focusRect.width } : null,
+      };
+    })()`);
+    if (!compactEmployeeContract?.pageFits || !compactEmployeeContract.navFits || !compactEmployeeContract.focusFits) {
+      throw new Error(`320px employee Today overflowed viewport: ${JSON.stringify(compactEmployeeContract)}`);
+    }
+    console.log("✓ Employee Today remains usable without horizontal overflow at 320px");
 
     if (client.runtimeErrors.length) throw new Error(`Browser runtime errors:\n${client.runtimeErrors.join("\n")}`);
     console.log("Employee browser UX smoke passed.");

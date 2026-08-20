@@ -28,11 +28,13 @@ test("static favicon SVG uses a tight viewBox without the oversized halo", () =>
 });
 
 test("dynamic favicon applies the same tight crop and remains theme-aware", () => {
-  const source = read("components/theme/theme-runtime.tsx");
-  assert.match(source, /viewBox=\"560 480 960 960\"/);
-  assert.match(source, /fill=\"\$\{accent\}\"/);
-  assert.match(source, /fill=\"\$\{strong\}\"/);
-  assert.match(source, /setAttribute\("sizes", "any"\)/);
+  const runtime = read("components/theme/theme-runtime.tsx");
+  const themedSvg = read("lib/brand-theme.ts");
+  assert.match(runtime, /themeBrandSvg\(source, accent, strong\)/);
+  assert.match(themedSvg, /viewBox=\"560 480 960 960\"/);
+  assert.match(themedSvg, /fill=\"\$\{accent\}\"/);
+  assert.match(themedSvg, /fill=\"\$\{strong\}\"/);
+  assert.match(runtime, /setAttribute\("sizes", "any"\)/);
 });
 
 test("phase 104 regression test is part of the main quality command", () => {

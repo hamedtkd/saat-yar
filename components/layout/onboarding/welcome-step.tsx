@@ -1,8 +1,6 @@
-import { Clock3, Sparkles } from "lucide-react";
-
+import { ShieldCheck, Sparkles, TimerReset } from "lucide-react";
 import { useSystemUi } from "@/components/i18n/use-system-ui";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/cn";
 import type { AppData } from "@/lib/types";
 import { StepShell } from "./step-shell";
 import type { SetSetting } from "./types";
@@ -11,17 +9,17 @@ export function WelcomeStep({ settings, setSetting }: { settings: AppData["setti
   const { s } = useSystemUi();
   return (
     <StepShell>
-      <div className="mx-auto flex max-w-[640px] flex-col items-center pt-10 sm:pt-14">
-        <span className={cn("mb-5 grid size-[74px] place-items-center rounded-[24px] border border-[color-mix(in_srgb,var(--accent)_24%,var(--border))] bg-[var(--accent-soft)] text-[var(--accent-strong)] shadow-[0_14px_40px_rgba(0,0,0,.08)] [&_svg]:size-10")}><Clock3 /></span>
-        <span className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--surface-1)] px-3 py-1 text-[10px] font-bold text-[var(--accent-strong)]"><Sparkles className="size-3.5" /> {s("Setup takes less than two minutes")}</span>
-        <h1>{s("Welcome to Saatyar")}</h1>
-        <p className="max-w-[560px]">{s("Set your name, schedule, payroll, and appearance now. Everything stays on this device and can be changed later.")}</p>
-        <div className="mt-2 w-full max-w-[560px] rounded-[22px] border border-[var(--dashboard-border)] bg-[linear-gradient(145deg,var(--surface-1),var(--surface-raised))] p-4 text-start shadow-[0_12px_34px_rgba(0,0,0,.06)] sm:p-5">
-          <label className="grid gap-2 text-[12px] font-extrabold text-[var(--text)]">
-            <span>{s("What should we call you?")}</span>
-            <Input data-onboarding-name autoFocus autoComplete="name" placeholder={s("For example, Hamed")} value={settings.name} onChange={(event) => setSetting("name", event.target.value)} className="h-12 rounded-[14px] border-[var(--dashboard-border)] bg-[var(--surface-2)] px-4 text-sm font-bold" />
-          </label>
-          <p className="mb-0 mt-2 text-[10px] leading-5 text-[var(--text-muted)]">{s("This name is only used for your local greeting and profile.")}</p>
+      <div className="mx-auto flex max-w-[860px] flex-col items-center pt-6 text-center sm:pt-10">
+        <span className="mb-4 inline-flex items-center gap-2 text-sm font-black text-[var(--accent-strong)]"><Sparkles className="size-4" />{s("Welcome to Saatyar")}</span>
+        <h1 className="max-w-[820px] text-balance">{s("Your first step toward calmer work and clearer income")}</h1>
+        <p className="max-w-[720px] text-balance">{s("Set your name, workspace, schedule, income rules, and appearance once. Everything stays on this device and remains editable later.")}</p>
+        <div className="mt-5 grid w-full max-w-[760px] gap-4 rounded-[28px] border border-[var(--dashboard-border)] bg-[linear-gradient(145deg,color-mix(in_srgb,var(--surface-1)_94%,transparent),color-mix(in_srgb,var(--surface-raised)_96%,transparent))] p-5 text-start shadow-[0_24px_70px_rgba(0,0,0,.09)] sm:p-6">
+          <div className="flex items-start gap-3">
+            <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-[var(--accent-soft)] text-[var(--accent-strong)]"><TimerReset className="size-5" /></span>
+            <div className="grid gap-1"><strong className="text-sm text-[var(--text)]">{s("What should we call you?")}</strong><span className="text-[10px] leading-5 text-[var(--text-muted)]">{s("This name is only used for your local greeting and profile.")}</span></div>
+          </div>
+          <Input data-onboarding-name autoFocus autoComplete="name" placeholder={s("For example, Hamed")} value={settings.name} onChange={(event) => setSetting("name", event.target.value)} className="h-14 rounded-[18px] border-[var(--dashboard-border)] bg-[var(--surface-2)] px-5 text-base font-black shadow-[0_10px_28px_rgba(0,0,0,.05)]" />
+          <div className="flex items-center gap-2 rounded-[16px] border border-[color-mix(in_srgb,var(--success)_22%,var(--border))] bg-[var(--success-soft)] px-3.5 py-3 text-[10px] font-semibold leading-5 text-[var(--text-muted)]"><ShieldCheck className="size-4 shrink-0 text-[var(--success)]" />{s("No account is required. Your setup is saved locally on this device.")}</div>
         </div>
       </div>
     </StepShell>

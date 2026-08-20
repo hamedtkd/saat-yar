@@ -24,6 +24,7 @@ export function applyDeviceTransfer(local: AppData, incoming: AppData, options: 
     records,
     leaves: mergeArray(local.leaves, incoming.leaves, preferIncoming),
     clients: mergeArray(local.clients, incoming.clients, preferIncoming),
+    workProjects: mergeArray(local.workProjects, incoming.workProjects, preferIncoming),
     projects: mergeArray(local.projects, incoming.projects, preferIncoming),
     timeEntries: mergeArray(local.timeEntries, incoming.timeEntries, preferIncoming),
     expenses: mergeArray(local.expenses, incoming.expenses, preferIncoming),

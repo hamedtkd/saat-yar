@@ -1,3 +1,5 @@
+import { createPaddedNumberOptions } from "../../../lib/pickers/wheel.ts";
+
 const DEFAULT_TIME = "00:00";
 
 const PERSIAN_DIGITS = "۰۱۲۳۴۵۶۷۸۹";
@@ -41,5 +43,5 @@ export function normalizeTime(value: string): string {
   return parsed.valid ? parsed.value : DEFAULT_TIME;
 }
 
-export const HOURS = Array.from({ length: 24 }, (_, index) => String(index).padStart(2, "0"));
-export const MINUTES = Array.from({ length: 60 }, (_, index) => String(index).padStart(2, "0"));
+export const HOURS = createPaddedNumberOptions(24);
+export const MINUTES = createPaddedNumberOptions(60);

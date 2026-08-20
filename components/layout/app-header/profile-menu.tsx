@@ -96,7 +96,7 @@ export function ProfileMenu({
         className={cn(
           headerControlShell,
           "flex min-w-[158px] items-center gap-2 px-2 text-start",
-          "max-[520px]:w-11 max-[520px]:min-w-11 max-[520px]:justify-center max-[520px]:px-1.5",
+          "max-[520px]:size-10 max-[520px]:min-w-10 max-[520px]:justify-center max-[520px]:border-0 max-[520px]:bg-transparent max-[520px]:px-1 max-[520px]:shadow-none max-[520px]:hover:bg-[var(--accent-soft)]",
           open && "border-[color-mix(in_srgb,var(--accent)_38%,var(--dashboard-border))] bg-[var(--accent-soft)]",
         )}
       >
@@ -118,7 +118,7 @@ export function ProfileMenu({
         <div
           role="menu"
           aria-label={t("profile.menuAria")}
-          className="absolute end-0 top-[calc(100%+8px)] z-[1100] w-[300px] overflow-hidden rounded-[18px] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] p-2 shadow-[0_18px_48px_rgba(0,0,0,.18)] backdrop-blur-2xl max-[420px]:fixed max-[420px]:start-2 max-[420px]:end-2 max-[420px]:top-[72px] max-[420px]:w-auto"
+          className="absolute end-0 top-[calc(100%+8px)] z-[1100] w-[300px] overflow-hidden rounded-[18px] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] p-2 shadow-[0_18px_48px_rgba(0,0,0,.18)] backdrop-blur-2xl max-[420px]:fixed max-[420px]:start-2 max-[420px]:end-2 max-[420px]:top-[72px] max-[420px]:w-auto max-[359px]:start-1.5 max-[359px]:end-1.5 max-[359px]:top-[66px]"
         >
           <div className="mb-1.5 rounded-[14px] bg-[var(--surface-2)] px-3 py-3">
             <div className="flex items-center gap-3">

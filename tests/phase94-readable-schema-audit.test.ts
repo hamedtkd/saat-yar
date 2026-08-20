@@ -17,6 +17,7 @@ function completeShape(): Record<string, unknown> {
     leaves: [],
     clients: [],
     projects: [],
+    workProjects: [],
     timeEntries: [],
     expenses: [],
     invoices: [],

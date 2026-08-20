@@ -133,7 +133,7 @@ test("toast tone detection supports English system messages without losing Persi
   assert.match(source, /"ذخیره شد"/);
 });
 
-test("locale runtime updates route titles while published static metadata remains canonical Persian", async () => {
+test("locale runtime updates route titles while static site metadata stays canonical and PWA identity stays bilingual", async () => {
   const [runtime, metadata, manifest] = await Promise.all([
     read("components/i18n/locale-runtime.tsx"),
     read("lib/site-metadata.ts"),
@@ -147,7 +147,7 @@ test("locale runtime updates route titles while published static metadata remain
   assert.match(runtime, /"nav\.today"/);
   assert.match(metadata, /SITE_NAME = "ساعت‌یار"/);
   assert.match(metadata, /locale: "fa_IR"/);
-  assert.match(manifest, /SITE_NAME/);
+  assert.match(manifest, /name: PWA_APP_NAME,/);
 });
 
 test("production browser smoke covers English Settings Import About and onboarding reentry before Persian restore", async () => {

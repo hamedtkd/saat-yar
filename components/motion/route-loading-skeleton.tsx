@@ -25,14 +25,14 @@ function SectionLead() {
   );
 }
 
-function TodayLoadingSkeleton() {
+function EmployeeTodayLoadingSkeleton() {
   return (
-    <div data-loading-route="today" className="grid gap-4">
-      <Card className="grid min-h-[124px] grid-cols-[minmax(250px,.85fr)_minmax(0,1.55fr)_minmax(180px,.65fr)] items-center gap-5 px-5 py-4 max-[980px]:grid-cols-[minmax(0,1fr)_auto] max-[720px]:grid-cols-1">
-        <div className="grid grid-cols-[42px_minmax(0,1fr)_42px] gap-2 max-[980px]:order-2">
-          <Block className="h-[52px] w-[42px]" />
-          <Block className="h-[52px] w-full" />
-          <Block className="h-[52px] w-[42px]" />
+    <div data-loading-route="employee-today" className="grid gap-4">
+      <Card className="grid min-h-[124px] grid-cols-[minmax(250px,.85fr)_minmax(0,1.55fr)_minmax(180px,.65fr)] items-center gap-5 px-5 py-4 max-[980px]:grid-cols-[minmax(0,1fr)_auto] max-[720px]:grid-cols-1 max-[359px]:min-h-0 max-[359px]:gap-3 max-[359px]:px-3 max-[359px]:py-3">
+        <div className="grid grid-cols-[42px_minmax(0,1fr)_42px] gap-2 max-[980px]:order-2 max-[359px]:grid-cols-[36px_minmax(0,1fr)_36px] max-[359px]:gap-1.5">
+          <Block className="h-[52px] w-[42px] max-[359px]:h-11 max-[359px]:w-9" />
+          <Block className="h-[52px] w-full max-[359px]:h-11" />
+          <Block className="h-[52px] w-[42px] max-[359px]:h-11 max-[359px]:w-9" />
         </div>
         <div className="grid justify-items-center gap-2 max-[980px]:order-1 max-[980px]:col-span-2 max-[720px]:col-span-1">
           <Block className="h-6 w-24 rounded-full" />
@@ -60,7 +60,7 @@ function TodayLoadingSkeleton() {
 
       <Card className="overflow-hidden">
         <div className="grid min-h-[290px] grid-cols-[minmax(0,1.02fr)_minmax(320px,.98fr)] max-[1050px]:grid-cols-1">
-          <div className="grid content-start gap-4 p-5 sm:p-6">
+          <div className="grid content-start gap-4 p-5 max-[359px]:gap-3 max-[359px]:p-3 sm:p-6">
             <Block className="h-3 w-28" />
             <Block className="h-2.5 w-56 max-w-[70%]" />
             <div className="grid gap-3 rounded-[20px] border border-[var(--dashboard-border)] bg-[var(--surface-2)] p-4">
@@ -69,11 +69,11 @@ function TodayLoadingSkeleton() {
               <Block className="h-10 w-full" />
             </div>
           </div>
-          <div className="grid min-h-[290px] content-center justify-items-center gap-4 border-s border-[var(--dashboard-border)] bg-[var(--surface-2)] p-6 max-[1050px]:border-s-0 max-[1050px]:border-t">
+          <div className="grid min-h-[290px] content-center justify-items-center gap-4 border-s border-[var(--dashboard-border)] bg-[var(--surface-2)] p-6 max-[1050px]:border-s-0 max-[1050px]:border-t max-[359px]:min-h-0 max-[359px]:gap-3 max-[359px]:p-3">
             <Block className="h-7 w-28 rounded-full" />
-            <Block className="size-36 rounded-full" />
+            <Block className="size-36 rounded-full max-[359px]:size-28" />
             <Block className="h-3 w-36" />
-            <div className="grid w-full max-w-[352px] grid-cols-2 gap-3"><Block className="h-14 w-full" /><Block className="h-14 w-full" /></div>
+            <div className="grid w-full max-w-[352px] grid-cols-2 gap-3 max-[359px]:grid-cols-1 max-[359px]:gap-2"><Block className="h-14 w-full" /><Block className="h-14 w-full" /></div>
           </div>
         </div>
       </Card>
@@ -81,6 +81,40 @@ function TodayLoadingSkeleton() {
       <Card className="grid grid-cols-4 gap-2.5 p-3 max-[980px]:grid-cols-2 max-[620px]:grid-cols-1">
         {[0, 1, 2, 3].map((item) => <Block key={item} className="h-20 w-full" />)}
       </Card>
+    </div>
+  );
+}
+
+function FreelancerTodayLoadingSkeleton() {
+  return (
+    <div data-loading-route="freelancer-today" className="grid gap-4">
+      <Card className="grid min-h-[112px] grid-cols-[minmax(0,1fr)_auto] items-center gap-4 p-4 max-[620px]:grid-cols-1 max-[359px]:min-h-0 max-[359px]:gap-3 max-[359px]:p-3">
+        <div className="grid gap-2"><Block className="h-3 w-28" /><Block className="h-2.5 w-48 max-w-[70vw]" /></div>
+        <Block className="h-10 w-32 rounded-full max-[620px]:w-full" />
+      </Card>
+      <Card className="overflow-hidden">
+        <div className="grid grid-cols-[minmax(0,1.08fr)_minmax(360px,.92fr)] max-[1050px]:grid-cols-1">
+          <div className="grid gap-4 border-e border-[var(--dashboard-border)] p-4 max-[1050px]:border-e-0 max-[1050px]:border-b max-[359px]:gap-3 max-[359px]:p-3 sm:p-5">
+            <div className="flex items-center justify-between gap-3"><Block className="h-4 w-24" /><Block className="h-7 w-28 rounded-full" /></div>
+            <div className="grid justify-items-center gap-3">
+              <Block className="h-4 w-36" />
+              <div className="flex items-center gap-2 max-[359px]:gap-1">
+                {[0,1,2,3,4,5].map((item) => <Block key={item} className="h-14 w-10 rounded-[10px] max-[359px]:h-12 max-[359px]:w-[30px] max-[359px]:rounded-[8px]" />)}
+              </div>
+              <Block className="h-14 w-full rounded-2xl" />
+              <div className="grid w-full grid-cols-2 gap-2 max-[359px]:grid-cols-1"><Block className="h-12 w-full max-[359px]:h-10" /><Block className="h-12 w-full max-[359px]:h-10" /></div>
+            </div>
+            <div className="border-t border-[var(--dashboard-border)] pt-4"><Block className="h-16 w-full rounded-xl" /><Block className="mt-3 h-16 w-full rounded-xl" /></div>
+          </div>
+          <div className="grid content-start gap-3 p-4 max-[359px]:p-3 sm:p-5">
+            <Block className="h-4 w-36" />
+            {[0,1,2].map((item) => <Block key={item} className="h-12 w-full rounded-xl" />)}
+            <Block className="h-24 w-full rounded-xl" />
+            <Block className="h-14 w-full rounded-xl" />
+          </div>
+        </div>
+      </Card>
+      <Card className="h-[220px] p-4 max-[359px]:h-[190px] max-[359px]:p-3"><Block className="h-4 w-32" /><Block className="mt-4 h-[150px] w-full" /></Card>
     </div>
   );
 }
@@ -154,7 +188,9 @@ function GenericLoadingSkeleton() {
 
 export function RouteLoadingSkeleton({ pathname }: { pathname: string }) {
   const route = normalizePathname(pathname);
-  if (route === "/today") return <TodayLoadingSkeleton />;
+  if (route === "/freelancer/today") return <FreelancerTodayLoadingSkeleton />;
+  if (route === "/employee/today") return <EmployeeTodayLoadingSkeleton />;
+  if (route === "/hybrid/today" || route === "/today") return <EmployeeTodayLoadingSkeleton />;
   if (route === "/month") return <MonthLoadingSkeleton />;
   return <GenericLoadingSkeleton />;
 }

@@ -22,18 +22,18 @@ export function CalendarHeader({
   const NextIcon = isRtl ? ChevronLeft : ChevronRight;
 
   return (
-    <div className="mb-4 grid grid-cols-[52px_1fr_52px] items-center gap-3">
+    <div className="mb-4 grid grid-cols-[52px_1fr_52px] items-center gap-3 max-[359px]:mb-3 max-[359px]:grid-cols-[44px_1fr_44px] max-[359px]:gap-2">
       <Button
         type="button"
         variant="outline"
         size="icon"
         aria-label={translate(locale, "picker.date.previousMonth")}
         onClick={onPreviousMonth}
-        className="size-13 rounded-xl border-[var(--border)] shadow-none"
+        className="size-13 rounded-xl border-[var(--border)] shadow-none max-[359px]:size-11 max-[359px]:rounded-[10px]"
       >
         <PreviousIcon aria-hidden="true" className="size-5" />
       </Button>
-      <strong className="text-center text-sm font-extrabold text-[var(--text)]">
+      <strong className="text-center text-sm font-extrabold text-[var(--text)] max-[359px]:text-xs">
         {title}
       </strong>
       <Button
@@ -42,7 +42,7 @@ export function CalendarHeader({
         size="icon"
         aria-label={translate(locale, "picker.date.nextMonth")}
         onClick={onNextMonth}
-        className="size-13 rounded-xl border-[var(--border)] shadow-none"
+        className="size-13 rounded-xl border-[var(--border)] shadow-none max-[359px]:size-11 max-[359px]:rounded-[10px]"
       >
         <NextIcon aria-hidden="true" className="size-5" />
       </Button>

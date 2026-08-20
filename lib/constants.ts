@@ -34,7 +34,7 @@ export const defaultSettings: Settings = {
     customReminders: [],
     snoozeMinutes: 30,
   },
-  appearance: { mode: "system", preset: "spotify", accent: "#06b6d4", radius: "rounded", surface: "tinted" },
+  appearance: { mode: "system", preset: "violet", accent: "#8b5cf6", radius: "rounded", surface: "tinted" },
   mode: "employee",
   workTimingMode: "scheduled",
 };

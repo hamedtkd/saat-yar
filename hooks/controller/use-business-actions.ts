@@ -3,6 +3,7 @@ import { colors, createLeaveDraft } from "@/lib/constants";
 import { getBrowserLocale, translate } from "@/lib/i18n";
 import { translateBusiness } from "@/lib/i18n/business";
 import type { AppData, ClientDraft, LeaveEntry, Mode, ProjectDraft, TimerDraft } from "@/lib/types";
+import { projectTimerSegmentSeconds, readProjectTimerSession, type ProjectTimerSession } from "@/lib/project-timer-session";
 import { initialClientDraft, initialProjectDraft } from "./defaults";
 
 type Args = {
@@ -14,24 +15,103 @@ type Args = {
   setSelectedProjectId: Dispatch<SetStateAction<string>>;
   setShowClientForm: Dispatch<SetStateAction<boolean>>; setShowProjectForm: Dispatch<SetStateAction<boolean>>;
   activeEntry?: AppData["timeEntries"][number];
+  projectTimerSession: ProjectTimerSession | null;
+  setProjectTimerSession: (session: ProjectTimerSession | null) => void;
   ensureLiveTimerOwnership: () => boolean;
 };
 
 export function useBusinessActions(args: Args) {
   const { data, setData, setToast, clientDraft, setClientDraft, projectDraft, setProjectDraft, timerDraft, setTimerDraft,
-    leaveDraft, setLeaveDraft, setSelectedProjectId, setShowClientForm, setShowProjectForm, activeEntry, ensureLiveTimerOwnership } = args;
-  function toggleProjectTimer(projectId?: string) {
+    leaveDraft, setLeaveDraft, setSelectedProjectId, setShowClientForm, setShowProjectForm, activeEntry, projectTimerSession, setProjectTimerSession, ensureLiveTimerOwnership } = args;
+  const readStoredTimerSession = () => {
+    try { return readProjectTimerSession(typeof window === "undefined" ? undefined : window.localStorage); }
+    catch { return null; }
+  };
+  function startProjectTimer(projectId?: string) {
+    if (activeEntry || projectTimerSession || readStoredTimerSession()) return;
     if (!ensureLiveTimerOwnership()) return setToast(translateBusiness(getBrowserLocale(), "toast.timerOtherTab"));
-    if (activeEntry) {
-      setData((previous) => ({ ...previous, timeEntries: previous.timeEntries.map((entry) => entry.id === activeEntry.id ? { ...entry, endedAt: new Date().toISOString() } : entry) }));
-      return setToast(translateBusiness(getBrowserLocale(), "toast.timerStopped"));
-    }
     const project = data.projects.find((item) => item.id === (projectId || timerDraft.projectId));
     if (!project) return setToast(translateBusiness(getBrowserLocale(), "toast.selectProject"));
-    setData((previous) => ({ ...previous, timeEntries: [{ id: crypto.randomUUID(), clientId: project.clientId, projectId: project.id,
-      task: timerDraft.task, startedAt: new Date().toISOString(), endedAt: null, note: timerDraft.note,
-      billable: timerDraft.billable, effectiveRate: project.rate }, ...previous.timeEntries] }));
+    const startedAt = new Date().toISOString();
+    const id = crypto.randomUUID();
+    const entry = { id, clientId: project.clientId, projectId: project.id,
+      task: timerDraft.task, startedAt, endedAt: null, note: timerDraft.note,
+      billable: timerDraft.billable, effectiveRate: project.rate };
+    setData((previous) => ({ ...previous, timeEntries: [entry, ...previous.timeEntries] }));
+    setProjectTimerSession({
+      version: 1, phase: "running", sessionStartedAt: startedAt, activeEntryId: id, segmentStartedAt: startedAt,
+      accumulatedSeconds: 0, clientId: project.clientId, projectId: project.id, task: timerDraft.task,
+      note: timerDraft.note, billable: timerDraft.billable, effectiveRate: project.rate,
+    });
     setToast(translateBusiness(getBrowserLocale(), "toast.timerStarted"));
+  }
+
+  function pauseProjectTimer() {
+    const currentSession = readStoredTimerSession() ?? projectTimerSession;
+    if (!activeEntry || currentSession?.phase === "paused") return;
+    if (!ensureLiveTimerOwnership()) return setToast(translateBusiness(getBrowserLocale(), "toast.timerOtherTab"));
+    const pausedAt = new Date().toISOString();
+    const base = currentSession?.accumulatedSeconds ?? 0;
+    const accumulatedSeconds = base + projectTimerSegmentSeconds(activeEntry.startedAt, pausedAt);
+    setData((previous) => ({ ...previous, timeEntries: previous.timeEntries.map((entry) =>
+      entry.id === activeEntry.id && !entry.endedAt ? { ...entry, endedAt: pausedAt } : entry) }));
+    setProjectTimerSession({
+      version: 1, phase: "paused", sessionStartedAt: currentSession?.sessionStartedAt ?? activeEntry.startedAt,
+      activeEntryId: activeEntry.id, pausedAt, accumulatedSeconds, clientId: activeEntry.clientId, projectId: activeEntry.projectId,
+      task: activeEntry.task ?? "", note: activeEntry.note, billable: activeEntry.billable, effectiveRate: activeEntry.effectiveRate,
+    });
+    setToast(translateBusiness(getBrowserLocale(), "toast.timerPaused"));
+  }
+
+  function resumeProjectTimer() {
+    const pausedSession = readStoredTimerSession() ?? projectTimerSession;
+    if (pausedSession?.phase !== "paused") return;
+    if (!ensureLiveTimerOwnership()) return setToast(translateBusiness(getBrowserLocale(), "toast.timerOtherTab"));
+    const startedAt = new Date().toISOString();
+    const id = crypto.randomUUID();
+    const entry = { id, clientId: pausedSession.clientId, projectId: pausedSession.projectId,
+      task: pausedSession.task, startedAt, endedAt: null, note: pausedSession.note,
+      billable: pausedSession.billable, effectiveRate: pausedSession.effectiveRate };
+    setData((previous) => {
+      const normalizedEntries = previous.timeEntries.map((item) =>
+        pausedSession.activeEntryId && pausedSession.pausedAt && item.id === pausedSession.activeEntryId && !item.endedAt
+          ? { ...item, endedAt: pausedSession.pausedAt }
+          : item);
+      return { ...previous, timeEntries: [entry, ...normalizedEntries] };
+    });
+    setProjectTimerSession({ ...pausedSession, phase: "running", activeEntryId: id, segmentStartedAt: startedAt, pausedAt: undefined });
+    setToast(translateBusiness(getBrowserLocale(), "toast.timerResumed"));
+  }
+
+  function finishProjectTimer() {
+    if (!activeEntry && !projectTimerSession) return;
+    if (!ensureLiveTimerOwnership()) return setToast(translateBusiness(getBrowserLocale(), "toast.timerOtherTab"));
+    if (activeEntry) {
+      const currentSession = readStoredTimerSession() ?? projectTimerSession;
+      const endedAt = currentSession?.phase === "paused" && currentSession.pausedAt ? currentSession.pausedAt : new Date().toISOString();
+      setData((previous) => ({ ...previous, timeEntries: previous.timeEntries.map((entry) =>
+        entry.id === activeEntry.id && !entry.endedAt ? { ...entry, endedAt } : entry) }));
+    }
+    setProjectTimerSession(null);
+    setToast(translateBusiness(getBrowserLocale(), "toast.timerStopped"));
+  }
+
+  function updateProjectTimerDetails(patch: Partial<Pick<AppData["timeEntries"][number], "task" | "note" | "billable">>) {
+    setTimerDraft((previous) => ({ ...previous, ...patch }));
+    if (activeEntry) {
+      setData((previous) => ({ ...previous, timeEntries: previous.timeEntries.map((entry) =>
+        entry.id === activeEntry.id ? { ...entry, ...patch } : entry) }));
+    }
+    if (projectTimerSession) setProjectTimerSession({ ...projectTimerSession, ...patch });
+  }
+
+  function toggleProjectTimer(projectId?: string) {
+    if (projectTimerSession?.phase === "paused") {
+      if (!projectId || projectId === projectTimerSession.projectId) return resumeProjectTimer();
+      return setToast(translateBusiness(getBrowserLocale(), "toast.finishPausedTimerFirst"));
+    }
+    if (activeEntry) return finishProjectTimer();
+    return startProjectTimer(projectId);
   }
   function createClient(draft: ClientDraft, selectForProject: "never" | "if-empty" | "always" = "never") {
     if (!draft.name.trim()) { setToast(translateBusiness(getBrowserLocale(), "toast.clientName")); return undefined; }
@@ -87,5 +167,5 @@ export function useBusinessActions(args: Args) {
     const modeLabel = translate(locale, mode === "employee" ? "mode.employee" : mode === "freelancer" ? "mode.freelancer" : "mode.hybrid");
     setToast(translateBusiness(locale, "toast.workspaceMode", { mode: modeLabel }));
   }
-  return { toggleProjectTimer, createClient, addClient, createProject, addProject, saveLeave, changeMode };
+  return { toggleProjectTimer, startProjectTimer, pauseProjectTimer, resumeProjectTimer, finishProjectTimer, updateProjectTimerDetails, createClient, addClient, createProject, addProject, saveLeave, changeMode };
 }

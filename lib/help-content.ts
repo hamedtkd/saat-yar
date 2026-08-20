@@ -20,7 +20,7 @@ const fa: HelpCopy = {
       { title: "روزهای قبل", body: "از انتخاب تاریخ برای مرور یا اصلاح روزهای قبلی استفاده کن؛ تغییرات ذخیره‌نشده قبل از جابه‌جایی محافظت می‌شوند." },
     ]},
     { title: "ماه، مرخصی و گزارش", intro: "برای مرور نتیجه و تصمیم‌گیری، از نمای ماه و گزارش‌ها استفاده کن.", items: [
-      { title: "ماه من", body: "تقویم ماهانه، heatmap فعالیت، کارکرد هفتگی، اضافه‌کاری/کسری و زمینه Google Calendar را کنار هم ببین.", href: "/month", action: "باز کردن ماه" },
+      { title: "تقویم کاری", body: "تقویم ماهانه، heatmap فعالیت، کارکرد هفتگی، اضافه‌کاری/کسری و زمینه Google Calendar را کنار هم ببین.", href: "/month", action: "باز کردن تقویم" },
       { title: "مرخصی", body: "مرخصی کامل یا نیم‌روز، مانده و روزهای غیرکاری را ثبت و مرور کن.", href: "/leave", action: "مدیریت مرخصی" },
       { title: "گزارش و حقوق", body: "گزارش کارکرد، تراز ساعت، خلاصه حقوق و خروجی‌های قابل استفاده را بررسی کن.", href: "/reports", action: "دیدن گزارش‌ها" },
     ]},
@@ -57,8 +57,8 @@ const en: HelpCopy = {
       { title: "Freelancer workflow", body: "Run project timers, add manual time, track activities, and connect time to clients and projects.", href: "/today", action: "Track time" },
       { title: "Previous days", body: "Use date navigation to review or correct earlier days. Unsaved changes are guarded before navigation." },
     ]},
-    { title: "Month, leave, and reports", intro: "Use Month and Reports to review outcomes rather than just raw entries.", items: [
-      { title: "Month", body: "Review the month calendar, activity heatmap, weekly work, overtime/deficit, and Google Calendar context.", href: "/month", action: "Open Month" },
+    { title: "Work Calendar, leave, and reports", intro: "Use Work Calendar and Reports to review outcomes rather than just raw entries.", items: [
+      { title: "Work Calendar", body: "Review the monthly work calendar, activity heatmap, weekly work, overtime/deficit, and Google Calendar context.", href: "/month", action: "Open Work Calendar" },
       { title: "Leave", body: "Record full or half-day leave and review entitlement and non-working days.", href: "/leave", action: "Manage leave" },
       { title: "Reports and payroll", body: "Review work totals, time balance, payroll summaries, and available exports.", href: "/reports", action: "Open Reports" },
     ]},

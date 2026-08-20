@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { useLocaleUi } from "@/components/i18n/use-locale-ui";
 import { DatePickerDialog } from "./jalali-date-picker/date-picker-dialog";
 import { DatePickerTrigger } from "./jalali-date-picker/date-picker-trigger";
@@ -18,6 +19,7 @@ export function JalaliDatePicker({
   placeholder,
 }: JalaliDatePickerProps) {
   const { calendar, locale, t } = useLocaleUi();
+  const anchorRef = useRef<HTMLDivElement>(null);
   const localizedPlaceholder = placeholder ?? t("picker.date.placeholder");
   const picker = useJalaliDatePicker({
     value,
@@ -29,7 +31,7 @@ export function JalaliDatePicker({
   });
 
   return (
-    <div className="relative min-w-0 w-full">
+    <div ref={anchorRef} className="relative min-w-0 w-full">
       <DatePickerTrigger
         open={picker.open}
         placeholder={localizedPlaceholder}
@@ -38,6 +40,7 @@ export function JalaliDatePicker({
       />
       {picker.open && (
         <DatePickerDialog
+          anchorRef={anchorRef}
           locale={locale}
           calendar={calendar}
           title={picker.title}

@@ -20,10 +20,14 @@ test("picker dialogs use the shared focus trap and accessible names", () => {
   ]) {
     const source = read(path);
     assert.match(source, /useDialogAccessibility/);
-    assert.match(source, /aria-modal="true"/);
-    assert.match(source, /aria-labelledby=/);
-    assert.match(source, /tabIndex=\{-1\}/);
+    assert.match(source, /<ResponsivePickerSurface/);
+    assert.match(source, /titleId=\{titleId\}/);
   }
+
+  const surface = read("components/pickers/responsive-picker-surface.tsx");
+  assert.match(surface, /aria-modal=\{drawer \? "true" : "false"\}/);
+  assert.match(surface, /aria-labelledby=\{titleId\}/);
+  assert.match(surface, /tabIndex=\{-1\}/);
 });
 
 test("global styles support visible focus and reduced motion", () => {

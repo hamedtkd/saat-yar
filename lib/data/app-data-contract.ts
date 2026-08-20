@@ -11,6 +11,7 @@ export const APP_DATA_COLLECTION_FACTORIES = {
   records: () => ({}),
   leaves: () => [],
   clients: () => [],
+  workProjects: () => [],
   projects: () => [],
   timeEntries: () => [],
   expenses: () => [],

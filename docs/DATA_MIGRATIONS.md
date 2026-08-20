@@ -19,3 +19,11 @@ The current data schema version is exported from `lib/data/version.ts`.
 4. Update Zod schemas for the canonical version.
 5. Add tests for old, current, malformed, and future versions.
 6. Update the changelog.
+
+## Version 21 — Employee activity context
+
+- `ActivitySegment.title?` stores an optional free-text work item title.
+- `workProjects` stores lightweight Employee/Hybrid work projects separately from Freelancer client projects.
+- `ActivitySegment.workProjectId?` references `workProjects`. Existing `projectId?` remains a Freelancer project reference and is surfaced only by Hybrid activity context.
+- v20 → v21 creates `workProjects: []` and preserves historical segments without inventing titles or project relations.
+- Normalization also accepts the earlier Phase 199 R1 transitional v21 shape where `workProjects` was absent, defaulting it safely to an empty collection.

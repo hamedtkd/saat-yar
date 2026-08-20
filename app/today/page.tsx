@@ -23,6 +23,7 @@ export default function TodayRoute() {
       dailyTarget={controller.dailyTarget}
       suggestedExit={controller.suggestedExit}
       activeEntry={controller.activeEntry}
+      projectTimerSession={controller.projectTimerSession}
       activeBreak={controller.activeBreak}
       activeActivitySegment={controller.activeActivitySegment}
       lunchRunning={controller.lunchRunning}
@@ -44,9 +45,17 @@ export default function TodayRoute() {
       finishLunch={controller.finishLunch}
       startBreak={controller.startBreak}
       finishBreak={controller.finishBreak}
+      createWorkProject={controller.createWorkProject}
       startActivitySegment={controller.startActivitySegment}
       stopActivitySegment={controller.stopActivitySegment}
+      updateActivitySegmentDuration={controller.updateActivitySegmentDuration}
+      deleteActivitySegment={controller.deleteActivitySegment}
       toggleProjectTimer={controller.toggleProjectTimer}
+      startProjectTimer={controller.startProjectTimer}
+      pauseProjectTimer={controller.pauseProjectTimer}
+      resumeProjectTimer={controller.resumeProjectTimer}
+      finishProjectTimer={controller.finishProjectTimer}
+      updateProjectTimerDetails={controller.updateProjectTimerDetails}
       createClient={controller.createClient}
       createProject={controller.createProject}
       editingEntry={controller.editingEntry}

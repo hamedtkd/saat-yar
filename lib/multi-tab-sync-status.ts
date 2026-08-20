@@ -76,7 +76,7 @@ export function formatSyncSourcePath(path: string) {
   const labels: Record<string, string> = {
     "/": "خانه",
     "/today": "امروز",
-    "/month": "ماه من",
+    "/month": "تقویم کاری",
     "/leave": "مرخصی‌ها",
     "/reports": "گزارش‌ها",
     "/settings": "تنظیمات",
@@ -84,6 +84,7 @@ export function formatSyncSourcePath(path: string) {
     "/projects": "پروژه‌ها",
     "/invoices": "صورتحساب‌ها",
   };
+  if (path.endsWith("/today")) return labels["/today"];
   if (path.startsWith("/settings/")) return labels["/settings"];
   return labels[path] ?? path;
 }

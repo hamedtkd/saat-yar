@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { useLocaleUi } from "@/components/i18n/use-locale-ui";
 import { TimePickerDialog } from "./time-picker/time-picker-dialog";
 import { TimePickerTrigger } from "./time-picker/time-picker-trigger";
@@ -12,10 +13,11 @@ export function TimePicker(props: TimePickerProps) {
 
 function TimePickerSession({ value, onChange, suggestions = [], disabled = false }: TimePickerProps) {
   const { locale } = useLocaleUi();
+  const anchorRef = useRef<HTMLDivElement>(null);
   const picker = useTimePicker(value, onChange, locale);
 
   return (
-    <div className="relative min-w-0">
+    <div ref={anchorRef} className="relative min-w-0">
       <TimePickerTrigger
         locale={locale}
         inputValue={picker.inputValue}
@@ -28,6 +30,7 @@ function TimePickerSession({ value, onChange, suggestions = [], disabled = false
       />
       {!disabled && picker.open && (
         <TimePickerDialog
+          anchorRef={anchorRef}
           locale={locale}
           hour={picker.hour}
           minute={picker.minute}

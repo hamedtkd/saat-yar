@@ -8,14 +8,14 @@ import { LocaleProvider } from "@/components/i18n/locale-provider";
 import { LocaleRuntime } from "@/components/i18n/locale-runtime";
 import { SaatyarShell } from "@/components/saatyar-shell";
 import { ThemeBootstrap } from "@/components/theme/theme-bootstrap";
-import { absoluteUrl, SITE_DESCRIPTION, SITE_NAME, SOCIAL_IMAGE_PATH } from "@/lib/site-metadata";
+import { absoluteUrl, PWA_APP_NAME, SITE_DESCRIPTION, SITE_NAME, SOCIAL_IMAGE_PATH } from "@/lib/site-metadata";
 import "./globals.css";
 
 const basePath = process.env.PAGES_BASE_PATH ?? "";
 
 export const metadata: Metadata = {
   metadataBase: absoluteUrl("/"),
-  applicationName: SITE_NAME,
+  applicationName: PWA_APP_NAME,
   title: { default: `${SITE_NAME} | مدیریت زمان و کارکرد`, template: `%s | ${SITE_NAME}` },
   description: SITE_DESCRIPTION,
   keywords: ["مدیریت زمان", "ثبت ساعت کاری", "کارکرد", "مرخصی", "تایم ترکینگ", "گزارش کار", "پروژه", "ساعت‌یار"],
@@ -26,6 +26,7 @@ export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl("/") },
   manifest: `${basePath}/manifest.webmanifest`,
   formatDetection: { email: false, address: false, telephone: false },
+  appleWebApp: { capable: true, title: PWA_APP_NAME, statusBarStyle: "default" },
   robots: { index: true, follow: true },
   openGraph: {
     title: `${SITE_NAME} | مدیریت زمان و کارکرد`,
@@ -61,7 +62,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <head>
         <meta name="saatyar-base" content={basePath} />
         <LocaleBootstrap />
-        <meta name="theme-color" content="#06b6d4" data-saatyar-theme-color />
+        <meta name="theme-color" content="#8b5cf6" data-saatyar-theme-color />
         <ThemeBootstrap />
       </head>
       <body className="saatyar-app-font m-0 min-h-screen bg-[var(--page)] font-normal text-[var(--text)] antialiased transition-colors">

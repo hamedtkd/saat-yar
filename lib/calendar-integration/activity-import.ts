@@ -1,4 +1,5 @@
 import { emptyRecord, localDateKey } from "../format.ts";
+import { normalizeActivityTitle } from "../activity-segments.ts";
 import type { ActivityKind, AppData, ActivitySegment } from "../types.ts";
 import type { ExternalCalendarEvent } from "./types.ts";
 
@@ -40,6 +41,7 @@ export function calendarEventToActivitySegment(event: ExternalCalendarEvent, kin
   return {
     id: externalCalendarActivityId(event),
     kind,
+    title: normalizeActivityTitle(event.title),
     start: localTime(event.start),
     end: localTime(event.end),
     startedAt: event.start,

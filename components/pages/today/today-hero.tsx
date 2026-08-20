@@ -50,14 +50,14 @@ export function TodayHero({
         : t("today.hero.reviewWorkday");
 
   return (
-    <section className="dashboard-card mb-4 grid min-h-[124px] grid-cols-[minmax(250px,.85fr)_minmax(0,1.55fr)_minmax(180px,.65fr)] items-center gap-5 rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[linear-gradient(135deg,var(--surface-1),var(--surface-raised))] px-5 py-4 shadow-[0_5px_18px_rgba(0,0,0,.035)] max-[980px]:grid-cols-[minmax(0,1fr)_auto] max-[980px]:gap-4 max-[720px]:grid-cols-1 max-[720px]:px-4 max-[720px]:text-center">
+    <section className="dashboard-card mb-4 grid min-h-[124px] grid-cols-[minmax(250px,.85fr)_minmax(0,1.55fr)_minmax(180px,.65fr)] items-center gap-5 rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[linear-gradient(135deg,var(--surface-1),var(--surface-raised))] px-5 py-4 shadow-[0_5px_18px_rgba(0,0,0,.035)] max-[980px]:grid-cols-[minmax(0,1fr)_auto] max-[980px]:gap-4 max-[720px]:grid-cols-1 max-[720px]:px-4 max-[720px]:text-center max-[359px]:min-h-0 max-[359px]:gap-3 max-[359px]:px-3 max-[359px]:py-3">
       <div className="max-[980px]:order-2 max-[720px]:order-2">
-        <div className="grid grid-cols-[42px_minmax(0,1fr)_42px] items-stretch gap-2" dir={direction}>
+        <div className="grid grid-cols-[42px_minmax(0,1fr)_42px] items-stretch gap-2 max-[359px]:grid-cols-[36px_minmax(0,1fr)_36px] max-[359px]:gap-1.5" dir={direction}>
           <Button
             type="button"
             variant="outline"
             size="icon"
-            className="h-full min-h-[52px] w-[42px] rounded-xl border-[var(--dashboard-border)] bg-[var(--surface-2)] shadow-none"
+            className="h-full min-h-[52px] w-[42px] rounded-xl border-[var(--dashboard-border)] bg-[var(--surface-2)] shadow-none max-[359px]:min-h-11 max-[359px]:w-9 max-[359px]:rounded-[10px]"
             aria-label={t("today.hero.previousDay")}
             title={t("today.hero.previousDay")}
             onClick={() => onDateChange(shiftDateKey(selectedDate, -1))}
@@ -79,7 +79,7 @@ export function TodayHero({
             type="button"
             variant="outline"
             size="icon"
-            className="h-full min-h-[52px] w-[42px] rounded-xl border-[var(--dashboard-border)] bg-[var(--surface-2)] shadow-none"
+            className="h-full min-h-[52px] w-[42px] rounded-xl border-[var(--dashboard-border)] bg-[var(--surface-2)] shadow-none max-[359px]:min-h-11 max-[359px]:w-9 max-[359px]:rounded-[10px]"
             aria-label={t("today.hero.nextDay")}
             title={t("today.hero.nextDay")}
             onClick={() => onDateChange(shiftDateKey(selectedDate, 1))}
@@ -94,10 +94,10 @@ export function TodayHero({
           <CalendarDays aria-hidden="true" className="size-3.5" />
           {isToday ? t("today.hero.today") : t("today.hero.selectedDay")}
         </div>
-        <h1 className="text-[clamp(1.35rem,2.35vw,2.2rem)] font-black leading-[1.35] tracking-[-.035em] text-[var(--text)]">
+        <h1 className="text-[clamp(1.35rem,2.35vw,2.2rem)] font-black leading-[1.35] tracking-[-.035em] text-[var(--text)] max-[359px]:text-[1.15rem] max-[359px]:leading-[1.45]">
           {title}
         </h1>
-        <p className="mt-1.5 text-[11px] font-semibold text-[var(--text-muted)]">{fullDate}</p>
+        <p className="mt-1.5 text-[11px] font-semibold text-[var(--text-muted)] max-[359px]:text-[10px]">{fullDate}</p>
       </div>
 
       <div className="flex justify-end max-[980px]:order-3 max-[720px]:justify-center">

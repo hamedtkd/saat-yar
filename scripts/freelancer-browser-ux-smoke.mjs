@@ -7,6 +7,7 @@ import { findBrowserExecutable } from "./production-browser-smoke.mjs";
 import { buildAppNavigationExpression, buildRouteReadyExpression } from "./browser-route-expression.mjs";
 import { buildFreelancerPersistenceProbeExpression } from "./freelancer-persistence-expression.mjs";
 import { startStaticExportServer } from "./static-export-server.mjs";
+import { browserInputValuesEquivalent } from "./browser-input-fidelity.ts";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const TIMEOUT = 30_000;
@@ -171,40 +172,53 @@ async function clickButton(client, text, exact = false) {
   if (!clicked) throw new Error(`Button not found: ${text}`);
 }
 
-async function focusField(client, label) {
-  const focused = await evaluate(client, `(() => {
-    const wanted = ${JSON.stringify(label)};
-    const norm = (value) => (value || "").replace(/\\s+/g," ").trim();
-    const labels = [...document.querySelectorAll("label")];
-    const target = labels.find((item) => norm(item.childNodes[0]?.textContent || item.textContent).startsWith(wanted));
-    const input = target?.querySelector("input,textarea,[role=spinbutton]");
-    if (!input) return false;
-    input.focus();
-    return document.activeElement === input;
-  })()`);
-  if (!focused) throw new Error(`Field not found: ${label}`);
-}
-
 async function settleUi(client) {
   await evaluate(client, `new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))`);
 }
 
-async function replaceFocusedText(client, value) {
-  const updated = await evaluate(client, `(() => {
-    const field = document.activeElement;
-    if (!(field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement)) return false;
+async function replaceLabeledText(client, label, value) {
+  const result = await evaluate(client, `(() => {
+    const wanted = ${JSON.stringify(label)};
+    const nextValue = ${JSON.stringify(value)};
+    const norm = (input) => (input || "").replace(/\\s+/g," ").trim();
+    const labels = [...document.querySelectorAll("label")];
+    const target = labels.find((item) => norm(item.childNodes[0]?.textContent || item.textContent).startsWith(wanted));
+    const field = target?.querySelector("input,textarea,[role=spinbutton]");
+    if (!(field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement)) {
+      return { ok: false, reason: "field-not-found" };
+    }
+    field.focus();
     const prototype = field instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
     const setter = Object.getOwnPropertyDescriptor(prototype, "value")?.set;
-    if (!setter) return false;
-    setter.call(field, ${JSON.stringify(value)});
-    field.dispatchEvent(new InputEvent("input", { bubbles: true, inputType: "insertText", data: ${JSON.stringify(value)} }));
+    if (!setter) return { ok: false, reason: "native-setter-missing" };
+    setter.call(field, nextValue);
+    field.dispatchEvent(new InputEvent("input", { bubbles: true, inputType: "insertText", data: nextValue }));
     field.dispatchEvent(new Event("change", { bubbles: true }));
-    return field.value === ${JSON.stringify(value)};
+    return {
+      ok: true,
+      value: field.value,
+      active: document.activeElement === field,
+      tag: field.tagName,
+      type: field.getAttribute("type") || "",
+    };
   })()`);
-  if (!updated) throw new Error("Focused field could not receive React-compatible text input.");
+  if (!result?.ok || !browserInputValuesEquivalent(String(result.value ?? ""), value)) {
+    throw new Error(`Labeled field could not receive React-compatible text input: ${label}. State: ${JSON.stringify(result)}`);
+  }
   await settleUi(client);
-  const reflected = await evaluate(client, `document.activeElement?.value === ${JSON.stringify(value)}`);
-  if (!reflected) throw new Error(`Controlled field did not retain the expected value: ${value}`);
+  const reflected = await evaluate(client, `(() => {
+    const wanted = ${JSON.stringify(label)};
+    const norm = (input) => (input || "").replace(/\\s+/g," ").trim();
+    const labels = [...document.querySelectorAll("label")];
+    const target = labels.find((item) => norm(item.childNodes[0]?.textContent || item.textContent).startsWith(wanted));
+    const field = target?.querySelector("input,textarea,[role=spinbutton]");
+    return field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement
+      ? { value: field.value, active: document.activeElement === field }
+      : null;
+  })()`);
+  if (!reflected || !browserInputValuesEquivalent(String(reflected.value ?? ""), value)) {
+    throw new Error(`Controlled field did not retain the expected value for ${label}: ${value}. State: ${JSON.stringify(reflected)}`);
+  }
 }
 
 async function pressKey(client, key, code = key) {
@@ -293,8 +307,7 @@ async function main() {
     if (!clientAutofocus) throw new Error("Client form did not move focus to the first field.");
     await clickButton(client, "ذخیره مشتری", true);
     await waitFor(client, `Boolean(document.querySelector('[role="alert"]')) && document.body?.innerText.includes("نام مشتری")`, "client inline validation");
-    await focusField(client, "نام مشتری");
-    await replaceFocusedText(client, CLIENT_NAME);
+    await replaceLabeledText(client, "نام مشتری", CLIENT_NAME);
     await pressKey(client, "Enter", "Enter");
     await waitFor(client, `document.body?.innerText.includes(${JSON.stringify(CLIENT_NAME)}) && !document.body?.innerText.includes("اطلاعات پایه")`, "keyboard client save");
     console.log("✓ Client creation validates inline and submits with Enter");
@@ -311,11 +324,37 @@ async function main() {
     await waitFor(client, `Boolean(document.querySelector('[role="dialog"]'))`, "quick project dialog");
     const dialogOwnsFocus = await evaluate(client, `document.querySelector('[role="dialog"]')?.contains(document.activeElement) === true`);
     if (!dialogOwnsFocus) throw new Error("Quick project dialog did not own keyboard focus.");
-    await focusField(client, "نام پروژه");
-    await replaceFocusedText(client, PROJECT_NAME);
+    await replaceLabeledText(client, "نام پروژه", PROJECT_NAME);
     await clickButton(client, "ذخیره و انتخاب", true);
     await waitFor(client, `!document.querySelector('[role="dialog"]')`, "quick project dialog close");
     console.log("✓ Project dialog traps focus and creates a linked project");
+
+    await navigateInApp(client, "/freelancer/today", "تایمر ثبت ساعت کاری");
+    await chooseSelect(client, "مشتری", CLIENT_NAME);
+    await chooseSelect(client, "پروژه", PROJECT_NAME);
+    await clickButton(client, "شروع تایمر", true);
+    await waitFor(client, `document.querySelector('[data-project-timer-hero]')?.getAttribute('data-project-timer-state') === "running" && document.body?.innerText.includes("توقف موقت")`, "running Today work session");
+    await new Promise((resolveWait) => setTimeout(resolveWait, 1_200));
+    const beforePause = await evaluate(client, `document.querySelector('[data-project-timer-hero] [data-flip-clock]')?.getAttribute('aria-label') || ""`);
+    await clickButton(client, "توقف موقت", true);
+    await waitFor(client, `document.querySelector('[data-project-timer-hero]')?.getAttribute('data-project-timer-state') === "paused" && document.body?.innerText.includes("ادامه")`, "paused Today work session");
+    const pausedElapsed = await evaluate(client, `document.querySelector('[data-project-timer-hero] [data-flip-clock]')?.getAttribute('aria-label') || ""`);
+    await new Promise((resolveWait) => setTimeout(resolveWait, 1_200));
+    const pausedAfterWait = await evaluate(client, `document.querySelector('[data-project-timer-hero] [data-flip-clock]')?.getAttribute('aria-label') || ""`);
+    if (!beforePause || !pausedElapsed || pausedElapsed !== pausedAfterWait) throw new Error(`Paused timer drifted or failed to render: ${JSON.stringify({ beforePause, pausedElapsed, pausedAfterWait })}`);
+    await navigate(client, `${server.origin}/freelancer/today`, "تایمر ثبت ساعت کاری");
+    await waitFor(client, `document.querySelector('[data-project-timer-hero]')?.getAttribute('data-project-timer-state') === "paused"`, "paused work session after hard reload");
+    const pausedAfterReload = await evaluate(client, `document.querySelector('[data-project-timer-hero] [data-flip-clock]')?.getAttribute('aria-label') || ""`);
+    if (pausedAfterReload !== pausedElapsed) throw new Error(`Paused elapsed time changed after reload: ${JSON.stringify({ pausedElapsed, pausedAfterReload })}`);
+    await clickButton(client, "ادامه", true);
+    await waitFor(client, `document.querySelector('[data-project-timer-hero]')?.getAttribute('data-project-timer-state') === "running"`, "resumed Today work session");
+    await waitFor(client, `(() => {
+      const elapsed = document.querySelector('[data-project-timer-hero] [data-flip-clock]')?.getAttribute('aria-label') || "";
+      return Boolean(elapsed) && elapsed !== ${JSON.stringify(pausedAfterReload)};
+    })()`, "resumed Today timer advance", 5_000);
+    await clickButton(client, "پایان فعالیت", true);
+    await waitFor(client, `document.querySelector('[data-project-timer-hero]')?.getAttribute('data-project-timer-state') === "idle" && !localStorage.getItem("saatyar-project-timer-session-v1")`, "finished Today work session");
+    console.log("✓ Today work session pauses, survives reload, resumes without drift, and finishes cleanly");
 
     await navigateInApp(client, "/projects", PROJECT_NAME);
     const selectedProject = await evaluate(client, `(() => {
@@ -335,10 +374,8 @@ async function main() {
 
     await clickButton(client, "ثبت هزینه", true);
     await waitFor(client, `Boolean(document.querySelector('form')) && document.body?.innerText.includes("مبلغ (تومان)")`, "expense form");
-    await focusField(client, "عنوان");
-    await replaceFocusedText(client, EXPENSE_NAME);
-    await focusField(client, "مبلغ (تومان)");
-    await replaceFocusedText(client, "125000");
+    await replaceLabeledText(client, "عنوان", EXPENSE_NAME);
+    await replaceLabeledText(client, "مبلغ (تومان)", "125000");
     await pressKey(client, "Enter", "Enter");
     await waitFor(client, `document.body?.innerText.includes(${JSON.stringify(EXPENSE_NAME)}) && !document.body?.innerText.includes("ذخیره هزینه")`, "expense keyboard save");
     console.log("✓ Expense form saves from the keyboard inside project context");
@@ -348,16 +385,44 @@ async function main() {
     await waitFor(client, `document.body?.innerText.includes("مشخصات صورتحساب")`, "invoice form");
     await chooseSelect(client, "مشتری", CLIENT_NAME);
     await chooseSelect(client, "پروژه", PROJECT_NAME);
-    await focusField(client, "شرح");
-    await replaceFocusedText(client, INVOICE_DESCRIPTION);
-    await focusField(client, "مبلغ واحد");
-    await replaceFocusedText(client, "2500000");
+    await replaceLabeledText(client, "شرح", INVOICE_DESCRIPTION);
+    await replaceLabeledText(client, "مبلغ واحد", "2500000");
     await clickButton(client, "ذخیره فاکتور", true);
     await waitFor(client, `document.body?.innerText.includes(${JSON.stringify(CLIENT_NAME)}) && !document.body?.innerText.includes("مشخصات صورتحساب")`, "invoice save");
     console.log("✓ Invoice creation keeps the client/project relation and validates the real form");
 
     const persistenceProbe = await waitForFreelancerFlowPersistence(client);
     console.log(`✓ Freelancer workflow is durable in IndexedDB (${persistenceProbe.storageShape}, schema v${persistenceProbe.schemaVersion ?? "legacy"})`);
+
+    await client.call("Emulation.setDeviceMetricsOverride", { width: 320, height: 800, deviceScaleFactor: 1, mobile: true, screenWidth: 320, screenHeight: 800 });
+    await navigate(client, `${server.origin}/freelancer/today`, "تایمر ثبت ساعت کاری");
+    await waitFor(client, `window.innerWidth === 320 && Boolean(document.querySelector('[data-project-session-controller]'))`, "320px freelancer Today render");
+    const compactTodayContract = await evaluate(client, `(() => {
+      const viewportWidth = window.innerWidth;
+      const rectOf = (selector) => {
+        const node = document.querySelector(selector);
+        if (!(node instanceof HTMLElement)) return null;
+        const rect = node.getBoundingClientRect();
+        return { left: rect.left, right: rect.right, width: rect.width };
+      };
+      const fits = (rect) => Boolean(rect && rect.left >= -1 && rect.right <= viewportWidth + 1 && rect.width <= viewportWidth + 2);
+      const controller = rectOf('[data-project-session-controller]');
+      const timer = rectOf('[data-project-timer-display]');
+      const details = rectOf('[data-project-activity-details]');
+      const nav = rectOf('[data-mobile-bottom-nav]');
+      return {
+        pageFits: document.documentElement.scrollWidth <= viewportWidth + 2,
+        controllerFits: fits(controller),
+        timerFits: fits(timer),
+        detailsFits: fits(details),
+        navFits: fits(nav),
+        controller, timer, details, nav, viewportWidth,
+      };
+    })()`);
+    if (!compactTodayContract?.pageFits || !compactTodayContract.controllerFits || !compactTodayContract.timerFits || !compactTodayContract.detailsFits || !compactTodayContract.navFits) {
+      throw new Error(`320px freelancer Today overflowed viewport: ${JSON.stringify(compactTodayContract)}`);
+    }
+    console.log("✓ Freelancer Today remains usable without horizontal overflow at 320px");
 
     await client.call("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true, screenWidth: 390, screenHeight: 844 });
     await navigate(client, `${server.origin}/invoices`, CLIENT_NAME);

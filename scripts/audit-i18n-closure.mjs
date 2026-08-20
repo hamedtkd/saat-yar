@@ -7,7 +7,7 @@ const SOURCE_ROOTS = ["app", "components", "hooks"];
 const PERSIAN = /[\u0600-\u06ff]/;
 
 // These are deliberately not runtime-translated UI copy:
-// - app metadata/manifest stays canonical Persian for the 2.3.2 static release.
+// - static document metadata stays canonical Persian; the Phase 200 bilingual install name uses manifest dir=auto.
 // - time-utils keeps Persian compatibility errors for its low-level parser; rendered picker UI maps error codes.
 // - app-toast keeps bilingual keyword lexicons used only to infer semantic toast tone.
 const PERSIAN_UI_ALLOWLIST = new Set([
@@ -98,7 +98,7 @@ const appLayout = await read("app/layout.tsx");
 const manifest = await read("app/manifest.ts");
 requireMatch("app/layout.tsx", appLayout, /<html lang="fa" dir="rtl"/, "static document metadata policy must remain canonical Persian for 2.3.2");
 requireMatch("app/manifest.ts", manifest, /lang:\s*"fa"/, "manifest language must remain canonical Persian for 2.3.2");
-requireMatch("app/manifest.ts", manifest, /dir:\s*"rtl"/, "manifest direction must remain canonical Persian for 2.3.2");
+requireMatch("app/manifest.ts", manifest, /dir:\s*"auto"/, "bilingual PWA install identity must use automatic manifest direction");
 
 const exporters = await read("lib/exporters.ts");
 const reportActions = await read("hooks/controller/use-report-actions.ts");

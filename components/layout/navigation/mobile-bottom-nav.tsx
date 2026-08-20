@@ -10,8 +10,8 @@ import { GuardedLink } from "./guarded-link";
 
 const normalizePath = (path: string) => path.replace(/\/+$/, "") || "/";
 
-const mobileNavCell = "flex min-h-[54px] items-center justify-center rounded-[16px] text-[10px] font-bold text-[var(--text-muted)] outline-none transition-colors focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]";
-const mobileNavCapsule = "flex min-w-[54px] flex-col items-center justify-center gap-0.5 rounded-[13px] px-2 py-1.5 transition-[background-color,color,box-shadow]";
+const mobileNavCell = "flex min-h-[54px] items-center justify-center rounded-[16px] text-[10px] max-[359px]:min-h-[50px] max-[359px]:rounded-[13px] max-[359px]:text-[9px] font-bold text-[var(--text-muted)] outline-none transition-colors focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]";
+const mobileNavCapsule = "flex min-w-[54px] flex-col items-center justify-center gap-0.5 rounded-[13px] px-2 py-1.5 max-[359px]:w-full max-[359px]:min-w-0 max-[359px]:rounded-[11px] max-[359px]:px-0.5 max-[359px]:py-1 transition-[background-color,color,box-shadow]";
 
 export function MobileBottomNav({ mode, currentPath }: { mode: Mode; currentPath: string }) {
   const { t } = useLocale();
@@ -31,7 +31,7 @@ export function MobileBottomNav({ mode, currentPath }: { mode: Mode; currentPath
           <section
             id="mobile-more-menu"
             aria-label={t("nav.moreTitle")}
-            className="absolute bottom-[calc(82px+env(safe-area-inset-bottom))] left-1/2 w-[calc(100vw-16px)] max-w-[520px] -translate-x-1/2 rounded-[24px] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] p-3 shadow-[0_18px_48px_rgba(0,0,0,.24)] backdrop-blur-2xl"
+            className="absolute bottom-[calc(82px+env(safe-area-inset-bottom))] left-1/2 w-[calc(100vw-16px)] max-w-[520px] max-[359px]:bottom-[calc(74px+env(safe-area-inset-bottom))] max-[359px]:w-[calc(100vw-10px)] -translate-x-1/2 rounded-[24px] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] p-3 shadow-[0_18px_48px_rgba(0,0,0,.24)] backdrop-blur-2xl"
             onClick={(event) => event.stopPropagation()}
           >
             <div aria-hidden="true" className="mx-auto mb-2 h-1 w-10 rounded-full bg-[var(--border)]" />
@@ -83,7 +83,7 @@ export function MobileBottomNav({ mode, currentPath }: { mode: Mode; currentPath
       <nav
         aria-label={t("nav.mobileAria")}
         data-mobile-bottom-nav
-        className="fixed bottom-[calc(8px+env(safe-area-inset-bottom))] left-1/2 z-50 grid w-[calc(100vw-16px)] max-w-[520px] -translate-x-1/2 grid-cols-5 rounded-[21px] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] p-1 shadow-[0_10px_30px_rgba(0,0,0,.16)] backdrop-blur-2xl xl:hidden"
+        className="fixed bottom-[calc(8px+env(safe-area-inset-bottom))] left-1/2 z-50 grid w-[calc(100vw-16px)] max-w-[520px] -translate-x-1/2 grid-cols-5 rounded-[21px] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] p-1 max-[359px]:bottom-[calc(5px+env(safe-area-inset-bottom))] max-[359px]:w-[calc(100vw-10px)] max-[359px]:rounded-[18px] max-[359px]:p-0.5 shadow-[0_10px_30px_rgba(0,0,0,.16)] backdrop-blur-2xl xl:hidden"
       >
         {primary.map(({ href, labelKey, icon: Icon }) => {
           const active = normalizedPath === href;
@@ -95,7 +95,7 @@ export function MobileBottomNav({ mode, currentPath }: { mode: Mode; currentPath
                   active && "bg-[var(--accent-soft)] text-[var(--accent-strong)] ring-1 ring-[color-mix(in_srgb,var(--accent)_20%,transparent)]",
                 )}
               >
-                <Icon aria-hidden="true" className="size-[19px]" />
+                <Icon aria-hidden="true" className="size-[19px] max-[359px]:size-[18px]" />
                 <span className="leading-4">{t(labelKey)}</span>
               </span>
             </GuardedLink>
@@ -114,7 +114,7 @@ export function MobileBottomNav({ mode, currentPath }: { mode: Mode; currentPath
               (open || overflowActive) && "bg-[var(--accent-soft)] text-[var(--accent-strong)] ring-1 ring-[color-mix(in_srgb,var(--accent)_20%,transparent)]",
             )}
           >
-            <MoreHorizontal aria-hidden="true" className="size-[19px]" />
+            <MoreHorizontal aria-hidden="true" className="size-[19px] max-[359px]:size-[18px]" />
             <span className="leading-4">{t("nav.more")}</span>
           </span>
         </button>

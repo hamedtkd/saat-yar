@@ -564,7 +564,7 @@ export async function runProductionBrowserSmoke() {
     })()`, "onboarding Import persistence without premature completion");
     console.log("✓ Personalized onboarding keeps employee setup relevant and imports existing data before completion");
     await clickButton(client, "شروع ساعت‌یار");
-    await waitFor(client, "['/today', '/today/'].includes(location.pathname) && !document.body?.innerText.includes('شروع ساعت‌یار')", "today route after onboarding");
+    await waitFor(client, "['/employee/today', '/employee/today/'].includes(location.pathname) && !document.body?.innerText.includes('شروع ساعت‌یار')", "employee Today route after onboarding");
     await new Promise((resolveWait) => setTimeout(resolveWait, 700));
 
     const onboardingSettings = await readStoredSettings(client);
@@ -587,23 +587,23 @@ export async function runProductionBrowserSmoke() {
     console.log("✓ Today exposes activity-segment tracking without requiring a separate route");
     await evaluate(client, `document.querySelector('[data-first-run-dismiss]')?.click()`);
 
-    await waitFor(client, `Boolean(document.querySelector('[data-route-motion][data-route-motion-path="/today"]'))`, "Today route motion boundary");
+    await waitFor(client, `Boolean(document.querySelector('[data-route-motion][data-route-motion-path="/employee/today"]'))`, "Employee Today route motion boundary");
     await client.call("Emulation.setEmulatedMedia", { media: "", features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
     const reducedMotionReload = waitForEvent(client, "Page.loadEventFired", "reduced-motion route reload");
     await client.call("Page.reload", { ignoreCache: false });
     await reducedMotionReload;
-    await waitFor(client, `matchMedia('(prefers-reduced-motion: reduce)').matches && document.querySelector('[data-route-motion][data-route-motion-path="/today"]')?.getAttribute('data-route-motion-reduced') === 'true'`, "reduced-motion route contract");
+    await waitFor(client, `matchMedia('(prefers-reduced-motion: reduce)').matches && document.querySelector('[data-route-motion][data-route-motion-path="/employee/today"]')?.getAttribute('data-route-motion-reduced') === 'true'`, "reduced-motion route contract");
     await client.call("Emulation.setEmulatedMedia", { media: "", features: [{ name: "prefers-reduced-motion", value: "no-preference" }] });
     const restoredMotionReload = waitForEvent(client, "Page.loadEventFired", "restored route motion reload");
     await client.call("Page.reload", { ignoreCache: false });
     await restoredMotionReload;
-    await waitFor(client, `!matchMedia('(prefers-reduced-motion: reduce)').matches && document.querySelector('[data-route-motion][data-route-motion-path="/today"]')?.getAttribute('data-route-motion-reduced') === 'false'`, "restored route motion preference");
+    await waitFor(client, `!matchMedia('(prefers-reduced-motion: reduce)').matches && document.querySelector('[data-route-motion][data-route-motion-path="/employee/today"]')?.getAttribute('data-route-motion-reduced') === 'false'`, "restored route motion preference");
     const openedMonthThroughAppNav = await evaluate(client, `(() => { const link = Array.from(document.querySelectorAll('a[href]')).find((candidate) => { if (!(candidate instanceof HTMLAnchorElement)) return false; const pathname = new URL(candidate.href, location.href).pathname; const normalizedPathname = pathname.length > 1 && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname; return normalizedPathname === '/month'; }); if (!(link instanceof HTMLAnchorElement)) return false; link.click(); return true; })()`);
     if (!openedMonthThroughAppNav) throw new Error("In-app Month navigation link was unavailable for route motion smoke.");
     await waitFor(client, `['/month', '/month/'].includes(location.pathname) && document.querySelector('[data-route-motion]')?.getAttribute('data-route-motion-path') === '/month'`, "state-driven Month route motion");
-    const returnedTodayThroughAppNav = await evaluate(client, `(() => { const link = Array.from(document.querySelectorAll('a[href]')).find((candidate) => { if (!(candidate instanceof HTMLAnchorElement)) return false; const pathname = new URL(candidate.href, location.href).pathname; const normalizedPathname = pathname.length > 1 && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname; return normalizedPathname === '/today'; }); if (!(link instanceof HTMLAnchorElement)) return false; link.click(); return true; })()`);
+    const returnedTodayThroughAppNav = await evaluate(client, `(() => { const link = Array.from(document.querySelectorAll('a[href]')).find((candidate) => { if (!(candidate instanceof HTMLAnchorElement)) return false; const pathname = new URL(candidate.href, location.href).pathname; const normalizedPathname = pathname.length > 1 && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname; return normalizedPathname === '/employee/today'; }); if (!(link instanceof HTMLAnchorElement)) return false; link.click(); return true; })()`);
     if (!returnedTodayThroughAppNav) throw new Error("In-app Today navigation link was unavailable for route motion smoke.");
-    await waitFor(client, `['/today', '/today/'].includes(location.pathname) && document.querySelector('[data-route-motion]')?.getAttribute('data-route-motion-path') === '/today'`, "state-driven Today route motion");
+    await waitFor(client, `['/employee/today', '/employee/today/'].includes(location.pathname) && document.querySelector('[data-route-motion]')?.getAttribute('data-route-motion-path') === '/employee/today'`, "state-driven Employee Today route motion");
     console.log("✓ Route motion is state-driven, reduced-motion aware, and keeps navigation responsive");
 
     const themeRevealContract = await evaluate(client, `(async () => {
@@ -635,18 +635,25 @@ export async function runProductionBrowserSmoke() {
     }
     console.log("✓ Theme changes reveal from the header control and restore the original mode");
 
-    await client.call("Emulation.setDeviceMetricsOverride", { width: 425, height: 608, deviceScaleFactor: 1, mobile: true, screenWidth: 425, screenHeight: 608 });
-    for (const [route, label] of [["month", "Month"], ["leave", "Leave"], ["settings", "Settings"]]) {
-      const mobileLoad = waitForEvent(client, "Page.loadEventFired", `${label} mobile responsive route`);
-      await client.call("Page.navigate", { url: `${origin}/${route}/` });
-      await mobileLoad;
-      await waitFor(client, `["/${route}", "/${route}/"].includes(location.pathname) && Boolean(document.querySelector('#main-content'))`, `${label} mobile responsive render`);
-      if (route === "month") {
-        await waitFor(client, `document.documentElement.dataset.calendar === "persian" && Boolean(document.querySelector('[data-month-activity-heatmap]')) && Boolean(document.querySelector('[data-month-recent-activity]')) && Boolean(document.querySelector('[data-month-intelligence]'))`, "Persian month activity intelligence on mobile");
+    const persianResponsiveViewports = [
+      { width: 360, height: 608 },
+      { width: 375, height: 608 },
+      { width: 425, height: 608 },
+    ];
+    for (const { width, height } of persianResponsiveViewports) {
+      await client.call("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: 1, mobile: true, screenWidth: width, screenHeight: height });
+      for (const [route, label] of [["month", "Work Calendar"], ["leave", "Leave"], ["settings", "Settings"]]) {
+        const mobileLoad = waitForEvent(client, "Page.loadEventFired", `${label} ${width}px responsive route`);
+        await client.call("Page.navigate", { url: `${origin}/${route}/` });
+        await mobileLoad;
+        await waitFor(client, `["/${route}", "/${route}/"].includes(location.pathname) && Boolean(document.querySelector('#main-content'))`, `${label} ${width}px responsive render`);
+        if (route === "month") {
+          await waitFor(client, `document.documentElement.dataset.calendar === "persian" && Boolean(document.querySelector('[data-month-activity-heatmap]')) && Boolean(document.querySelector('[data-month-recent-activity]')) && Boolean(document.querySelector('[data-month-intelligence]'))`, `Persian month activity intelligence at ${width}px`);
+        }
+        await assertMobileShellFits(client, `${label} ${width}px`);
       }
-      await assertMobileShellFits(client, `${label} 425px`);
     }
-    console.log("✓ Month activity intelligence follows Persian calendar and Month, Leave, and Settings fit a 425px viewport");
+    console.log("✓ Work Calendar, Leave, and Settings keep the Persian RTL shell inside 360/375/425px viewports");
 
     await waitFor(client, `Boolean(document.querySelector('[data-settings-mobile-trigger]'))`, "Settings compact mobile navigation trigger");
     const compactSettingsNav = await evaluate(client, `(() => {
@@ -723,9 +730,9 @@ export async function runProductionBrowserSmoke() {
     console.log("✓ Import Wizard CSV persisted a client after preview and explicit apply");
 
     const returnToday = waitForEvent(client, "Page.loadEventFired", "return to Today after Import Wizard");
-    await client.call("Page.navigate", { url: `${origin}/today/` });
+    await client.call("Page.navigate", { url: `${origin}/employee/today/` });
     await returnToday;
-    await waitFor(client, `["/today", "/today/"].includes(location.pathname) && document.body?.innerText.includes("ساعت‌یار")`, "Today after Import Wizard");
+    await waitFor(client, `["/employee/today", "/employee/today/"].includes(location.pathname) && document.body?.innerText.includes("ساعت‌یار")`, "Today after Import Wizard");
 
     const settingsLocaleLoad = waitForEvent(client, "Page.loadEventFired", "Settings profile locale route");
     await client.call("Page.navigate", { url: `${origin}/settings/profile/` });
@@ -756,14 +763,24 @@ export async function runProductionBrowserSmoke() {
     await waitFor(client, `document.documentElement.lang === "en" && document.documentElement.dir === "ltr" && document.documentElement.dataset.calendar === "gregory" && Boolean(document.querySelector('#settings-profile')) && Boolean(document.querySelector('[data-settings-language]'))`, "English locale persistence after reload with automatic Gregorian calendar");
 
     const englishTodayLoad = waitForEvent(client, "Page.loadEventFired", "English Today route");
-    await client.call("Page.navigate", { url: `${origin}/today/` });
+    await client.call("Page.navigate", { url: `${origin}/employee/today/` });
     await englishTodayLoad;
-    await waitFor(client, `["/today", "/today/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Today summary") && document.body?.innerText.includes("Daily target") && Boolean(document.querySelector('[data-activity-segments]'))`, "English Today core surface");
+    await waitFor(client, `["/employee/today", "/employee/today/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("Today summary") && document.body?.innerText.includes("Daily target") && Boolean(document.querySelector('[data-activity-segments]'))`, "English Today core surface");
+    const englishTodayDateLabel = await evaluate(client, `document.querySelector('[data-date-picker-selected-label]')?.textContent?.trim() || ""`);
+    if (!/^[A-Za-z]+, [A-Za-z]+ \d{1,2}, \d{4}$/.test(englishTodayDateLabel) || /[\u0600-\u06FF۰-۹]/.test(englishTodayDateLabel)) {
+      throw new Error(`English Today date order/localization failed: ${JSON.stringify(englishTodayDateLabel)}`);
+    }
 
-    const englishMonthLoad = waitForEvent(client, "Page.loadEventFired", "English Month route");
+    const englishMonthLoad = waitForEvent(client, "Page.loadEventFired", "English Work Calendar route");
     await client.call("Page.navigate", { url: `${origin}/month/` });
     await englishMonthLoad;
-    await waitFor(client, `["/month", "/month/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.documentElement.dataset.calendar === "gregory" && document.body?.innerText.includes("My month") && document.body?.innerText.includes("Activity map and month intelligence") && Boolean(document.querySelector('[data-month-activity-heatmap]')) && Boolean(document.querySelector('[data-month-recent-activity]')) && Boolean(document.querySelector('[data-month-intelligence]'))`, "English Month activity intelligence surface");
+    await waitFor(client, `["/month", "/month/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.documentElement.dataset.calendar === "gregory" && document.body?.innerText.includes("Work Calendar") && document.body?.innerText.includes("Activity map and month intelligence") && Boolean(document.querySelector('[data-month-activity-heatmap]')) && Boolean(document.querySelector('[data-month-recent-activity]')) && Boolean(document.querySelector('[data-month-intelligence]'))`, "English Month activity intelligence surface");
+    await client.call("Emulation.setDeviceMetricsOverride", { width: 375, height: 812, deviceScaleFactor: 1, mobile: true, screenWidth: 375, screenHeight: 812 });
+    await evaluate(client, `new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))`);
+    await assertMobileShellFits(client, "Work Calendar English LTR 375px");
+    await client.call("Emulation.setDeviceMetricsOverride", { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false, screenWidth: 1440, screenHeight: 1000 });
+    await evaluate(client, `new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))`);
+    console.log("✓ Work Calendar keeps English LTR geometry inside a 375px viewport");
     const monthHierarchy = await evaluate(client, `(() => {
       const overview = document.querySelector('[data-month-overview-section]')?.getBoundingClientRect();
       const intelligence = document.querySelector('[data-month-intelligence-section]')?.getBoundingClientRect();
@@ -971,9 +988,15 @@ export async function runProductionBrowserSmoke() {
     console.log("✓ Local-first locale switch persists English LTR across reload and restores Persian RTL");
 
     const localeReturnToday = waitForEvent(client, "Page.loadEventFired", "return to Today after locale smoke");
-    await client.call("Page.navigate", { url: `${origin}/today/` });
+    await client.call("Page.navigate", { url: `${origin}/employee/today/` });
     await localeReturnToday;
-    await waitFor(client, `["/today", "/today/"].includes(location.pathname) && document.body?.innerText.includes("ساعت‌یار")`, "Today after locale smoke");
+    await waitFor(client, `["/employee/today", "/employee/today/"].includes(location.pathname) && document.documentElement.lang === "fa" && document.documentElement.dir === "rtl" && document.documentElement.dataset.calendar === "persian" && Boolean(document.querySelector('[data-date-picker-selected-label]')) && document.body?.innerText.includes("ساعت‌یار")`, "Today after locale smoke");
+    const persianTodayDateLabel = await evaluate(client, `document.querySelector('[data-date-picker-selected-label]')?.textContent?.trim() || ""`);
+    const persianDateParts = persianTodayDateLabel.split("، ");
+    if (persianDateParts.length !== 2 || !/[\u0600-\u06FF]/.test(persianDateParts[0]) || !/^[۰-۹]{1,2} [\u0600-\u06FF]+ [۰-۹]{4}$/.test(persianDateParts[1])) {
+      throw new Error(`Persian Today date order/localization failed: ${JSON.stringify(persianTodayDateLabel)}`);
+    }
+    console.log("✓ Today long dates follow independent Persian and English reading order");
 
     await waitFor(client, `navigator.serviceWorker?.ready.then(() => true).catch(() => false)`, "PWA service worker readiness");
     const firstInstallWorker = await evaluate(client, `(async () => {
@@ -1014,12 +1037,13 @@ export async function runProductionBrowserSmoke() {
         }))).reduce((sum, count) => sum + count, 0),
       };
     })()`);
-    if (!pwaContract?.active || !pwaContract.controlled || pwaContract.name !== "ساعت‌یار" || pwaContract.shortName !== "ساعت‌یار" || pwaContract.display !== "standalone" || pwaContract.iconCount < 3 || pwaContract.precachedBuildAssets < 1) {
+    if (!pwaContract?.active || !pwaContract.controlled || pwaContract.name !== "Saatyar | ساعت یار" || pwaContract.shortName !== "Saatyar" || pwaContract.display !== "standalone" || pwaContract.iconCount < 3 || pwaContract.precachedBuildAssets < 1) {
       throw new Error(`PWA installability contract failed: ${JSON.stringify(pwaContract)}`);
     }
+    console.log("✓ PWA manifest uses bilingual install identity with a compact launcher label");
     console.log("✓ PWA manifest and service worker are install-ready");
 
-    const firstLabel = await evaluate(client, `document.querySelector('[aria-haspopup="dialog"] strong')?.textContent?.trim() || ""`);
+    const firstLabel = await evaluate(client, `document.querySelector('[data-date-picker-selected-label]')?.textContent?.trim() || ""`);
     await evaluate(client, `document.querySelector('[aria-haspopup="dialog"]')?.click()`);
     await waitFor(client, "Boolean(document.querySelector('[role=dialog]'))", "date picker dialog");
     const selectedLabel = await evaluate(client, `(() => {
@@ -1032,7 +1056,7 @@ export async function runProductionBrowserSmoke() {
     if (!selectedLabel) throw new Error("No alternate calendar date was available.");
     await waitFor(client, "!document.querySelector('[role=dialog]')", "date picker close");
     await waitFor(client, `document.querySelector('[aria-haspopup="dialog"] strong')?.textContent?.trim() !== ${JSON.stringify(firstLabel)}`, "selected date change");
-    const secondLabel = await evaluate(client, `document.querySelector('[aria-haspopup="dialog"] strong')?.textContent?.trim() || ""`);
+    const secondLabel = await evaluate(client, `document.querySelector('[data-date-picker-selected-label]')?.textContent?.trim() || ""`);
     if (!secondLabel || secondLabel === firstLabel) throw new Error("Date navigation did not update the selected date.");
     console.log(`✓ Date navigation changed “${firstLabel}” to “${secondLabel}”`);
 

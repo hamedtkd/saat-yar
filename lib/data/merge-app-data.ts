@@ -12,6 +12,7 @@ export function mergeAppData(current: AppData, incoming: AppData): AppData {
     records: { ...current.records, ...incoming.records },
     leaves: mergeById(current.leaves, incoming.leaves),
     clients: mergeById(current.clients, incoming.clients),
+    workProjects: mergeById(current.workProjects, incoming.workProjects),
     projects: mergeById(current.projects, incoming.projects),
     timeEntries: mergeById(current.timeEntries, incoming.timeEntries),
     expenses: mergeById(current.expenses, incoming.expenses),

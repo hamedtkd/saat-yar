@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/site-metadata";
+import { PWA_APP_NAME, PWA_SHORT_NAME, SITE_DESCRIPTION } from "@/lib/site-metadata";
 
 export const dynamic = "force-static";
 
@@ -9,17 +9,17 @@ const withBase = (path: string) => `${basePath}${path}`;
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: withBase("/"),
-    name: SITE_NAME,
-    short_name: SITE_NAME,
+    name: PWA_APP_NAME,
+    short_name: PWA_SHORT_NAME,
     description: SITE_DESCRIPTION,
     lang: "fa",
-    dir: "rtl",
+    dir: "auto",
     start_url: withBase("/today/"),
     scope: withBase("/"),
     display: "standalone",
     orientation: "any",
     background_color: "#07171c",
-    theme_color: "#06b6d4",
+    theme_color: "#8b5cf6",
     categories: ["productivity", "business", "utilities"],
     icons: [
       { src: withBase("/icons/icon-192.png"), sizes: "192x192", type: "image/png", purpose: "any" },
@@ -28,7 +28,7 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
     shortcuts: [
       { name: "امروز", short_name: "امروز", url: withBase("/today/"), icons: [{ src: withBase("/icons/icon-192.png"), sizes: "192x192" }] },
-      { name: "ماه من", short_name: "ماه", url: withBase("/month/"), icons: [{ src: withBase("/icons/icon-192.png"), sizes: "192x192" }] },
+      { name: "تقویم کاری", short_name: "تقویم", url: withBase("/month/"), icons: [{ src: withBase("/icons/icon-192.png"), sizes: "192x192" }] },
       { name: "گزارش‌ها", short_name: "گزارش", url: withBase("/reports/"), icons: [{ src: withBase("/icons/icon-192.png"), sizes: "192x192" }] },
     ],
   };

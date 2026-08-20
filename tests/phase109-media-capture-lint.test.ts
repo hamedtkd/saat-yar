@@ -33,6 +33,8 @@ test("media capture covers final README screenshot surfaces", async () => {
     "today-light-desktop.png",
     "today-dark-desktop.png",
     "today-mobile.png",
+    "work-calendar-light-desktop.png",
+    "work-calendar-dark-desktop.png",
     "reports-light.png",
     "reports-dark.png",
     "settings.png",

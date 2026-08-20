@@ -38,7 +38,7 @@ export function createMediaDemoData(anchorIso = "2026-08-07T10:30:00+03:30"): Ap
   data.settings.mode = "employee";
   data.settings.salary = 48_000_000;
   data.settings.weeklyMinutes = 42 * 60 + 30;
-  data.settings.appearance = { mode: "light", preset: "spotify", accent: "#06b6d4", radius: "rounded", surface: "tinted" };
+  data.settings.appearance = { mode: "light", preset: "violet", accent: "#8b5cf6", radius: "rounded", surface: "tinted" };
   data.settings.payrollComponents = [
     { id: "housing", title: "حق مسکن", amount: 9_000_000, type: "earning", enabled: true },
     { id: "insurance", title: "بیمه", amount: 3_400_000, type: "deduction", enabled: true },
@@ -73,11 +73,11 @@ export function createMediaDemoData(anchorIso = "2026-08-07T10:30:00+03:30"): Ap
     createdAt: dateKey(shiftDate(anchor, -10)) + "T09:00:00.000Z",
   }];
   data.clients = [
-    { id: "client-1", name: "استودیو آبی", color: "#06b6d4", email: "hello@example.com", note: "طراحی محصول", archived: false },
+    { id: "client-1", name: "استودیو محصول", color: "#8b5cf6", email: "hello@example.com", note: "طراحی محصول", archived: false },
     { id: "client-2", name: "داده‌پرداز", color: "#8b5cf6", email: "team@example.com", note: "داشبورد مدیریتی", archived: false },
   ];
   data.projects = [
-    { id: "project-1", clientId: "client-1", name: "طراحی داشبورد", rate: 850_000, color: "#06b6d4", status: "active", budgetHours: 45, billable: true },
+    { id: "project-1", clientId: "client-1", name: "طراحی داشبورد", rate: 850_000, color: "#8b5cf6", status: "active", budgetHours: 45, billable: true },
     { id: "project-2", clientId: "client-2", name: "گزارش تحلیلی", rate: 1_050_000, color: "#8b5cf6", status: "active", budgetHours: 28, billable: true },
   ];
   data.timeEntries = [

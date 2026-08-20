@@ -36,6 +36,16 @@ export function parseLiveTimerLock(value: string | null): LiveTimerLock | null {
   }
 }
 
+
+export type LiveTimerLockStorage = Pick<Storage, "getItem" | "removeItem">;
+
+export function releaseOwnedLiveTimerLock(storage: LiveTimerLockStorage, tabId: string) {
+  const lock = parseLiveTimerLock(storage.getItem(LIVE_TIMER_LOCK_KEY));
+  if (lock?.tabId !== tabId) return false;
+  storage.removeItem(LIVE_TIMER_LOCK_KEY);
+  return true;
+}
+
 export function isLiveTimerLockFresh(lock: LiveTimerLock, now = Date.now()) {
   return now - new Date(lock.updatedAt).getTime() < LIVE_TIMER_LOCK_STALE_MS;
 }

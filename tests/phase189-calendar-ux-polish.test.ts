@@ -73,7 +73,7 @@ test("mobile header restores the brand mark and Google settings controls keep RT
   const header = read("components/layout/app-header.tsx");
   const sources = read("components/calendar/google-calendar-source-list.tsx");
   const deletion = read("components/calendar/calendar-event-delete-dialog.tsx");
-  assert.match(header, /BrandMark size=\{34\}/);
+  assert.match(header, /BrandMark size=\{40\}/);
   assert.match(header, /max-\[520px\]:block/);
   assert.match(sources, /className="!flex cursor-pointer items-center gap-3/);
   assert.match(deletion, /className="!flex cursor-pointer items-start gap-3/);

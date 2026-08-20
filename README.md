@@ -1,12 +1,12 @@
 <div align="center">
 
-<img src="./public/brand/saatyar-mark-accent.svg" width="112" height="112" alt="Saatyar logo" />
+<img src="./public/fav-256.png" width="112" height="112" alt="Saatyar app icon" />
 
 # Saatyar
 
 ### A Persian-first, RTL, local-first web app for worklogs, attendance, payroll, projects, and income
 
-[![Quality](https://img.shields.io/badge/quality-600%2B%20tests%20passing-16a34a)](#quality-gates)
+[![Quality](https://img.shields.io/badge/quality-970%20tests%20passing-16a34a)](#quality-gates)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/license-MIT-0f766e)](./LICENSE)
@@ -42,12 +42,19 @@ The screenshots below come from a real production build using isolated demo fixt
 
 <table>
   <tr>
-    <td width="50%"><img src="./docs/assets/screenshots/today-dark-desktop.png" alt="Saatyar Today dashboard in dark mode" /></td>
+    <td width="50%"><img src="./docs/assets/screenshots/today-dark-desktop.png" alt="Saatyar Today dashboard in dark mode with the violet default theme" /></td>
+    <td width="50%"><img src="./docs/assets/screenshots/work-calendar-light-desktop.png" alt="Saatyar Work Calendar in light mode" /></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="./docs/assets/screenshots/work-calendar-dark-desktop.png" alt="Saatyar Work Calendar in dark mode" /></td>
     <td width="50%"><img src="./docs/assets/screenshots/reports-light.png" alt="Saatyar reports in light mode" /></td>
   </tr>
   <tr>
     <td width="50%"><img src="./docs/assets/screenshots/reports-dark.png" alt="Saatyar reports in dark mode" /></td>
-    <td width="50%"><img src="./docs/assets/screenshots/today-mobile.png" alt="Saatyar Today dashboard on mobile" /></td>
+    <td width="50%"><img src="./docs/assets/screenshots/settings.png" alt="Saatyar settings with the violet brand preset" /></td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center"><img src="./docs/assets/screenshots/today-mobile.png" alt="Saatyar Today dashboard on mobile" width="390" /></td>
   </tr>
 </table>
 
@@ -57,7 +64,7 @@ The screenshots below come from a real production build using isolated demo fixt
   <img src="./docs/assets/media/onboarding.gif" alt="Saatyar onboarding demo" width="760" />
 </p>
 
-Regenerate the media with `npm run media:capture`. See [docs/assets/README.md](./docs/assets/README.md) for the privacy-safe capture contract.
+Regenerate every screenshot from the real production build with `npm run media:capture` (or `npm run media:capture:built` after a fresh build). See [docs/assets/README.md](./docs/assets/README.md) for the privacy-safe capture contract.
 
 ## Product scope
 
@@ -105,7 +112,7 @@ Regenerate the media with `npm run media:capture`. See [docs/assets/README.md](.
 - Bilingual Persian/RTL and English/LTR interface with a quick flag language switcher
 - Language-aware calendar: Auto follows the interface language, with explicit Persian/Jalali or Gregorian override
 - Light, dark, and system themes
-- Configurable accent, surface, and radius options
+- Violet is the default brand preset; configurable accent, surface, and radius options remain available
 - Locally bundled Vazirmatn font
 - Responsive desktop and mobile layouts
 - Keyboard access, focus management, and reduced-motion support
@@ -287,8 +294,10 @@ The Persian deployment guide covers Windows, macOS, Linux, Docker, GitHub Pages,
 
 [Run and deployment guide](./RUN_AND_DEPLOY_FA.md)
 
-- [Latest stable Saatyar 2.4.0 release notes](./docs/releases/RELEASE_NOTES_2.4.0_EN.md)
-- [Latest stable Saatyar 2.3.2 release notes](./docs/releases/RELEASE_NOTES_2.3.2_EN.md)
+- [Latest stable Saatyar 2.6.0 release notes](./docs/releases/RELEASE_NOTES_2.6.0_EN.md)
+- [Historical Saatyar 2.5.0 release notes](./docs/releases/RELEASE_NOTES_2.5.0_EN.md)
+- [Historical Saatyar 2.4.0 release notes](./docs/releases/RELEASE_NOTES_2.4.0_EN.md)
+- [Historical Saatyar 2.3.2 release notes](./docs/releases/RELEASE_NOTES_2.3.2_EN.md)
 - [Historical Saatyar 2.3.1 release notes](./docs/releases/RELEASE_NOTES_2.3.1_EN.md)
 - [Historical Saatyar 2.3.0 release notes](./docs/releases/RELEASE_NOTES_2.3.0_EN.md)
 - [Historical Saatyar 2.2.0 release notes](./docs/releases/RELEASE_NOTES_2.2.0_EN.md)
@@ -302,11 +311,15 @@ Before opening a pull request, read [CONTRIBUTING.md](./CONTRIBUTING.md) and the
 
 ## Roadmap
 
-Version **2.5.0** is the latest stable Saatyar release and packages Phases 166–180: dedicated recoverable onboarding, corrected leave entitlement, completed-day editing feedback, the Import Wizard, the shared live runtime clock, full Persian RTL / English LTR i18n hardening, and the final release contract.
+Track post-release work in the [development backlog](./docs/roadmap/BACKLOG_FA.md).
 
-The verified Phase 178 baseline at `887158c` passed **758/758 tests**. Phase 179 candidate `1cabdb4` completed the **764/764** gate, and Phase 180 added six finalization contracts for a **770/770** final gate. The released 2.4.0 data contract stays immutable on schema v17. Post-release development now uses **schema v20**: Phase 182 introduced flexible daily targets and activity segments, Phase 183 added notification intelligence, Phase 184 added privacy-safe analytics without AppData expansion, Phase 185 added derived month intelligence, Phase 186 added a stable branded loading shell plus reduced-motion-aware route transitions, Phases 187–189B added Google Calendar read/write, unified Month context and multi-route Settings, Phase 189C fixes monthly payroll hourly-rate derivation with a configurable standard-month basis, and Phase 190 adds conflict-safe incremental Google Calendar sync, Day/Week planning, duplicate/overlap intelligence, explicit Event-to-Activity conversion, and safe recurring occurrence/series editing. See the [2.4.0 release notes](./docs/releases/RELEASE_NOTES_2.4.0_EN.md), the [Phase 188 notes](./docs/phases/PHASE_188_NOTES_FA.md), the [next-release feature inventory](./docs/releases/NEXT_RELEASE_FEATURES_FA.md), and the [roadmap](./docs/roadmap/BACKLOG_FA.md).
+## 2.6.0 Final Release
 
-The 2.4.0 manifest is `released` and intentionally does not embed its own final release commit. After the final `dev -> main` merge and Vercel deployment, `npm run audit:production` must pass before the annotated `v2.4.0` tag is created. That tag is the source of truth for the exact final release commit. Historical 2.3.2 and earlier manifests/tags remain immutable.
+Version **2.6.0** is the latest stable Saatyar release. It packages the post-2.5.0 product cycle (Phases 195–200) on AppData v21, including the workspace-specific Today experience, Freelancer Work Session, Employee Activity Context, bilingual PWA identity, corrected locale-aware dates, Work Calendar naming, and final release hardening.
+
+The Phase 201 candidate commit is `3e5bcbf`, verified with **964/964 tests** plus Production/Freelancer/Employee/Pairing browser gates, PWA/offline coverage, hardening audit, and the Vercel static-export audit. Phase 202 adds release-contract coverage for a **970/970** final Node-test target without adding product scope.
+
+The release uses **AppData schema v21** with a formal migration boundary from released 2.5.0 schema v20. Final rollout is controlled: merge the verified finalization commit to `main`, wait for the production deployment, run `npm run audit:production`, and create annotated tag `v2.6.0` only on that exact production-audited commit.
 
 ## Support development
 

@@ -1,12 +1,12 @@
 <div align="center" dir="rtl">
 
-<img src="./public/brand/saatyar-mark-accent.svg" width="112" height="112" alt="لوگوی ساعت‌یار" />
+<img src="./public/fav-256.png" width="112" height="112" alt="آیکون ساعت‌یار" />
 
 # ساعت‌یار
 
 ### وب‌اپ فارسی و Local-first برای ثبت زمان، کارکرد، حقوق، پروژه و درآمد
 
-[![Quality](https://img.shields.io/badge/quality-600%2B%20tests%20passing-16a34a)](#کنترل-کیفیت)
+[![Quality](https://img.shields.io/badge/quality-970%20tests%20passing-16a34a)](#کنترل-کیفیت)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/license-MIT-0f766e)](./LICENSE)
@@ -44,12 +44,19 @@
 
 <table>
   <tr>
-    <td width="50%"><img src="./docs/assets/screenshots/today-dark-desktop.png" alt="صفحه امروز ساعت‌یار در تم تاریک" /></td>
+    <td width="50%"><img src="./docs/assets/screenshots/today-dark-desktop.png" alt="صفحه امروز ساعت‌یار در تم تاریک با رنگ پیش‌فرض بنفش" /></td>
+    <td width="50%"><img src="./docs/assets/screenshots/work-calendar-light-desktop.png" alt="تقویم کاری ساعت‌یار در تم روشن" /></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="./docs/assets/screenshots/work-calendar-dark-desktop.png" alt="تقویم کاری ساعت‌یار در تم تاریک" /></td>
     <td width="50%"><img src="./docs/assets/screenshots/reports-light.png" alt="گزارش‌های ساعت‌یار در تم روشن" /></td>
   </tr>
   <tr>
     <td width="50%"><img src="./docs/assets/screenshots/reports-dark.png" alt="گزارش‌های ساعت‌یار در تم تاریک" /></td>
-    <td width="50%"><img src="./docs/assets/screenshots/today-mobile.png" alt="صفحه امروز ساعت‌یار در موبایل" /></td>
+    <td width="50%"><img src="./docs/assets/screenshots/settings.png" alt="تنظیمات ساعت‌یار با رنگ برند بنفش" /></td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center"><img src="./docs/assets/screenshots/today-mobile.png" alt="صفحه امروز ساعت‌یار در موبایل" width="390" /></td>
   </tr>
 </table>
 
@@ -59,7 +66,7 @@
   <img src="./docs/assets/media/onboarding.gif" alt="دموی Onboarding ساعت‌یار" width="760" />
 </p>
 
-رسانه‌ها با `npm run media:capture` قابل بازتولید هستند. جزئیات در [docs/assets/README.md](./docs/assets/README.md) آمده است.
+تمام اسکرین‌شات‌ها با `npm run media:capture` از Build واقعی قابل بازتولید هستند؛ اگر Build تازه از قبل موجود است از `npm run media:capture:built` استفاده کنید. جزئیات در [docs/assets/README.md](./docs/assets/README.md) آمده است.
 
 ## ویژگی‌ها
 
@@ -276,8 +283,10 @@ tests/                         تست‌های دامنه، Regression و معم
 
 - [عیب‌یابی Windows و خطاهای npm](./docs/TROUBLESHOOTING_FA.md)
 - [جدول سازگاری مرورگر و محدودیت‌های Notification/PWA](./docs/BROWSER_COMPATIBILITY.md)
-- [یادداشت آخرین Release پایدار ساعت‌یار ۲.۴.۰](./docs/releases/RELEASE_NOTES_2.4.0_FA.md)
-- [آخرین انتشار پایدار ساعت‌یار ۲.۳.۲](./docs/releases/RELEASE_NOTES_2.3.2_FA.md)
+- [یادداشت آخرین Release پایدار ساعت‌یار ۲.۶.۰](./docs/releases/RELEASE_NOTES_2.6.0_FA.md)
+- [یادداشت Release تاریخی ساعت‌یار ۲.۵.۰](./docs/releases/RELEASE_NOTES_2.5.0_FA.md)
+- [یادداشت Release تاریخی ساعت‌یار ۲.۴.۰](./docs/releases/RELEASE_NOTES_2.4.0_FA.md)
+- [انتشار تاریخی ساعت‌یار ۲.۳.۲](./docs/releases/RELEASE_NOTES_2.3.2_FA.md)
 - [یادداشت انتشار تاریخی ۲.۳.۱](./docs/releases/RELEASE_NOTES_2.3.1_FA.md)
 - [یادداشت انتشار تاریخی ۲.۳.۰](./docs/releases/RELEASE_NOTES_2.3.0_FA.md)
 - [یادداشت انتشار تاریخی ۲.۲.۰](./docs/releases/RELEASE_NOTES_2.2.0_FA.md)
@@ -299,11 +308,15 @@ npm run test:browser:production
 
 ## نقشه راه
 
-نسخه **۲.۵.۰** آخرین Release پایدار ساعت‌یار است و تغییرات فازهای ۱۶۶ تا ۱۸۰ را بسته‌بندی می‌کند: آنبوردینگ مستقل و قابل‌بازیابی، اصلاح سهمیه مرخصی، بازخورد ویرایش روز تکمیل‌شده، Import Wizard، Runtime Clock مشترک، تکمیل فارسی RTL / انگلیسی LTR و قرارداد Final Release.
+کارهای پس از انتشار در [بک‌لاگ توسعه](./docs/roadmap/BACKLOG_FA.md) پیگیری می‌شوند.
 
-Baseline فاز ۱۷۸ روی `887158c` با **۷۵۸/۷۵۸ تست** بسته شد. Candidate فاز ۱۷۹ روی `1cabdb4` Gate **۷۶۴/۷۶۴** را کامل کرد و فاز ۱۸۰ با شش قرارداد Finalization به Gate نهایی **۷۷۰/۷۷۰** رسید. قرارداد منتشرشده ۲.۴.۰ به‌صورت immutable روی Schema v17 باقی می‌ماند. توسعه پس از Release اکنون روی **Schema v20** است: فازهای ۱۸۲ تا ۱۸۹B Flexible Work، Notification Intelligence، Analytics امن، Month Intelligence، Motion، Google Calendar Read/Write و Settings چندصفحه‌ای را اضافه کردند، فاز ۱۸۹C مبنای نرخ ساعتی حقوق ماهانه را با «ماه استاندارد» قابل تنظیم اصلاح کرد و فاز ۱۹۰ Incremental Sync امن Google Calendar، تشخیص Conflict/Duplicate، برنامه‌ریزی Day/Week، تبدیل صریح Event به Activity و ویرایش occurrence/series تکرارشونده را اضافه کرد. فهرست تجمیعی قابلیت‌های نسخه بعدی برای Release Notes و LinkedIn در `docs/releases/NEXT_RELEASE_FEATURES_FA.md` نگهداری می‌شود. جزئیات در [یادداشت Release ۲.۴.۰](./docs/releases/RELEASE_NOTES_2.4.0_FA.md)، [یادداشت فاز ۱۸۸](./docs/phases/PHASE_188_NOTES_FA.md) و [نقشه راه](./docs/roadmap/BACKLOG_FA.md) ثبت شده‌اند.
+## Final Release ۲.۶.۰
 
-Manifest ۲.۴.۰ در وضعیت `released` است اما عمداً SHA نهایی خودش را داخل Manifest ذخیره نمی‌کند. بعد از Merge نهایی `dev -> main` و Deploy Vercel، `npm run audit:production` باید سبز شود و فقط سپس Tag annotated `v2.4.0` روی همان Commit نهایی ساخته شود. این Tag منبع حقیقت SHA Release است. Manifest و Tagهای ۲.۳.۲ و قدیمی‌تر تاریخی و immutable باقی می‌مانند.
+نسخه **۲.۶.۰** آخرین Release پایدار ساعت‌یار است. این نسخه چرخه پس از ۲.۵.۰ یعنی فازهای ۱۹۵ تا ۲۰۰ را روی AppData v21 بسته‌بندی می‌کند؛ از Todayهای اختصاصی workspace، Freelancer Work Session و Employee Activity Context تا PWA identity دوزبانه، تاریخ‌های locale-aware، نام «تقویم کاری» و hardening نهایی Release.
+
+Candidate فاز ۲۰۱ روی commit `3e5bcbf` با **۹۶۴/۹۶۴ تست** به‌همراه Production/Freelancer/Employee/Pairing Browser Gate، PWA/offline، Hardening Audit و Vercel Audit تأیید شده است. Phase 202 فقط قرارداد Release را اضافه می‌کند و target نهایی Node را به **۹۷۰/۹۷۰** می‌رساند؛ Feature جدیدی وارد نسخه نمی‌شود.
+
+این Release از **AppData schema v21** استفاده می‌کند و migration رسمی آن از Schema v20 نسخه ۲.۵.۰ است. Rollout نهایی کنترل‌شده است: merge commit نهایی به `main`، صبر برای Deploy Production، اجرای `npm run audit:production` و سپس ساخت tag annotated `v2.6.0` دقیقاً روی همان commit audit‌شده.
 
 ## حمایت مالی
 

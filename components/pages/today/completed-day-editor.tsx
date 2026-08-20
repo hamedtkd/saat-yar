@@ -8,6 +8,7 @@ import { cn } from "@/lib/cn";
 import { localDateKey } from "@/lib/format";
 import { registerSettingsDraft } from "@/lib/settings-draft-registry";
 import { getWorkRecordChanges } from "@/lib/work-record-diff";
+import { getTodayWorkspaceCapabilities } from "@/lib/workspace-capabilities";
 import type { WorkRecord, WorkRecordPatch } from "@/lib/types";
 import { CompletedDayEditActionBar, CompletedDayEditSavedNotice } from "./completed-day-edit-action-bar";
 import { RecordChangeSummary } from "./record-change-summary";
@@ -18,7 +19,8 @@ import { TodayTimeStrip } from "./today-time-strip";
 export function CompletedDayEditor(props: TodayPageProps & { scheduledDayOff: boolean }) {
   const { t, digits } = useLocaleUi();
   const { record, selectedDate, updateRecord } = props;
-  const completed = Boolean(record.start && record.end);
+  const capabilities = getTodayWorkspaceCapabilities(props.data.settings.mode);
+  const completed = capabilities.attendance && Boolean(record.start && record.end);
   const autoClosed = Boolean(completed && record.needsReview && record.autoClosedAt);
   const canResume = Boolean(
     autoClosed &&
@@ -148,7 +150,7 @@ export function CompletedDayEditor(props: TodayPageProps & { scheduledDayOff: bo
         )}
       >
         <TodayFocusCard {...childProps} />
-        <TodayTimeStrip {...childProps} showQuickActions={!completed} />
+        {capabilities.attendance && <TodayTimeStrip {...childProps} showQuickActions={!completed} />}
       </fieldset>
     </section>
   );

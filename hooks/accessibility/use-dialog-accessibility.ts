@@ -9,7 +9,8 @@ const FOCUSABLE_SELECTOR = [
   '[tabindex]:not([tabindex="-1"])',
 ].join(",");
 
-export function useDialogAccessibility(onClose: () => void) {
+export function useDialogAccessibility(onClose: () => void, options: { modal?: boolean } = {}) {
+  const modal = options.modal ?? true;
   const dialogRef = useRef<HTMLDivElement>(null);
   const openerRef = useRef<HTMLElement | null>(null);
 
@@ -17,7 +18,7 @@ export function useDialogAccessibility(onClose: () => void) {
     openerRef.current = document.activeElement as HTMLElement | null;
     const dialog = dialogRef.current;
     const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    if (modal) document.body.style.overflow = "hidden";
 
     const focusable = dialog?.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
     (focusable?.[0] ?? dialog)?.focus();
@@ -29,7 +30,7 @@ export function useDialogAccessibility(onClose: () => void) {
         return;
       }
 
-      if (event.key !== "Tab" || !dialog) return;
+      if (!modal || event.key !== "Tab" || !dialog) return;
       const elements = Array.from(
         dialog.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
       ).filter((element) => !element.hidden && element.offsetParent !== null);
@@ -53,10 +54,10 @@ export function useDialogAccessibility(onClose: () => void) {
     document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = previousOverflow;
+      if (modal) document.body.style.overflow = previousOverflow;
       openerRef.current?.focus();
     };
-  }, [onClose]);
+  }, [modal, onClose]);
 
   return dialogRef;
 }

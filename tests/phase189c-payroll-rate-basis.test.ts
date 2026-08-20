@@ -52,7 +52,7 @@ test("Today payroll keeps daily base pay but uses the configured monthly rate fo
 });
 
 test("schema v20 migrates existing v19 payroll policy to the safe standard-month basis", () => {
-  assert.equal(APP_DATA_SCHEMA_VERSION, 20);
+  assert.ok(APP_DATA_SCHEMA_VERSION >= 20);
   const previous = structuredClone(createInitialData({ onboarded: true })) as unknown as { settings: { payrollPolicy: Record<string, unknown> } };
   delete previous.settings.payrollPolicy.rateBasis;
   delete previous.settings.payrollPolicy.standardMonthMinutes;
