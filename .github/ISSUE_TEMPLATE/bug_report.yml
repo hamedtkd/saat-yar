@@ -1,31 +1,83 @@
 name: گزارش باگ
-about: گزارش یک مشکل قابل بازتولید
+description: یک مشکل قابل بازتولید در ساعت‌یار را گزارش کنید
+title: "[Bug]: "
+labels:
+  - bug
 body:
+  - type: markdown
+    attributes:
+      value: |
+        ممنون که برای بهتر شدن ساعت‌یار وقت می‌گذارید.
+        لطفاً اطلاعات واقعی شخصی، Backup، Token یا Secret در این گزارش قرار ندهید.
+
   - type: textarea
     id: problem
     attributes:
       label: شرح مشکل
       description: چه اتفاقی افتاد و انتظار داشتید چه اتفاقی بیفتد؟
+      placeholder: مشکل را واضح و کوتاه توضیح دهید.
     validations:
       required: true
+
   - type: textarea
     id: reproduce
     attributes:
       label: مراحل بازتولید
+      description: مراحلی را بنویسید که باعث بروز مشکل می‌شوند.
       placeholder: |
         1. وارد صفحه ... شوید
         2. روی ... بزنید
-        3. خطا دیده می‌شود
+        3. ...
+        4. مشکل مشاهده می‌شود
     validations:
       required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: رفتار مورد انتظار
+      description: انتظار داشتید چه اتفاقی بیفتد؟
+    validations:
+      required: true
+
+  - type: dropdown
+    id: mode
+    attributes:
+      label: حالت استفاده
+      options:
+        - کارمند
+        - فریلنسر
+        - ترکیبی
+        - مربوط نیست
+    validations:
+      required: true
+
   - type: input
     id: browser
     attributes:
-      label: مرورگر و سیستم‌عامل
+      label: مرورگر
+      placeholder: Chrome 140
     validations:
       required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: سیستم‌عامل
+      placeholder: Windows 11 / Android / macOS / Linux
+    validations:
+      required: true
+
   - type: textarea
     id: context
     attributes:
       label: اطلاعات تکمیلی
-      description: بدون Backup، Secret یا داده شخصی واقعی.
+      description: در صورت نیاز Screenshot یا Log غیرحساس اضافه کنید.
+
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: حریم خصوصی
+      options:
+        - label: تأیید می‌کنم که Backup، Token، Secret یا اطلاعات شخصی واقعی در این Issue قرار نداده‌ام.
+          required: true
