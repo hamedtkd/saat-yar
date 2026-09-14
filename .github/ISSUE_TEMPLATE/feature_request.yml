@@ -1,20 +1,60 @@
 name: پیشنهاد قابلیت
-about: پیشنهاد بهبود محصول یا تجربه کاربری
+description: یک قابلیت جدید یا بهبود تجربه کاربری برای ساعت‌یار پیشنهاد دهید
+title: "[Feature]: "
+labels:
+  - enhancement
 body:
+  - type: markdown
+    attributes:
+      value: |
+        ممنون که برای بهتر شدن ساعت‌یار پیشنهاد می‌دهید.
+        لطفاً ابتدا مسئله‌ای را که می‌خواهید حل شود توضیح دهید.
+
   - type: textarea
     id: need
     attributes:
       label: مسئله کاربر
-      description: این قابلیت چه مسئله‌ای را حل می‌کند؟
+      description: چه مشکلی وجود دارد و این قابلیت قرار است چه چیزی را بهتر کند؟
     validations:
       required: true
+
+  - type: dropdown
+    id: mode
+    attributes:
+      label: این قابلیت بیشتر مربوط به کدام حالت است؟
+      options:
+        - کارمند
+        - فریلنسر
+        - ترکیبی
+        - همه کاربران
+        - مربوط نیست
+    validations:
+      required: true
+
   - type: textarea
     id: proposal
     attributes:
       label: راه‌حل پیشنهادی
+      description: دوست دارید ساعت‌یار چگونه این مسئله را حل کند؟
     validations:
       required: true
+
   - type: textarea
     id: alternatives
     attributes:
       label: راه‌حل‌های جایگزین
+      description: آیا روش دیگری هم برای حل این مسئله در نظر دارید؟
+
+  - type: textarea
+    id: details
+    attributes:
+      label: توضیحات تکمیلی
+      description: Screenshot، نمونه رابط یا توضیحات بیشتر را اینجا قرار دهید.
+
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: حریم خصوصی
+      options:
+        - label: تأیید می‌کنم که اطلاعات شخصی، Backup، Token یا Secret در این Issue قرار نداده‌ام.
+          required: true
