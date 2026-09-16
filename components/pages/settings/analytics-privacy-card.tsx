@@ -20,7 +20,7 @@ export function AnalyticsPrivacyCard() {
         {s("Saatyar uses Cloudflare Web Analytics only to understand aggregate traffic and page performance. It does not send custom product events or work content.")}
       </p>
       <CloudflareAnalyticsInfo />
-      <div className="mt-4 grid gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-4 text-[9px] leading-5 text-[var(--text-muted)] sm:grid-cols-2">
+      <div className="mt-4 grid gap-2 rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-2)] p-4 text-[9px] leading-5 text-[var(--text-muted)] sm:grid-cols-2">
         <p><strong className="block text-[10px] text-[var(--text)]">{s("Measured")}</strong>{s("Aggregate page views, visitors, referrers, and page-performance metrics exposed by Cloudflare Web Analytics.")}</p>
         <p><strong className="block text-[10px] text-[var(--text)]">{s("Never sent")}</strong>{s("Timer actions, onboarding choices, salary, income, client/project names, notes, work dates, exact clock times, record IDs, device-transfer payloads, or AppData.")}</p>
       </div>

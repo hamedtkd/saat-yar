@@ -21,12 +21,12 @@ export function SidebarNav({ mode, currentPath, name }: Props) {
   const settingsActive = normalizedPath === "/settings" || normalizedPath.startsWith("/settings/");
   const subtitle = name ? t("app.personalSpace", { name }) : t("app.brandSubtitle");
   return (
-    <aside className="fixed inset-y-2 start-2 z-40 hidden w-[var(--shell-sidebar-width)] flex-col overflow-hidden rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[linear-gradient(180deg,var(--surface-1),var(--surface-raised))] p-3 shadow-[0_10px_32px_rgba(0,0,0,.055)] xl:flex dark:shadow-[0_14px_38px_rgba(0,0,0,.24)]">
+    <aside data-app-sidebar className="fixed inset-y-2 start-2 z-40 hidden w-[var(--shell-sidebar-width)] flex-col overflow-hidden rounded-[var(--card-radius)] border border-[var(--sidebar-border)] bg-[var(--sidebar-background)] p-3 shadow-[var(--surface-shadow)] xl:flex">
       <div className="border-b border-[var(--dashboard-border)] px-2 pb-4 pt-2">
         <GuardedLink
           href={getTodayHref(mode)}
           aria-label={t("nav.goToday")}
-          className="inline-flex rounded-[14px] outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]"
+          className="inline-flex rounded-[var(--control-radius-sm)] outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]"
         >
           <Brand subtitle={subtitle} />
         </GuardedLink>
@@ -44,19 +44,19 @@ export function SidebarNav({ mode, currentPath, name }: Props) {
               className={cn(
                 "group relative flex min-h-11 items-center gap-3 overflow-hidden rounded-[var(--control-radius)] px-3 text-sm font-bold text-[var(--text-muted)] transition",
                 "hover:bg-[var(--accent-soft)] hover:text-[var(--text)]",
-                active && "bg-[var(--accent-fill)] text-[var(--accent-foreground)] shadow-[0_7px_18px_color-mix(in_srgb,var(--accent)_18%,transparent)] hover:bg-[var(--accent-fill)] hover:text-[var(--accent-foreground)]",
+                active && "bg-[var(--sidebar-active-bg)] text-[var(--sidebar-active-fg)] shadow-[0_7px_18px_color-mix(in_srgb,var(--accent)_18%,transparent)] hover:bg-[var(--sidebar-active-bg)] hover:text-[var(--sidebar-active-fg)]",
               )}
             >
               <span
                 className={cn(
-                  "grid size-8 shrink-0 place-items-center rounded-[10px] bg-[var(--surface-2)] transition-colors group-hover:bg-[var(--surface-1)]",
-                  active && "bg-[color-mix(in_srgb,var(--accent-foreground)_12%,transparent)] text-[var(--accent-foreground)] group-hover:bg-[color-mix(in_srgb,var(--accent-foreground)_12%,transparent)]",
+                  "grid size-8 shrink-0 place-items-center rounded-[var(--control-radius-sm)] bg-[var(--surface-2)] transition-colors group-hover:bg-[var(--surface-1)]",
+                  active && "bg-[var(--sidebar-active-icon-bg)] text-[var(--sidebar-active-fg)] group-hover:bg-[var(--sidebar-active-icon-bg)]",
                 )}
               >
                 <Icon aria-hidden="true" />
               </span>
               <span>{t(labelKey)}</span>
-              {active && <span aria-hidden="true" className="ms-auto size-1.5 rounded-full bg-[var(--accent-foreground)]/70" />}
+              {active && <span aria-hidden="true" className="ms-auto size-1.5 rounded-full bg-[var(--sidebar-active-fg)]/70" />}
             </GuardedLink>
           );
         })}
@@ -71,15 +71,15 @@ export function SidebarNav({ mode, currentPath, name }: Props) {
           aria-current={settingsActive ? "page" : undefined}
           className={cn(
             "flex min-h-11 items-center gap-3 rounded-[var(--control-radius)] px-3 text-sm font-bold text-[var(--text-muted)] hover:bg-[var(--accent-soft)] hover:text-[var(--text)]",
-            settingsActive && "bg-[var(--accent-soft)] text-[var(--accent-strong)]",
+            settingsActive && "bg-[var(--sidebar-active-bg)] text-[var(--sidebar-active-fg)]",
           )}
         >
-          <span className="grid size-8 place-items-center rounded-[10px] bg-[var(--surface-2)]">
+          <span className="grid size-8 place-items-center rounded-[var(--control-radius-sm)] bg-[var(--sidebar-utility-bg)] text-[var(--sidebar-utility-fg)] shadow-sm">
             <Settings aria-hidden="true" />
           </span>
           {t("nav.settings")}
         </GuardedLink>
-        <div className="mt-3 rounded-[16px] border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-3 py-3 text-[10px] text-[var(--text-muted)]">
+        <div className="mt-3 rounded-[var(--control-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-3 py-3 text-[10px] text-[var(--text-muted)]">
           <div className="flex items-center gap-2 font-black text-[var(--text)]">
             <span className="size-2 rounded-full bg-[var(--success)] shadow-[0_0_0_4px_var(--success-soft)]" />
             {t("app.ready")}

@@ -22,7 +22,7 @@ export function GitHubStarLink({ online }: { online: boolean }) {
       href={GITHUB_REPOSITORY_URL}
       target="_blank"
       rel="noreferrer"
-      className="inline-flex min-h-8 items-center gap-1.5 rounded-lg border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-2.5 font-black text-[var(--text)] transition hover:border-[color-mix(in_srgb,var(--accent)_38%,var(--dashboard-border))] hover:text-[var(--accent-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]"
+      className="inline-flex min-h-8 items-center gap-1.5 rounded-[var(--control-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-2.5 font-black text-[var(--text)] transition hover:border-[color-mix(in_srgb,var(--accent)_38%,var(--dashboard-border))] hover:text-[var(--accent-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]"
       aria-label={t("footer.githubStar")}
       title={t("footer.githubStar")}
     >

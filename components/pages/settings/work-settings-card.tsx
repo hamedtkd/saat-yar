@@ -37,5 +37,5 @@ export function WorkSettingsCard({ data, setData, setToast }: { data: AppData; s
 }
 
 function Toggle({ checked, onChange, title, description }: { checked: boolean; onChange: (next: boolean) => void; title: string; description: string }) {
-  return <label className="flex min-h-13 cursor-pointer items-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2 text-[var(--text)]"><Checkbox checked={checked} onCheckedChange={onChange} /><span className="grid gap-0.5"><strong className="text-[11px]">{title}</strong><small className="text-[9px] text-[var(--text-muted)]">{description}</small></span></label>;
+  return <label className="flex min-h-13 cursor-pointer items-center gap-3 rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2 text-[var(--text)]"><Checkbox checked={checked} onCheckedChange={onChange} /><span className="grid gap-0.5"><strong className="text-[11px]">{title}</strong><small className="text-[9px] text-[var(--text-muted)]">{description}</small></span></label>;
 }

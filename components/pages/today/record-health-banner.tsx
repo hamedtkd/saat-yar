@@ -51,7 +51,7 @@ export function RecordHealthBanner({ record, onReset }: { record: WorkRecord; on
   return (
     <>
       <section className={cn(
-        "mb-4 flex flex-wrap items-start justify-between gap-3 rounded-2xl border px-4 py-3",
+        "mb-4 flex flex-wrap items-start justify-between gap-3 rounded-[var(--card-radius)] border px-4 py-3",
         healthy ? "border-[color-mix(in_srgb,var(--success)_28%,var(--border))] bg-[var(--success-soft)] text-[var(--success)]" : "border-[color-mix(in_srgb,var(--warning)_28%,var(--border))] bg-[var(--warning-soft)] text-[var(--warning)]",
       )}>
         <div className="flex min-w-0 items-start gap-3">
@@ -69,7 +69,7 @@ export function RecordHealthBanner({ record, onReset }: { record: WorkRecord; on
             )}
           </div>
         </div>
-        <Button type="button" variant="outline" size="sm" onClick={() => setConfirmOpen(true)} className="rounded-xl bg-[var(--surface-1)]">
+        <Button type="button" variant="outline" size="sm" onClick={() => setConfirmOpen(true)} className="rounded-[var(--card-radius)] bg-[var(--surface-1)]">
           <RotateCcw className="size-4" /> {t("today.health.reset")}
         </Button>
       </section>

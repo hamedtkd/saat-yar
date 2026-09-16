@@ -54,8 +54,15 @@ export function createMediaDemoData(
     mode: "light",
     preset: "violet",
     accent: "#8b5cf6",
+    neutralTone: "slate",
+    bodyFont: "vazirmatn",
+    headingFont: "vazirmatn",
+    density: "comfortable",
     radius: "rounded",
     surface: "tinted",
+    sidebarStyle: "soft",
+    sidebarAccent: "filled",
+    sidebarWidth: "default",
   };
   data.settings.payrollComponents = [
     {

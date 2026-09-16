@@ -30,7 +30,7 @@ export function CompletedDayEditActionBar({
       className={`${mobileDockClass} grid gap-3 rounded-[var(--card-radius)] border border-[color-mix(in_srgb,var(--accent)_38%,var(--border))] bg-[var(--surface-glass)] px-3.5 py-3 shadow-[0_12px_32px_rgba(0,0,0,.12)] backdrop-blur-2xl sm:flex sm:items-center sm:justify-between sm:px-4 print:hidden`}
     >
       <div className="flex min-w-0 items-start gap-2.5">
-        <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[var(--accent-soft)] text-[var(--accent-strong)]">
+        <span className="grid size-9 shrink-0 place-items-center rounded-[var(--card-radius)] bg-[var(--accent-soft)] text-[var(--accent-strong)]">
           <Pencil aria-hidden="true" className="size-4" />
         </span>
         <div className="min-w-0">
@@ -38,7 +38,7 @@ export function CompletedDayEditActionBar({
             <strong className="text-xs font-black text-[var(--text)]">{t("today.edit.editing")}</strong>
             <span
               aria-live="polite"
-              className={`rounded-full border px-2 py-0.5 text-[9px] font-extrabold ${
+              className={`rounded-[var(--control-radius-sm)] border px-2 py-0.5 text-[9px] font-extrabold ${
                 dirty
                   ? "border-[color-mix(in_srgb,var(--warning)_30%,var(--border))] bg-[var(--warning-soft)] text-[var(--warning)]"
                   : "border-[var(--border)] bg-[var(--surface-2)] text-[var(--text-muted)]"
@@ -77,7 +77,7 @@ export function CompletedDayEditSavedNotice() {
       aria-live="polite"
       className={`${mobileDockClass} flex items-center gap-3 rounded-[var(--card-radius)] border border-[color-mix(in_srgb,var(--success)_32%,var(--border))] bg-[var(--surface-glass)] px-4 py-3 text-[var(--success)] shadow-[0_10px_28px_rgba(0,0,0,.1)] backdrop-blur-2xl print:hidden`}
     >
-      <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[var(--success-soft)]">
+      <span className="grid size-9 shrink-0 place-items-center rounded-[var(--card-radius)] bg-[var(--success-soft)]">
         <CheckCircle2 aria-hidden="true" className="size-5" />
       </span>
       <div className="grid gap-0.5">

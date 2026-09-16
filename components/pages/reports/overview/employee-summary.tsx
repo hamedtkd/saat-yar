@@ -42,7 +42,7 @@ export function EmployeeSummary({ stats, records, overtimeMinutes, deficitMinute
       <MetricCard icon={<WalletCards />} label={t("reports.employee.recordedDays")} value={number(records.length)} suffix={t("common.day")} />
     </section>
     <SurfaceCard as="section" className="mb-4 overflow-hidden p-4 sm:p-5">
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3"><div><strong className="block text-sm font-extrabold text-[var(--text)]">{t("reports.employee.payslip")}</strong><small className="text-[10px] leading-6 text-[var(--text-muted)]">{t("reports.employee.payslipHint")}</small></div><span className="rounded-full bg-[var(--accent-soft)] px-3 py-1.5 text-xs font-black text-[var(--accent-strong)]">{t("reports.employee.netLabel")} <PrivateMoney value={payroll.net} hidden={financialsHidden} /> {t("common.currency.toman")}</span></div>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3"><div><strong className="block text-sm font-extrabold text-[var(--text)]">{t("reports.employee.payslip")}</strong><small className="text-[10px] leading-6 text-[var(--text-muted)]">{t("reports.employee.payslipHint")}</small></div><span className="rounded-[var(--control-radius-sm)] bg-[var(--accent-soft)] px-3 py-1.5 text-xs font-black text-[var(--accent-strong)]">{t("reports.employee.netLabel")} <PrivateMoney value={payroll.net} hidden={financialsHidden} /> {t("common.currency.toman")}</span></div>
       <div className="grid grid-cols-4 gap-3 max-[900px]:grid-cols-2 max-[620px]:grid-cols-1">
         <PayrollStat label={t("common.regularPay")} value={payroll.regularPay} hidden={financialsHidden} />
         <PayrollStat label={t("common.overtime")} value={payroll.overtimePay} hidden={financialsHidden} />
@@ -59,4 +59,4 @@ export function EmployeeSummary({ stats, records, overtimeMinutes, deficitMinute
 }
 
 const statTone = { default: "bg-[var(--surface-2)] text-[var(--text)]", warning: "bg-[var(--warning-soft)] text-[var(--warning)]", success: "bg-[var(--success-soft)] text-[var(--success)]", danger: "bg-[var(--danger-soft)] text-[var(--danger)]", dark: "bg-[var(--accent-fill)] text-[var(--accent-foreground)]" } as const;
-function PayrollStat({ label, value, hidden, tone = "default" }: { label: string; value: number; hidden: boolean; tone?: keyof typeof statTone }) { return <div className={cn("rounded-[15px] border border-[var(--dashboard-border)] p-3.5", statTone[tone])}><span className="block text-[10px] opacity-75">{label}</span><PayrollValue value={value} hidden={hidden} /></div>; }
+function PayrollStat({ label, value, hidden, tone = "default" }: { label: string; value: number; hidden: boolean; tone?: keyof typeof statTone }) { return <div className={cn("rounded-[var(--control-radius)] border border-[var(--dashboard-border)] p-3.5", statTone[tone])}><span className="block text-[10px] opacity-75">{label}</span><PayrollValue value={value} hidden={hidden} /></div>; }

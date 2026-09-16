@@ -118,16 +118,16 @@ export function ProfileMenu({
         <div
           role="menu"
           aria-label={t("profile.menuAria")}
-          className="absolute end-0 top-[calc(100%+8px)] z-[1100] w-[300px] overflow-hidden rounded-[18px] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] p-2 shadow-[0_18px_48px_rgba(0,0,0,.18)] backdrop-blur-2xl max-[420px]:fixed max-[420px]:start-2 max-[420px]:end-2 max-[420px]:top-[72px] max-[420px]:w-auto max-[359px]:start-1.5 max-[359px]:end-1.5 max-[359px]:top-[66px]"
+          className="absolute end-0 top-[calc(100%+8px)] z-[1100] w-[300px] overflow-hidden rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] p-2 shadow-[0_18px_48px_rgba(0,0,0,.18)] backdrop-blur-2xl max-[420px]:fixed max-[420px]:start-2 max-[420px]:end-2 max-[420px]:top-[72px] max-[420px]:w-auto max-[359px]:start-1.5 max-[359px]:end-1.5 max-[359px]:top-[66px]"
         >
-          <div className="mb-1.5 rounded-[14px] bg-[var(--surface-2)] px-3 py-3">
+          <div className="mb-1.5 rounded-[var(--control-radius-sm)] bg-[var(--surface-2)] px-3 py-3">
             <div className="flex items-center gap-3">
               <ProfileAvatar name={displayName} size="lg" />
               <div className="min-w-0 flex-1">
                 <strong className="block truncate text-sm text-[var(--text)]">{displayName}</strong>
                 <span className="text-[10px] font-semibold text-[var(--text-muted)]">{t("profile.local")} · {t(modeLabelKeys[mode])}</span>
               </div>
-              <span className="rounded-full bg-[var(--success-soft)] px-2 py-1 text-[9px] font-black text-[var(--success)]">{t("profile.localBadge")}</span>
+              <span className="rounded-[var(--control-radius-sm)] bg-[var(--success-soft)] px-2 py-1 text-[9px] font-black text-[var(--success)]">{t("profile.localBadge")}</span>
             </div>
             <p className="mt-2 text-[9px] leading-5 text-[var(--text-muted)]">{t("profile.localDetail")}</p>
           </div>
@@ -139,9 +139,9 @@ export function ProfileMenu({
                 type="button"
                 role="menuitem"
                 onClick={() => navigate(href)}
-                className="flex min-h-10 w-full items-center gap-2.5 rounded-xl px-2.5 text-start text-[11px] font-bold text-[var(--text)] transition-colors hover:bg-[var(--accent-soft)] hover:text-[var(--accent-strong)]"
+                className="flex min-h-10 w-full items-center gap-2.5 rounded-[var(--card-radius)] px-2.5 text-start text-[11px] font-bold text-[var(--text)] transition-colors hover:bg-[var(--accent-soft)] hover:text-[var(--accent-strong)]"
               >
-                <span className="grid size-7 place-items-center rounded-[9px] bg-[var(--surface-2)] text-[var(--accent-strong)]"><Icon aria-hidden="true" className="size-4" /></span>
+                <span className="grid size-7 place-items-center rounded-[var(--micro-radius)] bg-[var(--surface-2)] text-[var(--accent-strong)]"><Icon aria-hidden="true" className="size-4" /></span>
                 {t(labelKey)}
               </button>
             ))}
@@ -152,9 +152,9 @@ export function ProfileMenu({
               type="button"
               role="menuitem"
               onClick={() => { setOpen(false); onExport(); }}
-              className="flex min-h-10 w-full items-center gap-2.5 rounded-xl px-2.5 text-start text-[11px] font-bold text-[var(--text)] transition-colors hover:bg-[var(--accent-soft)]"
+              className="flex min-h-10 w-full items-center gap-2.5 rounded-[var(--card-radius)] px-2.5 text-start text-[11px] font-bold text-[var(--text)] transition-colors hover:bg-[var(--accent-soft)]"
             >
-              <span className="grid size-7 place-items-center rounded-[9px] bg-[var(--surface-2)] text-[var(--accent-strong)]"><Download aria-hidden="true" className="size-4" /></span>
+              <span className="grid size-7 place-items-center rounded-[var(--micro-radius)] bg-[var(--surface-2)] text-[var(--accent-strong)]"><Download aria-hidden="true" className="size-4" /></span>
               {t("profile.quickBackup")}
             </button>
           </div>

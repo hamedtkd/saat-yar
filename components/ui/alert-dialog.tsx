@@ -40,7 +40,7 @@ const AlertDialogContent = React.forwardRef<
       className={cn(
         "fixed left-1/2 top-1/2 z-50 grid w-[min(92vw,460px)] -translate-x-1/2 -translate-y-1/2 gap-4",
         "rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-1)] p-5 text-start text-[var(--text)]",
-        "shadow-[0_24px_70px_rgba(0,0,0,.22)] outline-none",
+        "shadow-[var(--surface-shadow)] outline-none",
         "data-[state=closed]:scale-95 data-[state=closed]:opacity-0 data-[state=open]:scale-100 data-[state=open]:opacity-100",
         "motion-safe:transition-[opacity,transform]",
         className,

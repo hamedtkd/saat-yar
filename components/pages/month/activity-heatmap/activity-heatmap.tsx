@@ -82,7 +82,7 @@ export function ActivityHeatmap({
         icon={<Activity />}
         title={t("month.activity.title")}
         description={t("month.activity.description")}
-        trailing={<span className="rounded-full border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-2.5 py-1 text-[9px] font-bold text-[var(--text-muted)]">{monthLabel}</span>}
+        trailing={<span className="rounded-[var(--control-radius-sm)] border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-2.5 py-1 text-[9px] font-bold text-[var(--text-muted)]">{monthLabel}</span>}
       />
 
       <div className="mx-auto mt-4 grid w-fit max-w-full min-w-0 flex-1 grid-cols-[auto_minmax(0,1fr)] content-center items-start gap-2.5">
@@ -126,7 +126,7 @@ export function ActivityHeatmap({
                     else if (event.key === "ArrowLeft") { event.preventDefault(); moveFocus(index, -horizontalStep); }
                   }}
                   className={cn(
-                    "relative size-7 rounded-[7px] border border-[color-mix(in_srgb,var(--dashboard-border)_82%,transparent)] outline-none transition-[transform,border-color,box-shadow] sm:size-8",
+                    "relative size-7 rounded-[var(--micro-radius)] border border-[color-mix(in_srgb,var(--dashboard-border)_82%,transparent)] outline-none transition-[transform,border-color,box-shadow] sm:size-8",
                     intensityClasses[cell.intensity],
                     cell.inMonth ? "hover:-translate-y-0.5 hover:border-[color-mix(in_srgb,var(--accent)_55%,var(--dashboard-border))]" : "pointer-events-none opacity-20",
                     cell.key === selectedDate && "ring-2 ring-[var(--accent)] ring-offset-2 ring-offset-[var(--surface-1)]",
@@ -142,7 +142,7 @@ export function ActivityHeatmap({
       <div className="mt-3 flex items-center justify-end gap-1.5 text-[9px] text-[var(--text-muted)]">
         <span className="sr-only">{t("month.activity.keyboardHint")}</span>
         <span>{t("month.activity.less")}</span>
-        {intensityClasses.map((className, index) => <i key={className} aria-hidden="true" className={cn("size-3 rounded-[4px] border border-[var(--dashboard-border)]", className)} data-legend-intensity={index} />)}
+        {intensityClasses.map((className, index) => <i key={className} aria-hidden="true" className={cn("size-3 rounded-[var(--micro-radius)] border border-[var(--dashboard-border)]", className)} data-legend-intensity={index} />)}
         <span>{t("month.activity.more")}</span>
       </div>
 

@@ -16,7 +16,7 @@ export function ScheduleStep({ settings, updateSettings }: { settings: AppData["
   return (
     <StepShell>
       <div className="mx-auto mb-6 max-w-[760px] text-center">
-        <span className="mx-auto mb-3 grid size-11 place-items-center rounded-2xl bg-[var(--accent-soft)] text-[var(--accent-strong)]"><CalendarDays /></span>
+        <span className="mx-auto mb-3 grid size-11 place-items-center rounded-[var(--card-radius)] bg-[var(--accent-soft)] text-[var(--accent-strong)]"><CalendarDays /></span>
         <h1>{s("Set your real work schedule")}</h1>
         <p>{settings.workTimingMode === "flexible" ? s("Choose active days and net-work targets. You can start, pause, and finish whenever you need without fixed clock times.") : s("Choose active days, start and end times, lunch, and net-work targets so Today and Reports use the same contract.")}</p>
       </div>

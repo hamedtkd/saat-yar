@@ -28,7 +28,7 @@ export function DeviceTransferPreviewPanel({ preview, sourceName, onApply, onCan
   const { number, s } = useSystemUi();
   const additions = Object.values(preview.collections).reduce((sum, item) => sum + item.additions, 0);
   return (
-    <div className="mt-4 rounded-2xl border border-[var(--accent)] bg-[var(--accent-soft)] p-4">
+    <div className="mt-4 rounded-[var(--card-radius)] border border-[var(--accent)] bg-[var(--accent-soft)] p-4">
       <div className="mb-3 flex items-start gap-3">
         <ShieldCheck className="mt-0.5 size-5 flex-none text-[var(--accent-strong)]" />
         <div>
@@ -37,13 +37,13 @@ export function DeviceTransferPreviewPanel({ preview, sourceName, onApply, onCan
         </div>
       </div>
       <div className="grid grid-cols-3 gap-2 max-[520px]:grid-cols-1">
-        <div className="rounded-xl bg-[var(--surface-1)] p-3 text-center"><b>{number(additions)}</b><span className="block text-[10px] text-[var(--text-muted)]">{s("New data")}</span></div>
-        <div className="rounded-xl bg-[var(--surface-1)] p-3 text-center"><b>{number(preview.conflictCount)}</b><span className="block text-[10px] text-[var(--text-muted)]">{s("Conflicts")}</span></div>
-        <div className="rounded-xl bg-[var(--surface-1)] p-3 text-center"><b>{preview.settingsChanged ? s("Changed") : s("Same")}</b><span className="block text-[10px] text-[var(--text-muted)]">{s("Settings")}</span></div>
+        <div className="rounded-[var(--card-radius)] bg-[var(--surface-1)] p-3 text-center"><b>{number(additions)}</b><span className="block text-[10px] text-[var(--text-muted)]">{s("New data")}</span></div>
+        <div className="rounded-[var(--card-radius)] bg-[var(--surface-1)] p-3 text-center"><b>{number(preview.conflictCount)}</b><span className="block text-[10px] text-[var(--text-muted)]">{s("Conflicts")}</span></div>
+        <div className="rounded-[var(--card-radius)] bg-[var(--surface-1)] p-3 text-center"><b>{preview.settingsChanged ? s("Changed") : s("Same")}</b><span className="block text-[10px] text-[var(--text-muted)]">{s("Settings")}</span></div>
       </div>
       <div className="mt-3 grid gap-1 text-[10px] text-[var(--text-muted)]">
         {Object.entries(preview.collections).filter(([, item]) => item.additions || item.conflicts).map(([key, item]) => (
-          <div key={key} className="flex justify-between rounded-lg bg-[var(--surface-1)] px-3 py-2">
+          <div key={key} className="flex justify-between rounded-[var(--control-radius)] bg-[var(--surface-1)] px-3 py-2">
             <span>{labelKeys[key] ? s(labelKeys[key]) : key}</span><span>{s("+{additions} new · {conflicts} conflicts", { additions: number(item.additions), conflicts: number(item.conflicts) })}</span>
           </div>
         ))}

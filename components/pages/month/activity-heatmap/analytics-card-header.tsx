@@ -15,7 +15,7 @@ export function AnalyticsCardHeader({
   return (
     <div className="flex min-h-9 items-center justify-between gap-3" data-month-analytics-card-header>
       <div className="flex min-w-0 items-center gap-2.5">
-        <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[var(--accent-soft)] text-[var(--accent)] [&_svg]:size-4.5">
+        <span className="grid size-9 shrink-0 place-items-center rounded-[var(--card-radius)] bg-[var(--accent-soft)] text-[var(--accent)] [&_svg]:size-4.5">
           {icon}
         </span>
         <div className="flex min-w-0 items-center gap-1">

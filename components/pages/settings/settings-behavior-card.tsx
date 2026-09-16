@@ -50,14 +50,14 @@ export function SettingsBehaviorCard({ data, setData, setToast }: {
           <EditableCardActions editing={editor.manualEditing} dirty={editor.dirty} autoSave={false} onEdit={beginEdit} onSave={save} onCancel={cancel} />
         </div>
       </PanelHead>
-      <label className="flex items-start gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-4 has-[:disabled]:cursor-default">
+      <label className="flex items-start gap-3 rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-2)] p-4 has-[:disabled]:cursor-default">
         <Checkbox className="mt-0.5" checked={enabled} disabled={!editor.editing} onCheckedChange={(checked) => { setBlockingLabels([]); editor.update({ autoSaveSettings: checked }); }} />
         <span className="grid gap-1">
           <strong className="text-[11px] text-[var(--text)]">{s("Automatically save settings changes")}</strong>
           <small className="text-[9px] leading-5 text-[var(--text-muted)]">{s("Off by default. This control always changes with an explicit save. In manual mode, each card has its own draft; in automatic mode, valid changes are saved immediately.")}</small>
         </span>
       </label>
-      {blockingLabels.length > 0 && <div className="mt-3 rounded-xl border border-[color-mix(in_srgb,var(--warning)_30%,var(--border))] bg-[var(--warning-soft)] p-3 text-[10px] leading-5 text-[var(--warning)]" role="alert"><strong className="block">{s("Enabling autosave is not safe yet.")}</strong>{s("Save or cancel changes in these cards first: {labels}", { labels: blockingLabels.join(", ") })}</div>}
+      {blockingLabels.length > 0 && <div className="mt-3 rounded-[var(--card-radius)] border border-[color-mix(in_srgb,var(--warning)_30%,var(--border))] bg-[var(--warning-soft)] p-3 text-[10px] leading-5 text-[var(--warning)]" role="alert"><strong className="block">{s("Enabling autosave is not safe yet.")}</strong>{s("Save or cancel changes in these cards first: {labels}", { labels: blockingLabels.join(", ") })}</div>}
       <p className="mt-3 text-[10px] leading-5 text-[var(--text-muted)]">{s("To protect open drafts, autosave stays blocked while another card has unsaved changes.")}</p>
     </section>
   );

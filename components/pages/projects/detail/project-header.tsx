@@ -20,7 +20,7 @@ export function ProjectHeader({ project, client, activeEntry, onBack, onToggleTi
   return (
     <SurfaceCard as="section" className="mb-5 flex min-h-[118px] items-center justify-between gap-6 p-5 max-[720px]:flex-col max-[720px]:items-stretch">
       <div className="min-w-0">
-        <button type="button" className="inline-flex items-center gap-1 rounded-full bg-[var(--accent-soft)] px-3 py-1.5 text-[10px] font-bold text-[var(--accent-strong)]" onClick={onBack}>
+        <button type="button" className="inline-flex items-center gap-1 rounded-[var(--control-radius-sm)] bg-[var(--accent-soft)] px-3 py-1.5 text-[10px] font-bold text-[var(--accent-strong)]" onClick={onBack}>
           <ChevronRight className="size-3.5" /> {b("projects.detail.back")}
         </button>
         <div className="mt-3 flex items-center gap-3">

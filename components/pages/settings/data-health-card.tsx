@@ -47,7 +47,7 @@ export function DataHealthCard({ records, syncStatus, clearSyncHistory }: { reco
         <>
           <div className="grid grid-cols-3 gap-3 p-4 max-[620px]:grid-cols-1 sm:p-5"><Metric label={s("Invalid")} value={summary.invalid} tone="danger" /><Metric label={s("Incomplete")} value={summary.incomplete} tone="warning" /><Metric label={s("Auto-closed")} value={summary.review} tone="info" /></div>
           <div className="grid gap-2 border-t border-[var(--border)] p-4 sm:p-5">
-            {items.slice(0, 8).map((item) => <article key={item.date} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-3">
+            {items.slice(0, 8).map((item) => <article key={item.date} className="flex flex-wrap items-center justify-between gap-3 rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-2)] p-3">
               <div className="flex min-w-0 items-start gap-3"><AlertTriangle className="mt-0.5 size-4 flex-none text-[var(--warning)]" /><div className="grid min-w-0 gap-1"><div className="flex flex-wrap items-center gap-2"><strong className="text-xs text-[var(--text)]">{formatDate(item.date)}</strong><StatusBadge tone={toneByState[item.state]}>{stateLabel(item.state)}</StatusBadge></div><p className="line-clamp-2 text-[10px] leading-5 text-[var(--text-muted)]">{itemMessages(item).join(" · ")}</p></div></div>
               <GuardedLink href={`/today?date=${item.date}`} className="inline-flex min-h-9 items-center gap-2 rounded-[var(--control-radius)] border border-[var(--border)] px-3 text-[10px] font-bold text-[var(--text)] hover:bg-[var(--surface-1)]">{s("Review record")} <ExternalLink className="size-3.5" /></GuardedLink>
             </article>)}
@@ -59,6 +59,6 @@ export function DataHealthCard({ records, syncStatus, clearSyncHistory }: { reco
   );
 
   function Metric({ label, value, tone }: { label: string; value: number; tone: StatusBadgeTone }) {
-    return <div className="flex items-center justify-between rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-3"><span className="text-[10px] text-[var(--text-muted)]">{label}</span><StatusBadge tone={tone}>{number(value)}</StatusBadge></div>;
+    return <div className="flex items-center justify-between rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-2)] p-3"><span className="text-[10px] text-[var(--text-muted)]">{label}</span><StatusBadge tone={tone}>{number(value)}</StatusBadge></div>;
   }
 }

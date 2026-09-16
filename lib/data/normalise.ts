@@ -4,6 +4,7 @@ import { createCompleteAppData } from "./app-data-factory.ts";
 import { normalizePayrollPolicy } from "../payroll-policy.ts";
 import { normalizeLeaveSettings } from "../leave-entitlement.ts";
 import { normalizeActivityTitle } from "../activity-segments.ts";
+import { sanitizeAppearanceSettings } from "../appearance-settings.ts";
 
 
 function withoutLegacyCustomReminder(settings: NotificationSettings | undefined): Partial<NotificationSettings> {
@@ -72,7 +73,7 @@ export function normaliseData(value: AppData, defaults: Settings): AppData {
         customReminders: normalizeCustomReminders(incomingSettings.notificationSettings),
         snoozeMinutes: Math.min(240, Math.max(5, Math.round(incomingSettings.notificationSettings?.snoozeMinutes ?? defaults.notificationSettings.snoozeMinutes))),
       },
-      appearance: { ...defaults.appearance, ...(incomingSettings.appearance ?? {}) },
+      appearance: sanitizeAppearanceSettings(incomingSettings.appearance ?? defaults.appearance),
       payrollPolicy: normalizePayrollPolicy(incomingSettings.payrollPolicy ?? defaults.payrollPolicy),
     },
     records: Object.fromEntries(

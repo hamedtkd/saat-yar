@@ -17,7 +17,7 @@ function TrendTooltip({ active, payload }: TrendTooltipProps) {
   const item = payload[0]?.payload;
   if (!item) return null;
   return (
-    <div className="min-w-40 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-3 shadow-[0_8px_24px_rgba(0,0,0,.14)] backdrop-blur-xl">
+    <div className="min-w-40 rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-1)] p-3 shadow-[0_8px_24px_rgba(0,0,0,.14)] backdrop-blur-xl">
       <strong className="block text-[11px] font-extrabold text-[var(--text)]">{date(item.key, { weekday: "long", day: "numeric", month: "short" })}</strong>
       <span className="mt-1 block text-[10px] font-bold text-[var(--accent-strong)]">{duration(item.minutes)}</span>
     </div>

@@ -61,7 +61,7 @@ export function FloatingTooltip({
       data-activity-tooltip={activity ? "" : undefined}
       data-side={position.side}
       className={cn(
-        "pointer-events-none fixed z-[2200] w-fit min-w-0 max-w-[min(260px,calc(100vw-24px))] overflow-hidden rounded-lg border border-[var(--dashboard-border)] bg-[var(--surface-glass)] px-2.5 py-2 text-start text-[10px] font-semibold leading-5 text-[var(--text)] shadow-[0_16px_42px_rgba(0,0,0,.24)] backdrop-blur-xl [overflow-wrap:anywhere]",
+        "pointer-events-none fixed z-[2200] w-fit min-w-0 max-w-[min(260px,calc(100vw-24px))] overflow-hidden rounded-[var(--control-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] px-2.5 py-2 text-start text-[10px] font-semibold leading-5 text-[var(--text)] shadow-[var(--surface-shadow)] backdrop-blur-xl [overflow-wrap:anywhere]",
         className,
       )}
       style={{ left: position.left, top: position.top, visibility: position.ready ? "visible" : "hidden" }}

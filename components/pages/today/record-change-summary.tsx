@@ -39,7 +39,7 @@ export function RecordChangeSummary({ changes }: { changes: WorkRecordChange[] }
       <strong className="text-xs text-[var(--text)]">{t("today.edit.changeSummary")}</strong>
       <div className="grid gap-2 sm:grid-cols-2">
         {changes.map((change) => (
-          <div key={change.key} className="grid gap-1 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2">
+          <div key={change.key} className="grid gap-1 rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2">
             <span className="text-[10px] font-bold text-[var(--text-muted)]">{t(fieldKeys[change.key])}</span>
             <span className="flex min-w-0 items-center gap-2 text-xs font-semibold text-[var(--text)]">
               <del className="min-w-0 truncate text-[var(--danger)]">{formatValue(change, change.beforeValue)}</del>

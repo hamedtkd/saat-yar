@@ -12,7 +12,7 @@ export type EmployeeTotals = { worked: number; leave: number; balance: number; r
 
 export function InfoRow({ label, value, valueClassName, className }: { label: string; value: ReactNode; valueClassName?: string; className?: string }) {
   const { direction } = useLocaleUi();
-  return <div className={cn("flex min-w-0 items-center justify-between gap-4 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] px-3 py-3", className)}><span className="shrink-0 text-[10px] font-medium text-[var(--text-muted)]">{label}</span><strong className={cn("min-w-0 text-xs font-extrabold text-[var(--text)]", direction === "rtl" ? "text-left" : "text-right", valueClassName)}>{value}</strong></div>;
+  return <div className={cn("flex min-w-0 items-center justify-between gap-4 rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-1)] px-3 py-3", className)}><span className="shrink-0 text-[10px] font-medium text-[var(--text-muted)]">{label}</span><strong className={cn("min-w-0 text-xs font-extrabold text-[var(--text)]", direction === "rtl" ? "text-left" : "text-right", valueClassName)}>{value}</strong></div>;
 }
 
 export function TableHeading({ children }: { children: ReactNode }) {

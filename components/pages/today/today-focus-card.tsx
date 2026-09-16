@@ -86,7 +86,7 @@ export function TodayFocusCard(props: Props) {
           <div className="border-s border-[var(--dashboard-border)] bg-[linear-gradient(180deg,var(--surface-1),color-mix(in_srgb,var(--surface-2)_94%,transparent))] p-4 max-[1100px]:border-s-0 max-[1100px]:border-t max-[359px]:p-2.5 sm:p-5">
             <section
               data-project-session-controller
-              className="rounded-[24px] border border-[color-mix(in_srgb,var(--accent)_22%,var(--dashboard-border))] bg-[color-mix(in_srgb,var(--surface-2)_88%,transparent)] p-4 shadow-[inset_0_1px_0_color-mix(in_srgb,var(--accent)_5%,transparent)] max-[359px]:rounded-[20px] max-[359px]:p-3 sm:p-5"
+              className="rounded-[var(--card-radius)] border border-[color-mix(in_srgb,var(--accent)_22%,var(--dashboard-border))] bg-[color-mix(in_srgb,var(--surface-2)_88%,transparent)] p-4 shadow-[inset_0_1px_0_color-mix(in_srgb,var(--accent)_5%,transparent)] max-[359px]:rounded-[var(--card-radius)] max-[359px]:p-3 sm:p-5"
             >
               <ProjectTimerHero
                 activeEntry={props.activeEntry}
@@ -117,11 +117,11 @@ export function TodayFocusCard(props: Props) {
       )}>
         <div className={cn(isEmployee ? "grid content-start gap-4" : "grid grid-cols-12 content-center gap-4", isFreelancer ? "min-h-[220px] p-4 max-[359px]:p-3 sm:p-5" : "min-h-[290px] p-5 max-[359px]:min-h-0 max-[359px]:p-3 sm:p-6")}>
           {isEmployee ? (
-            <div className="grid h-full gap-4 rounded-[24px] border border-[var(--dashboard-border)] bg-[linear-gradient(180deg,color-mix(in_srgb,var(--surface-2)_88%,transparent),color-mix(in_srgb,var(--surface-1)_96%,transparent))] p-4 max-[359px]:gap-3 max-[359px]:rounded-[20px] max-[359px]:p-3 sm:p-5">
+            <div className="grid h-full gap-4 rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[linear-gradient(180deg,color-mix(in_srgb,var(--surface-2)_88%,transparent),color-mix(in_srgb,var(--surface-1)_96%,transparent))] p-4 max-[359px]:gap-3 max-[359px]:rounded-[var(--card-radius)] max-[359px]:p-3 sm:p-5">
               <div className="grid gap-1">
                 <strong className="flex items-center gap-2 text-[15px] font-black text-[var(--text)]">
                   {t("today.focus.employeeNote")}
-                  <span className="grid size-7 place-items-center rounded-lg bg-[var(--accent-soft)] text-[var(--accent-strong)]">✎</span>
+                  <span className="grid size-7 place-items-center rounded-[var(--control-radius)] bg-[var(--accent-soft)] text-[var(--accent-strong)]">✎</span>
                 </strong>
                 <span className="text-[11px] leading-6 text-[var(--text-muted)]">{t("today.focus.employeeNoteHint")}</span>
               </div>
@@ -130,16 +130,16 @@ export function TodayFocusCard(props: Props) {
                 {t("today.focus.descriptionLabel")}
                 <Textarea
                   rows={6}
-                  className="min-h-[220px] flex-1 resize-none rounded-[20px] bg-[var(--surface-2)] leading-7 max-[359px]:min-h-[160px] max-[359px]:rounded-[16px]"
+                  className="min-h-[220px] flex-1 resize-none rounded-[var(--card-radius)] bg-[var(--surface-2)] leading-7 max-[359px]:min-h-[160px] max-[359px]:rounded-[var(--control-radius)]"
                   placeholder={t("today.focus.employeeNotePlaceholder")}
                   value={props.record.note}
                   onChange={(event) => props.updateRecord({ note: event.target.value })}
                 />
               </label>
 
-              <div className="flex flex-wrap items-center justify-between gap-3 rounded-[18px] border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-3.5 py-3 text-[11px] text-[var(--text-muted)]">
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-3.5 py-3 text-[11px] text-[var(--text-muted)]">
                 <span>{t("today.focus.autoSave")}</span>
-                <span className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--surface-1)] px-2.5 py-1.5 font-bold text-[var(--accent-strong)]"><Check className="size-3.5" /> {t("today.focus.saveNote")}</span>
+                <span className="inline-flex items-center gap-1.5 rounded-[var(--control-radius)] border border-[var(--border)] bg-[var(--surface-1)] px-2.5 py-1.5 font-bold text-[var(--accent-strong)]"><Check className="size-3.5" /> {t("today.focus.saveNote")}</span>
               </div>
             </div>
           ) : <>
@@ -155,7 +155,7 @@ export function TodayFocusCard(props: Props) {
               {t("today.focus.descriptionLabel")}
               <Input placeholder={t("today.focus.notePlaceholder")} value={props.timerDraft.note} onChange={(event) => props.setTimerDraft((previous) => ({ ...previous, note: event.target.value }))} />
             </label>
-            <button type="button" aria-pressed={props.timerDraft.billable} className={cn("col-span-4 flex h-11 items-center justify-center gap-3 self-end rounded-[var(--control-radius)] border border-[var(--border)] bg-[var(--surface-2)] px-3 text-xs font-bold text-[var(--text-muted)] transition-colors hover:border-[color-mix(in_srgb,var(--accent)_28%,var(--border))] hover:bg-[var(--surface-1)] max-[720px]:col-span-12", props.timerDraft.billable && "border-[color-mix(in_srgb,var(--accent)_35%,var(--border))] bg-[var(--accent-soft)] text-[var(--accent-strong)]")} onClick={() => props.setTimerDraft((previous) => ({ ...previous, billable: !previous.billable }))}><span className={cn("relative h-5 w-9 rounded-full bg-[var(--border)] after:absolute after:right-1 after:top-1 after:size-3 after:rounded-full after:bg-[var(--surface-1)] after:transition-all after:content-['']", props.timerDraft.billable && "bg-[var(--accent)] after:right-5")} /> {t("common.billable")}</button>
+            <button type="button" aria-pressed={props.timerDraft.billable} className={cn("col-span-4 flex h-11 items-center justify-center gap-3 self-end rounded-[var(--control-radius)] border border-[var(--border)] bg-[var(--surface-2)] px-3 text-xs font-bold text-[var(--text-muted)] transition-colors hover:border-[color-mix(in_srgb,var(--accent)_28%,var(--border))] hover:bg-[var(--surface-1)] max-[720px]:col-span-12", props.timerDraft.billable && "border-[color-mix(in_srgb,var(--accent)_35%,var(--border))] bg-[var(--accent-soft)] text-[var(--accent-strong)]")} onClick={() => props.setTimerDraft((previous) => ({ ...previous, billable: !previous.billable }))}><span className={cn("relative h-5 w-9 rounded-[var(--control-radius-sm)] bg-[var(--border)] after:absolute after:right-1 after:top-1 after:size-3 after:rounded-full after:bg-[var(--surface-1)] after:transition-all after:content-['']", props.timerDraft.billable && "bg-[var(--accent)] after:right-5")} /> {t("common.billable")}</button>
           </>}
         </div>
 
@@ -171,7 +171,7 @@ export function TodayFocusCard(props: Props) {
             isFreelancer ? "max-w-[680px]" : "max-w-[352px] sm:max-w-[364px]",
           )}>
             {!isFreelancer && (
-              <span className="inline-flex items-center gap-2 rounded-full border border-[color-mix(in_srgb,var(--accent)_22%,var(--border))] bg-[var(--surface-glass)] px-4 py-2 text-[11px] font-black text-[var(--accent-strong)] shadow-[0_8px_20px_rgba(0,0,0,.08)]">
+              <span className="inline-flex items-center gap-2 rounded-[var(--control-radius-sm)] border border-[color-mix(in_srgb,var(--accent)_22%,var(--border))] bg-[var(--surface-glass)] px-4 py-2 text-[11px] font-black text-[var(--accent-strong)] shadow-[0_8px_20px_rgba(0,0,0,.08)]">
                 <i className={cn("size-2.5 rounded-full bg-[var(--accent)] shadow-[0_0_0_4px_var(--accent-soft)]", activeNow && "motion-safe:animate-pulse")} />
                 {timerLabel}
                 {activeNow && <em className="not-italic opacity-70">· {t("today.focus.live")}</em>}
@@ -179,7 +179,7 @@ export function TodayFocusCard(props: Props) {
             )}
 
                           <TodayProgressArc value={progress} className="mt-1">
-                <div className="grid justify-items-center gap-3"><span className="grid size-12 place-items-center rounded-full border border-[color-mix(in_srgb,var(--accent)_18%,var(--border))] bg-[color-mix(in_srgb,var(--surface-2)_72%,transparent)] text-[var(--accent-strong)] shadow-[0_8px_18px_rgba(0,0,0,.12)]"><Hourglass className="size-5" /></span><strong className="block max-w-full overflow-hidden text-ellipsis whitespace-nowrap font-black leading-none text-[var(--text)] drop-shadow-[0_2px_18px_rgba(0,0,0,.16)]">{timerValue}</strong><span className="block text-sm font-bold text-[var(--text-muted)] sm:text-base">{props.scheduledDayOff ? t("today.focus.noRequiredHoursToday") : hasTarget ? t("today.focus.percentOfTarget", { percent: percent(progress) }) : t("today.focus.noTarget")}</span></div>
+                <div className="grid justify-items-center gap-3"><span className="grid size-12 place-items-center rounded-[var(--control-radius)] border border-[color-mix(in_srgb,var(--accent)_18%,var(--border))] bg-[color-mix(in_srgb,var(--surface-2)_72%,transparent)] text-[var(--accent-strong)] shadow-[0_8px_18px_rgba(0,0,0,.12)]"><Hourglass className="size-5" /></span><strong className="block max-w-full overflow-hidden text-ellipsis whitespace-nowrap font-black leading-none text-[var(--text)] drop-shadow-[0_2px_18px_rgba(0,0,0,.16)]">{timerValue}</strong><span className="block text-sm font-bold text-[var(--text-muted)] sm:text-base">{props.scheduledDayOff ? t("today.focus.noRequiredHoursToday") : hasTarget ? t("today.focus.percentOfTarget", { percent: percent(progress) }) : t("today.focus.noTarget")}</span></div>
               </TodayProgressArc>
 
             {!isFreelancer && <small className="min-h-5 text-sm text-[var(--text-muted)] sm:text-[15px]">{timingCaption}</small>}

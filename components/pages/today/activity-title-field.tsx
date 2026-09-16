@@ -101,7 +101,7 @@ export function ActivityTitleField({
               role="option"
               aria-selected={activeIndex === index}
               className={cn(
-                "block w-full truncate rounded-lg px-2.5 py-2 text-start text-[11px] text-[var(--text)] hover:bg-[var(--accent-soft)]",
+                "block w-full truncate rounded-[var(--control-radius)] px-2.5 py-2 text-start text-[11px] text-[var(--text)] hover:bg-[var(--accent-soft)]",
                 activeIndex === index && "bg-[var(--accent-soft)] text-[var(--accent-strong)]",
               )}
               onMouseDown={(event) => event.preventDefault()}

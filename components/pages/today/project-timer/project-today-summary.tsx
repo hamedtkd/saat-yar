@@ -68,17 +68,17 @@ export function ProjectTodaySummary({ data, selectedDate, dailyTarget }: { data:
         </div>
         <div className="flex flex-wrap items-center gap-1.5 text-[8px] text-[var(--text-muted)] max-[520px]:w-full max-[359px]:gap-1">
           {dailyTarget > 0 && (
-            <span className="rounded-md bg-[var(--surface-1)] px-2 py-1.5 font-bold max-[359px]:px-1.5 max-[359px]:py-1">{duration(totalMinutes)} / {duration(dailyTarget)} · {percent(progress)}</span>
+            <span className="rounded-[var(--control-radius-sm)] bg-[var(--surface-1)] px-2 py-1.5 font-bold max-[359px]:px-1.5 max-[359px]:py-1">{duration(totalMinutes)} / {duration(dailyTarget)} · {percent(progress)}</span>
           )}
-          <span className="inline-flex items-center gap-1 rounded-md bg-[var(--surface-1)] px-2 py-1.5 max-[359px]:px-1.5 max-[359px]:py-1"><TimerReset className="size-3" />{entries.length} {t("today.timer.activities")}</span>
-          <span className="inline-flex items-center gap-1 rounded-md bg-[var(--surface-1)] px-2 py-1.5 max-[359px]:px-1.5 max-[359px]:py-1"><Coffee className="size-3" />{gaps} {t("today.timer.pauses")}</span>
+          <span className="inline-flex items-center gap-1 rounded-[var(--control-radius-sm)] bg-[var(--surface-1)] px-2 py-1.5 max-[359px]:px-1.5 max-[359px]:py-1"><TimerReset className="size-3" />{entries.length} {t("today.timer.activities")}</span>
+          <span className="inline-flex items-center gap-1 rounded-[var(--control-radius-sm)] bg-[var(--surface-1)] px-2 py-1.5 max-[359px]:px-1.5 max-[359px]:py-1"><Coffee className="size-3" />{gaps} {t("today.timer.pauses")}</span>
         </div>
       </div>
 
-      <div className="mt-3 h-1.5 rounded-full max-[359px]:mt-2.5 bg-[color-mix(in_srgb,var(--border)_78%,transparent)]">
-        <div className="relative h-full overflow-hidden rounded-full">
+      <div className="mt-3 h-1.5 rounded-[var(--micro-radius)] max-[359px]:mt-2.5 bg-[color-mix(in_srgb,var(--border)_78%,transparent)]">
+        <div className="relative h-full overflow-hidden rounded-[var(--micro-radius)]">
           {timeline.map((segment) => (
-            <i key={segment.id} aria-hidden="true" className="absolute inset-y-0 rounded-full bg-[var(--accent)]" style={{ insetInlineStart: `${segment.left}%`, width: `${segment.width}%` }} />
+            <i key={segment.id} aria-hidden="true" className="absolute inset-y-0 rounded-[var(--micro-radius)] bg-[var(--accent)]" style={{ insetInlineStart: `${segment.left}%`, width: `${segment.width}%` }} />
           ))}
         </div>
       </div>

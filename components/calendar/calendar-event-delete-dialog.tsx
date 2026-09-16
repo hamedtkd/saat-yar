@@ -43,11 +43,11 @@ export function CalendarEventDeleteDialog({ open, onOpenChange, event, busy, onD
           <AlertDialogTitle className="flex items-center gap-2"><Trash2 className="size-4 text-[var(--danger)]" /> {t("calendar.google.deleteTitle")}</AlertDialogTitle>
           <AlertDialogDescription>{event.recurringEventId ? t("calendar.google.deleteRecurringDescription") : t("calendar.google.deleteDescription")}</AlertDialogDescription>
         </AlertDialogHeader>
-        <label className="!flex cursor-pointer items-start gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5">
+        <label className="!flex cursor-pointer items-start gap-3 rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5">
           <Checkbox checked={notifyAttendees} onCheckedChange={setNotifyAttendees} />
           <span className="grid gap-0.5"><strong className="text-[10px] text-[var(--text)]">{t("calendar.google.notifyGuests")}</strong><span className="text-[9px] leading-5 text-[var(--text-muted)]">{t("calendar.google.notifyGuestsHint")}</span></span>
         </label>
-        {operationFailed && <p role="alert" className="rounded-xl border border-[color-mix(in_srgb,var(--danger)_28%,var(--border))] bg-[color-mix(in_srgb,var(--danger)_8%,var(--surface-2))] px-3 py-2 text-[10px] leading-5 text-[var(--danger)]">{t("calendar.google.operationFailed")}</p>}
+        {operationFailed && <p role="alert" className="rounded-[var(--card-radius)] border border-[color-mix(in_srgb,var(--danger)_28%,var(--border))] bg-[color-mix(in_srgb,var(--danger)_8%,var(--surface-2))] px-3 py-2 text-[10px] leading-5 text-[var(--danger)]">{t("calendar.google.operationFailed")}</p>}
         <AlertDialogFooter>
           <AlertDialogCancel disabled={busy}>{t("common.cancel")}</AlertDialogCancel>
           {event.recurringEventId && <Button type="button" variant="destructive" disabled={busy} onClick={() => { void runDelete(true); }}>{t("calendar.google.deleteSeries")}</Button>}

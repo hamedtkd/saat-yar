@@ -29,7 +29,7 @@ export function RecoveryCard({ saveState, lastSavedAt, saveError, recoverySnapsh
         <div><dt>{s("Last primary save")}</dt><dd>{formatSavedAt(lastSavedAt)}</dd></div>
         <div><dt>{s("Last recovery snapshot")}</dt><dd>{recoverySnapshot ? formatSavedAt(recoverySnapshot.savedAt) : s("Does not exist")}</dd></div>
       </dl>
-      {saveError && <p role="alert" className="mb-3 flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 p-3 text-[10px] font-semibold leading-7 text-red-700"><AlertTriangle className="mt-1 flex-none" />{saveError}</p>}
+      {saveError && <p role="alert" className="mb-3 flex items-start gap-2 rounded-[var(--card-radius)] border border-red-200 bg-red-50 p-3 text-[10px] font-semibold leading-7 text-red-700"><AlertTriangle className="mt-1 flex-none" />{saveError}</p>}
       <div className="grid grid-cols-2 gap-2 max-[520px]:grid-cols-1">
         <Button variant="outline" onClick={() => void retrySave()}><RefreshCcw /> {s("Try again")}</Button>
         <Button variant="outline" onClick={createRecovery}><History /> {s("Create recovery snapshot")}</Button>

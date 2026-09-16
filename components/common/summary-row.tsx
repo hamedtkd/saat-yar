@@ -22,7 +22,7 @@ export function SummaryRow({
     <div
       className={cn(
         "flex min-w-0 items-center justify-between gap-4",
-        "rounded-xl border border-[var(--border)]",
+        "rounded-[var(--control-radius)] border border-[var(--border)]",
         "bg-[var(--surface-2)] px-3 py-3",
         className,
       )}

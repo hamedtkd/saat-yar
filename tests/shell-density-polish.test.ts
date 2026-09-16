@@ -11,16 +11,16 @@ test("shell elevation and navigation density stay restrained", async () => {
     read("components/layout/app-header/header-actions.tsx"),
     read("components/layout/app-header/header-control-styles.ts"),
   ]);
-  assert.match(header, /0_6px_20px/);
+  assert.match(header, /shadow-\[var\(--surface-shadow\)\]/);
   assert.doesNotMatch(header, /0_12px_40px/);
-  assert.match(sidebar, /0_10px_32px/);
+  assert.match(sidebar, /shadow-\[var\(--surface-shadow\)\]/);
   assert.match(sidebar, /min-h-11/);
   assert.match(actions, /headerStandaloneIconButton/);
   assert.match(actions, /data-header-privacy-control/);
   assert.doesNotMatch(actions, /headerControlShell/);
   assert.doesNotMatch(actions, /gap-0\.5 p-1/);
   assert.match(controlStyles, /bg-\[var\(--surface-1\)\]/);
-  assert.match(controlStyles, /h-11 rounded-\[14px\]/);
+  assert.match(controlStyles, /h-\[var\(--control-height\)\] rounded-\[var\(--control-radius\)\]/);
 });
 
 test("shared buttons use compact accessible focus treatment", async () => {

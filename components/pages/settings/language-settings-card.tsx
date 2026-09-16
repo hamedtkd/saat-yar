@@ -29,7 +29,7 @@ function ChoiceMark({ active, kind }: { active: boolean; kind: "language" | "cal
   const Icon = kind === "calendar" ? CalendarDays : Globe2;
   return (
     <span className={cn(
-      "grid size-9 shrink-0 place-items-center rounded-xl border",
+      "grid size-9 shrink-0 place-items-center rounded-[var(--card-radius)] border",
       active
         ? "border-[var(--accent)] bg-[var(--accent-fill)] text-[var(--accent-foreground)]"
         : "border-[var(--border)] bg-[var(--surface-1)] text-[var(--text-muted)]",
@@ -69,7 +69,7 @@ export function LanguageSettingsCard() {
               data-locale-choice={choice.locale}
               onClick={() => setLocale(choice.locale)}
               className={cn(
-                "flex min-h-[82px] items-center gap-3 rounded-[16px] border bg-[var(--surface-2)] p-3 text-start transition-colors",
+                "flex min-h-[82px] items-center gap-3 rounded-[var(--control-radius)] border bg-[var(--surface-2)] p-3 text-start transition-colors",
                 "hover:border-[color-mix(in_srgb,var(--accent)_38%,var(--border))] hover:bg-[var(--accent-soft)]",
                 active
                   ? "border-[color-mix(in_srgb,var(--accent)_52%,var(--border))] bg-[var(--accent-soft)] ring-1 ring-[color-mix(in_srgb,var(--accent)_20%,transparent)]"
@@ -88,7 +88,7 @@ export function LanguageSettingsCard() {
 
       <div className="my-5 border-t border-[var(--dashboard-border)]" />
       <div className="mb-3 flex items-start gap-3">
-        <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[var(--accent-soft)] text-[var(--accent-strong)]">
+        <span className="grid size-9 shrink-0 place-items-center rounded-[var(--card-radius)] bg-[var(--accent-soft)] text-[var(--accent-strong)]">
           <CalendarDays aria-hidden="true" className="size-4.5" />
         </span>
         <div>
@@ -109,7 +109,7 @@ export function LanguageSettingsCard() {
               data-calendar-choice={choice.preference}
               onClick={() => setCalendarPreference(choice.preference)}
               className={cn(
-                "flex min-h-[86px] items-center gap-3 rounded-[16px] border bg-[var(--surface-2)] p-3 text-start transition-colors",
+                "flex min-h-[86px] items-center gap-3 rounded-[var(--control-radius)] border bg-[var(--surface-2)] p-3 text-start transition-colors",
                 "hover:border-[color-mix(in_srgb,var(--accent)_38%,var(--border))] hover:bg-[var(--accent-soft)]",
                 active
                   ? "border-[color-mix(in_srgb,var(--accent)_52%,var(--border))] bg-[var(--accent-soft)] ring-1 ring-[color-mix(in_srgb,var(--accent)_20%,transparent)]"
@@ -126,7 +126,7 @@ export function LanguageSettingsCard() {
         })}
       </div>
 
-      <div className="mt-4 grid gap-1.5 rounded-[14px] bg-[var(--surface-2)] px-3 py-2 text-[10px] leading-5 text-[var(--text-muted)] sm:grid-cols-[1fr_auto] sm:items-center sm:gap-x-4">
+      <div className="mt-4 grid gap-1.5 rounded-[var(--control-radius-sm)] bg-[var(--surface-2)] px-3 py-2 text-[10px] leading-5 text-[var(--text-muted)] sm:grid-cols-[1fr_auto] sm:items-center sm:gap-x-4">
         <span>{t("settings.calendar.persist")}</span>
         <div className="flex flex-wrap gap-x-3 gap-y-1 sm:justify-end">
           <strong data-active-locale className="text-[var(--accent-strong)]">{t("settings.language.current", { language: activeLanguage })}</strong>

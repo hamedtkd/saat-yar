@@ -24,7 +24,7 @@ function LanguageFlag({ locale, className }: { locale: Locale; className?: strin
     <span
       aria-hidden="true"
       className={cn(
-        "inline-flex h-[18px] w-[26px] shrink-0 overflow-hidden rounded-[5px] ring-1 ring-inset ring-[var(--border)]",
+        "inline-flex h-[18px] w-[26px] shrink-0 overflow-hidden rounded-[var(--micro-radius)] ring-1 ring-inset ring-[var(--border)]",
         className,
       )}
     >

@@ -38,9 +38,9 @@ export function SettingsMobileNav({ active, activeGroup, onNavigate }: Props) {
           <button
             type="button"
             data-settings-mobile-trigger
-            className="flex min-h-12 w-full min-w-0 items-center gap-3 rounded-[16px] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] px-3 text-start shadow-[0_6px_20px_rgba(0,0,0,.035)] backdrop-blur-xl transition-colors hover:bg-[var(--surface-1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]"
+            className="flex min-h-12 w-full min-w-0 items-center gap-3 rounded-[var(--control-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] px-3 text-start shadow-[0_6px_20px_rgba(0,0,0,.035)] backdrop-blur-xl transition-colors hover:bg-[var(--surface-1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]"
           >
-            <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-[var(--accent-soft)] text-[var(--accent-strong)]"><ActiveIcon aria-hidden="true" className="size-4" /></span>
+            <span className="grid size-8 shrink-0 place-items-center rounded-[var(--card-radius)] bg-[var(--accent-soft)] text-[var(--accent-strong)]"><ActiveIcon aria-hidden="true" className="size-4" /></span>
             <span className="min-w-0 flex-1">
               <small className="block truncate text-[8px] font-black text-[var(--text-muted)]">{t(activeGroupItem.labelKey)}</small>
               <strong className="mt-0.5 block truncate text-[10px] font-black text-[var(--text)]">{t(activeItem.labelKey)}</strong>
@@ -55,7 +55,7 @@ export function SettingsMobileNav({ active, activeGroup, onNavigate }: Props) {
           </DialogHeader>
           <div className="grid gap-3">
             {settingsNavGroups.map((group) => (
-              <section key={group.id} className="grid gap-1.5 rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-2">
+              <section key={group.id} className="grid gap-1.5 rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-2)] p-2">
                 <h3 className="px-2 pt-1 text-[9px] font-black text-[var(--text-muted)]">{t(group.labelKey)}</h3>
                 <div className="grid gap-1 min-[480px]:grid-cols-2">
                   {getSettingsGroupItems(group.id).map(({ id, labelKey, icon: Icon }) => {
@@ -68,7 +68,7 @@ export function SettingsMobileNav({ active, activeGroup, onNavigate }: Props) {
                         aria-current={isActive ? "location" : undefined}
                         onClick={() => selectItem(id as SettingsItemId)}
                         className={cn(
-                          "flex min-h-11 min-w-0 items-center gap-2.5 rounded-xl px-2.5 text-start text-[10px] font-bold text-[var(--text-muted)] transition-colors",
+                          "flex min-h-11 min-w-0 items-center gap-2.5 rounded-[var(--card-radius)] px-2.5 text-start text-[10px] font-bold text-[var(--text-muted)] transition-colors",
                           "hover:bg-[var(--accent-soft)] hover:text-[var(--text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]",
                           isActive && "bg-[var(--accent-soft)] text-[var(--accent-strong)] ring-1 ring-[color-mix(in_srgb,var(--accent)_22%,transparent)]",
                         )}

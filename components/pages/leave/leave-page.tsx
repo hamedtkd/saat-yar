@@ -43,7 +43,7 @@ export function LeavePage({ data, setData, draft, setDraft, saveLeave, used, ava
           eyebrow={b("leave.section.eyebrow")}
           title={b("leave.section.title")}
           description={b("leave.section.description")}
-          trailing={<span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--surface-2)] px-3 py-1.5 text-[10px] font-bold text-[var(--text-muted)]"><History className="size-3.5 text-[var(--accent-strong)]" /> {b("leave.section.historySafe")}</span>}
+          trailing={<span className="inline-flex items-center gap-1.5 rounded-[var(--control-radius-sm)] bg-[var(--surface-2)] px-3 py-1.5 text-[10px] font-bold text-[var(--text-muted)]"><History className="size-3.5 text-[var(--accent-strong)]" /> {b("leave.section.historySafe")}</span>}
         />
         <div className="grid grid-cols-[390px_minmax(0,1fr)] gap-[14px] max-[900px]:grid-cols-1">
           <LeaveForm draft={draft} setDraft={setDraft} onSave={saveLeave} />

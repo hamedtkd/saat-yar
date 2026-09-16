@@ -25,12 +25,12 @@ export function HelpPage() {
           </div>
           <div className="grid min-w-0 gap-3 md:grid-cols-3 [&>*]:min-w-0">
             {section.items.map((item) => (
-              <article key={item.title} className="grid min-w-0 content-start justify-items-start gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-4 text-start">
-                <span className="grid size-9 place-items-center rounded-xl bg-[var(--accent-soft)] text-[var(--accent-strong)]"><BookOpenCheck className="size-4" /></span>
+              <article key={item.title} className="grid min-w-0 content-start justify-items-start gap-3 rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-2)] p-4 text-start">
+                <span className="grid size-9 place-items-center rounded-[var(--card-radius)] bg-[var(--accent-soft)] text-[var(--accent-strong)]"><BookOpenCheck className="size-4" /></span>
                 <h3 className="text-[12px] font-black text-[var(--text)]">{item.title}</h3>
                 <p className="text-[10px] leading-6 text-[var(--text-muted)]">{item.body}</p>
                 {item.href && item.action && (
-                  <Link href={item.href} className="mt-auto inline-flex min-h-10 w-full items-center justify-between gap-2 rounded-xl border border-[var(--dashboard-border)] px-3 text-[10px] font-bold text-[var(--accent-strong)] hover:border-[var(--accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]">
+                  <Link href={item.href} className="mt-auto inline-flex min-h-10 w-full items-center justify-between gap-2 rounded-[var(--card-radius)] border border-[var(--dashboard-border)] px-3 text-[10px] font-bold text-[var(--accent-strong)] hover:border-[var(--accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]">
                     <span>{item.action}</span><ChevronRight className="size-4 rtl:rotate-180" />
                   </Link>
                 )}

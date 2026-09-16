@@ -1,3 +1,4 @@
+import { DEFAULT_APPEARANCE_SETTINGS } from "./appearance-settings.ts";
 import type { AppData, LeaveEntry, Settings } from "./types.ts";
 import { localDateKey } from "./format.ts";
 import { createDefaultWeeklySchedule } from "./work-schedule.ts";
@@ -34,7 +35,7 @@ export const defaultSettings: Settings = {
     customReminders: [],
     snoozeMinutes: 30,
   },
-  appearance: { mode: "system", preset: "violet", accent: "#8b5cf6", radius: "rounded", surface: "tinted" },
+  appearance: { ...DEFAULT_APPEARANCE_SETTINGS },
   mode: "employee",
   workTimingMode: "scheduled",
 };

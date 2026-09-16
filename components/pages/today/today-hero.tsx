@@ -57,7 +57,7 @@ export function TodayHero({
             type="button"
             variant="outline"
             size="icon"
-            className="h-full min-h-[52px] w-[42px] rounded-xl border-[var(--dashboard-border)] bg-[var(--surface-2)] shadow-none max-[359px]:min-h-11 max-[359px]:w-9 max-[359px]:rounded-[10px]"
+            className="h-full min-h-[52px] w-[42px] rounded-[var(--card-radius)] border-[var(--dashboard-border)] bg-[var(--surface-2)] shadow-none max-[359px]:min-h-11 max-[359px]:w-9 max-[359px]:rounded-[var(--control-radius-sm)]"
             aria-label={t("today.hero.previousDay")}
             title={t("today.hero.previousDay")}
             onClick={() => onDateChange(shiftDateKey(selectedDate, -1))}
@@ -79,7 +79,7 @@ export function TodayHero({
             type="button"
             variant="outline"
             size="icon"
-            className="h-full min-h-[52px] w-[42px] rounded-xl border-[var(--dashboard-border)] bg-[var(--surface-2)] shadow-none max-[359px]:min-h-11 max-[359px]:w-9 max-[359px]:rounded-[10px]"
+            className="h-full min-h-[52px] w-[42px] rounded-[var(--card-radius)] border-[var(--dashboard-border)] bg-[var(--surface-2)] shadow-none max-[359px]:min-h-11 max-[359px]:w-9 max-[359px]:rounded-[var(--control-radius-sm)]"
             aria-label={t("today.hero.nextDay")}
             title={t("today.hero.nextDay")}
             onClick={() => onDateChange(shiftDateKey(selectedDate, 1))}
@@ -90,7 +90,7 @@ export function TodayHero({
       </div>
 
       <div className="min-w-0 text-center max-[980px]:order-1 max-[980px]:col-span-2 max-[720px]:col-span-1">
-        <div className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-[var(--accent-soft)] px-2.5 py-1 text-[10px] font-black text-[var(--accent-strong)]">
+        <div className="mb-2 inline-flex items-center gap-1.5 rounded-[var(--control-radius-sm)] bg-[var(--accent-soft)] px-2.5 py-1 text-[10px] font-black text-[var(--accent-strong)]">
           <CalendarDays aria-hidden="true" className="size-3.5" />
           {isToday ? t("today.hero.today") : t("today.hero.selectedDay")}
         </div>
@@ -107,7 +107,7 @@ export function TodayHero({
             {t("today.hero.backToday")}
           </Button>
         ) : (
-          <div className="hidden min-w-[150px] rounded-xl border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-3 py-2 text-start xl:block">
+          <div className="hidden min-w-[150px] rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-3 py-2 text-start xl:block">
             <span className="block text-[9px] font-bold text-[var(--text-muted)]">{t("today.hero.quickNav")}</span>
             <strong className="mt-0.5 block text-[11px] text-[var(--text)]">{t("today.hero.quickNavHint")}</strong>
           </div>

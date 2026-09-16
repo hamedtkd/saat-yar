@@ -74,7 +74,7 @@ export function FirstRunGuide({
       className="dashboard-card mb-4 grid gap-4 rounded-[var(--card-radius)] border border-[color-mix(in_srgb,var(--accent)_28%,var(--dashboard-border))] bg-[linear-gradient(135deg,var(--accent-soft),var(--surface-1))] p-4 max-[359px]:gap-3 max-[359px]:p-3 shadow-[0_6px_18px_rgba(0,0,0,.035)] sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center sm:p-5"
       aria-labelledby="first-run-guide-title"
     >
-      <span className="grid size-11 place-items-center rounded-2xl max-[359px]:size-9 max-[359px]:rounded-xl bg-[var(--accent-fill)] text-[var(--accent-foreground)]">
+      <span className="grid size-11 place-items-center rounded-[var(--card-radius)] max-[359px]:size-9 max-[359px]:rounded-[var(--card-radius)] bg-[var(--accent-fill)] text-[var(--accent-foreground)]">
         {mode === "freelancer" ? <BriefcaseBusiness aria-hidden="true" /> : <CheckCircle2 aria-hidden="true" />}
       </span>
       <div className="grid gap-1">

@@ -29,12 +29,12 @@ export function MonthIntelligenceCard({ selectedDate, data }: { selectedDate: st
         <Metric icon={<MinusCircle />} label={t("month.intelligence.deficit")} value={summary.deficitMinutes ? `−${duration(summary.deficitMinutes)}` : duration(0)} hint={t("month.intelligence.dayCount", { count: number(summary.deficitDays) })} tone="negative" />
       </div>
 
-      <div className="mt-3 rounded-xl border border-[var(--dashboard-border)] bg-[var(--surface-2)] p-2.5">
+      <div className="mt-3 rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-2)] p-2.5">
         <div className="flex items-center justify-between gap-3 text-[8px] font-bold text-[var(--text-muted)]">
           <span>{t("month.intelligence.balanceDistribution")}</span>
           <span>{t("month.intelligence.balancedDays", { count: number(summary.balancedDays) })}</span>
         </div>
-        <div className="mt-2 flex h-1.5 overflow-hidden rounded-full bg-[var(--surface-3)]" aria-label={t("month.intelligence.balanceDistribution")}>
+        <div className="mt-2 flex h-1.5 overflow-hidden rounded-[var(--micro-radius)] bg-[var(--surface-3)]" aria-label={t("month.intelligence.balanceDistribution")}>
           {distributionMagnitude > 0 && <>
             <span className="h-full bg-[var(--success)]" style={{ width: `${overtimeShare}%` }} />
             <span className="h-full bg-[var(--info)]" style={{ width: `${leaveShare}%` }} />
@@ -60,7 +60,7 @@ export function MonthIntelligenceCard({ selectedDate, data }: { selectedDate: st
 function Metric({ icon, label, value, hint, tone = "neutral" }: { icon: ReactNode; label: string; value: string; hint?: string; tone?: "neutral" | "positive" | "negative" | "info" }) {
   const toneClass = tone === "positive" ? "text-[var(--success)]" : tone === "negative" ? "text-[var(--warning)]" : tone === "info" ? "text-[var(--info)]" : "text-[var(--text)]";
   return (
-    <div className="min-w-0 rounded-xl border border-[var(--dashboard-border)] bg-[var(--surface-2)] p-2.5">
+    <div className="min-w-0 rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-2)] p-2.5">
       <div className="flex items-center gap-1.5 text-[var(--accent)] [&_svg]:size-3.5"><span className="shrink-0">{icon}</span><span className="truncate text-[8px] font-bold text-[var(--text-muted)]">{label}</span></div>
       <strong className={`mt-1.5 block truncate text-[13px] font-black tabular-nums ${toneClass}`}>{value}</strong>
       {hint && <span className="mt-0.5 block text-[8px] text-[var(--text-muted)]">{hint}</span>}

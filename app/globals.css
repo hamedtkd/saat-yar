@@ -1,10 +1,17 @@
 @import "tailwindcss";
 
 @theme inline {
+  /* Standard Tailwind radii inherit Appearance Studio. rounded-full remains an intentional circle/pill exception. */
   --color-background: var(--page);
   --color-foreground: var(--text);
   --color-primary: var(--accent);
   --color-border: var(--border);
+  --radius-sm: var(--control-radius-sm);
+  --radius-md: var(--control-radius-sm);
+  --radius-lg: var(--control-radius);
+  --radius-xl: var(--control-radius);
+  --radius-2xl: var(--card-radius);
+  --radius-3xl: var(--card-radius);
 }
 
 :root {
@@ -13,16 +20,27 @@
   --accent-foreground: #ffffff;
   --accent-strong: #5c3da2;
   --accent-soft: color-mix(in srgb, var(--accent) 14%, transparent);
-  --page: color-mix(in srgb, var(--accent) 2.2%, #f6f8fb);
-  --surface-1: #ffffff;
-  --surface-2: color-mix(in srgb, var(--accent) 1.8%, #f8fafc);
-  --surface-glass: rgb(255 255 255 / 94%);
-  --surface-raised: color-mix(in srgb, var(--accent) 2.8%, #ffffff);
-  --surface-accent: color-mix(in srgb, var(--accent) 6.5%, #ffffff);
-  --dashboard-border: color-mix(in srgb, var(--accent) 9%, var(--border));
-  --text: #111827;
-  --text-muted: #64748b;
-  --border: #dbe3ec;
+
+  --tone-page: #f4f6fb;
+  --tone-surface-1: #ffffff;
+  --tone-surface-2: #f7f9fc;
+  --tone-text: #101828;
+  --tone-muted: #667085;
+  --tone-border: #d8e0ea;
+  --page-accent-weight: 1.8%;
+  --surface-accent-weight: 1.4%;
+  --raised-accent-weight: 2.2%;
+  --page: color-mix(in srgb, var(--accent) var(--page-accent-weight), var(--tone-page));
+  --surface-1: var(--tone-surface-1);
+  --surface-2: color-mix(in srgb, var(--accent) var(--surface-accent-weight), var(--tone-surface-2));
+  --surface-glass: color-mix(in srgb, var(--tone-surface-1) 94%, transparent);
+  --surface-raised: color-mix(in srgb, var(--accent) var(--raised-accent-weight), var(--tone-surface-1));
+  --surface-accent: color-mix(in srgb, var(--accent) 5.5%, var(--tone-surface-1));
+  --dashboard-border: color-mix(in srgb, var(--accent) 6%, var(--tone-border));
+  --text: var(--tone-text);
+  --text-muted: var(--tone-muted);
+  --border: var(--tone-border);
+
   --danger: #dc5149;
   --warning: #d79013;
   --success: #0f9f63;
@@ -34,27 +52,49 @@
   --warning-soft: color-mix(in srgb, var(--warning) 14%, transparent);
   --success-soft: color-mix(in srgb, var(--success) 13%, transparent);
   --info-soft: color-mix(in srgb, var(--info) 12%, transparent);
-  --card-radius: 22px;
-  --control-radius: 14px;
+
+  --card-radius: 24px;
+  --control-radius: 15px;
+  --control-radius-sm: 10px;
+  --micro-radius: 5px;
+  --control-height: 44px;
+  --control-height-sm: 36px;
+  --density-space: 1;
+  --surface-shadow: 0 8px 24px rgb(15 23 42 / 4%);
+  --app-body-font: Vazirmatn, Tahoma, sans-serif;
+  --app-body-font-fa: "Vazirmatn FD", Vazirmatn, Tahoma, sans-serif;
+  --app-heading-font: Vazirmatn, Tahoma, sans-serif;
+  --app-heading-font-fa: "Vazirmatn FD", Vazirmatn, Tahoma, sans-serif;
+
   --shell-sidebar-width: 248px;
   --shell-gutter: 12px;
   --shell-content-offset: 264px;
   --shell-content-max: 1510px;
+  --sidebar-background: linear-gradient(180deg,var(--surface-1),var(--surface-raised));
+  --sidebar-border: var(--dashboard-border);
+  --sidebar-active-bg: var(--accent-fill);
+  --sidebar-active-fg: var(--accent-foreground);
+  --sidebar-active-icon-bg: color-mix(in srgb,var(--accent-foreground) 12%,transparent);
+  --sidebar-utility-bg: var(--surface-accent);
+  --sidebar-utility-fg: var(--accent-strong);
 }
 
 :root[data-theme="dark"] {
+  --tone-page: #071017;
+  --tone-surface-1: #0d161d;
+  --tone-surface-2: #121d25;
+  --tone-text: #f8fafc;
+  --tone-muted: #94a3b8;
+  --tone-border: rgb(255 255 255 / 10%);
+  --page-accent-weight: 4.2%;
+  --surface-accent-weight: 4.6%;
+  --raised-accent-weight: 4.8%;
+  --surface-glass: color-mix(in srgb, var(--tone-surface-1) 94%, transparent);
+  --surface-accent: color-mix(in srgb, var(--accent) 8%, var(--tone-surface-1));
+  --dashboard-border: color-mix(in srgb, var(--accent) 9.5%, var(--tone-border));
+  --surface-shadow: 0 10px 28px rgb(0 0 0 / 16%);
   --accent-foreground: #ffffff;
   --accent-strong: #c4b5fd;
-  --page: color-mix(in srgb, var(--accent) 4.2%, #071017);
-  --surface-1: color-mix(in srgb, var(--accent) 3.2%, #0d161d);
-  --surface-2: color-mix(in srgb, var(--accent) 4.8%, #121d25);
-  --surface-glass: color-mix(in srgb, var(--accent) 3.5%, rgb(13 22 29 / 94%));
-  --surface-raised: color-mix(in srgb, var(--accent) 4.8%, #121c24);
-  --surface-accent: color-mix(in srgb, var(--accent) 8%, #101a22);
-  --dashboard-border: color-mix(in srgb, var(--accent) 11%, var(--border));
-  --text: #f8fafc;
-  --text-muted: #94a3b8;
-  --border: rgb(255 255 255 / 10%);
   --danger: #ff746c;
   --warning: #f0b84d;
   --success: #51e884;
@@ -64,14 +104,199 @@
   --overlay: rgb(0 0 0 / 62%);
 }
 
-:root[data-radius="compact"] { --card-radius: 14px; --control-radius: 10px; }
-:root[data-radius="balanced"] { --card-radius: 18px; --control-radius: 12px; }
-:root[data-radius="rounded"] { --card-radius: 24px; --control-radius: 15px; }
+:root[data-neutral-tone="zinc"] {
+  --tone-page: #f6f6f8;
+  --tone-surface-1: #ffffff;
+  --tone-surface-2: #f3f4f6;
+  --tone-text: #18181b;
+  --tone-muted: #6b7280;
+  --tone-border: #dcdee4;
+}
+:root[data-theme="dark"][data-neutral-tone="zinc"] {
+  --tone-page: #0a0a0b;
+  --tone-surface-1: #111113;
+  --tone-surface-2: #18181b;
+  --tone-text: #fafafa;
+  --tone-muted: #a1a1aa;
+  --tone-border: rgb(255 255 255 / 11%);
+}
 
-:root[data-surface="neutral"] { --page: #f7f8fa; --surface-2: #f3f5f8; }
-:root[data-theme="dark"][data-surface="neutral"] { --page: #090d11; --surface-1: #10161b; --surface-2: #151c22; }
-:root[data-surface="contrast"] { --page: #eef3f8; --surface-1: #ffffff; --surface-2: #e9eff6; --border: #cbd6e2; }
-:root[data-theme="dark"][data-surface="contrast"] { --page: #05090d; --surface-1: #0b1218; --surface-2: #121f29; --border: rgb(255 255 255 / 15%); }
+:root[data-neutral-tone="stone"] {
+  --tone-page: #f7f5f1;
+  --tone-surface-1: #fffefd;
+  --tone-surface-2: #f4f1eb;
+  --tone-text: #1f1a17;
+  --tone-muted: #746b63;
+  --tone-border: #dfd7ce;
+}
+:root[data-theme="dark"][data-neutral-tone="stone"] {
+  --tone-page: #0d0c0b;
+  --tone-surface-1: #151311;
+  --tone-surface-2: #1c1917;
+  --tone-text: #fafaf9;
+  --tone-muted: #a8a29e;
+  --tone-border: rgb(255 255 255 / 11%);
+}
+
+:root[data-neutral-tone="sand"] {
+  --tone-page: #faf6ee;
+  --tone-surface-1: #fffdf8;
+  --tone-surface-2: #f7f0e2;
+  --tone-text: #2b241c;
+  --tone-muted: #7a6a58;
+  --tone-border: #e7ddca;
+}
+:root[data-theme="dark"][data-neutral-tone="sand"] {
+  --tone-page: #100d09;
+  --tone-surface-1: #18130e;
+  --tone-surface-2: #211a13;
+  --tone-text: #fffaf1;
+  --tone-muted: #b7a48c;
+  --tone-border: rgb(255 247 235 / 12%);
+}
+
+:root[data-neutral-tone="paper"] {
+  --tone-page: #f8f8f8;
+  --tone-surface-1: #ffffff;
+  --tone-surface-2: #f5f5f5;
+  --tone-text: #202124;
+  --tone-muted: #68707d;
+  --tone-border: #e1e3e8;
+}
+:root[data-theme="dark"][data-neutral-tone="paper"] {
+  --tone-page: #0b0c0e;
+  --tone-surface-1: #121316;
+  --tone-surface-2: #181a1e;
+  --tone-text: #f7f7f8;
+  --tone-muted: #a0a4ad;
+  --tone-border: rgb(255 255 255 / 10%);
+}
+
+:root[data-neutral-tone="pearl"] {
+  --tone-page: #f5f6fa;
+  --tone-surface-1: #ffffff;
+  --tone-surface-2: #f2f4f8;
+  --tone-text: #172033;
+  --tone-muted: #697386;
+  --tone-border: #d8deea;
+}
+:root[data-theme="dark"][data-neutral-tone="pearl"] {
+  --tone-page: #0a0f16;
+  --tone-surface-1: #101621;
+  --tone-surface-2: #141d29;
+  --tone-text: #f6f8fc;
+  --tone-muted: #9eabc1;
+  --tone-border: rgb(255 255 255 / 11%);
+}
+
+:root[data-neutral-tone="sage"] {
+  --tone-page: #f3f7f3;
+  --tone-surface-1: #ffffff;
+  --tone-surface-2: #eef4ef;
+  --tone-text: #16211a;
+  --tone-muted: #64756b;
+  --tone-border: #d2ded5;
+}
+:root[data-theme="dark"][data-neutral-tone="sage"] {
+  --tone-page: #09110d;
+  --tone-surface-1: #0f1713;
+  --tone-surface-2: #15201a;
+  --tone-text: #f4faf6;
+  --tone-muted: #94a89d;
+  --tone-border: rgb(223 255 234 / 12%);
+}
+
+:root[data-neutral-tone="clay"] {
+  --tone-page: #f8f3ef;
+  --tone-surface-1: #fffefd;
+  --tone-surface-2: #f4ece6;
+  --tone-text: #261b15;
+  --tone-muted: #7b695f;
+  --tone-border: #e3d6cd;
+}
+:root[data-theme="dark"][data-neutral-tone="clay"] {
+  --tone-page: #110c09;
+  --tone-surface-1: #17110e;
+  --tone-surface-2: #1f1713;
+  --tone-text: #fdf8f4;
+  --tone-muted: #b39e92;
+  --tone-border: rgb(255 238 227 / 12%);
+}
+
+:root[data-density="compact"] { --control-height: 38px; --control-height-sm: 32px; --density-space: .82; }
+:root[data-density="comfortable"] { --control-height: 44px; --control-height-sm: 36px; --density-space: 1; }
+:root[data-density="spacious"] { --control-height: 50px; --control-height-sm: 40px; --density-space: 1.14; }
+
+:root[data-radius="none"] { --card-radius: 0px; --control-radius: 0px; --control-radius-sm: 0px; --micro-radius: 0px; }
+:root[data-radius="compact"] { --card-radius: 14px; --control-radius: 10px; --control-radius-sm: 6px; --micro-radius: 3px; }
+:root[data-radius="balanced"] { --card-radius: 18px; --control-radius: 12px; --control-radius-sm: 8px; --micro-radius: 4px; }
+:root[data-radius="rounded"] { --card-radius: 24px; --control-radius: 15px; --control-radius-sm: 10px; --micro-radius: 5px; }
+:root[data-radius="extra"] { --card-radius: 32px; --control-radius: 20px; --control-radius-sm: 14px; --micro-radius: 7px; }
+
+:root[data-sidebar-width="compact"] { --shell-sidebar-width: 216px; --shell-content-offset: 232px; }
+:root[data-sidebar-width="default"] { --shell-sidebar-width: 248px; --shell-content-offset: 264px; }
+:root[data-sidebar-width="wide"] { --shell-sidebar-width: 288px; --shell-content-offset: 304px; }
+
+:root[data-sidebar-style="soft"] {
+  --sidebar-background: linear-gradient(180deg,var(--surface-1),var(--surface-raised));
+  --sidebar-border: var(--dashboard-border);
+}
+:root[data-sidebar-style="solid"] {
+  --sidebar-background: color-mix(in srgb,var(--accent) 7%,var(--surface-1));
+  --sidebar-border: color-mix(in srgb,var(--accent) 18%,var(--border));
+}
+:root[data-sidebar-style="outline"] {
+  --sidebar-background: var(--surface-1);
+  --sidebar-border: color-mix(in srgb,var(--accent) 34%,var(--border));
+}
+
+:root[data-sidebar-accent="subtle"] {
+  --sidebar-active-bg: var(--accent-soft);
+  --sidebar-active-fg: var(--accent-strong);
+  --sidebar-active-icon-bg: color-mix(in srgb,var(--accent) 9%,var(--surface-1));
+}
+:root[data-sidebar-accent="filled"] {
+  --sidebar-active-bg: var(--accent-fill);
+  --sidebar-active-fg: var(--accent-foreground);
+  --sidebar-active-icon-bg: color-mix(in srgb,var(--accent-foreground) 12%,transparent);
+}
+
+:root[data-surface="neutral"] {
+  --page-accent-weight: 0%;
+  --surface-accent-weight: 0%;
+  --raised-accent-weight: 0%;
+  --surface-shadow: none;
+}
+:root[data-surface="contrast"] {
+  --page: color-mix(in srgb, var(--tone-page) 84%, var(--tone-text));
+  --surface-2: color-mix(in srgb, var(--tone-surface-2) 90%, var(--tone-text));
+  --border: color-mix(in srgb, var(--tone-border) 76%, var(--tone-text));
+  --dashboard-border: color-mix(in srgb, var(--accent) 12%, var(--border));
+  --surface-shadow: 0 8px 24px rgb(0 0 0 / 7%);
+}
+:root[data-theme="dark"][data-surface="contrast"] {
+  --page: color-mix(in srgb, var(--tone-page) 82%, #000000);
+  --surface-2: color-mix(in srgb, var(--tone-surface-2) 86%, #ffffff);
+  --border: color-mix(in srgb, var(--tone-border) 76%, #ffffff);
+  --surface-shadow: 0 12px 30px rgb(0 0 0 / 24%);
+}
+
+:root[data-body-font="system"] {
+  --app-body-font: Tahoma, Arial, sans-serif;
+  --app-body-font-fa: Tahoma, "Vazirmatn FD", Vazirmatn, sans-serif;
+}
+:root[data-body-font="serif"] {
+  --app-body-font: Georgia, "Times New Roman", serif;
+  --app-body-font-fa: "Times New Roman", "Vazirmatn FD", Vazirmatn, Tahoma, serif;
+}
+:root[data-heading-font="system"] {
+  --app-heading-font: Tahoma, Arial, sans-serif;
+  --app-heading-font-fa: Tahoma, "Vazirmatn FD", Vazirmatn, sans-serif;
+}
+:root[data-heading-font="serif"] {
+  --app-heading-font: Georgia, "Times New Roman", serif;
+  --app-heading-font-fa: "Times New Roman", "Vazirmatn FD", Vazirmatn, Tahoma, serif;
+}
 
 
 .dashboard-shell {
@@ -178,17 +403,25 @@
    Persian UI uses Vazirmatn FD so ASCII digits are drawn with Persian glyphs by
    the font itself; English keeps regular Vazirmatn. No JavaScript digit swap is needed. */
 .saatyar-app-font {
-  font-family: Vazirmatn, Tahoma, sans-serif;
+  font-family: var(--app-body-font);
 }
 
 :root[lang="fa"] .saatyar-app-font {
-  font-family: "Vazirmatn FD", Vazirmatn, Tahoma, sans-serif;
+  font-family: var(--app-body-font-fa);
+}
+
+.saatyar-app-font :is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--app-heading-font);
+}
+
+:root[lang="fa"] .saatyar-app-font :is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--app-heading-font-fa);
 }
 
 .saatyar-timer-countdown {
   direction: ltr;
   unicode-bidi: isolate;
-  font-family: Vazirmatn, Tahoma, sans-serif;
+  font-family: var(--app-body-font);
   line-height: 1;
   font-weight: 800;
   letter-spacing: 0;
@@ -197,7 +430,7 @@
 }
 
 :root[lang="fa"] .saatyar-timer-countdown {
-  font-family: "Vazirmatn FD", Vazirmatn, Tahoma, sans-serif;
+  font-family: var(--app-body-font-fa);
 }
 
 :root[data-theme-transition="active"]::view-transition-old(root),

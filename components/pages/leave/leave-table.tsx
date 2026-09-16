@@ -29,7 +29,7 @@ export function LeaveTable({ data, setData, setDraft }: LeaveTableProps) {
       <div className="flex flex-wrap items-start justify-between gap-3 px-4 pt-4 sm:px-5 sm:pt-5">
         <PanelHead icon={<Umbrella />} title={b("leave.table.title")} />
         {data.leaves.length > 0 && (
-          <span className={cn("inline-flex items-center gap-1.5", "rounded-full bg-[var(--accent-soft)]", "px-3 py-1.5", "text-[10px] font-bold text-[var(--text-muted)]")}>
+          <span className={cn("inline-flex items-center gap-1.5", "rounded-[var(--control-radius-sm)] bg-[var(--accent-soft)]", "px-3 py-1.5", "text-[10px] font-bold text-[var(--text-muted)]")}>
             <CalendarRange className="size-3.5 text-[var(--accent-strong)]" />
             {b("leave.table.count", { count: number(data.leaves.length) })}
           </span>

@@ -119,7 +119,7 @@ const DialogContent = React.forwardRef<
         className={cn(
           "fixed z-50 grid gap-4 overflow-y-auto",
           "rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-1)] p-4 text-start text-[var(--text)] sm:p-5",
-          "shadow-[0_24px_70px_rgba(0,0,0,.22)] outline-none",
+          "shadow-[var(--surface-shadow)] outline-none",
           "data-[state=closed]:scale-95 data-[state=closed]:opacity-0 data-[state=open]:scale-100 data-[state=open]:opacity-100",
           "motion-safe:transition-[opacity,scale]",
           className,
@@ -128,7 +128,7 @@ const DialogContent = React.forwardRef<
       >
         {children}
         <DialogPrimitive.Close
-          className="absolute end-3 top-3 grid size-9 place-items-center rounded-xl text-[var(--text-muted)] transition-colors hover:bg-[var(--surface-2)] hover:text-[var(--text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]"
+          className="absolute end-3 top-3 grid size-9 cursor-pointer place-items-center rounded-[var(--control-radius)] text-[var(--text-muted)] transition-colors hover:bg-[var(--surface-2)] hover:text-[var(--text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]"
           aria-label={t("common.close")}
         >
           <X aria-hidden="true" className="size-4" />

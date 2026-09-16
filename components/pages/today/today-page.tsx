@@ -80,7 +80,7 @@ export function TodayPage(props: TodayPageProps) {
             <strong className="text-xs font-extrabold">{t("today.holiday.title")}</strong>
             <span className="text-[10px]">{locale === "fa-IR" ? holiday.title : t("today.holiday.title")}</span>
           </div>
-          <span className="rounded-full border border-red-500/20 bg-[var(--surface-1)] px-2.5 py-1 text-[9px] font-bold">{t("today.holiday.zeroTarget")}</span>
+          <span className="rounded-[var(--control-radius-sm)] border border-red-500/20 bg-[var(--surface-1)] px-2.5 py-1 text-[9px] font-bold">{t("today.holiday.zeroTarget")}</span>
         </div>
       )}
       {scheduledDayOff && !holiday.isHoliday && (
@@ -92,7 +92,7 @@ export function TodayPage(props: TodayPageProps) {
               <span className="text-[10px] text-[var(--text-muted)]">{t("today.scheduleOff.description")}</span>
             </div>
           </div>
-          <span className="shrink-0 rounded-full border border-[color-mix(in_srgb,var(--warning)_28%,var(--border))] max-[359px]:justify-self-start bg-[var(--surface-1)] px-2.5 py-1 text-[9px] font-bold">{t("today.scheduleOff.zeroTarget")}</span>
+          <span className="shrink-0 rounded-[var(--control-radius-sm)] border border-[color-mix(in_srgb,var(--warning)_28%,var(--border))] max-[359px]:justify-self-start bg-[var(--surface-1)] px-2.5 py-1 text-[9px] font-bold">{t("today.scheduleOff.zeroTarget")}</span>
         </div>
       )}
       {!isFreelancer && <RecordHealthBanner record={props.record} onReset={props.resetRecord} />}

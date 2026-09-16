@@ -42,7 +42,7 @@ export function ProjectTimerHero(props: Props) {
           role="status"
           aria-live="polite"
           className={cn(
-            "inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[10px] font-black max-[359px]:gap-1.5 max-[359px]:px-2.5 max-[359px]:py-1 max-[359px]:text-[9px]",
+            "inline-flex items-center gap-2 rounded-[var(--control-radius-sm)] border px-3 py-1.5 text-[10px] font-black max-[359px]:gap-1.5 max-[359px]:px-2.5 max-[359px]:py-1 max-[359px]:text-[9px]",
             paused
               ? "border-[color-mix(in_srgb,var(--warning)_28%,var(--border))] bg-[var(--warning-soft)] text-[var(--warning)]"
               : "border-[color-mix(in_srgb,var(--accent)_28%,var(--border))] bg-[var(--accent-soft)] text-[var(--accent-strong)]",
@@ -63,7 +63,7 @@ export function ProjectTimerHero(props: Props) {
         <ProjectTimerElapsed activeEntry={props.activeEntry} session={props.session} className={cn(paused && "opacity-80")} />
       </div>
 
-      <div className="rounded-[16px] border border-[var(--dashboard-border)] bg-[color-mix(in_srgb,var(--surface-2)_72%,transparent)] px-3.5 py-3 text-center max-[359px]:rounded-[14px] max-[359px]:px-3 max-[359px]:py-2.5 sm:px-4">
+      <div className="rounded-[var(--control-radius)] border border-[var(--dashboard-border)] bg-[color-mix(in_srgb,var(--surface-2)_72%,transparent)] px-3.5 py-3 text-center max-[359px]:rounded-[var(--control-radius-sm)] max-[359px]:px-3 max-[359px]:py-2.5 sm:px-4">
         <strong className="flex min-w-0 items-center justify-center gap-2 truncate text-xs font-black text-[var(--text)] max-[359px]:text-[11px] sm:text-sm">
           <BriefcaseBusiness aria-hidden="true" className="size-4 shrink-0 text-[var(--accent-strong)]" />
           {activityTitle}
@@ -75,7 +75,7 @@ export function ProjectTimerHero(props: Props) {
       </div>
 
       {idle ? (
-        <Button data-freelancer-primary-timer onClick={props.onStart} disabled={!props.canStart} className="h-11 w-full rounded-[14px] text-sm font-black max-[359px]:h-10 max-[359px]:text-[13px] sm:h-12">
+        <Button data-freelancer-primary-timer onClick={props.onStart} disabled={!props.canStart} className="h-11 w-full rounded-[var(--control-radius-sm)] text-sm font-black max-[359px]:h-10 max-[359px]:text-[13px] sm:h-12">
           <Play aria-hidden="true" /> {t("today.timer.start")}
         </Button>
       ) : (
@@ -83,12 +83,12 @@ export function ProjectTimerHero(props: Props) {
           <Button
             data-freelancer-primary-timer
             onClick={paused ? props.onResume : props.onPause}
-            className="h-11 rounded-[14px] text-sm font-black max-[359px]:h-10 max-[359px]:text-[13px] sm:h-12"
+            className="h-11 rounded-[var(--control-radius-sm)] text-sm font-black max-[359px]:h-10 max-[359px]:text-[13px] sm:h-12"
           >
             {paused ? <CirclePlay aria-hidden="true" /> : <CirclePause aria-hidden="true" />}
             {paused ? t("today.timer.resume") : t("today.timer.pause")}
           </Button>
-          <Button onClick={props.onFinish} variant="destructive" className="h-11 rounded-[14px] text-sm font-black max-[359px]:h-10 max-[359px]:text-[13px] sm:h-12">
+          <Button onClick={props.onFinish} variant="destructive" className="h-11 rounded-[var(--control-radius-sm)] text-sm font-black max-[359px]:h-10 max-[359px]:text-[13px] sm:h-12">
             <Square aria-hidden="true" /> {t("today.timer.finish")}
           </Button>
         </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, CalendarClock, CalendarSync, Database, Palette, ShieldCheck, SlidersHorizontal, Smartphone, WalletCards } from "lucide-react";
+import { Bell, CalendarClock, CalendarSync, Database, ShieldCheck, SlidersHorizontal, Smartphone, WalletCards } from "lucide-react";
 import { PageHeading } from "@/components/common/page-heading";
 import { useLocale } from "@/components/i18n/locale-provider";
 import type { SaveState } from "@/hooks/use-persisted-app-data";
@@ -66,6 +66,9 @@ export function SettingsPage(props: Props) {
   const routeDefinition = getSettingsRouteDefinition(props.route);
   const pageTitle = routeDefinition ? t(routeDefinition.labelKey) : t("settings.title");
   const pageDescription = routeDefinition ? t(routeDefinition.descriptionKey) : t("settings.description");
+  if (props.route === "appearance") {
+    return <AppearanceSettingsCard data={props.data} setData={props.setData} setToast={props.setToast} />;
+  }
   return <>
     <PageHeading autosave={false} title={pageTitle} description={pageDescription} />
     <SettingsSearch />
@@ -74,7 +77,6 @@ export function SettingsPage(props: Props) {
       <div className="grid min-w-0 gap-5">
         {props.route === "overview" && <SettingsOverview />}
         {props.route === "profile" && <><span id="settings-general" className="block scroll-mt-24" aria-hidden="true" /><SettingsSection icon={<SlidersHorizontal />} eyebrow={t("settings.general.eyebrow")} title={t("settings.general.title")} description={t("settings.general.description")}><OnboardingReentryCard startOnboardingReentry={props.startOnboardingReentry} /><ProfileSettingsCard data={props.data} setData={props.setData} setToast={props.setToast} /><LanguageSettingsCard /><SettingsBehaviorCard data={props.data} setData={props.setData} setToast={props.setToast} /></SettingsSection></>}
-        {props.route === "appearance" && <SettingsSection icon={<Palette />} eyebrow={t("settings.general.eyebrow")} title={t("settings.nav.appearance")} description={t("settings.general.description")}><AppearanceSettingsCard data={props.data} setData={props.setData} setToast={props.setToast} /></SettingsSection>}
         {props.route === "work" && <><span id="settings-work" className="block scroll-mt-24" aria-hidden="true" /><SettingsSection icon={<CalendarClock />} eyebrow={t("settings.work.eyebrow")} title={t("settings.work.title")} description={t("settings.work.description")}><WorkSettingsCard data={props.data} setData={props.setData} setToast={props.setToast} /><HolidayOverridesCard data={props.data} setData={props.setData} setToast={props.setToast} /></SettingsSection></>}
         {props.route === "payroll" && <SettingsSection icon={<WalletCards />} eyebrow={t("settings.work.eyebrow")} title={t("settings.nav.payroll")} description={t("settings.work.description")}><PayrollPolicyCard data={props.data} setData={props.setData} setToast={props.setToast} financialsHidden={props.financialsHidden} /><PayrollSettingsCard data={props.data} setData={props.setData} setToast={props.setToast} financialsHidden={props.financialsHidden} /></SettingsSection>}
         {props.route === "notifications" && <SettingsSection icon={<Bell />} eyebrow={t("settings.work.eyebrow")} title={t("settings.nav.notifications")} description={t("settings.work.description")}><NotificationSettingsCard data={props.data} setData={props.setData} requestPermission={props.requestNotificationPermission} setToast={props.setToast} /></SettingsSection>}

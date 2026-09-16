@@ -37,7 +37,7 @@ export function AttendanceEventEditDialog({ record, target, onClose, updateRecor
 
   return (
     <Dialog open onOpenChange={(open) => { if (!open) onClose(); }}>
-      <DialogContent data-attendance-edit-dialog className="w-[min(94vw,520px)] rounded-[22px] p-0">
+      <DialogContent data-attendance-edit-dialog className="w-[min(94vw,520px)] rounded-[var(--card-radius)] p-0">
         <DialogHeader className="border-b border-[var(--dashboard-border)] px-5 py-4 text-start sm:px-6">
           <DialogTitle className="flex items-center gap-2 text-base font-black">
             <PencilLine aria-hidden="true" className="size-4 text-[var(--accent-strong)]" />
@@ -78,7 +78,7 @@ export function AttendanceEventEditDialog({ record, target, onClose, updateRecor
           )}
 
           {(target.kind === "lunch" || target.kind === "break") && (
-            <label className="flex! cursor-pointer items-center justify-between gap-3 rounded-[14px] border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-3 py-3 text-[11px] font-bold text-[var(--text)]">
+            <label className="flex! cursor-pointer items-center justify-between gap-3 rounded-[var(--control-radius-sm)] border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-3 py-3 text-[11px] font-bold text-[var(--text)]">
               <span>{t("today.attendance.paidEdit")}</span>
               <Checkbox checked={Boolean(draft.paid)} onCheckedChange={(paid) => setDraft((current) => ({ ...current, paid }))} />
             </label>

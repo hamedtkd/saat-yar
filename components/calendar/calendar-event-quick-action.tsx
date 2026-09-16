@@ -15,7 +15,7 @@ export function CalendarEventQuickAction({ dateKey, compact = false }: { dateKey
   const calendar = useMemo(() => chooseWritableCalendar(integration.calendars, integration.selectedCalendarIds), [integration.calendars, integration.selectedCalendarIds]);
   if (integration.state !== "connected" || !calendar) return null;
   return <>
-    <Button type="button" size="sm" variant={compact ? "outline" : "default"} className={compact ? "h-8 rounded-xl px-2.5 text-[9px]" : undefined} onClick={() => setOpen(true)}><Plus className="size-3.5" />{t("calendar.google.createForSelectedDay")}</Button>
+    <Button type="button" size="sm" variant={compact ? "outline" : "default"} className={compact ? "h-8 rounded-[var(--card-radius)] px-2.5 text-[9px]" : undefined} onClick={() => setOpen(true)}><Plus className="size-3.5" />{t("calendar.google.createForSelectedDay")}</Button>
     <CalendarEventDialog open={open} onOpenChange={setOpen} dateKey={dateKey} defaultCalendarId={calendar.id} calendars={integration.calendars} busy={integration.mutating} onCreate={integration.createEvent} onUpdate={integration.updateEvent} onDelete={integration.deleteEvent} />
   </>;
 }

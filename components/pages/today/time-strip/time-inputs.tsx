@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import type { TodayTimeStripViewProps } from "./types";
 
 function TimeBlock({ icon, title, meta, picker, action }: { icon: React.ReactNode; title: string; meta: string; picker: React.ReactNode; action: React.ReactNode }) {
-  return <div className="grid min-w-0 gap-3 rounded-[18px] border border-[var(--dashboard-border)] bg-[var(--surface-2)] p-3.5">
-    <div className="flex items-center justify-between gap-3"><strong className="inline-flex items-center gap-2 text-sm font-black text-[var(--text)]"><span className="grid size-9 place-items-center rounded-xl bg-[var(--accent-soft)] text-[var(--accent-strong)] [&_svg]:size-4">{icon}</span>{title}</strong><span className="text-[9px] font-semibold text-[var(--text-muted)]">{meta}</span></div>
+  return <div className="grid min-w-0 gap-3 rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-2)] p-3.5">
+    <div className="flex items-center justify-between gap-3"><strong className="inline-flex items-center gap-2 text-sm font-black text-[var(--text)]"><span className="grid size-9 place-items-center rounded-[var(--card-radius)] bg-[var(--accent-soft)] text-[var(--accent-strong)] [&_svg]:size-4">{icon}</span>{title}</strong><span className="text-[9px] font-semibold text-[var(--text-muted)]">{meta}</span></div>
     {picker}
     {action}
   </div>;

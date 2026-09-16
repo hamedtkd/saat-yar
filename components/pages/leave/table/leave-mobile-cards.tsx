@@ -16,7 +16,7 @@ type LeaveMobileCardsProps = {
 
 function DetailRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className={cn("flex items-center justify-between gap-4", "rounded-xl border border-[var(--border)]", "bg-[var(--surface-1)] px-3 py-3")}>
+    <div className={cn("flex items-center justify-between gap-4", "rounded-[var(--card-radius)] border border-[var(--border)]", "bg-[var(--surface-1)] px-3 py-3")}>
       <span className="text-[10px] text-[var(--text-muted)]">{label}</span>
       <strong className="text-xs font-extrabold text-[var(--text)]">{value}</strong>
     </div>
@@ -31,7 +31,7 @@ export function LeaveMobileCards({ entries, onEdit, onDelete }: LeaveMobileCards
         const sameDate = entry.startDate === entry.endDate;
         const range = b("leave.table.rangeValue", { start: formatLeaveDate(entry.startDate, locale, calendar), end: formatLeaveDate(entry.endDate, locale, calendar) });
         return (
-          <article key={entry.id} className={cn("rounded-2xl border border-[var(--border)]", "bg-[var(--surface-2)] p-4")}>
+          <article key={entry.id} className={cn("rounded-[var(--card-radius)] border border-[var(--border)]", "bg-[var(--surface-2)] p-4")}>
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
@@ -40,7 +40,7 @@ export function LeaveMobileCards({ entries, onEdit, onDelete }: LeaveMobileCards
                 </div>
                 <p className="mt-2 text-[10px] leading-6 text-[var(--text-muted)]">{sameDate ? formatLeaveDate(entry.startDate, locale, calendar) : range}</p>
               </div>
-              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[var(--accent-soft)] text-[var(--accent-strong)]"><Umbrella className="size-5" /></span>
+              <span className="grid size-10 shrink-0 place-items-center rounded-[var(--card-radius)] bg-[var(--accent-soft)] text-[var(--accent-strong)]"><Umbrella className="size-5" /></span>
             </div>
             <div className="mt-4 grid gap-2">
               <DetailRow label={b("common.start")} value={formatLeaveDate(entry.startDate, locale, calendar)} />
@@ -48,7 +48,7 @@ export function LeaveMobileCards({ entries, onEdit, onDelete }: LeaveMobileCards
               <DetailRow label={b("common.duration")} value={getLeaveDurationLabel(entry, locale)} />
             </div>
             {entry.note && (
-              <div className="mt-3 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] px-3 py-3">
+              <div className="mt-3 rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-1)] px-3 py-3">
                 <span className="block text-[9px] text-[var(--text-muted)]">{b("common.description")}</span>
                 <p className="mt-1 text-[11px] leading-6 text-[var(--text)]">{entry.note}</p>
               </div>

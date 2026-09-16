@@ -20,7 +20,7 @@ export function HeaderSaveStatus({ state }: { state: SaveState }) {
       role="status"
       aria-live="polite"
       className={cn(
-        "hidden items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-bold lg:inline-flex",
+        "hidden items-center gap-1.5 rounded-[var(--control-radius-sm)] border px-2.5 py-1 text-[10px] font-bold lg:inline-flex",
         error
           ? "border-[color-mix(in_srgb,var(--danger)_28%,var(--border))] bg-[var(--danger-soft)] text-[var(--danger)]"
           : "border-[var(--dashboard-border)] bg-[var(--surface-2)] text-[var(--accent-strong)]",

@@ -4,17 +4,35 @@ export type Mode = "employee" | "freelancer" | "hybrid";
 export type WorkTimingMode = "scheduled" | "flexible";
 export type ThemeMode = "light" | "dark" | "system";
 export type ThemePreset = "spotify" | "emerald" | "ocean" | "violet" | "sunset" | "custom";
-export type RadiusScale = "compact" | "balanced" | "rounded";
+export type RadiusScale = "none" | "compact" | "balanced" | "rounded" | "extra";
 export type SurfaceStyle = "neutral" | "tinted" | "contrast";
+export type NeutralTone = "slate" | "zinc" | "stone" | "sand" | "paper" | "pearl" | "sage" | "clay";
+export type DensityScale = "compact" | "comfortable" | "spacious";
+export type InterfaceFont =
+  | "vazirmatn" | "system" | "serif"
+  | "geist" | "inter" | "noto-sans" | "nunito-sans" | "figtree" | "roboto" | "raleway" | "dm-sans" | "public-sans" | "outfit" | "oxanium" | "manrope" | "space-grotesk" | "montserrat" | "ibm-plex-sans" | "source-sans-3" | "instrument-sans"
+  | "geist-mono" | "jetbrains-mono"
+  | "noto-serif" | "roboto-slab" | "merriweather" | "lora" | "playfair-display" | "eb-garamond" | "instrument-serif"
+  | "mikhak" | "samim" | "shabnam" | "sahel" | "naskh";
+export type HeadingFont = InterfaceFont | "lalezar";
+export type SidebarStyle = "soft" | "solid" | "outline";
+export type SidebarAccent = "subtle" | "filled";
+export type SidebarWidth = "compact" | "default" | "wide";
 
 export type AppearanceSettings = {
   mode: ThemeMode;
   preset: ThemePreset;
   accent: string;
+  neutralTone: NeutralTone;
+  bodyFont: InterfaceFont;
+  headingFont: HeadingFont;
+  density: DensityScale;
   radius: RadiusScale;
   surface: SurfaceStyle;
+  sidebarStyle: SidebarStyle;
+  sidebarAccent: SidebarAccent;
+  sidebarWidth: SidebarWidth;
 };
-
 export type WeekdayKey = "saturday" | "sunday" | "monday" | "tuesday" | "wednesday" | "thursday" | "friday";
 
 export type WorkScheduleDay = {

@@ -49,10 +49,10 @@ export function DevicePairingQrScanner({ onCode, onClose }: { onCode: (code: str
   }, [locale, s]);
 
   return (
-    <div className="mt-3 rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-3" data-device-pairing-scanner>
+    <div className="mt-3 rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-2)] p-3" data-device-pairing-scanner>
       <div className="mb-2 flex items-center justify-between gap-2"><strong className="flex items-center gap-2 text-xs"><Camera className="size-4 text-[var(--accent-strong)]" /> {s("Scan connection QR")}</strong><Button size="icon" variant="ghost" onClick={onClose} aria-label={s("Close scanner")}><X /></Button></div>
-      <div className="relative overflow-hidden rounded-xl bg-black"><video ref={videoRef} muted playsInline className="aspect-square w-full object-cover" /><div className="pointer-events-none absolute inset-[12%] rounded-2xl border-2 border-white/80 shadow-[0_0_0_999px_rgba(0,0,0,.25)]" /></div>
-      {progress.total > 1 && <div className="mt-3 rounded-xl bg-[var(--accent-soft)] p-2 text-center text-[10px] font-bold text-[var(--accent-strong)]"><CheckCircle2 className="me-1 inline size-3.5" /> {s("{current} of {total} frames received", { current: number(progress.current), total: number(progress.total) })}</div>}
+      <div className="relative overflow-hidden rounded-[var(--card-radius)] bg-black"><video ref={videoRef} muted playsInline className="aspect-square w-full object-cover" /><div className="pointer-events-none absolute inset-[12%] rounded-[var(--card-radius)] border-2 border-white/80 shadow-[0_0_0_999px_rgba(0,0,0,.25)]" /></div>
+      {progress.total > 1 && <div className="mt-3 rounded-[var(--card-radius)] bg-[var(--accent-soft)] p-2 text-center text-[10px] font-bold text-[var(--accent-strong)]"><CheckCircle2 className="me-1 inline size-3.5" /> {s("{current} of {total} frames received", { current: number(progress.current), total: number(progress.total) })}</div>}
       {error && <p role="alert" className="mt-2 text-[10px] leading-6 text-[var(--danger)]">{error}</p>}
       <p className="mt-2 text-[9px] leading-5 text-[var(--text-muted)]">{s("QR is processed only in this browser and camera images are never sent to a server.")}</p>
     </div>

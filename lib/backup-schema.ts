@@ -1,11 +1,14 @@
 import { z } from "zod";
 import { migrateAppData } from "./data/migrations.ts";
 import { APP_DATA_SCHEMA_VERSION } from "./data/version.ts";
-import type { AppData } from "./types.ts";
+import type { AppData, HeadingFont, InterfaceFont } from "./types.ts";
+import { BODY_FONT_VALUES, HEADING_FONT_VALUES } from "./appearance-fonts.ts";
 
 const modeSchema = z.enum(["employee", "freelancer", "hybrid"]);
 const isoDateSchema = z.string().min(1);
 const timeSchema = z.string().regex(/^$|^\d{2}:\d{2}$/);
+const bodyFontSchema = z.string().refine((value) => BODY_FONT_VALUES.includes(value as InterfaceFont));
+const headingFontSchema = z.string().refine((value) => HEADING_FONT_VALUES.includes(value as HeadingFont));
 
 
 const workScheduleDaySchema = z.object({
@@ -77,8 +80,15 @@ const settingsSchema = z.object({
     mode: z.enum(["light", "dark", "system"]),
     preset: z.enum(["spotify", "emerald", "ocean", "violet", "sunset", "custom"]),
     accent: z.string().regex(/^#[0-9a-fA-F]{6}$/),
-    radius: z.enum(["compact", "balanced", "rounded"]),
+    neutralTone: z.enum(["slate", "zinc", "stone", "sand", "paper", "pearl", "sage", "clay"]).optional(),
+    bodyFont: bodyFontSchema.optional(),
+    headingFont: headingFontSchema.optional(),
+    density: z.enum(["compact", "comfortable", "spacious"]).optional(),
+    radius: z.enum(["none", "compact", "balanced", "rounded", "extra"]),
     surface: z.enum(["neutral", "tinted", "contrast"]),
+    sidebarStyle: z.enum(["soft", "solid", "outline"]).optional(),
+    sidebarAccent: z.enum(["subtle", "filled"]).optional(),
+    sidebarWidth: z.enum(["compact", "default", "wide"]).optional(),
   }).passthrough(),
   autoSaveSettings: z.boolean(),
   notificationSettings: z.object({

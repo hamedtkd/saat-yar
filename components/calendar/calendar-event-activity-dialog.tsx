@@ -37,7 +37,7 @@ export function CalendarEventActivityDialog({ open, onOpenChange, event, onConfi
           <DialogDescription>{t("calendar.google.activityImportDescription")}</DialogDescription>
         </DialogHeader>
         <div className="grid gap-3">
-          <div className="rounded-xl border border-[var(--dashboard-border)] bg-[var(--surface-2)] p-3"><strong className="block truncate text-[11px] text-[var(--text)]">{event.title || t("calendar.google.busy")}</strong><span className="mt-1 block text-[9px] text-[var(--text-muted)]" dir="ltr">{time(event.start)}–{time(event.end)}</span></div>
+          <div className="rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-2)] p-3"><strong className="block truncate text-[11px] text-[var(--text)]">{event.title || t("calendar.google.busy")}</strong><span className="mt-1 block text-[9px] text-[var(--text-muted)]" dir="ltr">{time(event.start)}–{time(event.end)}</span></div>
           <label className="grid gap-1.5 text-[10px] font-bold text-[var(--text-muted)]"><span>{t("calendar.google.activityKind")}</span><Select value={kind} onValueChange={(value) => setKind(value as ActivityKind)}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{activityKinds.map((item) => <SelectItem key={item} value={item}>{t(activityKindLabelKeys[item])}</SelectItem>)}</SelectContent></Select></label>
           <p className="text-[9px] leading-5 text-[var(--text-muted)]">{t("calendar.google.activityImportSafety")}</p>
         </div>

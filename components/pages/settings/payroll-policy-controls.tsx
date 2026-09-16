@@ -38,7 +38,7 @@ function MonthlyRateBasis({ policy, onChange }: { policy: PayrollCalculationPoli
   const { s } = useSystemUi();
   const standardMonth = policy.rateBasis === "standard-month";
   return (
-    <div className="grid gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-3" data-payroll-rate-basis>
+    <div className="grid gap-3 rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-2)] p-3" data-payroll-rate-basis>
       <div className="grid grid-cols-2 gap-3 max-[620px]:grid-cols-1">
         <label>{s("Hourly rate basis")}<Select value={policy.rateBasis} onValueChange={(rateBasis) => onChange({ rateBasis: rateBasis as PayrollRateBasis })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="standard-month">{s("Standard month (recommended)")}</SelectItem><SelectItem value="period-target">{s("Period target hours")}</SelectItem></SelectContent></Select></label>
         {standardMonth && <label>{s("Standard monthly hours")}<NumberField step="1" min={1} value={policy.standardMonthMinutes / 60} onValueChange={(hours) => onChange({ standardMonthMinutes: Math.max(60, Math.round(hours * 60)) })} /></label>}
@@ -50,9 +50,9 @@ function MonthlyRateBasis({ policy, onChange }: { policy: PayrollCalculationPoli
 
 function RateRule({ label, rule, hidden, onChange }: { label: string; rule: PayrollCalculationPolicy["overtime"]; hidden: boolean; onChange: (next: Partial<PayrollCalculationPolicy["overtime"]>) => void }) {
   const { s } = useSystemUi();
-  return <div className="grid grid-cols-3 gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-3 max-[620px]:grid-cols-1"><label>{label}<Select value={rule.mode} onValueChange={(mode) => onChange({ mode: mode as PayrollPremiumMode })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="multiplier">{s("Base-rate multiplier")}</SelectItem><SelectItem value="fixed-hourly">{s("Fixed hourly rate")}</SelectItem><SelectItem value="ignore">{s("Do not calculate")}</SelectItem></SelectContent></Select></label>{rule.mode === "multiplier" && <label>{s("Multiplier")}<NumberField step="0.1" value={rule.multiplier} onValueChange={(multiplier) => onChange({ multiplier })} /></label>}{rule.mode === "fixed-hourly" && <MoneyField label={s("Hourly rate")} value={rule.hourlyRate} hidden={hidden} onChange={(hourlyRate) => onChange({ hourlyRate })} />}</div>;
+  return <div className="grid grid-cols-3 gap-3 rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-2)] p-3 max-[620px]:grid-cols-1"><label>{label}<Select value={rule.mode} onValueChange={(mode) => onChange({ mode: mode as PayrollPremiumMode })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="multiplier">{s("Base-rate multiplier")}</SelectItem><SelectItem value="fixed-hourly">{s("Fixed hourly rate")}</SelectItem><SelectItem value="ignore">{s("Do not calculate")}</SelectItem></SelectContent></Select></label>{rule.mode === "multiplier" && <label>{s("Multiplier")}<NumberField step="0.1" value={rule.multiplier} onValueChange={(multiplier) => onChange({ multiplier })} /></label>}{rule.mode === "fixed-hourly" && <MoneyField label={s("Hourly rate")} value={rule.hourlyRate} hidden={hidden} onChange={(hourlyRate) => onChange({ hourlyRate })} />}</div>;
 }
 
 function MoneyField({ label, value, hidden, onChange }: { label: string; value: number; hidden: boolean; onChange: (value: number) => void }) {
-  return <label>{label}{hidden ? <div className="flex h-11 items-center rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 font-black tracking-[.2em] text-[var(--text-muted)]">••••••</div> : <NumberField value={value} onValueChange={onChange} />}</label>;
+  return <label>{label}{hidden ? <div className="flex h-11 items-center rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-2)] px-3 font-black tracking-[.2em] text-[var(--text-muted)]">••••••</div> : <NumberField value={value} onValueChange={onChange} />}</label>;
 }

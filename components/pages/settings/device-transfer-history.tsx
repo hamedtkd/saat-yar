@@ -23,7 +23,7 @@ export function DeviceTransferHistory({ entries, onClear }: {
   };
 
   return (
-    <div className="mt-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-4" data-device-transfer-history>
+    <div className="mt-4 rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-2)] p-4" data-device-transfer-history>
       <div className="mb-3 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <History className="size-4 text-[var(--accent-strong)]" />
@@ -38,8 +38,8 @@ export function DeviceTransferHistory({ entries, onClear }: {
             ? s("Unknown time")
             : date(entry.at, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
           return (
-            <div key={entry.id} className="flex items-start gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] px-3 py-2.5">
-              <span className="mt-0.5 rounded-lg bg-[var(--accent-soft)] p-1.5 text-[var(--accent-strong)]"><Icon className="size-3.5" /></span>
+            <div key={entry.id} className="flex items-start gap-3 rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-1)] px-3 py-2.5">
+              <span className="mt-0.5 rounded-[var(--control-radius)] bg-[var(--accent-soft)] p-1.5 text-[var(--accent-strong)]"><Icon className="size-3.5" /></span>
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <strong className="text-[10px]">{entry.direction === "sent" ? s("Sent to {device}", { device: entry.deviceName }) : s("Received from {device}", { device: entry.deviceName })}</strong>
