@@ -20,13 +20,16 @@ test("filled interactive surfaces use the dedicated accent fill token", async ()
   const files = [
     "components/ui/button.tsx",
     "components/ui/checkbox.tsx",
-    "components/layout/navigation/sidebar-nav.tsx",
     "components/pickers/jalali-date-picker/date-picker-dialog.tsx",
   ];
   for (const file of files) {
     const source = await read(file);
     assert.match(source, /var\(--accent-fill\)/);
   }
+  const sidebar = await read("components/layout/navigation/sidebar-nav.tsx");
+  const globals = await read("app/globals.css");
+  assert.match(sidebar, /var\(--sidebar-active-bg\)/);
+  assert.match(globals, /--sidebar-active-bg: var\(--accent-fill\)/);
   const runtime = await read("components/theme/theme-runtime.tsx");
   const bootstrap = await read("components/theme/theme-bootstrap.tsx");
   assert.match(runtime, /--accent-fill/);

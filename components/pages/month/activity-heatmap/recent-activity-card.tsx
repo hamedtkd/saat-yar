@@ -36,7 +36,7 @@ export function RecentActivityCard({
               aria-pressed={day.key === selectedDate}
               onClick={() => setSelectedDate(day.key)}
               className={cn(
-                "grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-lg px-1.5 py-2 text-start outline-none transition hover:bg-[var(--surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--accent)]",
+                "grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-[var(--control-radius)] px-1.5 py-2 text-start outline-none transition hover:bg-[var(--surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--accent)]",
                 day.key === selectedDate && "bg-[var(--accent-soft)]",
               )}
             >
@@ -45,8 +45,8 @@ export function RecentActivityCard({
                   <span className="truncate text-[10px] font-bold text-[var(--text)]">{date(day.key, { weekday: "short", day: "numeric", month: "short" })}</span>
                   <span className="shrink-0 text-[8px] text-[var(--text-muted)]">{day.target > 0 ? t("month.recent.target", { value: duration(day.target) }) : t("month.recent.noTarget")}</span>
                 </span>
-                <span className="mt-1.5 block h-1.5 overflow-hidden rounded-full bg-[var(--surface-3)]">
-                  <span className="block h-full rounded-full bg-[var(--accent)] transition-[width]" style={{ width: `${progress}%` }} />
+                <span className="mt-1.5 block h-1.5 overflow-hidden rounded-[var(--micro-radius)] bg-[var(--surface-3)]">
+                  <span className="block h-full rounded-[var(--micro-radius)] bg-[var(--accent)] transition-[width]" style={{ width: `${progress}%` }} />
                 </span>
               </span>
               <span className="min-w-[88px] text-end">

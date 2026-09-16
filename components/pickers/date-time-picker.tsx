@@ -81,7 +81,7 @@ export function DateTimePicker({
         aria-haspopup="dialog"
         aria-expanded={open}
         onClick={openPicker}
-        className="h-11 w-full min-w-0 justify-start gap-2 rounded-xl px-2.5 text-start shadow-none max-[359px]:gap-1.5 max-[359px]:rounded-[10px] max-[359px]:px-2"
+        className="h-11 w-full min-w-0 justify-start gap-2 rounded-[var(--card-radius)] px-2.5 text-start shadow-none max-[359px]:gap-1.5 max-[359px]:rounded-[var(--control-radius-sm)] max-[359px]:px-2"
       >
         <CalendarClock aria-hidden="true" className="size-4 shrink-0 text-[var(--accent-strong)]" />
         <span className="min-w-0 flex-1 truncate text-[10px] font-bold text-[var(--text)]">{formattedDate}</span>
@@ -107,7 +107,7 @@ export function DateTimePicker({
             <Button type="button" variant="ghost" size="icon" aria-label={closeLabel} onClick={() => setOpen(false)}><X aria-hidden="true" /></Button>
           </div>
           <div className="grid grid-cols-[minmax(0,1.3fr)_minmax(220px,.7fr)] gap-4 max-[700px]:grid-cols-1 max-[359px]:gap-3">
-            <div className="rounded-[22px] border border-[var(--border)] bg-[var(--surface-2)] p-3 max-[359px]:rounded-[18px] max-[359px]:p-2">
+            <div className="rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-2)] p-3 max-[359px]:rounded-[var(--card-radius)] max-[359px]:p-2">
               <CalendarHeader locale={locale} title={title} onPreviousMonth={() => setViewDate((current) => shiftCalendarMonth(current, -1, calendar))} onNextMonth={() => setViewDate((current) => shiftCalendarMonth(current, 1, calendar))} />
               <CalendarGrid
                 locale={locale}

@@ -14,7 +14,7 @@ export function SectionHeading({ icon, eyebrow, title, description, trailing, cl
     <div className={cn("mb-3 flex flex-wrap items-center justify-between gap-3 px-1", className)}>
       <div className="flex min-w-0 items-center gap-3">
         {icon && (
-          <span className="grid size-10 shrink-0 place-items-center rounded-[13px] border border-[color-mix(in_srgb,var(--accent)_18%,var(--dashboard-border))] bg-[var(--accent-soft)] text-[var(--accent-strong)] [&_svg]:size-5">
+          <span className="grid size-10 shrink-0 place-items-center rounded-[var(--control-radius)] border border-[color-mix(in_srgb,var(--accent)_18%,var(--dashboard-border))] bg-[var(--accent-soft)] text-[var(--accent-strong)] [&_svg]:size-5">
             {icon}
           </span>
         )}

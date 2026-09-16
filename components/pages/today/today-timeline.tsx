@@ -163,7 +163,7 @@ export function TodayTimeline(
               return (
                 <div
                   className={cn(
-                    "min-w-0 rounded-[15px] border border-[var(--dashboard-border)] bg-[color-mix(in_srgb,var(--surface-2)_72%,transparent)] p-3 max-[359px]:rounded-[13px] max-[359px]:p-2.5",
+                    "min-w-0 rounded-[var(--control-radius)] border border-[var(--dashboard-border)] bg-[color-mix(in_srgb,var(--surface-2)_72%,transparent)] p-3 max-[359px]:rounded-[var(--control-radius-sm)] max-[359px]:p-2.5",
                     (action === "running" || action === "paused") && "border-[color-mix(in_srgb,var(--accent)_28%,var(--dashboard-border))] bg-[color-mix(in_srgb,var(--accent-soft)_55%,var(--surface-2))]",
                   )}
                   key={project.id}

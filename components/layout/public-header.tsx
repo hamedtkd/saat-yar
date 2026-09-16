@@ -10,7 +10,7 @@ import { cn } from "@/lib/cn";
 import type { AppearanceSettings, ThemeMode } from "@/lib/types";
 import { getPublicNavigationLabels } from "@/lib/public-navigation-content";
 
-const linkClass = "inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-3 text-[10px] font-bold text-[var(--text)] transition hover:border-[var(--accent)] hover:text-[var(--accent-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)] max-[460px]:size-10 max-[460px]:px-0";
+const linkClass = "inline-flex min-h-10 items-center justify-center gap-1.5 rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-3 text-[10px] font-bold text-[var(--text)] transition hover:border-[var(--accent)] hover:text-[var(--accent-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)] max-[460px]:size-10 max-[460px]:px-0";
 
 export function PublicHeader({
   appearance,
@@ -25,9 +25,9 @@ export function PublicHeader({
   return (
     <header
       data-public-header
-      className="sticky top-2 z-50 mx-auto flex w-full min-w-0 max-w-5xl items-center justify-between gap-2 rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] px-3 py-2 shadow-[0_6px_20px_rgba(0,0,0,.035)] backdrop-blur-xl sm:px-4"
+      className="sticky top-2 z-50 mx-auto flex w-full min-w-0 max-w-5xl items-center justify-between gap-2 rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-glass)] px-3 py-2 shadow-[var(--surface-shadow)] backdrop-blur-xl sm:px-4"
     >
-      <Link href="/today" className="flex min-w-0 items-center gap-2 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]">
+      <Link href="/today" className="flex min-w-0 items-center gap-2 rounded-[var(--card-radius)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]">
         <BrandMark size={34} animated={false} label={t("app.logoLabel")} />
         <strong className="truncate text-[12px] text-[var(--text)] max-[520px]:hidden">{copy.brand}</strong>
       </Link>
@@ -44,7 +44,7 @@ export function PublicHeader({
         </Link>
         <LanguageSwitcher variant="compact" className="shrink-0" />
         <ThemeToggle
-          className={cn("size-10 min-h-10 min-w-10 rounded-xl")}
+          className={cn("size-10 min-h-10 min-w-10 rounded-[var(--card-radius)]")}
           appearance={appearance}
           onChange={onThemeModeChange}
         />

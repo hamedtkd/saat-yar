@@ -27,10 +27,10 @@ export function MonthTableHeader({ recordCount, sort, onSortChange }: MonthTable
   return (
     <div className="grid gap-3 px-4 pt-4 sm:px-5 sm:pt-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
       <PanelHead icon={<FileSpreadsheet />} title={t("month.table.dailyDetails")}>
-        {recordCount > 0 && <span className="rounded-full bg-[var(--surface-2)] px-3 py-1.5 text-[10px] font-bold text-[var(--text-muted)]">{t("month.calendar.withRecords", { count: number(recordCount) })}</span>}
+        {recordCount > 0 && <span className="rounded-[var(--control-radius-sm)] bg-[var(--surface-2)] px-3 py-1.5 text-[10px] font-bold text-[var(--text-muted)]">{t("month.calendar.withRecords", { count: number(recordCount) })}</span>}
       </PanelHead>
       {recordCount > 1 && (
-        <div data-month-table-sort className="flex min-w-0 items-center gap-2 rounded-[14px] border border-[var(--dashboard-border)] bg-[var(--surface-2)] p-1.5 md:hidden">
+        <div data-month-table-sort className="flex min-w-0 items-center gap-2 rounded-[var(--control-radius-sm)] border border-[var(--dashboard-border)] bg-[var(--surface-2)] p-1.5 md:hidden">
           <span className="shrink-0 px-1 text-[9px] font-bold text-[var(--text-muted)]">{t("month.table.sortBy")}</span>
           <Select value={sort.key} onValueChange={(value) => onSortChange({ ...sort, key: value as MonthTableSortKey })}>
             <SelectTrigger className="h-9 min-w-0 flex-1 border-0 bg-[var(--surface-1)]"><SelectValue /></SelectTrigger>

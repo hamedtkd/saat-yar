@@ -49,10 +49,10 @@ export function CustomRemindersEditor({ reminders, disabled, onChange }: Props) 
   };
 
   return (
-    <section data-custom-reminder className="grid gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-3.5 sm:p-4 lg:col-span-2">
+    <section data-custom-reminder className="grid gap-3 rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-2)] p-3.5 sm:p-4 lg:col-span-2">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <span className="flex min-w-0 flex-1 items-start gap-3">
-          <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-[var(--accent-soft)] text-[var(--accent-strong)]"><BellDot /></span>
+          <span className="grid size-9 shrink-0 place-items-center rounded-[var(--control-radius)] bg-[var(--accent-soft)] text-[var(--accent-strong)]"><BellDot /></span>
           <span className="grid min-w-0 gap-1">
             <strong className="text-[11px] text-[var(--text)]">{s("Custom active-work reminders")}</strong>
             <small className="text-[9px] leading-4 text-[var(--text-muted)]">{s("Create up to five independent reminders based only on real active work; lunch and breaks never count.")}</small>
@@ -71,7 +71,7 @@ export function CustomRemindersEditor({ reminders, disabled, onChange }: Props) 
       </div>
 
       {reminders.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-[var(--border)] px-3 py-4 text-center text-[10px] font-semibold leading-5 text-[var(--text-muted)]">
+        <div className="rounded-[var(--card-radius)] border border-dashed border-[var(--border)] px-3 py-4 text-center text-[10px] font-semibold leading-5 text-[var(--text-muted)]">
           {s("No custom reminders yet. Add one when you want a personal nudge after a specific amount of active work.")}
         </div>
       ) : (
@@ -80,7 +80,7 @@ export function CustomRemindersEditor({ reminders, disabled, onChange }: Props) 
             const editing = editingId === reminder.id;
             const title = reminder.title.trim() || s("Reminder {number}", { number: index + 1 });
             return (
-              <article key={reminder.id} data-custom-reminder-item className="rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-3">
+              <article key={reminder.id} data-custom-reminder-item className="rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-1)] p-3">
                 <div className="flex min-w-0 flex-wrap items-center gap-2.5">
                   <Checkbox
                     disabled={disabled}

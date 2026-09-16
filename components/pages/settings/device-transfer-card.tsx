@@ -54,7 +54,7 @@ export function DeviceTransferCard({ data, setData, setToast }: {
     <section id="settings-device-transfer" className="scroll-mt-24 dashboard-card rounded-[var(--card-radius)] border border-[var(--dashboard-border)] p-5 shadow-[0_5px_16px_rgba(0,0,0,.03)]">
       <PanelHead icon={<ArrowRightLeft />} title={s("Connect phone and laptop")} />
       <p className="mb-3 text-[11px] leading-7 text-[var(--text-muted)]">{s("Connect two devices directly with WebRTC and transfer encrypted AppData without an account or central database.")}</p>
-      <div className="mb-4 flex items-center justify-between gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2" data-device-transfer-session-status>
+      <div className="mb-4 flex items-center justify-between gap-3 rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2" data-device-transfer-session-status>
         <span className="text-[10px] font-bold">{s("Session status")}</span>
         <span className="text-[10px] text-[var(--accent-strong)]">{sessionView.label}</span>
       </div>
@@ -62,10 +62,10 @@ export function DeviceTransferCard({ data, setData, setToast }: {
 
       {pairing.role === "idle" && (
         <div className="grid grid-cols-2 gap-3 max-[620px]:grid-cols-1">
-          <button type="button" onClick={() => void pairing.startSender()} className="rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-4 text-start hover:border-[var(--accent)]">
+          <button type="button" onClick={() => void pairing.startSender()} className="rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-2)] p-4 text-start hover:border-[var(--accent)]">
             <Laptop className="mb-3 size-6 text-[var(--accent-strong)]" /><strong className="block text-sm">{s("Send from this device")}</strong><span className="mt-1 block text-[10px] leading-6 text-[var(--text-muted)]">{s("Use this on the device that has the primary data.")}</span>
           </button>
-          <button type="button" onClick={pairing.prepareReceiver} className="rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-4 text-start hover:border-[var(--accent)]">
+          <button type="button" onClick={pairing.prepareReceiver} className="rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-2)] p-4 text-start hover:border-[var(--accent)]">
             <Smartphone className="mb-3 size-6 text-[var(--accent-strong)]" /><strong className="block text-sm">{s("Receive on this device")}</strong><span className="mt-1 block text-[10px] leading-6 text-[var(--text-muted)]">{s("Scan the QR or enter the Pairing code.")}</span>
           </button>
         </div>
@@ -81,7 +81,7 @@ export function DeviceTransferCard({ data, setData, setToast }: {
       )}
 
       {pairing.localCode && (
-        <div className="mt-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-4">
+        <div className="mt-4 rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-2)] p-4">
           <div className="mb-2 flex items-center justify-between gap-2"><strong className="text-xs">{pairing.role === "sender" ? s("This device Offer") : s("This device Answer")}</strong><span className="text-[9px] text-[var(--text-muted)]">{s("Offer valid for 10 minutes")}</span></div>
           <DevicePairingQrDisplay key={pairing.localCode} code={pairing.localCode} />
           <Textarea readOnly value={pairing.localCode} className="mt-3 min-h-20 text-left text-[9px]" dir="ltr" />
@@ -103,7 +103,7 @@ export function DeviceTransferCard({ data, setData, setToast }: {
       )}
 
       {connected && (
-        <div className="mt-4 rounded-2xl border border-[color-mix(in_srgb,var(--accent)_40%,var(--border))] bg-[var(--accent-soft)] p-4">
+        <div className="mt-4 rounded-[var(--card-radius)] border border-[color-mix(in_srgb,var(--accent)_40%,var(--border))] bg-[var(--accent-soft)] p-4">
           <div className="flex items-center gap-2 text-sm font-bold text-[var(--accent-strong)]"><CheckCircle2 className="size-5" /> {pairing.state === "completed" ? s("This transfer session is complete") : s("Direct connection is active")}</div>
           {pairing.role === "sender" && pairing.state !== "completed" && <Button className="mt-3 w-full" onClick={() => void pairing.sendCurrentData()}><Send /> {s("Send encrypted data")}</Button>}
           {pairing.role === "receiver" && pairing.state === "connected" && <p className="mt-2 text-[10px] text-[var(--text-muted)]">{s("Connection is ready; wait for the sender device's encrypted package.")}</p>}
@@ -113,7 +113,7 @@ export function DeviceTransferCard({ data, setData, setToast }: {
 
       {pairing.preview && pairing.incoming && <DeviceTransferPreviewPanel preview={pairing.preview} sourceName={pairing.incoming.source.deviceName} onApply={pairing.applyIncoming} onCancel={pairing.reset} />}
       <DeviceTransferHistory entries={pairing.history} onClear={pairing.clearHistory} />
-      {pairing.error && <p role="alert" className="mt-3 rounded-xl border border-[var(--danger)] bg-[var(--danger-soft)] p-3 text-[10px] font-semibold text-[var(--danger)]">{pairing.error}</p>}
+      {pairing.error && <p role="alert" className="mt-3 rounded-[var(--card-radius)] border border-[var(--danger)] bg-[var(--danger-soft)] p-3 text-[10px] font-semibold text-[var(--danger)]">{pairing.error}</p>}
       {pairing.role !== "idle" && <Button variant="ghost" size="sm" className="mt-3 w-full" onClick={pairing.reset}><RefreshCcw /> {s("End session and start over")}</Button>}
       <p className="mt-3 text-[9px] leading-6 text-[var(--text-muted)]">{s("For serverless signaling, both devices should preferably be on the same Wi-Fi. If camera scanning is unavailable, Copy/Paste still works.")}</p>
     </section>

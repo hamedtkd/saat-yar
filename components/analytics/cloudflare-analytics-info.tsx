@@ -12,9 +12,9 @@ export function CloudflareAnalyticsInfo({ compact = false }: { compact?: boolean
 
   return (
     <div data-cloudflare-web-analytics-info className={cn("grid gap-3", compact && "mx-auto max-w-[680px]") }>
-      <div className={cn("rounded-xl border border-[var(--border)] bg-[var(--surface-2)]", compact ? "p-3" : "p-4") }>
+      <div className={cn("rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-2)]", compact ? "p-3" : "p-4") }>
         <div className="flex items-start gap-3">
-          <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[var(--accent-soft)] text-[var(--accent-strong)]"><BarChart3 /></span>
+          <span className="grid size-9 shrink-0 place-items-center rounded-[var(--card-radius)] bg-[var(--accent-soft)] text-[var(--accent-strong)]"><BarChart3 /></span>
           <span className="min-w-0 flex-1">
             <strong className="block text-[11px] text-[var(--text)]">{s("Privacy-friendly traffic analytics")}</strong>
             <small className="mt-1 block text-[9px] leading-5 text-[var(--text-muted)]">{s("Cloudflare Web Analytics measures aggregate visits and page performance without storing analytics cookies or browser-storage identifiers.")}</small>
@@ -27,7 +27,7 @@ export function CloudflareAnalyticsInfo({ compact = false }: { compact?: boolean
       </div>
 
       {!config.configured && (
-        <p className="rounded-xl border border-[color-mix(in_srgb,var(--warning)_28%,var(--border))] bg-[var(--warning-soft)] px-3 py-2 text-[9px] leading-5 text-[var(--warning)]">
+        <p className="rounded-[var(--card-radius)] border border-[color-mix(in_srgb,var(--warning)_28%,var(--border))] bg-[var(--warning-soft)] px-3 py-2 text-[9px] leading-5 text-[var(--warning)]">
           {s("Traffic analytics is not configured in this build, so the Cloudflare beacon is not loaded.")}
         </p>
       )}

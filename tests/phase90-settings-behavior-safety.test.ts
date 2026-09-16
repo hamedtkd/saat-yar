@@ -14,8 +14,15 @@ test("appearance preview always returns complete string tokens", () => {
     mode: "system",
     preset: "spotify",
     accent: "#1ed760",
+    neutralTone: "slate",
+    bodyFont: "vazirmatn",
+    headingFont: "vazirmatn",
+    density: "comfortable",
     radius: "balanced",
     surface: "tinted",
+    sidebarStyle: "soft",
+    sidebarAccent: "filled",
+    sidebarWidth: "default",
   };
   const tokens = createAppearancePreviewTokens(appearance, "light");
   const required = [

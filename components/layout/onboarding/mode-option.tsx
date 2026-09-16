@@ -31,7 +31,7 @@ export function ModeOption({ id, icon: Icon, title, points, selected, onSelect }
           <Check aria-hidden="true" />
         </span>
       )}
-      <span className={cn("mx-auto mb-6 mt-3 grid size-16 place-items-center rounded-2xl bg-[var(--surface-2)] text-[var(--text-muted)]", selected && "bg-[var(--surface-1)] text-[var(--accent-strong)]", "max-[620px]:mb-3 max-[620px]:mt-0 max-[620px]:size-12")}>
+      <span className={cn("mx-auto mb-6 mt-3 grid size-16 place-items-center rounded-[var(--card-radius)] bg-[var(--surface-2)] text-[var(--text-muted)]", selected && "bg-[var(--surface-1)] text-[var(--accent-strong)]", "max-[620px]:mb-3 max-[620px]:mt-0 max-[620px]:size-12")}>
         <Icon className="size-8 max-[620px]:size-6" aria-hidden="true" />
       </span>
       <strong className="text-xl">{title}</strong>

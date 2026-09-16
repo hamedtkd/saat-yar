@@ -99,8 +99,8 @@ export function TimeWheel({ locale, label, value, options, onChange }: Props) {
 
   return (
     <div className="relative min-w-0 flex-1" dir="ltr">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-x-1 top-1/2 z-10 h-11 -translate-y-1/2 rounded-xl max-[359px]:h-10 max-[359px]:rounded-[10px] border border-[color-mix(in_srgb,var(--accent)_34%,var(--border))] bg-[var(--accent-soft)] shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--accent)_8%,transparent)]" />
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-20 rounded-2xl bg-[linear-gradient(180deg,var(--surface-1)_0%,transparent_28%,transparent_72%,var(--surface-1)_100%)]" />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-x-1 top-1/2 z-10 h-11 -translate-y-1/2 rounded-[var(--card-radius)] max-[359px]:h-10 max-[359px]:rounded-[var(--control-radius-sm)] border border-[color-mix(in_srgb,var(--accent)_34%,var(--border))] bg-[var(--accent-soft)] shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--accent)_8%,transparent)]" />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-20 rounded-[var(--card-radius)] bg-[linear-gradient(180deg,var(--surface-1)_0%,transparent_28%,transparent_72%,var(--surface-1)_100%)]" />
       <div
         ref={scrollRef}
         role="listbox"
@@ -109,7 +109,7 @@ export function TimeWheel({ locale, label, value, options, onChange }: Props) {
         tabIndex={0}
         data-time-wheel
         className={cn(
-          "relative z-0 h-[220px] cursor-grab snap-y snap-mandatory overflow-y-auto overscroll-contain rounded-2xl px-1 py-[88px] select-none active:cursor-grabbing [touch-action:pan-y] max-[359px]:h-[196px] max-[359px]:rounded-xl max-[359px]:py-[76px]",
+          "relative z-0 h-[220px] cursor-grab snap-y snap-mandatory overflow-y-auto overscroll-contain rounded-[var(--card-radius)] px-1 py-[88px] select-none active:cursor-grabbing [touch-action:pan-y] max-[359px]:h-[196px] max-[359px]:rounded-[var(--card-radius)] max-[359px]:py-[76px]",
           "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]",
         )}
         onScroll={handleScroll}
@@ -138,7 +138,7 @@ export function TimeWheel({ locale, label, value, options, onChange }: Props) {
               aria-selected={selected}
               tabIndex={-1}
               className={cn(
-                "flex h-11 w-full snap-center items-center justify-center rounded-xl text-lg font-bold max-[359px]:h-10 max-[359px]:rounded-[10px] max-[359px]:text-base tabular-nums transition-[color,opacity,transform]",
+                "flex h-11 w-full snap-center items-center justify-center rounded-[var(--card-radius)] text-lg font-bold max-[359px]:h-10 max-[359px]:rounded-[var(--control-radius-sm)] max-[359px]:text-base tabular-nums transition-[color,opacity,transform]",
                 selected ? "scale-105 text-[var(--accent-strong)]" : "text-[var(--text-muted)] opacity-70 hover:opacity-100",
               )}
               onClick={() => onChange(option)}

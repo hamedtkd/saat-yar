@@ -60,16 +60,16 @@ export function TodaySmartSummary({ record, result, dailyTarget, suggestedExit, 
           <strong className="block text-xs font-black text-[var(--text)]">{t("today.summary.today")}</strong>
           <span className="text-[10px] text-[var(--text-muted)]">{status}</span>
         </div>
-        <span className="rounded-full bg-[var(--accent-soft)] px-3 py-1 text-[10px] font-black text-[var(--accent-strong)]">{scheduledDayOff ? t("today.summary.scheduledOff") : hasTarget ? t("today.summary.progress", { percent: percent(progress) }) : t("today.summary.noTarget")}</span>
+        <span className="rounded-[var(--control-radius-sm)] bg-[var(--accent-soft)] px-3 py-1 text-[10px] font-black text-[var(--accent-strong)]">{scheduledDayOff ? t("today.summary.scheduledOff") : hasTarget ? t("today.summary.progress", { percent: percent(progress) }) : t("today.summary.noTarget")}</span>
       </div>
       <div className="grid grid-cols-[minmax(190px,.72fr)_repeat(4,minmax(0,1fr))] gap-2.5 max-[1080px]:grid-cols-2 max-[620px]:grid-cols-1">
-        <div className="flex min-h-[78px] items-center justify-center gap-3 rounded-[16px] border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-3 max-[1080px]:col-span-2 max-[620px]:col-span-1">
+        <div className="flex min-h-[78px] items-center justify-center gap-3 rounded-[var(--control-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-3 max-[1080px]:col-span-2 max-[620px]:col-span-1">
           <ProgressRing value={progress} size="sm"><strong className="text-sm font-black">{hasTarget ? percent(progress) : "—"}</strong></ProgressRing>
           <div><small className="block text-[10px] text-[var(--text-muted)]">{scheduledDayOff ? t("today.summary.zeroRequired") : hasTarget ? t("today.summary.targetProgress") : t("today.summary.noTargetShort")}</small><strong className="mt-1 block text-lg font-black text-[var(--accent-strong)]">{duration(creditedMinutes)}</strong></div>
         </div>
         {items.map((item) => (
-          <div key={item.label} className="flex min-h-[78px] items-center gap-3 rounded-[16px] border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-3 py-2.5">
-            <span className={`grid size-9 shrink-0 place-items-center rounded-xl ${item.tone} [&_svg]:size-4`}>{item.icon}</span>
+          <div key={item.label} className="flex min-h-[78px] items-center gap-3 rounded-[var(--control-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-3 py-2.5">
+            <span className={`grid size-9 shrink-0 place-items-center rounded-[var(--card-radius)] ${item.tone} [&_svg]:size-4`}>{item.icon}</span>
             <div className="min-w-0"><small className="block truncate text-[9px] font-semibold text-[var(--text-muted)]">{item.label}</small><strong className="mt-1 block truncate text-sm font-black text-[var(--text)]">{item.value}</strong></div>
           </div>
         ))}

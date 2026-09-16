@@ -6,6 +6,8 @@ export function AppearanceOption({
   label,
   children,
   onClick,
+  onPreview,
+  onPreviewEnd,
   className,
   disabled = false,
 }: {
@@ -13,6 +15,8 @@ export function AppearanceOption({
   label: string;
   children?: React.ReactNode;
   onClick: () => void;
+  onPreview?: () => void;
+  onPreviewEnd?: () => void;
   className?: string;
   disabled?: boolean;
 }) {
@@ -22,8 +26,12 @@ export function AppearanceOption({
       aria-pressed={active}
       disabled={disabled}
       onClick={onClick}
+      onPointerEnter={onPreview}
+      onPointerLeave={onPreviewEnd}
+      onFocus={onPreview}
+      onBlur={onPreviewEnd}
       className={cn(
-        "relative min-h-11 rounded-[var(--control-radius)] border px-3 text-sm font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-55",
+        "relative min-h-[var(--control-height)] cursor-pointer rounded-[var(--control-radius)] border px-3 text-sm font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-55",
         active
           ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent-strong)] ring-2 ring-[var(--accent-soft)]"
           : "border-[var(--border)] bg-[var(--surface-2)] text-[var(--text)] hover:border-[var(--accent)] hover:bg-[var(--surface-1)]",
@@ -31,7 +39,7 @@ export function AppearanceOption({
       )}
     >
       {children ?? label}
-      {active && <Check className="absolute left-2 top-2 size-3.5" />}
+      {active && <Check className="absolute start-2 top-2 size-3.5" />}
       <span className={children ? "mt-1 block text-[11px]" : "sr-only"}>{label}</span>
     </button>
   );

@@ -10,5 +10,5 @@ const tones: Record<ProgressTone, string> = {
 };
 
 export function ProgressBar({ value, tone = "accent", className }: { value: number; tone?: ProgressTone; className?: string }) {
-  return <div className={cn("h-2 overflow-hidden rounded-full bg-[var(--surface-2)] ring-1 ring-inset ring-[var(--border)]", className)}><span className={cn("block h-full rounded-full transition-[width]", tones[tone])} style={{ width: `${Math.max(0, Math.min(100, value))}%` }} /></div>;
+  return <div className={cn("h-2 overflow-hidden rounded-[var(--control-radius-sm)] bg-[var(--surface-2)] ring-1 ring-inset ring-[var(--border)]", className)}><span className={cn("block h-full rounded-[var(--control-radius-sm)] transition-[width]", tones[tone])} style={{ width: `${Math.max(0, Math.min(100, value))}%` }} /></div>;
 }

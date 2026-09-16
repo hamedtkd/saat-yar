@@ -39,12 +39,12 @@ export function TodayAttendanceLog({ record, updateRecord }: { record: WorkRecor
           <strong className="text-xs font-black">{t("today.attendance.title")}</strong>
           <span className="text-[9px] leading-5 text-[var(--text-muted)]">{t("today.attendance.editHint")}</span>
         </div>
-        <span className="shrink-0 rounded-full bg-[var(--surface-2)] px-2.5 py-1 text-[9px] font-bold text-[var(--text-muted)]">{t("today.attendance.events", { count: number(events.length) })}</span>
+        <span className="shrink-0 rounded-[var(--control-radius-sm)] bg-[var(--surface-2)] px-2.5 py-1 text-[9px] font-bold text-[var(--text-muted)]">{t("today.attendance.events", { count: number(events.length) })}</span>
       </div>
 
       {events.length ? (
         <>
-          <div className="hidden overflow-hidden rounded-[16px] border border-[var(--dashboard-border)] md:block">
+          <div className="hidden overflow-hidden rounded-[var(--control-radius)] border border-[var(--dashboard-border)] md:block">
             <table className="w-full border-collapse text-[11px]">
               <thead className="bg-[var(--surface-2)] text-[var(--text-muted)]">
                 <tr>
@@ -58,12 +58,12 @@ export function TodayAttendanceLog({ record, updateRecord }: { record: WorkRecor
               <tbody>
                 {events.map((event) => (
                   <tr key={event.key} className="border-t border-[var(--dashboard-border)] transition-colors hover:bg-[color-mix(in_srgb,var(--accent-soft)_45%,transparent)]">
-                    <td className="px-3 py-2.5"><span className="inline-flex items-center gap-2 font-black"><i className={`grid size-7 place-items-center rounded-lg ${event.tone} [&_svg]:size-3.5`}>{event.icon}</i>{event.type}</span></td>
+                    <td className="px-3 py-2.5"><span className="inline-flex items-center gap-2 font-black"><i className={`grid size-7 place-items-center rounded-[var(--control-radius)] ${event.tone} [&_svg]:size-3.5`}>{event.icon}</i>{event.type}</span></td>
                     <td className="px-3 py-2.5 font-bold" dir="ltr">{digits(event.time)}</td>
                     <td className="px-3 py-2.5 font-semibold">{event.duration}</td>
                     <td className="px-3 py-2.5 text-[var(--text-muted)]">{event.note}</td>
                     <td className="px-3 py-2 text-center">
-                      <Button type="button" variant="ghost" size="icon" className="size-8 rounded-lg text-[var(--accent-strong)]" data-attendance-event-edit={event.target.kind} onClick={() => setEditing(event.target)} aria-label={t("today.attendance.editAria", { type: event.type })}>
+                      <Button type="button" variant="ghost" size="icon" className="size-8 rounded-[var(--control-radius)] text-[var(--accent-strong)]" data-attendance-event-edit={event.target.kind} onClick={() => setEditing(event.target)} aria-label={t("today.attendance.editAria", { type: event.type })}>
                         <PencilLine aria-hidden="true" className="size-3.5" />
                       </Button>
                     </td>
@@ -75,13 +75,13 @@ export function TodayAttendanceLog({ record, updateRecord }: { record: WorkRecor
 
           <div className="grid gap-2 md:hidden">
             {events.map((event) => (
-              <article key={event.key} className="grid grid-cols-[auto_1fr_auto] items-center gap-3 rounded-[14px] border border-[var(--dashboard-border)] bg-[var(--surface-2)] p-3">
-                <i className={`grid size-9 place-items-center rounded-[11px] ${event.tone} [&_svg]:size-4`}>{event.icon}</i>
+              <article key={event.key} className="grid grid-cols-[auto_1fr_auto] items-center gap-3 rounded-[var(--control-radius-sm)] border border-[var(--dashboard-border)] bg-[var(--surface-2)] p-3">
+                <i className={`grid size-9 place-items-center rounded-[var(--control-radius-sm)] ${event.tone} [&_svg]:size-4`}>{event.icon}</i>
                 <div className="min-w-0 text-start">
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1"><strong className="text-[11px] text-[var(--text)]">{event.type}</strong><span dir="ltr" className="text-[10px] font-black text-[var(--accent-strong)]">{digits(event.time)}</span><span className="text-[9px] text-[var(--text-muted)]">{event.duration}</span></div>
                   <p className="mt-1 truncate text-[9px] text-[var(--text-muted)]">{event.note}</p>
                 </div>
-                <Button type="button" variant="ghost" size="icon" className="size-9 rounded-lg text-[var(--accent-strong)]" data-attendance-event-edit={event.target.kind} onClick={() => setEditing(event.target)} aria-label={t("today.attendance.editAria", { type: event.type })}>
+                <Button type="button" variant="ghost" size="icon" className="size-9 rounded-[var(--control-radius)] text-[var(--accent-strong)]" data-attendance-event-edit={event.target.kind} onClick={() => setEditing(event.target)} aria-label={t("today.attendance.editAria", { type: event.type })}>
                   <PencilLine aria-hidden="true" className="size-4" />
                 </Button>
               </article>
@@ -89,7 +89,7 @@ export function TodayAttendanceLog({ record, updateRecord }: { record: WorkRecor
           </div>
         </>
       ) : (
-        <div className="rounded-[16px] border border-dashed border-[var(--dashboard-border)] bg-[var(--surface-2)] px-4 py-7 text-center text-[11px] text-[var(--text-muted)]">{t("today.attendance.empty")}</div>
+        <div className="rounded-[var(--control-radius)] border border-dashed border-[var(--dashboard-border)] bg-[var(--surface-2)] px-4 py-7 text-center text-[11px] text-[var(--text-muted)]">{t("today.attendance.empty")}</div>
       )}
 
       {editing && (

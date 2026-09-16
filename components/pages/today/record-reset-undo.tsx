@@ -8,7 +8,7 @@ export function RecordResetUndo({ date, onUndo, onDismiss }: { date?: string; on
   const { date: formatDate, t } = useLocaleUi();
   if (!date) return null;
   return (
-    <section role="status" aria-live="polite" className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[color-mix(in_srgb,var(--info)_28%,var(--border))] bg-[var(--info-soft)] px-4 py-3 text-[var(--text)]">
+    <section role="status" aria-live="polite" className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-[var(--card-radius)] border border-[color-mix(in_srgb,var(--info)_28%,var(--border))] bg-[var(--info-soft)] px-4 py-3 text-[var(--text)]">
       <div className="grid gap-0.5">
         <strong className="text-xs font-extrabold">{t("today.undo.title", { date: formatDate(date, { day: "numeric", month: "long" }) })}</strong>
         <span className="text-[10px] leading-5 text-[var(--text-muted)]">{t("today.undo.description")}</span>

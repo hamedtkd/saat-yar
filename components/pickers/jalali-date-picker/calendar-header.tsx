@@ -29,7 +29,7 @@ export function CalendarHeader({
         size="icon"
         aria-label={translate(locale, "picker.date.previousMonth")}
         onClick={onPreviousMonth}
-        className="size-13 rounded-xl border-[var(--border)] shadow-none max-[359px]:size-11 max-[359px]:rounded-[10px]"
+        className="size-13 rounded-[var(--card-radius)] border-[var(--border)] shadow-none max-[359px]:size-11 max-[359px]:rounded-[var(--control-radius-sm)]"
       >
         <PreviousIcon aria-hidden="true" className="size-5" />
       </Button>
@@ -42,7 +42,7 @@ export function CalendarHeader({
         size="icon"
         aria-label={translate(locale, "picker.date.nextMonth")}
         onClick={onNextMonth}
-        className="size-13 rounded-xl border-[var(--border)] shadow-none max-[359px]:size-11 max-[359px]:rounded-[10px]"
+        className="size-13 rounded-[var(--card-radius)] border-[var(--border)] shadow-none max-[359px]:size-11 max-[359px]:rounded-[var(--control-radius-sm)]"
       >
         <NextIcon aria-hidden="true" className="size-5" />
       </Button>

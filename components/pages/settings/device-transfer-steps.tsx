@@ -29,7 +29,7 @@ export function DeviceTransferSteps({ role, state }: {
           <li
             key={key}
             aria-current={active ? "step" : undefined}
-            className={`rounded-xl border px-2.5 py-2 text-center text-[9px] font-bold transition ${
+            className={`rounded-[var(--card-radius)] border px-2.5 py-2 text-center text-[9px] font-bold transition ${
               done
                 ? "border-[color-mix(in_srgb,var(--accent)_45%,var(--border))] bg-[var(--accent-soft)] text-[var(--accent-strong)]"
                 : active

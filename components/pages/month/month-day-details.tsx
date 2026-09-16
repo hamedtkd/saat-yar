@@ -60,7 +60,7 @@ export function MonthDayDetails({ data, selectedDate }: { data: AppData; selecte
           <strong className="block min-w-0 break-words text-base font-black text-[var(--text)]">{date(selectedDate, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</strong>
           <div className="mt-2 flex flex-wrap gap-2">
             {holiday.isHoliday && <StatusBadge success={false}>{holidayLabel}</StatusBadge>}
-            {leave && <span className="rounded-full bg-[var(--info-soft)] px-2.5 py-1 text-[10px] font-bold text-[var(--info)]">{t("month.details.leave")}</span>}
+            {leave && <span className="rounded-[var(--control-radius-sm)] bg-[var(--info-soft)] px-2.5 py-1 text-[10px] font-bold text-[var(--info)]">{t("month.details.leave")}</span>}
             {health && <StatusBadge success={health.state === "complete"}>{t(healthStateKeys[health.state])}</StatusBadge>}
           </div>
         </div>
@@ -77,7 +77,7 @@ export function MonthDayDetails({ data, selectedDate }: { data: AppData; selecte
           <Detail icon={(result?.balance ?? 0) >= 0 ? <CheckCircle2 /> : <AlertTriangle />} label={t("month.details.balance")} value={duration(result?.balance ?? 0, true)} tone={(result?.balance ?? 0) >= 0 ? "green" : "red"} />
         </div>
       ) : (
-        <div className="flex min-h-28 flex-col items-center justify-center gap-2 rounded-[16px] border border-dashed border-[var(--dashboard-border)] bg-[var(--surface-2)] text-center">
+        <div className="flex min-h-28 flex-col items-center justify-center gap-2 rounded-[var(--control-radius)] border border-dashed border-[var(--dashboard-border)] bg-[var(--surface-2)] text-center">
           {leave ? <Palmtree className="size-5 text-[var(--info)]" /> : <Clock3 className="size-5 text-[var(--text-muted)]" />}
           <strong className="text-xs text-[var(--text)]">{t("month.details.empty")}</strong>
           <span className="text-[10px] text-[var(--text-muted)]">{t("month.details.emptyHint")}</span>
@@ -85,7 +85,7 @@ export function MonthDayDetails({ data, selectedDate }: { data: AppData; selecte
       )}
 
       {health && health.issues.length > 0 && (
-        <div className="mt-3 rounded-xl border border-[color-mix(in_srgb,var(--warning)_30%,var(--border))] bg-[var(--warning-soft)] p-3 text-[10px] leading-6 text-[var(--warning)]">
+        <div className="mt-3 rounded-[var(--card-radius)] border border-[color-mix(in_srgb,var(--warning)_30%,var(--border))] bg-[var(--warning-soft)] p-3 text-[10px] leading-6 text-[var(--warning)]">
           {health.issues.map((issue) => <div key={`${issue.code}-${issue.message}`}>• {healthIssueKeys[issue.code] ? t(healthIssueKeys[issue.code]) : issue.message}</div>)}
         </div>
       )}
@@ -99,7 +99,7 @@ function TimeRange({ start, end, separator }: { start: string; end: string; sepa
 
 function Detail({ icon, label, value, tone = "default" }: { icon: ReactNode; label: string; value: ReactNode; tone?: "default" | "green" | "red" }) {
   return (
-    <div className="rounded-[15px] border border-[var(--dashboard-border)] bg-[var(--surface-2)] p-3.5">
+    <div className="rounded-[var(--control-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-2)] p-3.5">
       <div className="mb-2 flex items-center gap-2 text-[10px] text-[var(--text-muted)]">{icon}{label}</div>
       <strong className={cn("block text-start text-sm font-black text-[var(--text)]", tone === "green" && "text-[var(--accent-strong)]", tone === "red" && "text-[var(--danger)]")}>{value}</strong>
     </div>

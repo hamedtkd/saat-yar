@@ -13,8 +13,8 @@ test("header controls share one height radius surface and interaction contract",
     read("components/layout/language-switcher.tsx"),
     read("components/layout/navigation/sidebar-nav.tsx"),
   ]);
-  assert.match(styles, /h-11 rounded-\[14px\]/);
-  assert.match(styles, /size-9 rounded-\[10px\]/);
+  assert.match(styles, /h-\[var\(--control-height\)\] rounded-\[var\(--control-radius\)\]/);
+  assert.match(styles, /h-\[var\(--control-height-sm\)\] w-\[var\(--control-height-sm\)\] rounded-\[var\(--control-radius\)\]/);
   assert.match(styles, /headerStandaloneIconButton/);
   assert.match(actions, /headerStandaloneIconButton/);
   assert.match(actions, /data-header-privacy-control/);

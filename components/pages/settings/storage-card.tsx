@@ -19,7 +19,7 @@ export function StorageCard({ storage, requestPersistence }: { storage: StorageI
         <div><dt>{s("Storage location")}</dt><dd>{s("Browser storage (IndexedDB)")}</dd></div>
         <div><dt>{s("Used space")}</dt><dd>{s("{value} MB", { value: usageMb })}</dd></div>
       </dl>
-      <div className={cn("mb-[15px] mt-2 [&>i]:my-2 [&>i]:block [&>i]:h-[7px] [&>i]:overflow-hidden [&>i]:rounded-[10px] [&>i]:bg-[var(--border)] [&>i>b]:block [&>i>b]:h-full [&>i>b]:rounded-[inherit] [&>i>b]:bg-[var(--accent)] [&_span]:text-[9px] [&_span]:text-[var(--text-muted)]")}>
+      <div className={cn("mb-[15px] mt-2 [&>i]:my-2 [&>i]:block [&>i]:h-[7px] [&>i]:overflow-hidden [&>i]:rounded-[var(--control-radius-sm)] [&>i]:bg-[var(--border)] [&>i>b]:block [&>i>b]:h-full [&>i>b]:rounded-[inherit] [&>i>b]:bg-[var(--accent)] [&_span]:text-[9px] [&_span]:text-[var(--text-muted)]")}>
         <i><b style={{ width: `${Math.max(2, usagePercent)}%` }} /></i>
         <span>{s("About {value} GB of estimated browser quota", { value: quotaGb })}</span>
       </div>

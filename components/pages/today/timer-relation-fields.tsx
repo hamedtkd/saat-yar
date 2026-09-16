@@ -42,7 +42,7 @@ export function TimerRelationFields({ data, timerDraft, setTimerDraft, createCli
   };
   const panel = variant === "panel";
   const fieldClass = cn("grid min-w-0 gap-2 text-xs font-bold text-[var(--text-muted)] max-[359px]:gap-1.5 max-[359px]:text-[11px]", !panel && "col-span-4 max-[720px]:col-span-12");
-  const triggerClass = cn(panel && "h-12 rounded-[15px] bg-[color-mix(in_srgb,var(--surface-2)_92%,transparent)] ps-10 max-[359px]:h-11 max-[359px]:rounded-[13px] max-[359px]:ps-9");
+  const triggerClass = cn(panel && "h-12 rounded-[var(--control-radius)] bg-[color-mix(in_srgb,var(--surface-2)_92%,transparent)] ps-10 max-[359px]:h-11 max-[359px]:rounded-[var(--control-radius-sm)] max-[359px]:ps-9");
 
   return (
     <div className={panel ? "grid gap-3 max-[359px]:gap-2.5" : "contents"} data-first-run-timer-relations>
@@ -59,7 +59,7 @@ export function TimerRelationFields({ data, timerDraft, setTimerDraft, createCli
               <SelectContent>{activeClients.map((client) => <SelectItem value={client.id} key={client.id}>{client.name}</SelectItem>)}</SelectContent>
             </Select>
           ) : (
-            <div className="flex min-h-12 items-center gap-2 rounded-[15px] border border-dashed border-[var(--dashboard-border)] bg-[var(--surface-2)] px-3 text-[10px] font-medium text-[var(--text-muted)] max-[359px]:min-h-11 max-[359px]:rounded-[13px] max-[359px]:px-2.5 max-[359px]:text-[9px]">
+            <div className="flex min-h-12 items-center gap-2 rounded-[var(--control-radius)] border border-dashed border-[var(--dashboard-border)] bg-[var(--surface-2)] px-3 text-[10px] font-medium text-[var(--text-muted)] max-[359px]:min-h-11 max-[359px]:rounded-[var(--control-radius-sm)] max-[359px]:px-2.5 max-[359px]:text-[9px]">
               <Users aria-hidden="true" className="size-4 shrink-0" /><span>{t("today.relations.noClientTimer")}</span>
             </div>
           )}
@@ -73,7 +73,7 @@ export function TimerRelationFields({ data, timerDraft, setTimerDraft, createCli
         <div className="relative">
           {panel && <FolderKanban aria-hidden="true" className="pointer-events-none absolute start-3 top-1/2 z-10 size-4 -translate-y-1/2 text-[var(--text-muted)] max-[359px]:start-2.5" />}
           {!selectedClientId ? (
-            <div className="flex min-h-12 items-center gap-2 rounded-[15px] border border-dashed border-[var(--dashboard-border)] bg-[var(--surface-2)] ps-10 pe-3 text-[10px] font-medium text-[var(--text-muted)] max-[359px]:min-h-11 max-[359px]:rounded-[13px] max-[359px]:ps-9 max-[359px]:pe-2.5 max-[359px]:text-[9px]">
+            <div className="flex min-h-12 items-center gap-2 rounded-[var(--control-radius)] border border-dashed border-[var(--dashboard-border)] bg-[var(--surface-2)] ps-10 pe-3 text-[10px] font-medium text-[var(--text-muted)] max-[359px]:min-h-11 max-[359px]:rounded-[var(--control-radius-sm)] max-[359px]:ps-9 max-[359px]:pe-2.5 max-[359px]:text-[9px]">
               <FolderPlus aria-hidden="true" className="size-4 shrink-0" /><span>{t("today.relations.chooseClientFirst")}</span>
             </div>
           ) : availableProjects.length || currentProject ? (
@@ -82,7 +82,7 @@ export function TimerRelationFields({ data, timerDraft, setTimerDraft, createCli
               <SelectContent>{(currentProject && !availableProjects.some((project) => project.id === currentProject.id) ? [currentProject, ...availableProjects] : availableProjects).map((project) => <SelectItem value={project.id} key={project.id}>{project.name}</SelectItem>)}</SelectContent>
             </Select>
           ) : (
-            <div className="flex min-h-12 items-center gap-2 rounded-[15px] border border-dashed border-[var(--dashboard-border)] bg-[var(--surface-2)] px-3 text-[10px] font-medium text-[var(--text-muted)] max-[359px]:min-h-11 max-[359px]:rounded-[13px] max-[359px]:px-2.5 max-[359px]:text-[9px]">
+            <div className="flex min-h-12 items-center gap-2 rounded-[var(--control-radius)] border border-dashed border-[var(--dashboard-border)] bg-[var(--surface-2)] px-3 text-[10px] font-medium text-[var(--text-muted)] max-[359px]:min-h-11 max-[359px]:rounded-[var(--control-radius-sm)] max-[359px]:px-2.5 max-[359px]:text-[9px]">
               <FolderPlus aria-hidden="true" className="size-4 shrink-0" /><span>{t("today.relations.noActiveProject")}</span>
             </div>
           )}

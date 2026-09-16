@@ -12,7 +12,7 @@ export function MonthBalanceBadge({ balance, compact = false }: MonthBalanceBadg
       dir="ltr"
       className={cn(
         "font-extrabold",
-        compact ? "text-sm" : "inline-flex min-w-20 items-center justify-center rounded-full px-2.5 py-1.5 text-[10px]",
+        compact ? "text-sm" : "inline-flex min-w-20 items-center justify-center rounded-[var(--control-radius-sm)] px-2.5 py-1.5 text-[10px]",
         balance >= 0
           ? compact ? "text-[var(--success)]" : "bg-[var(--success-soft)] text-[var(--success)]"
           : compact ? "text-[var(--danger)]" : "bg-[var(--danger-soft)] text-[var(--danger)]",

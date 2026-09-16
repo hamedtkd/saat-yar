@@ -26,7 +26,7 @@ function SortHeading({ label, sortKey, sort, onSortChange, sticky = false }: {
         sticky && "sticky start-0 z-20 border-e bg-[var(--surface-2)]",
       )}
     >
-      <button type="button" className="flex w-full items-center gap-1.5 rounded-lg px-2 py-2 text-start transition-colors hover:bg-[var(--surface-1)] hover:text-[var(--text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]" onClick={() => onSortChange({ key: sortKey, direction: nextDirection })}>
+      <button type="button" className="flex w-full items-center gap-1.5 rounded-[var(--control-radius)] px-2 py-2 text-start transition-colors hover:bg-[var(--surface-1)] hover:text-[var(--text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]" onClick={() => onSortChange({ key: sortKey, direction: nextDirection })}>
         <span>{label}</span><Icon aria-hidden="true" className={cn("size-3.5", active && "text-[var(--accent-strong)]")} />
       </button>
     </th>
@@ -62,7 +62,7 @@ export function MonthDesktopTable({ records, settings, onEdit, sort, onSortChang
                 <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3 text-[var(--text)]"><div className="grid gap-1"><span className="tabular-nums">{duration(totalRest)}</span><small className="text-[9px] text-[var(--text-muted)]">{t("month.details.rest")}</small></div></td>
                 <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3"><MonthBalanceBadge balance={balance} /></td>
                 <td className="max-w-[260px] border-b border-[var(--border)] px-3 py-3 text-[var(--text)]"><span className="block truncate" title={item.note || undefined}>{item.note || "—"}</span></td>
-                <td className="border-b border-[var(--border)] px-3 py-3"><Button type="button" variant="outline" size="icon" className="size-9 rounded-xl" onClick={() => onEdit(item.date)} aria-label={t("month.table.editAria", { date: digits(item.date) })}><Edit3 className="size-4" /></Button></td>
+                <td className="border-b border-[var(--border)] px-3 py-3"><Button type="button" variant="outline" size="icon" className="size-9 rounded-[var(--card-radius)]" onClick={() => onEdit(item.date)} aria-label={t("month.table.editAria", { date: digits(item.date) })}><Edit3 className="size-4" /></Button></td>
               </tr>
             );
           })}

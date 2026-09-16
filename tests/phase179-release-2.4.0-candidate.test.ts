@@ -130,8 +130,8 @@ test("Phase 179 notes preserve the candidate boundary while Phase 180 owns final
   assert.match(layout, /vazirmatn\/Vazirmatn-font-face\.css/);
   assert.match(layout, /vazirmatn\/misc\/Farsi-Digits\/Vazirmatn-FD-font-face\.css/);
   assert.match(layout, /saatyar-app-font/);
-  assert.match(globals, /font-family: Vazirmatn, Tahoma, sans-serif/);
-  assert.match(globals, /font-family: "Vazirmatn FD", Vazirmatn, Tahoma, sans-serif/);
+  assert.match(globals, /--app-body-font: Vazirmatn, Tahoma, sans-serif/);
+  assert.match(globals, /--app-body-font-fa: "Vazirmatn FD", Vazirmatn, Tahoma, sans-serif/);
   assert.match(globals, /:root\[lang="fa"\] \.saatyar-timer-countdown/);
   assert.doesNotMatch(globals, /font-feature-settings: "ss01"/);
   const breaksEditor = read("components/pages/today/time-strip/breaks-editor.tsx");

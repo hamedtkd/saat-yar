@@ -44,12 +44,12 @@ export function AppToast({ message }: { message: string }) {
       role={tone === "danger" ? "alert" : "status"}
       aria-live={tone === "danger" ? "assertive" : "polite"}
       className={cn(
-        "fixed left-1/2 top-4 z-[1000] flex w-[min(92vw,520px)] -translate-x-1/2 items-start gap-3 rounded-2xl border px-3.5 py-3 text-start text-xs font-bold text-[var(--text)]",
-        "shadow-[0_18px_55px_rgba(0,0,0,.28)] ring-1 ring-[color-mix(in_srgb,var(--text)_6%,transparent)] sm:top-5 sm:px-4",
+        "fixed bottom-4 end-4 z-[1000] flex w-[min(calc(100vw-2rem),420px)] items-start gap-3 rounded-[var(--card-radius)] border px-3.5 py-3 text-start text-xs font-bold text-[var(--text)] sm:bottom-6 sm:end-6 sm:w-[min(calc(100vw-3rem),420px)] sm:px-4",
+        "shadow-[var(--surface-shadow)] ring-1 ring-[color-mix(in_srgb,var(--text)_6%,transparent)] backdrop-blur",
         toneStyles[tone].shell,
       )}
     >
-      <span className={cn("grid size-8 shrink-0 place-items-center rounded-xl shadow-sm", toneStyles[tone].icon)}>
+      <span className={cn("grid size-8 shrink-0 place-items-center rounded-[var(--control-radius)] shadow-sm", toneStyles[tone].icon)}>
         <Icon aria-hidden="true" className="size-4.5" />
       </span>
       <span className="min-w-0 flex-1 self-center leading-6">{message}</span>

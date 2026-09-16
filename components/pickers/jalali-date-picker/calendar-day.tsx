@@ -61,7 +61,7 @@ export function CalendarDay({
       aria-pressed={isSelected}
       title={holidayTitle}
       className={cn(
-        "relative aspect-square min-w-0 rounded-xl border border-transparent max-[359px]:rounded-[9px]",
+        "relative aspect-square min-w-0 rounded-[var(--card-radius)] border border-transparent max-[359px]:rounded-[var(--micro-radius)]",
         "bg-transparent text-sm font-bold text-[var(--text)] transition-colors duration-150 max-[359px]:text-xs",
         "hover:bg-[var(--accent-soft)] focus-visible:outline-none focus-visible:ring-2",
         "focus-visible:ring-[var(--accent-soft)]",

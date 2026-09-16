@@ -69,7 +69,7 @@ export function MonthPage({ data, setData, setToast, selectedDate, setSelectedDa
     </section>
 
     <section className="mb-5" data-month-overview-section>
-      <SectionHeading icon={<CalendarRange />} eyebrow={t("month.section.overviewEyebrow")} title={t("month.section.overviewTitle")} description={t("month.section.overviewDescription")} trailing={<span className="rounded-full border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-3 py-1.5 text-[9px] font-bold text-[var(--text-muted)]">{t("month.calendar.withRecords", { count: number(monthRecords.length) })}</span>} />
+      <SectionHeading icon={<CalendarRange />} eyebrow={t("month.section.overviewEyebrow")} title={t("month.section.overviewTitle")} description={t("month.section.overviewDescription")} trailing={<span className="rounded-[var(--control-radius-sm)] border border-[var(--dashboard-border)] bg-[var(--surface-2)] px-3 py-1.5 text-[9px] font-bold text-[var(--text-muted)]">{t("month.calendar.withRecords", { count: number(monthRecords.length) })}</span>} />
       <CalendarConnectCallout />
       <div className="grid items-start grid-cols-[minmax(0,1.7fr)_minmax(280px,.3fr)] gap-4 max-[980px]:grid-cols-1">
         <MonthCalendar data={data} selectedDate={selectedDate} setSelectedDate={setSelectedDate} monthRecordCount={monthRecords.length} moveMonth={(amount) => setSelectedDate(shiftCalendarMonth(selectedDate, amount, calendar))} externalEvents={calendarRange.events} onOpenDayActions={(dateKey, point) => setDayMenu({ dateKey, ...point })} />

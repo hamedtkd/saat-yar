@@ -58,7 +58,7 @@ export function ActivitySegmentsCard({ record, records, mode, workProjects, free
           <strong className="text-sm font-black text-[var(--text)]">{t("activity.today.title")}</strong>
           <span className="max-w-[760px] text-[10px] leading-5 text-[var(--text-muted)]">{t("activity.today.description")}</span>
         </div>
-        <span className="rounded-full bg-[var(--accent-soft)] px-3 py-1 text-[10px] font-black text-[var(--accent-strong)]">{t("activity.today.total", { duration: duration(breakdown.totalMinutes) })}</span>
+        <span className="rounded-[var(--control-radius-sm)] bg-[var(--accent-soft)] px-3 py-1 text-[10px] font-black text-[var(--accent-strong)]">{t("activity.today.total", { duration: duration(breakdown.totalMinutes) })}</span>
       </div>
 
       {activeSegment ? (
@@ -68,7 +68,7 @@ export function ActivitySegmentsCard({ record, records, mode, workProjects, free
           onStop={onStop}
         />
       ) : (
-        <div className="mt-4 rounded-[18px] border border-[var(--dashboard-border)] bg-[var(--surface-2)] p-3 min-[360px]:p-4">
+        <div className="mt-4 rounded-[var(--card-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-2)] p-3 min-[360px]:p-4">
           <div className="grid gap-3 md:grid-cols-[minmax(140px,.75fr)_minmax(220px,1.25fr)_minmax(190px,1fr)_auto] md:items-end">
             <label className="grid min-w-0 content-start gap-1.5">
               <span className="flex min-h-5 items-center text-[11px] font-black text-[var(--text)]">{t("activity.today.type")}</span>
@@ -86,7 +86,7 @@ export function ActivitySegmentsCard({ record, records, mode, workProjects, free
       )}
 
       <div className="mt-4 grid gap-3 lg:grid-cols-[1fr_1.15fr]">
-        <div className="rounded-[16px] border border-[var(--dashboard-border)] bg-[color-mix(in_srgb,var(--surface-2)_82%,transparent)] p-3 sm:p-4">
+        <div className="rounded-[var(--control-radius)] border border-[var(--dashboard-border)] bg-[color-mix(in_srgb,var(--surface-2)_82%,transparent)] p-3 sm:p-4">
           <div className="mb-3 flex items-center justify-between gap-2">
             <strong className="text-[11px] text-[var(--text)]">{t("activity.today.categories")}</strong>
             <LayoutGrid aria-hidden="true" className="size-4 text-[var(--accent-strong)]" />
@@ -95,9 +95,9 @@ export function ActivitySegmentsCard({ record, records, mode, workProjects, free
             {activityKinds.map((item) => {
               const Icon = icons[item];
               return (
-                <div key={item} className="grid min-h-[86px] content-between rounded-[14px] border border-[var(--dashboard-border)] bg-[var(--surface-1)] p-3">
+                <div key={item} className="grid min-h-[86px] content-between rounded-[var(--control-radius-sm)] border border-[var(--dashboard-border)] bg-[var(--surface-1)] p-3">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="grid size-8 place-items-center rounded-lg bg-[var(--surface-2)] text-[var(--accent-strong)]"><Icon aria-hidden="true" className="size-4" /></span>
+                    <span className="grid size-8 place-items-center rounded-[var(--control-radius)] bg-[var(--surface-2)] text-[var(--accent-strong)]"><Icon aria-hidden="true" className="size-4" /></span>
                     <strong className="text-[11px] tabular-nums text-[var(--text)]">{duration(breakdown.totals[item])}</strong>
                   </div>
                   <small className="mt-2 block text-[9px] font-bold text-[var(--text-muted)]">{t(labelKeys[item])}</small>
@@ -106,7 +106,7 @@ export function ActivitySegmentsCard({ record, records, mode, workProjects, free
             })}
           </div>
         </div>
-        <div className="min-h-0 rounded-[16px] border border-[var(--dashboard-border)] bg-[color-mix(in_srgb,var(--surface-2)_82%,transparent)] p-3 sm:p-4">
+        <div className="min-h-0 rounded-[var(--control-radius)] border border-[var(--dashboard-border)] bg-[color-mix(in_srgb,var(--surface-2)_82%,transparent)] p-3 sm:p-4">
           <div className="flex items-center justify-between gap-2">
             <strong className="text-[11px] text-[var(--text)]">{t("activity.today.recent")}</strong>
             {recent.length > 0 && <span className="text-[9px] font-bold text-[var(--text-muted)]">{recent.length}</span>}

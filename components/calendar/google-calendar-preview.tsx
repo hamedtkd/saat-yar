@@ -12,7 +12,7 @@ export function GoogleCalendarPreview() {
   const preview = integration.events.slice(0, 5);
 
   return (
-    <div data-google-calendar-preview className="rounded-[14px] border border-[var(--dashboard-border)] bg-[var(--surface-2)] p-3">
+    <div data-google-calendar-preview className="rounded-[var(--control-radius-sm)] border border-[var(--dashboard-border)] bg-[var(--surface-2)] p-3">
       <strong className="block text-[10px] text-[var(--text)]">{t("calendar.google.previewTitle")}</strong>
       <p className="mt-1 text-[9px] leading-5 text-[var(--text-muted)]">{t("calendar.google.previewDescription")}</p>
       {integration.loadingEvents ? (
@@ -20,7 +20,7 @@ export function GoogleCalendarPreview() {
       ) : preview.length ? (
         <div className="mt-3 grid gap-2">
           {preview.map((event) => (
-            <div key={`${event.calendarId}:${event.id}`} className="grid grid-cols-[auto_minmax(0,1fr)] gap-2 rounded-xl bg-[var(--surface-1)] px-3 py-2">
+            <div key={`${event.calendarId}:${event.id}`} className="grid grid-cols-[auto_minmax(0,1fr)] gap-2 rounded-[var(--card-radius)] bg-[var(--surface-1)] px-3 py-2">
               <span className="mt-1 size-2 rounded-full bg-[var(--accent)]" aria-hidden="true" />
               <div className="min-w-0">
                 <strong className="block truncate text-[10px] text-[var(--text)]">{event.title || t("calendar.google.busy")}</strong>

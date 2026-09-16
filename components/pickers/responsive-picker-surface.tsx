@@ -109,8 +109,8 @@ export function ResponsivePickerSurface({
           "z-[1200] border border-[var(--border)] bg-[var(--surface-1)]",
           "shadow-[0_22px_64px_rgba(0,0,0,.3)] outline-none",
           drawer
-            ? "fixed inset-x-2 bottom-2 max-h-[min(88dvh,720px)] overflow-y-auto rounded-[24px] p-4 pb-[max(16px,env(safe-area-inset-bottom))] max-[359px]:inset-x-1.5 max-[359px]:bottom-1.5 max-[359px]:rounded-[20px] max-[359px]:p-3 max-[359px]:pb-[max(12px,env(safe-area-inset-bottom))]"
-            : "overflow-y-auto rounded-2xl p-4",
+            ? "fixed inset-x-2 bottom-2 max-h-[min(88dvh,720px)] overflow-y-auto rounded-[var(--card-radius)] p-4 pb-[max(16px,env(safe-area-inset-bottom))] max-[359px]:inset-x-1.5 max-[359px]:bottom-1.5 max-[359px]:rounded-[var(--card-radius)] max-[359px]:p-3 max-[359px]:pb-[max(12px,env(safe-area-inset-bottom))]"
+            : "overflow-y-auto rounded-[var(--card-radius)] p-4",
           widthClassName,
         )}
       >

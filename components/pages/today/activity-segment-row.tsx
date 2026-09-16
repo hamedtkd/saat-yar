@@ -37,7 +37,7 @@ export function ActivitySegmentRow({ segment, mode, workProjects, freelanceProje
 
   return (
     <>
-      <div data-recent-activity-segment className="flex min-h-12 min-w-0 items-center gap-2.5 rounded-xl border border-[color-mix(in_srgb,var(--dashboard-border)_72%,transparent)] bg-[var(--surface-1)] px-3 py-2.5">
+      <div data-recent-activity-segment className="flex min-h-12 min-w-0 items-center gap-2.5 rounded-[var(--card-radius)] border border-[color-mix(in_srgb,var(--dashboard-border)_72%,transparent)] bg-[var(--surface-1)] px-3 py-2.5">
         <span className="grid min-w-0 flex-1 gap-0.5">
           <strong className="truncate text-[10px] text-[var(--text)]">{primary}</strong>
           {secondary && <small className="truncate text-[9px] text-[var(--text-muted)]">{secondary}</small>}

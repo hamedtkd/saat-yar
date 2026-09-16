@@ -46,11 +46,11 @@ export function ActivityLivePanel({
   return (
     <div
       data-active-activity-segment
-      className="mt-4 rounded-[18px] border border-[color-mix(in_srgb,var(--accent)_24%,var(--dashboard-border))] bg-[var(--surface-2)] p-3 min-[360px]:p-4"
+      className="mt-4 rounded-[var(--card-radius)] border border-[color-mix(in_srgb,var(--accent)_24%,var(--dashboard-border))] bg-[var(--surface-2)] p-3 min-[360px]:p-4"
     >
       <div className="grid gap-x-3 gap-y-2 md:grid-cols-[minmax(140px,.72fr)_minmax(220px,1.22fr)_minmax(190px,.95fr)_minmax(245px,auto)_minmax(116px,.48fr)] md:items-end">
         <div className="flex min-h-6 items-center justify-start md:col-[1/-1]">
-          <span className="inline-flex items-center gap-2 rounded-full border border-[color-mix(in_srgb,var(--accent)_28%,var(--dashboard-border))] bg-[color-mix(in_srgb,var(--accent-soft)_72%,transparent)] px-2.5 py-1 text-[9px] font-black text-[var(--accent-strong)] shadow-[0_0_16px_color-mix(in_srgb,var(--accent)_10%,transparent)]">
+          <span className="inline-flex items-center gap-2 rounded-[var(--control-radius-sm)] border border-[color-mix(in_srgb,var(--accent)_28%,var(--dashboard-border))] bg-[color-mix(in_srgb,var(--accent-soft)_72%,transparent)] px-2.5 py-1 text-[9px] font-black text-[var(--accent-strong)] shadow-[0_0_16px_color-mix(in_srgb,var(--accent)_10%,transparent)]">
             <span className="relative flex size-2">
               <span className="absolute inline-flex size-full rounded-full bg-[var(--accent)] opacity-30 motion-safe:animate-ping" />
               <span className="relative inline-flex size-2 rounded-full bg-[var(--accent)]" />
@@ -87,7 +87,7 @@ export function ActivityLivePanel({
             size="sm"
             variant="outline"
             onClick={onStop}
-            className="h-[63px] w-full shrink-0 rounded-[14px] border-[color-mix(in_srgb,var(--accent)_30%,var(--border))] px-3 text-[11px] font-black hover:border-[color-mix(in_srgb,var(--accent)_46%,var(--border))] hover:bg-[var(--accent-soft)] max-[767px]:h-11"
+            className="h-[63px] w-full shrink-0 rounded-[var(--control-radius-sm)] border-[color-mix(in_srgb,var(--accent)_30%,var(--border))] px-3 text-[11px] font-black hover:border-[color-mix(in_srgb,var(--accent)_46%,var(--border))] hover:bg-[var(--accent-soft)] max-[767px]:h-11"
           >
             <Square aria-hidden="true" className="size-3.5" />
             {t("activity.today.stop")}

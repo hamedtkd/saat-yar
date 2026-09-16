@@ -23,7 +23,7 @@ export function ModeStep({ settings, setSetting, onFastSetup }: { settings: AppD
       <div className="grid grid-cols-3 gap-4 max-[900px]:grid-cols-1 max-[620px]:gap-3">
         {MODES.map((mode) => <ModeOption key={mode.id} id={mode.id} icon={mode.icon} title={s(mode.title)} points={mode.points.map((point) => s(point))} selected={settings.mode === mode.id} onSelect={(id) => setSetting("mode", id)} />)}
       </div>
-      <div className="mx-auto mt-5 flex w-full max-w-[820px] flex-col gap-3 rounded-2xl border border-[color-mix(in_srgb,var(--accent)_24%,var(--border))] bg-[var(--accent-soft)] p-4 text-start sm:flex-row sm:items-center sm:justify-between">
+      <div className="mx-auto mt-5 flex w-full max-w-[820px] flex-col gap-3 rounded-[var(--card-radius)] border border-[color-mix(in_srgb,var(--accent)_24%,var(--border))] bg-[var(--accent-soft)] p-4 text-start sm:flex-row sm:items-center sm:justify-between">
         <div className="grid gap-1">
           <strong className="inline-flex items-center gap-2 text-sm text-[var(--text)]"><Rocket aria-hidden="true" className="size-4 text-[var(--accent-strong)]" /> {s("Fast setup")}</strong>
           <p className="m-0 text-[10px] leading-5 text-[var(--text-muted)]">{s("Use the recommended defaults and start now. Schedule, payroll, appearance, and import stay editable later.")}</p>

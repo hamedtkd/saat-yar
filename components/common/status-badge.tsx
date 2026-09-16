@@ -24,7 +24,7 @@ export function StatusBadge({ children, tone, success, className }: StatusBadgeP
   return (
     <span
       className={cn(
-        "inline-flex items-center justify-center rounded-lg border px-[9px] py-1 text-[10px] font-semibold",
+        "inline-flex items-center justify-center rounded-[var(--control-radius)] border px-[9px] py-1 text-[10px] font-semibold",
         toneClasses[resolvedTone],
         className,
       )}

@@ -5,7 +5,7 @@ import { useLocale } from "@/components/i18n/locale-provider";
 import { GitHubStarLink } from "@/components/layout/github-star-link";
 import { GuardedLink } from "@/components/layout/navigation/guarded-link";
 
-const footerLinkClass = "inline-flex min-h-8 items-center gap-1.5 rounded-lg px-2 font-bold text-[var(--text-muted)] transition-colors hover:bg-[var(--accent-soft)] hover:text-[var(--accent-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]";
+const footerLinkClass = "inline-flex min-h-8 items-center gap-1.5 rounded-[var(--control-radius)] px-2 font-bold text-[var(--text-muted)] transition-colors hover:bg-[var(--accent-soft)] hover:text-[var(--accent-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-soft)]";
 
 export function AppFooter({ online }: { online: boolean }) {
   const { t } = useLocale();

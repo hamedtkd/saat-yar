@@ -31,8 +31,10 @@ test("persisted data broadcasts successful saves and defers unsafe reloads", asy
 test("shell exposes an actionable semantic multi-tab conflict banner", async () => {
   const shell = await read("components/saatyar-shell.tsx");
   const banner = await read("components/layout/multi-tab-sync-banner.tsx");
+  const notice = await read("components/common/floating-notice.tsx");
   assert.match(shell, /<MultiTabSyncBanner/);
   assert.match(banner, /s\("Data changed in another tab"\)/);
   assert.match(banner, /s\("Load new version"\)/);
-  assert.match(banner, /var\(--warning-soft\)/);
+  assert.match(banner, /tone="warning"/);
+  assert.match(notice, /var\(--warning-soft\)/);
 });

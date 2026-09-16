@@ -35,11 +35,11 @@ export function ProfileSettingsCard({ data, setData, setToast }: {
     <section id="settings-profile" className="col-span-full scroll-mt-24 dashboard-card rounded-[var(--card-radius)] border border-[var(--dashboard-border)] p-5">
       <PanelHead icon={<UserRound />} title={s("Profile and display name")}><EditableCardActions editing={profile.manualEditing} dirty={profile.dirty && valid} autoSave={data.settings.autoSaveSettings} onEdit={profile.beginEdit} onSave={profile.save} onCancel={profile.cancel} /></PanelHead>
       <div className="grid gap-4 md:grid-cols-[240px_minmax(0,1fr)] md:items-stretch">
-        <div className="flex flex-col justify-between gap-4 rounded-[16px] bg-[var(--surface-2)] p-4">
-          <div className="flex items-center gap-3"><span className="grid size-12 shrink-0 place-items-center rounded-[15px] bg-[var(--accent-soft)] text-lg font-black text-[var(--accent-strong)]">{displayName.slice(0, 1)}</span><div className="min-w-0"><strong className="block truncate text-sm text-[var(--text)]">{displayName}</strong><span className="text-[10px] font-semibold text-[var(--text-muted)]">{s("Local profile")}</span></div></div>
+        <div className="flex flex-col justify-between gap-4 rounded-[var(--control-radius)] bg-[var(--surface-2)] p-4">
+          <div className="flex items-center gap-3"><span className="grid size-12 shrink-0 place-items-center rounded-[var(--control-radius)] bg-[var(--accent-soft)] text-lg font-black text-[var(--accent-strong)]">{displayName.slice(0, 1)}</span><div className="min-w-0"><strong className="block truncate text-sm text-[var(--text)]">{displayName}</strong><span className="text-[10px] font-semibold text-[var(--text-muted)]">{s("Local profile")}</span></div></div>
           <div className="flex items-start gap-2 text-[9px] leading-5 text-[var(--text-muted)]"><ShieldCheck aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-[var(--success)]" />{s("This profile name and settings stay on this device.")}</div>
         </div>
-        <div className="grid content-center gap-3 rounded-[16px] bg-[var(--surface-2)] p-4">
+        <div className="grid content-center gap-3 rounded-[var(--control-radius)] bg-[var(--surface-2)] p-4">
           <label className="grid min-w-0 gap-2 text-xs font-semibold text-[var(--text-muted)]">{s("Name shown in Saatyar")}<Input value={name} disabled={!profile.editing} maxLength={MAX_NAME_LENGTH} placeholder={s("For example, Hamed")} autoComplete="name" aria-invalid={profile.editing && !valid} onChange={(event) => profile.update({ name: event.target.value })} /></label>
           <div className="flex flex-wrap items-center justify-between gap-2 text-[10px]"><span className="text-[var(--text-muted)]">{s("Greeting preview")}</span><strong className="text-[var(--text)]">{normalizedName ? s("Good morning, {name}", { name: normalizedName }) : s("Good morning")}</strong></div>
         </div>

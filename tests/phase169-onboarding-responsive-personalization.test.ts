@@ -26,7 +26,9 @@ test("wide desktop shell expands and stays centered beside the fixed sidebar", a
   assert.match(globals, /margin-right: calc\(var\(--shell-content-offset\) \+ max\(0px, \(100% - var\(--shell-content-offset\)/);
   assert.doesNotMatch(globals, /100vw - var\(--shell-content-offset\)/);
   assert.match(shell, /xl:px-0/);
-  for (const source of [shell, header, pwa]) assert.match(source, /max-w-\[var\(--shell-content-max\)\]/);
+  for (const source of [shell, header]) assert.match(source, /max-w-\[var\(--shell-content-max\)\]/);
+  assert.match(pwa, /FloatingNotice/);
+  assert.doesNotMatch(pwa, /shell-main-offset/);
 });
 
 test("profile menu stacking stays above settings search surfaces", async () => {
@@ -47,7 +49,7 @@ test("welcome step uses a focused profile card instead of the old stretched labe
   ]);
   assert.match(welcome, /data-onboarding-name/);
   assert.match(welcome, /max-w-\[760px\]/);
-  assert.match(welcome, /rounded-\[28px\]/);
+  assert.match(welcome, /rounded-\[var\(--card-radius\)\]/);
   assert.match(onboarding, /max-w-\[1320px\]/);
 });
 

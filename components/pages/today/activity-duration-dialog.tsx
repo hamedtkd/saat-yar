@@ -37,9 +37,9 @@ function DurationField({
           max={max}
           value={value}
           onValueChange={set}
-          className="h-14 rounded-xl px-11 text-center text-base font-black tabular-nums"
+          className="h-14 rounded-[var(--card-radius)] px-11 text-center text-base font-black tabular-nums"
         />
-        <span className="absolute inset-y-1.5 end-1.5 grid w-8 grid-rows-2 overflow-hidden rounded-lg border border-[var(--dashboard-border)] bg-[var(--surface-1)]">
+        <span className="absolute inset-y-1.5 end-1.5 grid w-8 grid-rows-2 overflow-hidden rounded-[var(--control-radius)] border border-[var(--dashboard-border)] bg-[var(--surface-1)]">
           <button
             type="button"
             className="grid place-items-center text-[var(--text-muted)] transition-colors hover:bg-[var(--accent-soft)] hover:text-[var(--accent-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent-soft)]"

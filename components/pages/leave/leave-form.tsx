@@ -42,7 +42,7 @@ export function LeaveForm({ draft, setDraft, onSave }: LeaveFormProps) {
           <label className={cn("grid min-w-0 gap-2", { "col-span-2": !isHourly })}>
             <span className="text-xs font-bold text-[var(--text)]">{b("leave.form.type")}</span>
             <Select value={draft.type} onValueChange={(type) => updateDraft("type", type as LeaveEntry["type"])}>
-              <SelectTrigger aria-label={b("leave.form.typeAria")} className={cn("h-12 w-full min-w-0 rounded-xl border-[var(--border)] bg-[var(--surface-1)] px-3 text-sm font-bold shadow-none", { "col-span-2": !isHourly })}>
+              <SelectTrigger aria-label={b("leave.form.typeAria")} className={cn("h-12 w-full min-w-0 rounded-[var(--card-radius)] border-[var(--border)] bg-[var(--surface-1)] px-3 text-sm font-bold shadow-none", { "col-span-2": !isHourly })}>
                 <SelectValue placeholder={b("leave.form.typePlaceholder")} />
               </SelectTrigger>
               <SelectContent>
@@ -80,11 +80,11 @@ export function LeaveForm({ draft, setDraft, onSave }: LeaveFormProps) {
 
         <label className="grid min-w-0 gap-2">
           <span className="text-xs font-bold text-[var(--text)]">{b("leave.form.optionalNote")}</span>
-          <Input value={draft.note} onChange={(event) => updateDraft("note", event.target.value)} placeholder={b("leave.form.notePlaceholder")} className="h-12 w-full min-w-0 rounded-xl border-[var(--border)] bg-[var(--surface-1)] px-3 text-sm shadow-none placeholder:text-[var(--text-muted)]/70 focus-visible:border-[var(--accent)] focus-visible:ring-[var(--accent-soft)]" />
+          <Input value={draft.note} onChange={(event) => updateDraft("note", event.target.value)} placeholder={b("leave.form.notePlaceholder")} className="h-12 w-full min-w-0 rounded-[var(--card-radius)] border-[var(--border)] bg-[var(--surface-1)] px-3 text-sm shadow-none placeholder:text-[var(--text-muted)]/70 focus-visible:border-[var(--accent)] focus-visible:ring-[var(--accent-soft)]" />
         </label>
       </div>
 
-      <Button type="button" className="mt-5 h-13 w-full rounded-xl bg-[var(--accent-fill)] text-sm font-extrabold text-[var(--accent-foreground)] shadow-none hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50" disabled={!canSave} onClick={onSave}>
+      <Button type="button" className="mt-5 h-13 w-full rounded-[var(--card-radius)] bg-[var(--accent-fill)] text-sm font-extrabold text-[var(--accent-foreground)] shadow-none hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50" disabled={!canSave} onClick={onSave}>
         <Save aria-hidden="true" className="size-4.5" />
         {isEditing ? b("leave.form.saveEdit") : b("leave.form.save")}
       </Button>
