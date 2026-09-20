@@ -13,7 +13,7 @@ export function FreelancerMobileCards({ data, entries, financialsHidden }: Props
   const { t, date, duration } = useLocaleUi();
   const totalMinutes = entries.reduce((sum, entry) => sum + entryMinutes(entry), 0);
   const totalIncome = entries.reduce((sum, entry) => !entry.billable ? sum : sum + (entryMinutes(entry) / 60) * Math.max(0, entry.effectiveRate), 0);
-  return <div className="grid gap-3 p-4 md:hidden">
+  return <div className="report-mobile-cards grid gap-3 p-4 md:hidden">
     {entries.map((entry) => {
       const project = data.projects.find((item) => item.id === entry.projectId);
       const client = data.clients.find((item) => item.id === entry.clientId);

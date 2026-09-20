@@ -353,15 +353,141 @@
 
 @media print {
   @page { size: A4; margin: 12mm; }
+  @page report { size: A4 landscape; margin: 9mm 10mm 11mm; }
+
   header, footer, nav, aside, button, .report-charts { display: none !important; }
   html, body, main { background: #fff !important; }
-  body { color: #111 !important; font-size: 10pt; }
+  body { color: #111827 !important; font-size: 9pt; }
   main { padding: 0 !important; }
-  #main-content { margin: 0 !important; max-width: none !important; padding: 0 !important; }
-  section, article { box-shadow: none !important; break-inside: avoid; }
-  table { width: 100% !important; font-size: 8.5pt !important; }
-  tr, td, th { break-inside: avoid; }
+  #main-content { margin: 0 !important; max-width: none !important; padding: 0 !important; width: 100% !important; }
+  section, article { box-shadow: none !important; }
   a[href]::after { content: none !important; }
+
+  .report-page {
+    page: report;
+    width: 100% !important;
+    color: #111827 !important;
+    --page: #fff;
+    --surface-1: #fff;
+    --surface-2: #f7f8fb;
+    --surface-raised: #fff;
+    --surface-glass: #fff;
+    --text: #111827;
+    --text-muted: #5f6b7a;
+    --border: #d9dee7;
+    --dashboard-border: #d9dee7;
+    --surface-shadow: none;
+  }
+
+  .report-print-header {
+    margin: 0 0 7mm !important;
+    padding: 0 0 5mm !important;
+    border-bottom: 1px solid #cfd6e1;
+    break-inside: avoid;
+  }
+  .report-print-header-main {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.9fr);
+    gap: 10mm;
+    align-items: end;
+  }
+  .report-print-brand {
+    margin-bottom: 2mm;
+    font-size: 8pt;
+    font-weight: 800;
+    color: var(--accent-strong);
+  }
+  .report-print-header h1 {
+    margin: 0;
+    font-size: 18pt;
+    line-height: 1.25;
+    font-weight: 900;
+    color: #111827;
+  }
+  .report-print-meta {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4mm;
+  }
+  .report-print-meta > div {
+    display: grid;
+    gap: 1mm;
+    border-inline-start: 1px solid #e1e5ec;
+    padding-inline-start: 3mm;
+  }
+  .report-print-meta span { font-size: 6.8pt; color: #6b7280; }
+  .report-print-meta strong { font-size: 8pt; color: #111827; }
+
+  .report-print-section { margin: 0 0 6mm !important; }
+  .report-print-section > :first-child { margin-bottom: 3mm !important; }
+  .report-page .dashboard-card,
+  .report-page [data-activity-breakdown] > article,
+  .report-page .report-payslip {
+    break-inside: avoid-page;
+    background: #fff !important;
+    border-color: #d9dee7 !important;
+    box-shadow: none !important;
+  }
+  .report-page .report-metric-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 3mm !important;
+    margin-bottom: 3mm !important;
+  }
+  .report-page .report-metric-grid > article {
+    min-height: 0 !important;
+    padding: 3mm !important;
+  }
+  .report-page .report-activity-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 3mm !important;
+  }
+  .report-page .report-activity-grid > article { padding: 3mm !important; }
+
+  .report-page .report-table-layout { display: block !important; }
+  .report-page .report-table-surface { overflow: visible !important; }
+  .report-page .report-desktop-table {
+    display: block !important;
+    width: 100% !important;
+    overflow: visible !important;
+    padding: 2mm 0 0 !important;
+  }
+  .report-page .report-mobile-cards { display: none !important; }
+  .report-page table {
+    width: 100% !important;
+    min-width: 0 !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+    font-size: 7.2pt !important;
+  }
+  .report-page thead { display: table-header-group; }
+  .report-page tfoot { display: table-row-group; }
+  .report-page tr { break-inside: avoid; }
+  .report-page td, .report-page th {
+    break-inside: avoid;
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+    padding: 2.2mm 1.8mm !important;
+    border-color: #d9dee7 !important;
+    color: #111827 !important;
+    vertical-align: top;
+  }
+  .report-page th {
+    background: #f1f4f8 !important;
+    color: #4b5563 !important;
+    font-weight: 800 !important;
+  }
+  .report-page tfoot td { background: #f7f8fb !important; font-weight: 800 !important; }
+  .report-page .truncate {
+    max-width: none !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+  }
+  .report-page svg, .report-page [class*="bg-"] {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 }
 
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {

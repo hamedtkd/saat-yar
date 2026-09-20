@@ -26,6 +26,7 @@ import { RecordRecycleBinCard } from "./record-recycle-bin-card";
 import { RecoveryCard } from "./recovery-card";
 import { RestoreCard } from "./restore-card";
 import { SettingsBehaviorCard } from "./settings-behavior-card";
+import { RuntimeBehaviorCard } from "./runtime-behavior-card";
 import { SettingsNav } from "./settings-nav";
 import { SettingsOverview } from "./settings-overview";
 import type { SettingsRouteId } from "./settings-route-model";
@@ -76,7 +77,7 @@ export function SettingsPage(props: Props) {
       <SettingsNav />
       <div className="grid min-w-0 gap-5">
         {props.route === "overview" && <SettingsOverview />}
-        {props.route === "profile" && <><span id="settings-general" className="block scroll-mt-24" aria-hidden="true" /><SettingsSection icon={<SlidersHorizontal />} eyebrow={t("settings.general.eyebrow")} title={t("settings.general.title")} description={t("settings.general.description")}><OnboardingReentryCard startOnboardingReentry={props.startOnboardingReentry} /><ProfileSettingsCard data={props.data} setData={props.setData} setToast={props.setToast} /><LanguageSettingsCard /><SettingsBehaviorCard data={props.data} setData={props.setData} setToast={props.setToast} /></SettingsSection></>}
+        {props.route === "profile" && <><span id="settings-general" className="block scroll-mt-24" aria-hidden="true" /><SettingsSection icon={<SlidersHorizontal />} eyebrow={t("settings.general.eyebrow")} title={t("settings.general.title")} description={t("settings.general.description")}><OnboardingReentryCard startOnboardingReentry={props.startOnboardingReentry} /><ProfileSettingsCard data={props.data} setData={props.setData} setToast={props.setToast} /><LanguageSettingsCard /><SettingsBehaviorCard data={props.data} setData={props.setData} setToast={props.setToast} /><RuntimeBehaviorCard setToast={props.setToast} /></SettingsSection></>}
         {props.route === "work" && <><span id="settings-work" className="block scroll-mt-24" aria-hidden="true" /><SettingsSection icon={<CalendarClock />} eyebrow={t("settings.work.eyebrow")} title={t("settings.work.title")} description={t("settings.work.description")}><WorkSettingsCard data={props.data} setData={props.setData} setToast={props.setToast} /><HolidayOverridesCard data={props.data} setData={props.setData} setToast={props.setToast} /></SettingsSection></>}
         {props.route === "payroll" && <SettingsSection icon={<WalletCards />} eyebrow={t("settings.work.eyebrow")} title={t("settings.nav.payroll")} description={t("settings.work.description")}><PayrollPolicyCard data={props.data} setData={props.setData} setToast={props.setToast} financialsHidden={props.financialsHidden} /><PayrollSettingsCard data={props.data} setData={props.setData} setToast={props.setToast} financialsHidden={props.financialsHidden} /></SettingsSection>}
         {props.route === "notifications" && <SettingsSection icon={<Bell />} eyebrow={t("settings.work.eyebrow")} title={t("settings.nav.notifications")} description={t("settings.work.description")}><NotificationSettingsCard data={props.data} setData={props.setData} requestPermission={props.requestNotificationPermission} setToast={props.setToast} /></SettingsSection>}

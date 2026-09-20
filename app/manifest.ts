@@ -7,7 +7,7 @@ const basePath = process.env.PAGES_BASE_PATH ?? "";
 const withBase = (path: string) => `${basePath}${path}`;
 
 export default function manifest(): MetadataRoute.Manifest {
-  return {
+  return ({
     id: withBase("/"),
     name: PWA_APP_NAME,
     short_name: PWA_SHORT_NAME,
@@ -17,6 +17,7 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: withBase("/today/"),
     scope: withBase("/"),
     display: "standalone",
+    launch_handler: { client_mode: "focus-existing" },
     orientation: "any",
     background_color: "#07171c",
     theme_color: "#8b5cf6",
@@ -31,5 +32,5 @@ export default function manifest(): MetadataRoute.Manifest {
       { name: "تقویم کاری", short_name: "تقویم", url: withBase("/month/"), icons: [{ src: withBase("/icons/icon-192.png"), sizes: "192x192" }] },
       { name: "گزارش‌ها", short_name: "گزارش", url: withBase("/reports/"), icons: [{ src: withBase("/icons/icon-192.png"), sizes: "192x192" }] },
     ],
-  };
+  } as MetadataRoute.Manifest);
 }

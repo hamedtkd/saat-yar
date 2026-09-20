@@ -30,18 +30,18 @@ function PayrollValue({ value, hidden }: { value: number; hidden: boolean }) {
 export function EmployeeSummary({ stats, records, overtimeMinutes, deficitMinutes, payroll, financialsHidden }: EmployeeSummaryProps) {
   const { t, duration, number } = useLocaleUi();
   return <>
-    <section className={cn("mb-4 grid grid-cols-4 gap-3", "max-[1180px]:grid-cols-2", "max-[620px]:grid-cols-1")}>
+    <section className={cn("report-metric-grid mb-4 grid grid-cols-4 gap-3", "max-[1180px]:grid-cols-2", "max-[620px]:grid-cols-1")}>
       <MetricCard icon={<Clock3 />} label={t("reports.employee.monthWork")} value={duration(stats.worked)} suffix={t("common.hour")} tone="blue" />
       <MetricCard icon={<BriefcaseBusiness />} label={t("common.targetHours")} value={duration(stats.target)} suffix={t("common.hour")} />
       <MetricCard icon={<CheckCircle2 />} label={t("common.overtime")} value={duration(overtimeMinutes)} suffix={t("common.hour")} />
       <MetricCard icon={<AlertTriangle />} label={t("common.deficit")} value={duration(deficitMinutes)} suffix={t("common.hour")} tone="amber" />
     </section>
-    <section className={cn("mb-4 grid grid-cols-3 gap-3", "max-[900px]:grid-cols-1")}>
+    <section className={cn("report-metric-grid mb-4 grid grid-cols-3 gap-3", "max-[900px]:grid-cols-1")}>
       <MetricCard icon={<Pause />} label={t("reports.employee.rest")} value={duration(stats.breaks)} suffix={t("common.hour")} tone="amber" />
       <MetricCard icon={<TrendingUp />} label={t("reports.employee.balance")} value={duration(stats.balance, true)} suffix={t("common.hour")} />
       <MetricCard icon={<WalletCards />} label={t("reports.employee.recordedDays")} value={number(records.length)} suffix={t("common.day")} />
     </section>
-    <SurfaceCard as="section" className="mb-4 overflow-hidden p-4 sm:p-5">
+    <SurfaceCard as="section" className="report-payslip mb-4 overflow-hidden p-4 sm:p-5">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3"><div><strong className="block text-sm font-extrabold text-[var(--text)]">{t("reports.employee.payslip")}</strong><small className="text-[10px] leading-6 text-[var(--text-muted)]">{t("reports.employee.payslipHint")}</small></div><span className="rounded-[var(--control-radius-sm)] bg-[var(--accent-soft)] px-3 py-1.5 text-xs font-black text-[var(--accent-strong)]">{t("reports.employee.netLabel")} <PrivateMoney value={payroll.net} hidden={financialsHidden} /> {t("common.currency.toman")}</span></div>
       <div className="grid grid-cols-4 gap-3 max-[900px]:grid-cols-2 max-[620px]:grid-cols-1">
         <PayrollStat label={t("common.regularPay")} value={payroll.regularPay} hidden={financialsHidden} />
