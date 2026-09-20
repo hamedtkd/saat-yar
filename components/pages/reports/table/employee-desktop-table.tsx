@@ -13,7 +13,7 @@ type Props = { monthRecords: WorkRecord[]; settings: Settings; totals: EmployeeT
 export function EmployeeDesktopTable({ monthRecords, settings, totals, financialsHidden }: Props) {
   const { t, date, digits, duration, number } = useLocaleUi();
   const headings = [t("common.date"), t("common.clockIn"), t("common.clockOut"), t("common.lunch"), t("common.breaks"), t("common.netWorked"), t("common.leave"), t("common.balance"), t("common.estimatedSalary"), t("common.note")];
-  return <div className="hidden w-full overflow-x-auto px-4 pb-5 pt-3 md:block sm:px-5"><table className="w-full min-w-270 border-collapse text-[11px]">
+  return <div className="report-desktop-table hidden w-full overflow-x-auto px-4 pb-5 pt-3 md:block sm:px-5"><table className="w-full min-w-270 border-collapse text-[11px]">
     <thead><tr>{headings.map((heading) => <TableHeading key={heading}>{heading}</TableHeading>)}</tr></thead>
     <tbody>{monthRecords.map((record) => {
       const dailyTarget = getDailyTargetMinutes(record.date, settings);

@@ -206,7 +206,7 @@ export function usePersistedAppData() {
     data, setData, ready, toast, setToast, online,
     storageInfo, setStorageInfo, storage,
     saveState, lastSavedAt, saveError, recoverySnapshot,
-    retrySave, createManualRecovery, restoreRecovery, clearRecovery,
+    retrySave, createManualRecovery, restoreRecovery, clearRecovery, persistImmediately: persistData,
     externalSyncPending, multiTabSyncStatus, clearMultiTabSyncHistory,
     reloadExternalData, dismissExternalSync,
   };

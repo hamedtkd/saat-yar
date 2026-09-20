@@ -11,6 +11,7 @@ import {
   HeartPulse,
   LifeBuoy,
   Palette,
+  Power,
   RotateCcw,
   Save,
   ShieldAlert,
@@ -40,6 +41,7 @@ export const settingsNavItems: readonly SettingsNavItem[] = [
   { id: "settings-language", labelKey: "settings.language.nav", groupId: "settings-general", icon: Globe2, keywords: "language locale english persian rtl ltr direction calendar gregorian jalali solar hijri date", href: "/settings/profile" },
   { id: "settings-appearance", labelKey: "settings.nav.appearance", groupId: "settings-general", icon: Palette, keywords: "theme dark light appearance color surface", href: "/settings/appearance" },
   { id: "settings-behavior", labelKey: "settings.nav.behavior", groupId: "settings-general", icon: Save, keywords: "save autosave draft persistence", href: "/settings/profile" },
+  { id: "settings-runtime", labelKey: "settings.nav.runtime", groupId: "settings-general", icon: Power, keywords: "runtime startup autostart login sleep hibernate suspend timer pwa launch", href: "/settings/profile" },
 
   { id: "settings-health", labelKey: "settings.nav.health", groupId: "settings-data", icon: HeartPulse, keywords: "data health conflict sync tabs integrity", href: "/settings/sync" },
   { id: "settings-recycle", labelKey: "settings.nav.recycle", groupId: "settings-data", icon: Trash2, keywords: "delete restore recycle records", href: "/settings/data" },

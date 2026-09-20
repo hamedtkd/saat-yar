@@ -13,7 +13,7 @@ export function FreelancerDesktopTable({ data, entries, financialsHidden }: Prop
   const headings = [t("common.date"), t("common.client"), t("common.project"), t("common.description"), t("common.duration"), t("common.effectiveRate"), t("common.amount"), t("common.status")];
   const totalMinutes = entries.reduce((sum, entry) => sum + entryMinutes(entry), 0);
   const totalIncome = entries.reduce((sum, entry) => !entry.billable ? sum : sum + (entryMinutes(entry) / 60) * Math.max(0, entry.effectiveRate), 0);
-  return <div className="hidden w-full overflow-x-auto px-4 pb-5 pt-3 md:block sm:px-5"><table className="w-full min-w-245 border-collapse text-[11px]">
+  return <div className="report-desktop-table hidden w-full overflow-x-auto px-4 pb-5 pt-3 md:block sm:px-5"><table className="w-full min-w-245 border-collapse text-[11px]">
     <thead><tr>{headings.map((heading) => <TableHeading key={heading}>{heading}</TableHeading>)}</tr></thead>
     <tbody>{entries.map((entry) => {
       const project = data.projects.find((item) => item.id === entry.projectId);

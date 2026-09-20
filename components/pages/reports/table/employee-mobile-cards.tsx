@@ -12,7 +12,7 @@ import { getEmployeeDayPay, InfoRow, type EmployeeTotals } from "./report-table-
 type Props = { monthRecords: WorkRecord[]; settings: Settings; totals: EmployeeTotals; financialsHidden: boolean };
 export function EmployeeMobileCards({ monthRecords, settings, totals, financialsHidden }: Props) {
   const { t, date, digits, duration, number } = useLocaleUi();
-  return <div className="grid gap-3 p-4 md:hidden">
+  return <div className="report-mobile-cards grid gap-3 p-4 md:hidden">
     {monthRecords.map((record) => {
       const dailyTarget = getDailyTargetMinutes(record.date, settings);
       const result = calc(record, dailyTarget);

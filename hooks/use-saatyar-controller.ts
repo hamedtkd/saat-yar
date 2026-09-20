@@ -18,6 +18,7 @@ import { useReportActions } from "./controller/use-report-actions";
 import { useOnboardingSession } from "./use-onboarding-session";
 import { getProjectTimerRecoveryAction } from "@/lib/project-timer-session";
 import { useProjectTimerSession } from "./use-project-timer-session";
+import { useSystemSuspendRecovery } from "./use-system-suspend-recovery";
 
 export function useSaatyarController(calendar: CalendarSystem = "persian") {
   const persisted = usePersistedAppData();
@@ -44,6 +45,10 @@ export function useSaatyarController(calendar: CalendarSystem = "persian") {
 
   const derived = useControllerDerived(data, selectedDate, selectedProjectId, reportFilter, calendar);
   const { session: projectTimerSession, setSession: setProjectTimerSession } = useProjectTimerSession();
+  useSystemSuspendRecovery({
+    ready: persisted.ready, data, setData, projectTimerSession, setProjectTimerSession,
+    persistImmediately: persisted.persistImmediately, setToast,
+  });
   const projectTimerRecoveryChecked = useRef(false);
   useEffect(() => {
     if (!persisted.ready || projectTimerRecoveryChecked.current) return;

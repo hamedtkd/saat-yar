@@ -68,7 +68,6 @@ test("padded badges and chips use theme radius instead of rounded-full", () => {
   const paddedFullRadius = /(?:rounded-full[^"'`\n]*\bpx-|\bpx-[^"'`\n]*rounded-full)/g;
 
   for (const path of files) {
-    if (path.replaceAll("\\", "/") === "components/pages/today/today-progress-arc.tsx") continue;
     const source = readFileSync(path, "utf8").replace(/\[[^\]]+\]:rounded-full/g, "");
     const matches = source.match(paddedFullRadius);
     if (matches?.length) violations.push(`${path}: ${matches.join(", ")}`);

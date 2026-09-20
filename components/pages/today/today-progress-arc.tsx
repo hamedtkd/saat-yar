@@ -78,7 +78,11 @@ export function TodayProgressArc({ value, children, className }: {
           style={{ filter: "drop-shadow(0 0 10px color-mix(in srgb,var(--accent) 35%,transparent))" }}
         />
       </svg>
-      <div className="absolute inset-[22%] grid place-items-center rounded-full border border-[color-mix(in_srgb,var(--accent)_12%,var(--border))] bg-[radial-gradient(circle_at_top,color-mix(in_srgb,var(--surface-1)_82%,transparent),var(--surface-1))] px-6 text-center shadow-[inset_0_1px_0_color-mix(in_srgb,var(--text)_6%,transparent)]">
+      <div
+        className="absolute inset-[22%] grid place-items-center border border-[color-mix(in_srgb,var(--accent)_12%,var(--border))] bg-[radial-gradient(circle_at_top,color-mix(in_srgb,var(--surface-1)_82%,transparent),var(--surface-1))] px-6 text-center shadow-[inset_0_1px_0_color-mix(in_srgb,var(--text)_6%,transparent)]"
+        style={{ borderRadius: "50%" }}
+        data-semantic-circle="progress-arc-center"
+      >
         {children}
       </div>
     </div>

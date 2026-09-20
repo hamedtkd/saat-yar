@@ -14,7 +14,7 @@ type Props = { monthRecords: WorkRecord[]; settings: Settings; financialsHidden:
 export function EmployeeReportTable({ monthRecords, settings, financialsHidden }: Props) {
   const { t, number } = useLocaleUi();
   const totals = getEmployeeTotals(monthRecords, settings);
-  return <article className={cn("min-w-0 overflow-hidden rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-glass)] shadow-[0_10px_35px_rgba(17,45,55,0.055)]")}>
+  return <article className={cn("report-table-surface min-w-0 overflow-hidden rounded-[var(--card-radius)] border border-[var(--border)] bg-[var(--surface-glass)] shadow-[0_10px_35px_rgba(17,45,55,0.055)]")}>
     <div className="flex flex-wrap items-start justify-between gap-3 px-4 pt-4 sm:px-5 sm:pt-5"><PanelHead icon={<FileSpreadsheet />} title={t("reports.table.employeeTitle")} />{monthRecords.length > 0 && <span className="rounded-[var(--control-radius-sm)] bg-[var(--accent-soft)] px-3 py-1.5 text-[10px] font-bold text-[var(--text-muted)]">{t("common.daysRecorded", { count: number(monthRecords.length) })}</span>}</div>
     {monthRecords.length > 0 ? <><EmployeeDesktopTable monthRecords={monthRecords} settings={settings} totals={totals} financialsHidden={financialsHidden} /><EmployeeMobileCards monthRecords={monthRecords} settings={settings} totals={totals} financialsHidden={financialsHidden} /></> : <div className="p-4 sm:p-5"><EmptyState icon={<Filter />} title={t("reports.table.employeeEmpty")} description={t("reports.table.employeeEmptyHint")} /></div>}
   </article>;

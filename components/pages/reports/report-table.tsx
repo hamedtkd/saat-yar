@@ -14,7 +14,7 @@ type ReportTableProps = {
 
 export function ReportTable({ mode, data, entries, monthRecords, settings = data.settings, financialsHidden = false }: ReportTableProps) {
   return (
-    <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_280px]">
+    <section className="report-table-layout grid gap-4 xl:grid-cols-[minmax(0,1fr)_280px]">
       {mode === "employee" ? (
         <EmployeeReportTable monthRecords={monthRecords} settings={settings} financialsHidden={financialsHidden} />
       ) : (

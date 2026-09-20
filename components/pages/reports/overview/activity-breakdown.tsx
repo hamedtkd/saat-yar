@@ -21,7 +21,7 @@ export function ActivityBreakdown({ records }: { records: WorkRecord[] }) {
   const breakdown = getActivityBreakdown(records);
   if (!breakdown.totalMinutes) return <div data-activity-breakdown className="rounded-[var(--card-radius)] border border-dashed border-[var(--dashboard-border)] bg-[var(--surface-2)] px-4 py-5 text-center text-[11px] leading-6 text-[var(--text-muted)]">{t("reports.activity.empty")}</div>;
 
-  return <div data-activity-breakdown className="grid grid-cols-3 gap-3 max-[900px]:grid-cols-2 max-[620px]:grid-cols-1">{activityKinds.map((kind) => {
+  return <div data-activity-breakdown className="report-activity-grid grid grid-cols-3 gap-3 max-[900px]:grid-cols-2 max-[620px]:grid-cols-1">{activityKinds.map((kind) => {
     const Icon = icons[kind];
     const minutes = breakdown.totals[kind];
     const share = breakdown.totalMinutes ? Math.round(minutes / breakdown.totalMinutes * 100) : 0;
