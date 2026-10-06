@@ -1,5 +1,4 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
 import test from "node:test";
 import {
   createAppearancePreviewTokens,
@@ -86,27 +85,4 @@ test("old V2 appearance presets remain importable and receive safe navigation de
   assert.equal(parsed.sidebarStyle, "soft");
   assert.equal(parsed.sidebarAccent, "filled");
   assert.equal(parsed.sidebarWidth, "default");
-});
-
-test("Studio and shell expose the advanced navigation and font controls", async () => {
-  const [card, preview, runtime, sidebar, globals] = await Promise.all([
-    readFile("components/pages/settings/appearance/appearance-settings-card.tsx", "utf8"),
-    readFile("components/pages/settings/appearance/theme-preview.tsx", "utf8"),
-    readFile("components/theme/theme-runtime.tsx", "utf8"),
-    readFile("components/layout/navigation/sidebar-nav.tsx", "utf8"),
-    readFile("app/globals.css", "utf8"),
-  ]);
-  assert.match(card, /APPEARANCE_FONT_OPTIONS/);
-  assert.match(card, /HEADING_FONT_OPTIONS/);
-  assert.match(card, /s\("Sidebar style"\)/);
-  assert.match(card, /s\("Active menu item"\)/);
-  assert.match(card, /s\("Sidebar width"\)/);
-  assert.match(card, /"none", "compact", "balanced", "rounded", "extra"/);
-  assert.match(preview, /data-sidebar-style/);
-  assert.match(preview, /--preview-sidebar-width/);
-  assert.match(runtime, /root\.dataset\.sidebarStyle/);
-  assert.match(sidebar, /var\(--sidebar-background\)/);
-  assert.match(sidebar, /var\(--sidebar-active-bg\)/);
-  assert.match(globals, /data-radius="none"/);
-  assert.match(globals, /data-sidebar-width="wide"/);
 });

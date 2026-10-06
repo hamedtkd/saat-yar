@@ -17,6 +17,13 @@ const REQUIRED_MEDIA = [
 
 function readText(path) { return readFileSync(resolve(ROOT, path), "utf8"); }
 function readJson(path) { return JSON.parse(readText(path)); }
+export function collectPackageVersionAlignmentFailures(packageJson, packageLock) {
+  const failures = [];
+  requireCondition(typeof packageJson.version === "string" && packageJson.version.length > 0, "package.json must declare the current application version.", failures);
+  requireCondition(packageLock.version === packageJson.version, "package-lock version must match package.json.", failures);
+  requireCondition(packageLock.packages?.[""]?.version === packageJson.version, "package-lock root package version must match package.json.", failures);
+  return failures;
+}
 function lines(path) { return readText(path).split(/\r?\n/); }
 function requireCondition(condition, message, failures) { if (!condition) failures.push(message); }
 function includesLine(path, expected) { return lines(path).some((line) => line.trim() === expected); }
@@ -472,24 +479,22 @@ export function collectCandidate261AuditFailures() {
 }
 
 export function runReleaseAudit() {
+  const packageJson = readJson("package.json");
+  const packageLock = readJson("package-lock.json");
   const historical240Failures = collectReleaseAuditFailures();
   const historical250Failures = collectFinal250AuditFailures();
   const final260Failures = collectFinal260AuditFailures();
-  const candidate261Failures = collectCandidate261AuditFailures();
-  const failures = [...historical240Failures, ...historical250Failures, ...final260Failures, ...candidate261Failures];
+  const versionFailures = collectPackageVersionAlignmentFailures(packageJson, packageLock);
+  const failures = [...historical240Failures, ...historical250Failures, ...final260Failures, ...versionFailures];
   if (failures.length > 0) {
     console.error("Saatyar release audit failed\n");
     for (const failure of failures) console.error(`- ${failure}`);
     process.exitCode = 1;
     return false;
   }
-  const manifest = readJson("docs/releases/2.6.1.json");
-  console.log(`Saatyar ${manifest.version} Phase 203 candidate audit passed.`);
+  console.log(`Saatyar ${packageJson.version} current release audit passed.`);
   console.log(`Current AppData schema: v${APP_DATA_SCHEMA_VERSION}`);
-  console.log(`Released 2.6.0 baseline: ${manifest.verifiedBaselineCommitPrefix} (${manifest.verifiedBaselineTestCount} tests)`);
-  console.log(`Analytics migration: ${manifest.releaseEvidence?.analyticsMigration}`);
-  console.log(`Phase 203 Node test target: ${manifest.expectedCandidateTestCount}`);
-  console.log("Release order: verify candidate on dev -> controlled main merge -> configure Cloudflare token -> production audit -> annotated v2.6.1 tag.");
+  console.log("package.json and package-lock versions are aligned.");
   return true;
 }
 

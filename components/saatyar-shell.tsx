@@ -110,7 +110,7 @@ export function SaatyarShell({ children }: { children: React.ReactNode }) {
               <MultiTabSyncBanner
                 pending={controller.externalSyncPending}
                 onReload={() => { void controller.reloadExternalData(); }}
-                onDismiss={controller.dismissExternalSync}
+                onKeepLocal={() => { void controller.keepLocalChanges(); }}
               />
 
               <div

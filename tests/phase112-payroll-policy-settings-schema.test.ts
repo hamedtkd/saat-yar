@@ -43,7 +43,6 @@ test("reports consume the persisted payroll policy through observable summary be
   const summary = createReportSummary({
     data,
     monthRecords: [record],
-    monthStats: { worked: 0, target: 0, balance: 0, breaks: 0 },
     entries: [],
     reportBillable: 0,
   });

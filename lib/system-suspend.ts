@@ -7,7 +7,9 @@ export const SYSTEM_SUSPEND_HEARTBEAT_KEY = "saatyar:system-suspend-heartbeat-v1
 export const SYSTEM_SUSPEND_TICK_MS = 10_000;
 export const SYSTEM_SUSPEND_GAP_MS = 60_000;
 export const SYSTEM_SUSPEND_CLOCK_DRIFT_MS = 45_000;
-export const SYSTEM_SUSPEND_FREEZE_ARM_MS = 12_000;
+// Background timers are commonly throttled to once a minute. Allow multiple
+// throttled intervals before treating a hidden page as having stopped.
+export const SYSTEM_SUSPEND_HIDDEN_STALE_MS = 3 * SYSTEM_SUSPEND_GAP_MS;
 
 export type SystemSuspendHeartbeat = {
   version: 1;
@@ -16,15 +18,29 @@ export type SystemSuspendHeartbeat = {
   projectEntryId?: string;
 };
 
-export type SuspendTick = { wallMs: number; monotonicMs: number; visible: boolean };
+export type SuspendTick = { wallMs: number; monotonicMs: number; visible: boolean; heartbeatAgeMs?: number };
 
-export function detectSystemSuspend(previous: SuspendTick, next: SuspendTick, freezeCandidate = false) {
-  if (freezeCandidate) return true;
+export function detectSystemSuspend(previous: SuspendTick, next: SuspendTick) {
   const wallDelta = next.wallMs - previous.wallMs;
   const monotonicDelta = next.monotonicMs - previous.monotonicMs;
   if (wallDelta < SYSTEM_SUSPEND_GAP_MS) return false;
   if (previous.visible && next.visible) return true;
+  if (!previous.visible && next.visible && (next.heartbeatAgeMs ?? 0) >= SYSTEM_SUSPEND_HIDDEN_STALE_MS) return true;
   return wallDelta - monotonicDelta >= SYSTEM_SUSPEND_CLOCK_DRIFT_MS;
+}
+
+export function shouldPreserveSuspendHeartbeat(previous: SuspendTick, next: SuspendTick) {
+  return !previous.visible && !next.visible &&
+    next.wallMs - previous.wallMs >= SYSTEM_SUSPEND_GAP_MS &&
+    (next.heartbeatAgeMs ?? 0) >= SYSTEM_SUSPEND_HIDDEN_STALE_MS;
+}
+
+export function shouldRetainFailedRecoveryHeartbeat(
+  snapshot: { data: AppData; session: ProjectTimerSession | null } | null,
+  data: AppData,
+  session: ProjectTimerSession | null,
+) {
+  return snapshot !== null && snapshot.data === data && snapshot.session === session;
 }
 
 function currentTime(value: Date) {
@@ -125,4 +141,23 @@ export function applySystemSuspendRecovery(data: AppData, session: ProjectTimerS
   }
 
   return { data: nextData, session: nextSession, changed: attendancePaused || projectPaused, attendancePaused, projectPaused };
+}
+
+export async function recoverSystemSuspend(options: {
+  enabled: boolean;
+  data: AppData;
+  session: ProjectTimerSession | null;
+  heartbeat: SystemSuspendHeartbeat;
+  applyLocal: (data: AppData, session: ProjectTimerSession | null) => void;
+  persist: (data: AppData) => Promise<boolean>;
+}): Promise<"disabled" | "unchanged" | "saved" | "save-failed"> {
+  if (!options.enabled) return "disabled";
+  const result = applySystemSuspendRecovery(options.data, options.session, options.heartbeat);
+  if (!result.changed) return "unchanged";
+  options.applyLocal(result.data, result.session);
+  try {
+    return await options.persist(result.data) ? "saved" : "save-failed";
+  } catch {
+    return "save-failed";
+  }
 }

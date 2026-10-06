@@ -8,10 +8,12 @@ import { getBrowserLocale } from "@/lib/i18n";
 import { translateSystem } from "@/lib/i18n/system";
 import type { AppData } from "@/lib/types";
 
-type StorageLike = { save: (data: AppData) => Promise<void> };
+type StorageLike = { save: (data: AppData) => Promise<string> };
 type Args = {
   data: AppData; setData: Dispatch<SetStateAction<AppData>>; setToast: (message: string) => void;
   importPreview: AppData | null; setImportPreview: Dispatch<SetStateAction<AppData | null>>; storage: StorageLike;
+  enqueuePersistence: <T>(task: () => Promise<T>) => Promise<T>;
+  onPersistedRevision: (revision: string) => void;
 };
 
 function downloadBlob(blob: Blob, name: string) {
@@ -22,7 +24,7 @@ function backupBlob(source: AppData) {
   return new Blob([JSON.stringify(createBackupEnvelope(source), null, 2)], { type: "application/json" });
 }
 
-export function useBackupActions({ data, setData, setToast, importPreview, setImportPreview, storage }: Args) {
+export function useBackupActions({ data, setData, setToast, importPreview, setImportPreview, storage, enqueuePersistence, onPersistedRevision }: Args) {
   function exportBackup() { downloadBlob(backupBlob(data), `saatyar-backup-${localDateKey()}.json`); setToast(translateSystem(getBrowserLocale(), "Backup file downloaded.")); }
   function previewImport(file?: File) {
     if (!file) return;
@@ -39,7 +41,7 @@ export function useBackupActions({ data, setData, setToast, importPreview, setIm
   async function commitImport(next: AppData, message: string, options: { safetyBackup?: boolean } = {}) {
     if (options.safetyBackup) downloadBlob(backupBlob(data), `saatyar-before-import-${localDateKey()}.json`);
     try {
-      await storage.save(next);
+      onPersistedRevision(await enqueuePersistence(() => storage.save(next)));
       setData(next);
       setImportPreview(null);
       setToast(message);

@@ -93,7 +93,6 @@ test("Reports and payroll preview agree on period compensation behavior", () => 
   const report = createReportSummary({
     data,
     monthRecords: records,
-    monthStats: { worked: 0, target: 0, balance: 0, breaks: 0 },
     entries: [],
     reportBillable: 0,
   });

@@ -675,7 +675,7 @@ async function main() {
     console.log("✓ Work Calendar reflects the completed employee attendance calculation");
 
     await navigateInApp(client, "/reports", "گزارش کارکرد و حقوق");
-    await waitFor(client, `document.body?.innerText.includes("فیش حقوقی تخمینی ماه") && document.body?.innerText.includes("کارکرد این ماه")`, "employee payroll report");
+    await waitFor(client, `document.body?.innerText.includes("حقوق تخمینی بازه گزارش") && document.body?.innerText.includes("کارکرد این بازه")`, "employee payroll report");
     console.log("✓ Reports expose employee work totals and the saved payroll policy summary");
 
     console.log(`✓ Employee workflow is durable in IndexedDB (${completedPersistence.storageShape}, schema v${completedPersistence.schemaVersion ?? "legacy"})`);

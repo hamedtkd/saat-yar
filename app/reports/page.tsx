@@ -10,8 +10,7 @@ export default function ReportsRoute() {
   return (
     <ReportsPage
       data={controller.data}
-      monthRecords={controller.filteredMonthRecords}
-      monthStats={controller.monthStats}
+      monthRecords={controller.reportRecords}
       filters={controller.reportFilter}
       setFilters={controller.setReportFilter}
       entries={controller.filteredEntries}

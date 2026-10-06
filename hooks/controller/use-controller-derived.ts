@@ -1,7 +1,8 @@
 import { useMemo } from "react";
 import { calendarMonthCells, emptyRecord, entryMinutes, localDateKey } from "@/lib/format";
 import { getHolidayInfo } from "@/lib/holidays";
-import { recordMatchesReportFilter } from "@/lib/report-filters";
+import { selectReportRecords } from "@/lib/report-records";
+import { timeEntryMatchesReportFilter } from "@/lib/report-filters";
 import type { CalendarSystem } from "@/lib/i18n";
 import { calc, minutesToTime } from "@/lib/time-engine";
 import { getDailyTargetMinutes, getWorkScheduleDay } from "@/lib/work-schedule";
@@ -47,21 +48,11 @@ export function useControllerDerived(data: AppData, selectedDate: string, select
   const usedLeave = leaveSummary.used;
   const leaveAvailable = leaveSummary.available;
   const selectedProject = data.projects.find((project) => project.id === selectedProjectId);
-  const filteredMonthRecords = monthRecords.filter((item) => recordMatchesReportFilter(item, reportFilter, data.settings));
-  const filteredEntries = data.timeEntries.filter((entry) => {
-    const project = data.projects.find((item) => item.id === entry.projectId);
-    const client = data.clients.find((item) => item.id === entry.clientId);
-    const query = reportFilter.query.trim().toLocaleLowerCase("fa");
-    const entryDate = localDateKey(new Date(entry.startedAt));
-    return (reportFilter.clientId === "all" || entry.clientId === reportFilter.clientId) &&
-      (reportFilter.projectId === "all" || entry.projectId === reportFilter.projectId) &&
-      (reportFilter.billable === "all" || String(entry.billable) === reportFilter.billable) &&
-      (!reportFilter.dateFrom || entryDate >= reportFilter.dateFrom) && (!reportFilter.dateTo || entryDate <= reportFilter.dateTo) &&
-      (!query || entry.note.toLocaleLowerCase("fa").includes(query) || project?.name.toLocaleLowerCase("fa").includes(query) || client?.name.toLocaleLowerCase("fa").includes(query));
-  });
+  const reportRecords = useMemo(() => selectReportRecords(data, reportFilter), [data, reportFilter]);
+  const filteredEntries = data.timeEntries.filter((entry) => timeEntryMatchesReportFilter(entry, reportFilter, data));
   const reportBillable = filteredEntries.filter((entry) => entry.billable).reduce((sum, entry) => sum + entryMinutes(entry), 0);
   const reportIncome = filteredEntries.reduce((sum, entry) => sum + (entry.billable ? entryMinutes(entry) / 60 * entry.effectiveRate : 0), 0);
   return { selectedSchedule, dailyTarget, selectedHoliday, record, todayCalc, suggestedExit, monthRecords, monthStats,
-    activeEntry, activeBreak, activeActivitySegment, lunchRunning, usedLeave, leaveAvailable, leaveSummary, selectedProject, filteredMonthRecords, filteredEntries,
+    activeEntry, activeBreak, activeActivitySegment, lunchRunning, usedLeave, leaveAvailable, leaveSummary, selectedProject, reportRecords, filteredEntries,
     reportBillable, reportIncome };
 }

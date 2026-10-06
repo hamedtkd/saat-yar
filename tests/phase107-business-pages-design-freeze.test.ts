@@ -45,14 +45,13 @@ test("business forms and project detail use shared semantic dashboard surfaces",
   assert.match(projectHeader, /var\(--accent-soft\)/);
 });
 
-test("report print regression checks containment instead of an obsolete contiguous class string", async () => {
-  const testSource = await read("tests/phase52-dashboard-report-polish.test.ts");
+test("report charts sit in a print-aware section without hiding their chart grid", async () => {
+  const chartShell = await read("components/pages/reports/charts/chart-shell.tsx");
   const reports = await read("components/pages/reports/reports-page.tsx");
 
-  assert.doesNotMatch(testSource, /report-charts print:hidden/);
-  assert.match(testSource, /print:hidden/);
-  assert.match(testSource, /report-charts/);
-  assert.match(reports, /<section className="[^"]*print:hidden[^"]*">[\s\S]*?<div className="report-charts">/);
+  assert.doesNotMatch(chartShell, /print:hidden/);
+  assert.match(reports, /className="report-print-section report-print-charts mb-5"/);
+  assert.match(reports, /<div className="report-charts"><ReportCharts/);
 });
 
 test("phase 107 closes the remaining page design-freeze backlog item", async () => {

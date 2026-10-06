@@ -160,6 +160,46 @@ async function seedFreelancerData(client) {
   })()`);
 }
 
+async function seedFreelancerReportDescription(client, description) {
+  const seeded = await evaluate(client, `(async () => {
+    const db = await new Promise((resolve, reject) => {
+      const request = indexedDB.open("saatyar-db", 1);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    const snapshot = await new Promise((resolve, reject) => {
+      const tx = db.transaction("app-data", "readonly");
+      const request = tx.objectStore("app-data").get("current");
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    const data = snapshot?.data;
+    const client = data?.clients?.[0];
+    const project = data?.projects?.find((item) => item.clientId === client?.id);
+    if (!client || !project || !Array.isArray(data.timeEntries)) return false;
+    data.timeEntries.push({
+      id: "report-long-description",
+      clientId: client.id,
+      projectId: project.id,
+      task: "",
+      startedAt: new Date().toISOString(),
+      endedAt: new Date().toISOString(),
+      note: ${JSON.stringify(description)},
+      billable: true,
+      effectiveRate: 100,
+    });
+    await new Promise((resolve, reject) => {
+      const tx = db.transaction("app-data", "readwrite");
+      tx.objectStore("app-data").put({ ...snapshot, data, savedAt: new Date().toISOString() }, "current");
+      tx.oncomplete = resolve;
+      tx.onerror = () => reject(tx.error);
+    });
+    db.close();
+    return true;
+  })()`);
+  if (!seeded) throw new Error("Could not seed the long freelancer report description.");
+}
+
 async function clickButton(client, text, exact = false) {
   const clicked = await evaluate(client, `(() => {
     const wanted = ${JSON.stringify(text)};
@@ -465,6 +505,50 @@ async function main() {
       throw new Error(`Mobile freelancer UX contract failed: ${JSON.stringify(mobileContract)}`);
     }
     console.log("✓ Mobile invoice dialog stays in viewport and keeps keyboard focus trapped");
+
+    const longReportDescription = "ReportTokenWithoutSpaces-".repeat(32);
+    await seedFreelancerReportDescription(client, longReportDescription);
+    await client.call("Emulation.setDeviceMetricsOverride", { width: 320, height: 800, deviceScaleFactor: 1, mobile: true, screenWidth: 320, screenHeight: 800 });
+    await navigate(client, `${server.origin}/reports`, "گزارش");
+    const reportWrapping = await evaluate(client, `(() => {
+      const wanted = ${JSON.stringify(longReportDescription)};
+      const text = [...document.querySelectorAll(".report-mobile-cards p")].find((node) => node.textContent === wanted);
+      return {
+        found: Boolean(text),
+        fullText: text?.textContent === wanted,
+        wrapsInsideCard: Boolean(text && text.scrollWidth <= text.clientWidth + 1),
+        pageFits: document.documentElement.scrollWidth <= window.innerWidth + 1,
+        viewportWidth: window.innerWidth,
+        textWidth: text?.clientWidth ?? null,
+        textScrollWidth: text?.scrollWidth ?? null,
+      };
+    })()`);
+    if (!reportWrapping?.found || !reportWrapping.fullText || !reportWrapping.wrapsInsideCard || !reportWrapping.pageFits) {
+      throw new Error(`Long freelancer report text overflowed a mobile card: ${JSON.stringify(reportWrapping)}`);
+    }
+    console.log("✓ Long unbroken freelancer report descriptions wrap without mobile page overflow");
+
+    await client.call("Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+    await client.call("Emulation.setEmulatedMedia", { media: "print" });
+    const printContract = await evaluate(client, `(() => {
+      const display = (selector) => {
+        const node = document.querySelector(selector);
+        return node ? getComputedStyle(node).display : null;
+      };
+      return {
+        pageReady: Boolean(document.querySelector("[data-report-print-root]")),
+        headerVisible: display(".report-print-header") !== "none",
+        desktopTableVisible: display(".report-desktop-table") !== "none",
+        mobileCardsHidden: display(".report-mobile-cards") === "none",
+        chartsVisible: display(".report-charts") !== "none",
+        navigationHidden: [...document.querySelectorAll("nav")].every((node) => getComputedStyle(node).display === "none"),
+      };
+    })()`);
+    await client.call("Emulation.setEmulatedMedia", { media: "screen" });
+    if (!printContract?.pageReady || !printContract.headerVisible || !printContract.desktopTableVisible || !printContract.mobileCardsHidden || !printContract.chartsVisible || !printContract.navigationHidden) {
+      throw new Error(`Report print media contract failed: ${JSON.stringify(printContract)}`);
+    }
+    console.log("✓ Print media shows report metadata, charts, and desktop tables while hiding navigation and mobile cards");
 
     if (client.runtimeErrors.length) throw new Error(`Browser runtime errors:\n${client.runtimeErrors.join("\n")}`);
     console.log("Freelancer browser UX smoke passed.");

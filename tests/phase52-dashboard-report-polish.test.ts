@@ -31,11 +31,22 @@ test("employee notes use a textarea and the today title greets the user", async 
   assert.match(hero, /buildLocalizedGreeting\(data\.settings\.name, locale\)/);
 });
 
-test("printed reports hide interactive charts and use A4-safe layout", async () => {
+test("printed reports include print-ready charts and use A4-safe layout", async () => {
   const css = await readFile("app/globals.css", "utf8");
   const reports = await readFile("components/pages/reports/reports-page.tsx", "utf8");
+  const printHeader = await readFile("components/pages/reports/report-print-header.tsx", "utf8");
+  const employeeTable = await readFile("components/pages/reports/table/employee-desktop-table.tsx", "utf8");
   assert.match(css, /@page \{ size: A4/);
-  assert.match(css, /\.report-charts/);
+  assert.match(css, /\.report-page \.report-charts \{[\s\S]*display: grid !important/);
   assert.match(css, /break-inside: avoid/);
-  assert.match(reports, /<section className="[^"]*print:hidden[^"]*">[\s\S]*?<div className="report-charts">/);
+  assert.match(css, /\.report-page thead \{ display: table-header-group/);
+  assert.match(css, /\.report-page tr \{ break-inside: avoid-page; page-break-inside: avoid; \}/);
+  assert.match(reports, /className="report-print-section report-print-charts mb-5"/);
+  assert.doesNotMatch(reports, /report-charts[^\n]*print:hidden/);
+  assert.match(reports, /records=\{monthRecords\}/);
+  assert.match(reports, /entries=\{entries\}/);
+  assert.match(printHeader, /getAppliedReportFilters/);
+  assert.match(printHeader, /getReportPrintRange/);
+  assert.doesNotMatch(printHeader, /aria-hidden/);
+  assert.match(employeeTable, /report-desktop-table/);
 });

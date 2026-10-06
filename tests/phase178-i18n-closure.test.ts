@@ -94,14 +94,14 @@ test("import and device pairing surfaces sanitize low-level errors through the l
   assert.match(scanner, /localizeSystemRuntimeError\(locale, value, "QR could not be read\."\)/);
 });
 
-test("Excel export document language and direction follow the active report locale", async () => {
+test("Excel worksheet direction follows the active report locale", async () => {
   const [exporters, actions] = await Promise.all([
     read("lib/exporters.ts"),
     read("hooks/controller/use-report-actions.ts"),
   ]);
   assert.match(exporters, /locale: Locale = "fa-IR"/);
-  assert.match(exporters, /lang="\$\{locale === "en" \? "en" : "fa"\}"/);
-  assert.match(exporters, /dir="\$\{locale === "en" \? "ltr" : "rtl"\}"/);
+  assert.match(exporters, /const direction = locale === "en" \? "ltr" : "rtl"/);
+  assert.match(exporters, /rightToLeft=.*direction === "rtl"/);
   assert.match(actions, /rows,[\s\S]*locale,[\s\S]*\);/);
 });
 

@@ -32,7 +32,7 @@ test("employee browser smoke covers attendance lunch break completion month and 
     "ویرایش این روز",
     "/month",
     "/reports",
-    "فیش حقوقی تخمینی ماه",
+    "حقوق تخمینی بازه گزارش",
   ]) assert.match(smoke, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.match(smoke, /NET_DURATION = "۸:۱۵"/);
   assert.match(smoke, /navigate\(client, `\$\{server\.origin\}\/robots\.txt`\);[\s\S]*seedEmployeeData\(client\)/);

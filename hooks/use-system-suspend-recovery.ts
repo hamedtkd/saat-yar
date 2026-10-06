@@ -7,14 +7,15 @@ import type { AppData } from "@/lib/types";
 import type { ProjectTimerSession } from "@/lib/project-timer-session";
 import { useRuntimePreferences } from "./use-runtime-preferences";
 import {
-  SYSTEM_SUSPEND_FREEZE_ARM_MS,
-  SYSTEM_SUSPEND_GAP_MS,
+  SYSTEM_SUSPEND_HIDDEN_STALE_MS,
   SYSTEM_SUSPEND_HEARTBEAT_KEY,
   SYSTEM_SUSPEND_TICK_MS,
-  applySystemSuspendRecovery,
   createSystemSuspendHeartbeat,
   detectSystemSuspend,
   parseSystemSuspendHeartbeat,
+  recoverSystemSuspend,
+  shouldRetainFailedRecoveryHeartbeat,
+  shouldPreserveSuspendHeartbeat,
   type SuspendTick,
 } from "@/lib/system-suspend";
 
@@ -28,11 +29,12 @@ type Props = {
   setToast: (message: string) => void;
 };
 
-function getTick(): SuspendTick {
+function getTick(heartbeatAgeMs?: number): SuspendTick {
   return {
     wallMs: Date.now(),
     monotonicMs: typeof performance === "undefined" ? Date.now() : performance.now(),
     visible: document.visibilityState === "visible",
+    heartbeatAgeMs,
   };
 }
 
@@ -49,14 +51,18 @@ export function useSystemSuspendRecovery({
   const dataRef = useRef(data);
   const sessionRef = useRef(projectTimerSession);
   const lastTickRef = useRef<SuspendTick | null>(null);
-  const hiddenAtRef = useRef<number | null>(null);
-  const freezeCandidateRef = useRef(false);
   const recoveringRef = useRef(false);
+  const failedRecoverySnapshotRef = useRef<{ data: AppData; session: ProjectTimerSession | null } | null>(null);
 
   useEffect(() => { dataRef.current = data; }, [data]);
   useEffect(() => { sessionRef.current = projectTimerSession; }, [projectTimerSession]);
 
   const writeHeartbeat = useCallback((now = new Date()) => {
+    if (recoveringRef.current) return parseSystemSuspendHeartbeat(window.localStorage.getItem(SYSTEM_SUSPEND_HEARTBEAT_KEY));
+    if (shouldRetainFailedRecoveryHeartbeat(failedRecoverySnapshotRef.current, dataRef.current, sessionRef.current)) {
+      return parseSystemSuspendHeartbeat(window.localStorage.getItem(SYSTEM_SUSPEND_HEARTBEAT_KEY));
+    }
+    failedRecoverySnapshotRef.current = null;
     const heartbeat = createSystemSuspendHeartbeat(dataRef.current, sessionRef.current, now);
     if (heartbeat) window.localStorage.setItem(SYSTEM_SUSPEND_HEARTBEAT_KEY, JSON.stringify(heartbeat));
     else window.localStorage.removeItem(SYSTEM_SUSPEND_HEARTBEAT_KEY);
@@ -67,19 +73,32 @@ export function useSystemSuspendRecovery({
     if (!runtimePreferences.pauseTimersOnSystemSuspend || recoveringRef.current) return false;
     const heartbeat = heartbeatOverride ?? parseSystemSuspendHeartbeat(window.localStorage.getItem(SYSTEM_SUSPEND_HEARTBEAT_KEY));
     if (!heartbeat) return false;
-    const result = applySystemSuspendRecovery(dataRef.current, sessionRef.current, heartbeat);
-    if (!result.changed) return false;
-
     recoveringRef.current = true;
     try {
-      dataRef.current = result.data;
-      sessionRef.current = result.session;
-      setData(result.data);
-      setProjectTimerSession(result.session);
-      window.localStorage.removeItem(SYSTEM_SUSPEND_HEARTBEAT_KEY);
-      await persistImmediately(result.data);
-      setToast(translateSystem(getBrowserLocale(), "System sleep or hibernation was detected; active timers were paused at the last saved activity."));
-      return true;
+      const outcome = await recoverSystemSuspend({
+        enabled: runtimePreferences.pauseTimersOnSystemSuspend,
+        data: dataRef.current,
+        session: sessionRef.current,
+        heartbeat,
+        applyLocal: (nextData, nextSession) => {
+          dataRef.current = nextData;
+          sessionRef.current = nextSession;
+          setData(nextData);
+          setProjectTimerSession(nextSession);
+        },
+        persist: persistImmediately,
+      });
+      if (outcome === "saved") {
+        failedRecoverySnapshotRef.current = null;
+        window.localStorage.removeItem(SYSTEM_SUSPEND_HEARTBEAT_KEY);
+        setToast(translateSystem(getBrowserLocale(), "System sleep or hibernation was detected; active timers were paused at the last saved activity."));
+        return true;
+      }
+      if (outcome === "save-failed") {
+        failedRecoverySnapshotRef.current = { data: dataRef.current, session: sessionRef.current };
+        setToast(translateSystem(getBrowserLocale(), "Your local changes are still available but could not be saved."));
+      }
+      return false;
     } finally {
       recoveringRef.current = false;
     }
@@ -88,49 +107,43 @@ export function useSystemSuspendRecovery({
   useEffect(() => {
     if (!ready) return;
     if (!runtimePreferences.pauseTimersOnSystemSuspend) {
+      failedRecoverySnapshotRef.current = null;
       window.localStorage.removeItem(SYSTEM_SUSPEND_HEARTBEAT_KEY);
       lastTickRef.current = null;
-      hiddenAtRef.current = null;
-      freezeCandidateRef.current = false;
       return;
     }
 
     const previousHeartbeat = parseSystemSuspendHeartbeat(window.localStorage.getItem(SYSTEM_SUSPEND_HEARTBEAT_KEY));
     if (previousHeartbeat) {
       const age = Date.now() - new Date(previousHeartbeat.seenAt).getTime();
-      if (age >= SYSTEM_SUSPEND_GAP_MS) void recover(previousHeartbeat);
+      if (age >= SYSTEM_SUSPEND_HIDDEN_STALE_MS) void recover(previousHeartbeat);
     }
 
     lastTickRef.current = getTick();
     writeHeartbeat();
 
     const inspectGap = () => {
-      const next = getTick();
+      const heartbeat = parseSystemSuspendHeartbeat(window.localStorage.getItem(SYSTEM_SUSPEND_HEARTBEAT_KEY));
+      const heartbeatAgeMs = heartbeat ? Date.now() - new Date(heartbeat.seenAt).getTime() : undefined;
+      const next = getTick(heartbeatAgeMs);
       const previous = lastTickRef.current;
-      if (previous && detectSystemSuspend(previous, next, freezeCandidateRef.current)) {
-        void recover();
+      if (previous && shouldPreserveSuspendHeartbeat(previous, next)) return;
+      if (previous && detectSystemSuspend(previous, next)) {
+        void recover(heartbeat ?? undefined);
       }
-      freezeCandidateRef.current = false;
       lastTickRef.current = next;
       writeHeartbeat();
     };
 
     const onVisibility = () => {
       if (document.visibilityState === "hidden") {
-        hiddenAtRef.current = Date.now();
         lastTickRef.current = { ...getTick(), visible: false };
         writeHeartbeat();
         return;
       }
       inspectGap();
-      hiddenAtRef.current = null;
     };
-
-    const onFreeze = () => {
-      const hiddenAt = hiddenAtRef.current;
-      if (hiddenAt !== null && Date.now() - hiddenAt <= SYSTEM_SUSPEND_FREEZE_ARM_MS) freezeCandidateRef.current = true;
-      writeHeartbeat();
-    };
+    const onFreeze = () => writeHeartbeat();
     const onPageHide = () => writeHeartbeat();
 
     const id = window.setInterval(inspectGap, SYSTEM_SUSPEND_TICK_MS);

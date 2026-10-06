@@ -67,6 +67,41 @@ export function activeTrackingMinutes(record: TrackingRecord, nowMs: number, fal
   return Math.max(0, elapsed - lunch - breaks);
 }
 
+function activeMinutesSince(record: TrackingRecord, startedAt: number, nowMs: number) {
+  const recordEnd = timestamp(record.endedAt) ?? nowMs;
+  const rangeEnd = Math.max(startedAt, Math.min(nowMs, recordEnd));
+  const elapsed = Math.floor((rangeEnd - startedAt) / 60_000);
+  const lunch = overlapMinutes(timestamp(record.lunchStartedAt), timestamp(record.lunchEndedAt), startedAt, rangeEnd);
+  const breaks = record.breaks.reduce((total, item) => total + overlapMinutes(
+    timestamp(item.startedAt), timestamp(item.endedAt), startedAt, rangeEnd,
+  ), 0);
+  return Math.max(0, elapsed - lunch - breaks);
+}
+
+function latestCompletedPauseEnd(record: TrackingRecord, attendanceStart: number | null, nowMs: number) {
+  const recordEnd = timestamp(record.endedAt) ?? nowMs;
+  const candidates = [
+    [timestamp(record.lunchStartedAt), timestamp(record.lunchEndedAt)],
+    ...record.breaks.map((item) => [timestamp(item.startedAt), timestamp(item.endedAt)]),
+  ];
+  return candidates.reduce<number | null>((latest, [start, end]) => {
+    if (start === null || end === null || end < start || end > Math.min(nowMs, recordEnd)) return latest;
+    if (attendanceStart !== null && start < attendanceStart) return latest;
+    return latest === null || end > latest ? end : latest;
+  }, null);
+}
+
+export function breakReminderProgress(record: TrackingRecord, nowMs: number, fallbackWorked: number) {
+  const attendanceStart = timestamp(record.startedAt);
+  const pauseEnd = latestCompletedPauseEnd(record, attendanceStart, nowMs);
+  const epochStart = pauseEnd ?? attendanceStart;
+  if (epochStart === null) return { activeMinutes: Math.max(0, fallbackWorked), epochKey: null as string | null };
+  return {
+    activeMinutes: activeMinutesSince(record, epochStart, nowMs),
+    epochKey: pauseEnd === null ? null : String(pauseEnd),
+  };
+}
+
 export function isRecordPaused(record: Pick<WorkRecord, "lunchStartedAt" | "lunchEndedAt" | "breaks">) {
   const lunchOpen = Boolean(record.lunchStartedAt && !record.lunchEndedAt);
   const breakOpen = record.breaks.some((item) => item.startedAt && !item.endedAt);
@@ -133,8 +168,12 @@ export function evaluateNotificationReminders(input: ReminderEvaluationInput): R
   const breakReminder = settings.breakReminder;
   if (tracking && !paused && breakReminder.enabled && !input.breakReminderSnoozed) {
     const interval = Math.max(15, breakReminder.intervalMinutes);
-    const bucket = Math.floor(activeMinutes / interval);
-    if (bucket >= 1) candidates.push({ key: `break-${bucket}`, kind: "break", activeMinutes });
+    const progress = breakReminderProgress(record, nowMs, fallbackWorked);
+    const bucket = Math.floor(progress.activeMinutes / interval);
+    if (bucket >= 1) {
+      const key = progress.epochKey ? `break-${progress.epochKey}-${bucket}` : `break-${bucket}`;
+      candidates.push({ key, kind: "break", activeMinutes: progress.activeMinutes });
+    }
   }
 
   if (tracking && !paused) {

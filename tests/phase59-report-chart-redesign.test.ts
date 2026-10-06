@@ -26,9 +26,21 @@ test("report charts use shared legends and explicit empty states", async () => {
   assert.match(donut, /t\("reports\.charts\.notEnough"\)/);
 });
 
-test("chart grid remains responsive and excluded from print", async () => {
+test("chart grid remains responsive and available to the print layout", async () => {
   const shell = await read("components/pages/reports/charts/chart-shell.tsx");
   assert.match(shell, /report-charts/);
-  assert.match(shell, /print:hidden/);
+  assert.doesNotMatch(shell, /print:hidden/);
   assert.match(shell, /grid-cols-\[minmax\(0,1\.3fr\)_minmax\(300px,0\.7fr\)\]/);
+});
+
+test("Hybrid Reports default to Employee and route content, print, and export by active view", async () => {
+  const page = await read("components/pages/reports/reports-page.tsx");
+  assert.match(page, /useState<ReportMode>\("employee"\)/);
+  assert.match(page, /ReportFilters mode=\{mode\}/);
+  assert.match(page, /ReportCharts mode=\{mode\}/);
+  assert.match(page, /ReportTable mode=\{mode\}/);
+  assert.match(page, /ReportPrintHeader mode=\{mode\}/);
+  assert.match(page, /onExport=\{\(kind, reportMode\) => exportReport\(kind, reportMode\)\}/);
+  assert.match(page, /aria-pressed=\{mode === item\}/);
+  assert.match(page, /isEmployee && <section className="report-print-section mb-5"><SectionHeading icon=\{<Activity \/>\}/);
 });

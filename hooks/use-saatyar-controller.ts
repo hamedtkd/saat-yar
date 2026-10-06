@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
 import { createLeaveDraft } from "@/lib/constants";
 import { localDateKey } from "@/lib/format";
 import { getBrowserLocale, type CalendarSystem } from "@/lib/i18n";
@@ -17,6 +17,7 @@ import { useLiveTimerOwnership } from "./use-live-timer-ownership";
 import { useReportActions } from "./controller/use-report-actions";
 import { useOnboardingSession } from "./use-onboarding-session";
 import { getProjectTimerRecoveryAction } from "@/lib/project-timer-session";
+import { normalizeReportDateRange } from "@/lib/report-filters";
 import { useProjectTimerSession } from "./use-project-timer-session";
 import { useSystemSuspendRecovery } from "./use-system-suspend-recovery";
 
@@ -32,7 +33,9 @@ export function useSaatyarController(calendar: CalendarSystem = "persian") {
   const [projectDraft, setProjectDraft] = useState<ProjectDraft>(initialProjectDraft);
   const [timerDraft, setTimerDraft] = useState<TimerDraft>(initialTimerDraft);
   const [editingEntry, setEditingEntry] = useState("");
-  const [reportFilter, setReportFilter] = useState<ReportFilter>(initialFilters);
+  const [reportFilter, setReportFilterState] = useState<ReportFilter>(initialFilters);
+  const setReportFilter: Dispatch<SetStateAction<ReportFilter>> = (next) => setReportFilterState((current) =>
+    normalizeReportDateRange(typeof next === "function" ? next(current) : next));
   const [leaveDraft, setLeaveDraft] = useState<LeaveEntry>(createLeaveDraft());
   const [importPreview, setImportPreview] = useState<AppData | null>(null);
   const [financialsHidden, setFinancialsHidden] = useState(false);
@@ -82,10 +85,14 @@ export function useSaatyarController(calendar: CalendarSystem = "persian") {
     projectTimerSession, setProjectTimerSession,
     ensureLiveTimerOwnership: liveTimerOwnership.ensureOwnership,
   });
-  const backup = useBackupActions({ data, setData, setToast, importPreview, setImportPreview, storage });
+  const backup = useBackupActions({
+    data, setData, setToast, importPreview, setImportPreview, storage,
+    enqueuePersistence: persisted.enqueuePersistence,
+    onPersistedRevision: persisted.recordPersistedRevision,
+  });
   const reports = useReportActions({
     data, filteredEntries: derived.filteredEntries,
-    filteredMonthRecords: derived.filteredMonthRecords, calendar, setToast,
+    reportRecords: derived.reportRecords, reportFilter, calendar, setToast,
   });
   const notifications = useNotificationReminders({
     settings: data.settings.notificationSettings, selectedDate, record: derived.record,

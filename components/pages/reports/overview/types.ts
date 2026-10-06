@@ -10,12 +10,11 @@ export type MonthStats = {
 export type ReportsPageProps = {
   data: AppData;
   monthRecords: WorkRecord[];
-  monthStats: MonthStats;
   filters: ReportFilter;
   setFilters: React.Dispatch<React.SetStateAction<ReportFilter>>;
   entries: TimeEntry[];
   reportBillable: number;
   reportIncome: number;
-  exportReport: (kind: "excel" | "csv") => void;
+  exportReport: (kind: "excel" | "csv", mode?: "employee" | "freelancer") => void | Promise<void>;
   financialsHidden: boolean;
 };

@@ -1,12 +1,15 @@
-import { exportCsv, exportExcel } from "@/lib/exporters";
-import { entryMinutes, localDateKey } from "@/lib/format";
-import { getBrowserLocale, translate, type CalendarSystem, type Locale, type MessageKey } from "@/lib/i18n";
-import { formatLocaleDate } from "@/lib/i18n/formatters";
-import { calc } from "@/lib/time-engine";
-import { getDailyTargetMinutes } from "@/lib/work-schedule";
-import type { AppData, TimeEntry, WorkRecord } from "@/lib/types";
+import { exportCsv, exportExcel } from "../../lib/exporters.ts";
+import { entryMinutes, localDateKey } from "../../lib/format.ts";
+import { getBrowserLocale, translate, type CalendarSystem, type Locale, type MessageKey } from "../../lib/i18n/index.ts";
+import { formatLocaleDate } from "../../lib/i18n/formatters.ts";
+import { getFreelancerReportDescription } from "../../lib/freelancer-report-description.ts";
+import { getEmployeeDayPay } from "../../lib/employee-report.ts";
+import { calculateReportPayroll } from "../../lib/report-payroll.ts";
+import { calc } from "../../lib/time-engine.ts";
+import { getDailyTargetMinutes } from "../../lib/work-schedule.ts";
+import type { AppData, ReportFilter, TimeEntry, WorkRecord } from "../../lib/types.ts";
 
-type Args = { data: AppData; filteredEntries: TimeEntry[]; filteredMonthRecords: WorkRecord[]; calendar: CalendarSystem; setToast: (message: string) => void };
+type Args = { data: AppData; filteredEntries: TimeEntry[]; reportRecords: WorkRecord[]; reportFilter: ReportFilter; calendar: CalendarSystem; setToast: (message: string) => void };
 
 const EMPLOYEE_HEADERS: MessageKey[] = [
   "reports.export.employee.date",
@@ -17,6 +20,13 @@ const EMPLOYEE_HEADERS: MessageKey[] = [
   "reports.export.employee.balance",
   "reports.export.employee.holiday",
   "reports.export.employee.note",
+  "reports.export.employee.lunch",
+  "reports.export.employee.lunchPaid",
+  "reports.export.employee.breaks",
+  "reports.export.employee.breakCount",
+  "reports.export.employee.leaveType",
+  "reports.export.employee.estimatedSalary",
+  "reports.export.employee.rangePayroll",
 ];
 
 const FREELANCER_HEADERS: MessageKey[] = [
@@ -30,7 +40,7 @@ const FREELANCER_HEADERS: MessageKey[] = [
   "reports.export.freelancer.billable",
 ];
 
-export function useReportActions({ data, filteredEntries, filteredMonthRecords, calendar, setToast }: Args) {
+export function useReportActions({ data, filteredEntries, reportRecords, reportFilter, calendar, setToast }: Args) {
   function freelancerRows(locale: Locale) {
     return filteredEntries.map((entry) => {
       const project = data.projects.find((item) => item.id === entry.projectId);
@@ -40,7 +50,7 @@ export function useReportActions({ data, filteredEntries, filteredMonthRecords, 
         formatLocaleDate(locale, entry.startedAt, { year: "numeric", month: "2-digit", day: "2-digit" }, calendar),
         client?.name ?? "",
         project?.name ?? "",
-        entry.note,
+        getFreelancerReportDescription(entry),
         minutes,
         entry.effectiveRate,
         entry.billable ? Math.round(minutes / 60 * entry.effectiveRate) : 0,
@@ -49,36 +59,55 @@ export function useReportActions({ data, filteredEntries, filteredMonthRecords, 
     });
   }
 
-  function exportReport(kind: "excel" | "csv") {
+  async function exportReport(kind: "excel" | "csv", reportMode: "employee" | "freelancer" = data.settings.mode === "employee" ? "employee" : "freelancer") {
     const locale = getBrowserLocale();
-    const employeeMode = data.settings.mode === "employee";
-    const headers = (employeeMode ? EMPLOYEE_HEADERS : FREELANCER_HEADERS).map((key) => translate(locale, key));
-    const rows = employeeMode ? filteredMonthRecords.map((item) => {
-      const result = calc(item, getDailyTargetMinutes(item.date, data.settings));
-      return [
-        formatLocaleDate(locale, item.date, { year: "numeric", month: "2-digit", day: "2-digit" }, calendar),
-        item.start,
-        item.end,
-        result.worked,
-        result.leave,
-        result.balance,
-        translate(locale, item.holiday ? "reports.export.yes" : "reports.export.no"),
-        item.note,
-      ];
-    }) : freelancerRows(locale);
-    const fileBase = translate(locale, employeeMode ? "reports.export.employeeFile" : "reports.export.freelancerFile");
-    if (kind === "excel") {
-      exportExcel(
-        `${fileBase}-${localDateKey()}.xls`,
-        translate(locale, employeeMode ? "reports.export.employeeTitle" : "reports.export.freelancerTitle"),
-        headers,
-        rows,
-        locale,
-      );
-    } else {
-      exportCsv(`${fileBase}-${localDateKey()}.csv`, headers, rows);
+    try {
+      const employeeMode = reportMode === "employee";
+      const headers = (employeeMode ? EMPLOYEE_HEADERS : FREELANCER_HEADERS).map((key) => translate(locale, key));
+      const reportPayroll = employeeMode ? calculateReportPayroll(data, reportRecords, reportFilter).net : null;
+      const rows = employeeMode ? reportRecords.map((item) => {
+        const dailyTarget = getDailyTargetMinutes(item.date, data.settings);
+        const result = calc(item, dailyTarget);
+        return [
+          formatLocaleDate(locale, item.date, { year: "numeric", month: "2-digit", day: "2-digit" }, calendar),
+          item.start,
+          item.end,
+          result.worked,
+          result.leave,
+          result.balance,
+          translate(locale, item.holiday ? "reports.export.yes" : "reports.export.no"),
+          item.note,
+          item.lunchMinutes,
+          translate(locale, item.lunchPaid ? "reports.export.yes" : "reports.export.no"),
+          result.breakMinutes,
+          item.breaks.length,
+          result.leave > 0 ? translate(locale, item.leaveType === "hourly" ? "reports.table.hourlyLeave" : "reports.table.leaveRecorded") : "",
+          getEmployeeDayPay({ record: item, settings: data.settings, dailyTarget }),
+          null,
+        ];
+      }) : freelancerRows(locale);
+      if (employeeMode) {
+        const rangePayrollRow: (string | number | null)[] = Array.from({ length: EMPLOYEE_HEADERS.length }, () => "");
+        rangePayrollRow[7] = translate(locale, "reports.export.employee.rangePayrollLabel");
+        rangePayrollRow[14] = reportPayroll;
+        rows.push(rangePayrollRow);
+      }
+      const fileBase = translate(locale, employeeMode ? "reports.export.employeeFile" : "reports.export.freelancerFile");
+      if (kind === "excel") {
+        await exportExcel(
+          `${fileBase}-${localDateKey()}.xlsx`,
+          translate(locale, employeeMode ? "reports.export.employeeTitle" : "reports.export.freelancerTitle"),
+          headers,
+          rows,
+          locale,
+        );
+      } else {
+        exportCsv(`${fileBase}-${localDateKey()}.csv`, headers, rows);
+      }
+      setToast(translate(locale, "reports.export.downloaded", { kind: kind === "excel" ? "Excel" : "CSV" }));
+    } catch {
+      setToast(translate(locale, "reports.export.failed"));
     }
-    setToast(translate(locale, "reports.export.downloaded", { kind: kind === "excel" ? "Excel" : "CSV" }));
   }
   return { exportReport };
 }

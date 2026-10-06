@@ -15,6 +15,19 @@ const DB_NAME = "saatyar-db";
 const STORE_NAME = "app-data";
 const LEGACY_STORAGE_KEYS = ["saatyar-data", "saatyar", "worklog-data"] as const;
 
+function getSnapshotRevision(value: unknown): string | null {
+  if (!value || typeof value !== "object") return null;
+  const savedAt = (value as { savedAt?: unknown }).savedAt;
+  return typeof savedAt === "string" && Number.isFinite(new Date(savedAt).getTime()) ? savedAt : null;
+}
+
+export class AppDataSaveConflictError extends Error {
+  constructor() {
+    super("App data changed in another tab before this save could be committed.");
+    this.name = "AppDataSaveConflictError";
+  }
+}
+
 function openDb() {
   return new Promise<IDBDatabase>((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, 1);
@@ -40,16 +53,58 @@ class IndexedDbKeyValueStorage {
     });
   }
 
-  async save(value: unknown) {
+  async save(value: unknown): Promise<string> {
     const db = await openDb();
-    await new Promise<void>((resolve, reject) => {
-      const transaction = db.transaction(STORE_NAME, "readwrite");
-      transaction.objectStore(STORE_NAME).put(value, APP_DATA_STORAGE_KEY);
-      transaction.oncomplete = () => resolve();
-      transaction.onerror = () => reject(transaction.error);
-      transaction.onabort = () => reject(transaction.error);
-    });
-    db.close();
+    let revision = "";
+    try {
+      await new Promise<void>((resolve, reject) => {
+        const transaction = db.transaction(STORE_NAME, "readwrite");
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.get(APP_DATA_STORAGE_KEY);
+        request.onsuccess = () => {
+          const requestedRevision = getSnapshotRevision(value);
+          const previousRevision = getSnapshotRevision(request.result ?? null);
+          const requestedTime = requestedRevision ? new Date(requestedRevision).getTime() : Date.now();
+          const previousTime = previousRevision ? new Date(previousRevision).getTime() + 1 : 0;
+          revision = new Date(Math.max(requestedTime, previousTime)).toISOString();
+          const snapshot = value && typeof value === "object" ? { ...value, savedAt: revision } : value;
+          store.put(snapshot, APP_DATA_STORAGE_KEY);
+        };
+        request.onerror = () => reject(request.error);
+        transaction.oncomplete = () => resolve();
+        transaction.onerror = () => reject(transaction.error);
+        transaction.onabort = () => reject(transaction.error);
+      });
+      return revision;
+    } finally {
+      db.close();
+    }
+  }
+
+  async saveIfRevision(value: unknown, expectedRevision: string | null): Promise<void> {
+    const db = await openDb();
+    try {
+      await new Promise<void>((resolve, reject) => {
+        const transaction = db.transaction(STORE_NAME, "readwrite");
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.get(APP_DATA_STORAGE_KEY);
+        let conflict = false;
+        request.onsuccess = () => {
+          if (getSnapshotRevision(request.result ?? null) !== expectedRevision) {
+            conflict = true;
+            transaction.abort();
+            return;
+          }
+          store.put(value, APP_DATA_STORAGE_KEY);
+        };
+        request.onerror = () => reject(request.error);
+        transaction.oncomplete = () => resolve();
+        transaction.onerror = () => reject(transaction.error);
+        transaction.onabort = () => reject(conflict ? new AppDataSaveConflictError() : transaction.error);
+      });
+    } finally {
+      db.close();
+    }
   }
 
   async clear() {
@@ -67,6 +122,7 @@ class IndexedDbKeyValueStorage {
 
 export type AppDataLoadResult = {
   value: AppData | null;
+  revision: string | null;
   migrated: boolean;
   migratedFrom?: number;
   source: "indexeddb" | "localstorage" | "empty";
@@ -80,11 +136,13 @@ export class AppDataStorageAdapter {
 
     if (current) {
       const result = migrateAppData(current);
+      let revision = getSnapshotRevision(current);
       if (result.migrated) {
-        await this.save(result.data);
+        revision = await this.save(result.data);
       }
       return {
         value: result.data,
+        revision,
         migrated: result.migrated,
         migratedFrom: result.migrated ? result.fromVersion : undefined,
         source: "indexeddb",
@@ -97,10 +155,11 @@ export class AppDataStorageAdapter {
 
       try {
         const result = migrateAppData(JSON.parse(raw) as unknown);
-        await this.save(result.data);
+        const revision = await this.save(result.data);
         localStorage.removeItem(key);
         return {
           value: result.data,
+          revision,
           migrated: true,
           migratedFrom: result.fromVersion,
           source: "localstorage",
@@ -110,11 +169,20 @@ export class AppDataStorageAdapter {
       }
     }
 
-    return { value: null, migrated: false, source: "empty" };
+    return { value: null, revision: null, migrated: false, source: "empty" };
   }
 
-  async save(value: AppData) {
-    await this.storage.save(createAppDataSnapshot(value));
+  async save(value: AppData): Promise<string> {
+    const snapshot = createAppDataSnapshot(value);
+    return this.storage.save(snapshot);
+  }
+
+  async saveIfRevision(value: AppData, expectedRevision: string | null): Promise<string> {
+    const previousTime = expectedRevision ? new Date(expectedRevision).getTime() : 0;
+    const savedAt = new Date(Math.max(Date.now(), previousTime + 1)).toISOString();
+    const snapshot = createAppDataSnapshot(value, savedAt);
+    await this.storage.saveIfRevision(snapshot, expectedRevision);
+    return snapshot.savedAt;
   }
 
   async clear() {

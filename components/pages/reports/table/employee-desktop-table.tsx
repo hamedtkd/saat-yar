@@ -5,13 +5,14 @@ import { PrivateMoney } from "@/components/common/private-money";
 import { useLocaleUi } from "@/components/i18n/use-locale-ui";
 import { cn } from "@/lib/cn";
 import { calc } from "@/lib/time-engine";
+import { formatEmployeeReportDate } from "@/lib/employee-report-date";
 import { getDailyTargetMinutes } from "@/lib/work-schedule";
 import type { Settings, WorkRecord } from "@/lib/types";
 import { getEmployeeDayPay, TableHeading, type EmployeeTotals } from "./report-table-shared";
 
 type Props = { monthRecords: WorkRecord[]; settings: Settings; totals: EmployeeTotals; financialsHidden: boolean };
 export function EmployeeDesktopTable({ monthRecords, settings, totals, financialsHidden }: Props) {
-  const { t, date, digits, duration, number } = useLocaleUi();
+  const { t, locale, calendar, digits, duration, number } = useLocaleUi();
   const headings = [t("common.date"), t("common.clockIn"), t("common.clockOut"), t("common.lunch"), t("common.breaks"), t("common.netWorked"), t("common.leave"), t("common.balance"), t("common.estimatedSalary"), t("common.note")];
   return <div className="report-desktop-table hidden w-full overflow-x-auto px-4 pb-5 pt-3 md:block sm:px-5"><table className="w-full min-w-270 border-collapse text-[11px]">
     <thead><tr>{headings.map((heading) => <TableHeading key={heading}>{heading}</TableHeading>)}</tr></thead>
@@ -20,7 +21,7 @@ export function EmployeeDesktopTable({ monthRecords, settings, totals, financial
       const result = calc(record, dailyTarget);
       const earnedAmount = getEmployeeDayPay({ record, settings, dailyTarget });
       return <tr key={record.date} className="transition-colors hover:bg-[var(--surface-2)]">
-        <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3"><div className="grid gap-1"><strong className="text-[11px] text-[var(--text)]">{date(record.date, { weekday: "long", day: "numeric", month: "long" })}</strong>{record.holiday && <span className="text-[9px] font-semibold text-[var(--danger)]">{t("common.holiday")}</span>}</div></td>
+        <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3"><div className="grid gap-1"><strong className="text-[11px] text-[var(--text)]">{formatEmployeeReportDate(record.date, locale, calendar)}</strong>{record.holiday && <span className="text-[9px] font-semibold text-[var(--danger)]">{t("common.holiday")}</span>}</div></td>
         <td dir="ltr" className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3 text-[var(--text)]">{record.start ? digits(record.start) : "—"}</td>
         <td dir="ltr" className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3 text-[var(--text)]">{record.end ? digits(record.end) : "—"}</td>
         <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3 text-[var(--text)]"><div className="grid gap-1"><span>{duration(record.lunchMinutes)}</span><small className={cn("text-[9px]", record.lunchPaid ? "text-[var(--accent-strong)]" : "text-[var(--text-muted)]")}>{record.lunchPaid ? t("common.paid") : t("common.unpaid")}</small></div></td>

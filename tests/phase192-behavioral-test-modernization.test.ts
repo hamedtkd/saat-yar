@@ -25,7 +25,6 @@ test("report summary behavior is independent from the React hook implementation"
   const summary = createReportSummary({
     data,
     monthRecords: records,
-    monthStats: { worked: 1, target: 1, balance: 1, breaks: 1 },
     entries: [],
     reportBillable: 0,
   });
@@ -43,7 +42,6 @@ test("payroll preview and report summary share observable compensation outcomes"
   const summary = createReportSummary({
     data,
     monthRecords: records,
-    monthStats: { worked: 0, target: 0, balance: 0, breaks: 0 },
     entries: [],
     reportBillable: 0,
   });

@@ -355,7 +355,7 @@
   @page { size: A4; margin: 12mm; }
   @page report { size: A4 landscape; margin: 9mm 10mm 11mm; }
 
-  header, footer, nav, aside, button, .report-charts { display: none !important; }
+  header, footer, nav, aside, button { display: none !important; }
   html, body, main { background: #fff !important; }
   body { color: #111827 !important; font-size: 9pt; }
   main { padding: 0 !important; }
@@ -417,6 +417,18 @@
   }
   .report-print-meta span { font-size: 6.8pt; color: #6b7280; }
   .report-print-meta strong { font-size: 8pt; color: #111827; }
+  .report-print-filters {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 4mm;
+    align-items: start;
+    margin-top: 4mm;
+  }
+  .report-print-filters h2 { margin: 0; font-size: 7pt; font-weight: 800; color: #5f6b7a; }
+  .report-print-filters dl { display: flex; flex-wrap: wrap; gap: 2mm 5mm; margin: 0; }
+  .report-print-filters dl > div { display: flex; gap: 1.5mm; max-width: 100%; font-size: 7pt; }
+  .report-print-filters dt { color: #6b7280; }
+  .report-print-filters dd { margin: 0; font-weight: 700; overflow-wrap: anywhere; }
 
   .report-print-section { margin: 0 0 6mm !important; }
   .report-print-section > :first-child { margin-bottom: 3mm !important; }
@@ -444,6 +456,22 @@
   }
   .report-page .report-activity-grid > article { padding: 3mm !important; }
 
+  .report-page .report-print-charts { display: block !important; }
+  .report-page .report-charts {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 3mm !important;
+    margin: 0 0 5mm !important;
+  }
+  .report-page .report-charts > article {
+    min-width: 0 !important;
+    padding: 3mm !important;
+    break-inside: avoid-page;
+  }
+  .report-page .report-charts [class*="overflow-x-auto"] { overflow: visible !important; }
+  .report-page .report-charts [role="img"] { min-width: 0 !important; width: 100% !important; height: 42mm !important; }
+  .report-page .report-charts svg { max-width: 100% !important; overflow: visible; }
+
   .report-page .report-table-layout { display: block !important; }
   .report-page .report-table-surface { overflow: visible !important; }
   .report-page .report-desktop-table {
@@ -462,9 +490,9 @@
   }
   .report-page thead { display: table-header-group; }
   .report-page tfoot { display: table-row-group; }
-  .report-page tr { break-inside: avoid; }
+  .report-page tr { break-inside: avoid-page; page-break-inside: avoid; }
   .report-page td, .report-page th {
-    break-inside: avoid;
+    break-inside: avoid-page;
     white-space: normal !important;
     overflow-wrap: anywhere;
     padding: 2.2mm 1.8mm !important;

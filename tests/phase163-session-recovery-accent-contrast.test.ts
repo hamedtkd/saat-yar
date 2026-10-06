@@ -78,7 +78,7 @@ test("recovery gap does not inflate worked time after resume", () => {
 });
 
 test("normal reload relies on heartbeat recovery instead of forcing a page-exit close", async () => {
-  const source = await read("hooks/use-persisted-app-data.ts");
+  const source = await read("hooks/use-persisted-browser-effects.ts");
   assert.doesNotMatch(source, /createPendingClose/);
   assert.match(source, /setInterval\(writeHeartbeat, SESSION_HEARTBEAT_INTERVAL_MS\)/);
   assert.match(source, /addEventListener\("pagehide", writeHeartbeat\)/);

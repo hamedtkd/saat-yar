@@ -41,7 +41,7 @@ test("lunch start picker remounts when the timer writes the current time", async
 });
 
 test("persistence writes heartbeat periodically and on page hide", async () => {
-  const source = await readFile(new URL("../hooks/use-persisted-app-data.ts", import.meta.url), "utf8");
+  const source = await readFile(new URL("../hooks/use-persisted-browser-effects.ts", import.meta.url), "utf8");
   assert.match(source, /setInterval\(writeHeartbeat, SESSION_HEARTBEAT_INTERVAL_MS\)/);
   assert.match(source, /addEventListener\("pagehide", writeHeartbeat\)/);
   assert.match(source, /visibilitychange/);

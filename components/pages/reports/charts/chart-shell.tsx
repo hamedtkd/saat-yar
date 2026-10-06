@@ -16,7 +16,7 @@ export function ChartShell({ children, className }: { children: ReactNode; class
 export function ChartsGrid({ children }: { children: ReactNode }) {
   return (
     <section className={cn(
-      "report-charts mb-4 grid items-stretch gap-4 print:hidden",
+      "report-charts mb-4 grid items-stretch gap-4",
       "grid-cols-[minmax(0,1.3fr)_minmax(300px,0.7fr)] max-[1050px]:grid-cols-1",
     )}>
       {children}

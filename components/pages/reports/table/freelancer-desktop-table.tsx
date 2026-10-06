@@ -4,6 +4,7 @@ import { PrivateMoney } from "@/components/common/private-money";
 import { StatusBadge } from "@/components/common/status-badge";
 import { useLocaleUi } from "@/components/i18n/use-locale-ui";
 import { entryMinutes } from "@/lib/format";
+import { getFreelancerReportDescription } from "@/lib/freelancer-report-description";
 import type { AppData, TimeEntry } from "@/lib/types";
 import { TableHeading } from "./report-table-shared";
 
@@ -19,12 +20,13 @@ export function FreelancerDesktopTable({ data, entries, financialsHidden }: Prop
       const project = data.projects.find((item) => item.id === entry.projectId);
       const client = data.clients.find((item) => item.id === entry.clientId);
       const minutes = entryMinutes(entry);
+      const description = getFreelancerReportDescription(entry);
       const amount = entry.billable ? (minutes / 60) * Math.max(0, entry.effectiveRate) : 0;
       return <tr key={entry.id} className="transition-colors hover:bg-[var(--surface-2)]">
         <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3 text-[var(--text)]">{date(entry.startedAt, { day: "numeric", month: "long" })}</td>
         <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3 text-[var(--text)]">{client?.name || "—"}</td>
         <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3"><strong className="text-[var(--text)]">{project?.name || "—"}</strong></td>
-        <td className="max-w-65 border-b border-[var(--border)] px-3 py-3 text-[var(--text)]"><span className="block truncate" title={entry.note || entry.task || undefined}>{entry.note || entry.task || "—"}</span></td>
+        <td className="max-w-65 border-b border-[var(--border)] px-3 py-3 text-[var(--text)]"><span className="block truncate" title={description || undefined}>{description || "—"}</span></td>
         <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3 font-extrabold text-[var(--text)]">{duration(minutes)}</td>
         <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3 text-[var(--text)]"><PrivateMoney value={entry.effectiveRate} hidden={financialsHidden} /> {t("common.currency.toman")}</td>
         <td className="whitespace-nowrap border-b border-[var(--border)] px-3 py-3 font-extrabold text-[var(--text)]"><PrivateMoney value={amount} hidden={financialsHidden} /> {t("common.currency.toman")}</td>

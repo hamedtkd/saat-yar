@@ -1,6 +1,5 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { readFile } from "node:fs/promises";
 
 import { initialData } from "../lib/constants.ts";
 import { getAutoStartSetup } from "../lib/pwa-autostart.ts";
@@ -12,6 +11,7 @@ import {
 } from "../lib/system-suspend.ts";
 import type { ProjectTimerSession } from "../lib/project-timer-session.ts";
 import { makeWorkRecord } from "./fixtures/work-record.ts";
+
 
 test("system suspend detector ignores an ordinary hidden-tab scheduling gap", () => {
   assert.equal(detectSystemSuspend(
@@ -81,25 +81,4 @@ test("runtime preferences default sleep protection on and keep startup setup dev
 test("auto-start guide targets the installed-app pages in Edge and Chrome", () => {
   assert.equal(getAutoStartSetup("Mozilla/5.0 Edg/145.0").internalUrl, "edge://apps");
   assert.equal(getAutoStartSetup("Mozilla/5.0 Chrome/145.0 Safari/537.36").internalUrl, "chrome://apps");
-});
-
-test("settings exposes suspend protection and honest OS-login setup guidance", async () => {
-  const settings = await readFile(new URL("../components/pages/settings/runtime-behavior-card.tsx", import.meta.url), "utf8");
-  const manifest = await readFile(new URL("../app/manifest.ts", import.meta.url), "utf8");
-  assert.match(settings, /pauseTimersOnSystemSuspend/);
-  assert.match(settings, /autoStartConfigured/);
-  assert.match(settings, /browser apps page/);
-  assert.match(manifest, /launch_handler: \{ client_mode: "focus-existing" \}/);
-});
-
-test("print reports have a dedicated landscape page contract and one consistent desktop table", async () => {
-  const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
-  const report = await readFile(new URL("../components/pages/reports/reports-page.tsx", import.meta.url), "utf8");
-  const employeeTable = await readFile(new URL("../components/pages/reports/table/employee-desktop-table.tsx", import.meta.url), "utf8");
-  assert.match(css, /@page report \{ size: A4 landscape/);
-  assert.match(css, /\.report-page \.report-mobile-cards \{ display: none !important; \}/);
-  assert.match(css, /table-layout: fixed !important/);
-  assert.match(report, /<ReportPrintHeader/);
-  assert.match(report, /data-report-print-root/);
-  assert.match(employeeTable, /report-desktop-table/);
 });
