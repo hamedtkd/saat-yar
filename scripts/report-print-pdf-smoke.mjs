@@ -20,6 +20,12 @@ const PRINT_LAYOUT_EXPRESSION = `(() => {
   bounds.svgs = svgs.map(rect);
   bounds.plots = plots.map(rect);
   bounds.bars = plots.map((plot) => [...new Set(plot.querySelectorAll('.recharts-bar-rectangle, .recharts-rectangle'))].map(rect).filter((box) => box && box.width > 0 && box.height > 0));
+  bounds.pieSectors = [...(root?.querySelectorAll('.recharts-pie .recharts-sector') || [])].map(rect).filter((box) => box && box.width > 0 && box.height > 0);
+  bounds.pieSectorContainment = [...(root?.querySelectorAll('.recharts-pie .recharts-sector') || [])].map((sector) => {
+    const cardBox = rect(sector.closest('article'));
+    const sectorBox = rect(sector);
+    return Boolean(cardBox && sectorBox && sectorBox.width > 0 && sectorBox.height > 0 && sectorBox.left >= cardBox.left - 1 && sectorBox.right <= cardBox.right + 1 && sectorBox.top >= cardBox.top - 1 && sectorBox.bottom <= cardBox.bottom + 1);
+  });
   bounds.axisTicks = plots.map((plot) => [...plot.querySelectorAll('svg text')].map(rect).filter(Boolean));
   bounds.legends = [...(root?.querySelectorAll('[data-report-chart-legend]') || [])].map(rect);
   bounds.legendCardContainment = [...(root?.querySelectorAll('[data-report-chart-legend]') || [])].map((legend) => {
@@ -94,6 +100,10 @@ export async function captureReportPrintPdf(client, outputPath, { requireCharts 
   assert.ok(layout.plotOverflow.every((overflow) => overflow === "hidden"), `plot viewport clips SVG painting at its deterministic print bounds: ${JSON.stringify(layout)}`);
   assert.ok(layout.cardSequenceClear, `chart cards do not overlap the following chart section: ${JSON.stringify(layout)}`);
   if (requireCharts) assert.ok(layout.svgs.length > 0, `real Recharts plots are present in the PDF fixture: ${JSON.stringify(layout)}`);
+  if (requireCharts) {
+    assert.ok(layout.pieSectors.length > 0, `donut chart renders actual pie sectors in the PDF: ${JSON.stringify(layout)}`);
+    assert.ok(layout.pieSectorContainment.every(Boolean), `every donut sector stays inside its chart card: ${JSON.stringify(layout)}`);
+  }
   assert.ok(pages <= 8, `fixed report fixture must not grow beyond eight A4 landscape pages: ${pages}`);
   return { path: outputPath, pages, bytes: pdf.length, layout };
 }

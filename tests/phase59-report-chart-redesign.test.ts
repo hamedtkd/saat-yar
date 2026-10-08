@@ -23,6 +23,7 @@ test("report charts use shared legends and explicit empty states", async () => {
   assert.match(employee, /ChartEmptyState/);
   assert.match(freelancer, /ChartEmptyState/);
   assert.match(donut, /total > 0/);
+  assert.match(donut, /isAnimationActive=\{false\}/);
   assert.match(donut, /t\("reports\.charts\.notEnough"\)/);
 });
 
@@ -37,6 +38,8 @@ test("employee report print clips rendered SVG bars inside a deterministic plot 
   assert.doesNotMatch(css, /\.report-charts \[role="img"\] svg[\s\S]*overflow: visible/);
   assert.match(smoke, /\.recharts-bar-rectangle, \.recharts-rectangle/);
   assert.match(smoke, /bounds\.barContainment/);
+  assert.match(smoke, /bounds\.pieSectors/);
+  assert.match(smoke, /layout\.pieSectorContainment/);
   assert.match(smoke, /bounds\.plotCardContainment/);
   assert.match(smoke, /layout\.axisContainment/);
   assert.match(smoke, /Page\.printToPDF/);
