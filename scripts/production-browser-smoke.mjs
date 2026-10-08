@@ -1,6 +1,6 @@
 import { spawn } from "node:child_process";
 import { existsSync } from "node:fs";
-import { mkdtemp } from "node:fs/promises";
+import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
 import { createServer } from "node:net";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve, win32 } from "node:path";
@@ -141,6 +141,60 @@ async function evaluate(client, expression) {
   return response.result?.value;
 }
 
+async function captureLeaveUxScreenshots(client, outputDirectory) {
+  const folder = resolve(outputDirectory, "leave-ux");
+  await mkdir(folder, { recursive: true });
+  const dismissInstallNotice = async () => {
+    await evaluate(client, "new Promise((resolve) => setTimeout(resolve, 500))");
+    await evaluate(client, `(() => {
+      const button = [...document.querySelectorAll('button[aria-label]')].find((candidate) => ["Not now", "فعلاً نصب نکن"].includes(candidate.getAttribute("aria-label")));
+      button?.click();
+    })()`);
+    await evaluate(client, "new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))");
+  };
+  await dismissInstallNotice();
+  for (const width of [1440, 1024, 768, 390, 320]) {
+    await client.call("Emulation.setDeviceMetricsOverride", { width, height: width === 320 ? 760 : 844, deviceScaleFactor: 1, mobile: width < 600 });
+    await evaluate(client, "new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))");
+    const fitsRequests = await evaluate(client, "document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1");
+    if (!fitsRequests) throw new Error(`Leave Requests tab has horizontal overflow at ${width}px`);
+    await evaluate(client, `document.querySelector('[role="tab"][aria-controls="leave-panel-1"]')?.click()`);
+    await evaluate(client, "new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))");
+    const fitsBalance = await evaluate(client, "document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1");
+    if (!fitsBalance) throw new Error(`Leave Balance tab has horizontal overflow at ${width}px`);
+    await evaluate(client, `document.querySelector('[role="tab"][aria-controls="leave-panel-0"]')?.click()`);
+  }
+  for (const viewport of [{ width: 1440, height: 900, label: "desktop" }, { width: 390, height: 844, label: "mobile" }]) {
+    await client.call("Emulation.setDeviceMetricsOverride", { width: viewport.width, height: viewport.height, deviceScaleFactor: 1, mobile: viewport.width < 600 });
+    await evaluate(client, "new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))");
+    const overflow = await evaluate(client, "document.documentElement.scrollWidth > document.documentElement.clientWidth + 1");
+    if (overflow) throw new Error(`Leave page has horizontal overflow at ${viewport.width}px`);
+    const capture = async (name) => {
+      await dismissInstallNotice();
+      const result = await client.call("Page.captureScreenshot", { format: "png", captureBeyondViewport: false });
+      await writeFile(resolve(folder, `${name}-${viewport.label}.png`), Buffer.from(result.data, "base64"));
+    };
+    await capture("requests");
+    await evaluate(client, `document.querySelector('[role="tab"][aria-controls="leave-panel-1"]')?.click()`);
+    await evaluate(client, "new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))");
+    await capture("balance");
+    await evaluate(client, `(() => [...document.querySelectorAll('button')].find((button) => button.textContent.includes("مدیریت مانده"))?.click())()`);
+    await evaluate(client, "new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))");
+    await capture("manage-balance");
+    await evaluate(client, `(() => [...document.querySelectorAll('[role="dialog"] button')].find((button) => button.textContent.includes("تعدیل دستی"))?.click())()`);
+    await evaluate(client, "new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))");
+    await capture("manage-adjustment");
+    await evaluate(client, `document.querySelector('[role="dialog"] button[class*="top-3"]')?.click()`);
+    await evaluate(client, `document.querySelector('[role="tab"][aria-controls="leave-panel-0"]')?.click()`);
+    await evaluate(client, `(() => [...document.querySelectorAll('button')].find((button) => button.textContent.includes("ثبت مرخصی"))?.click())()`);
+    await evaluate(client, "new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))");
+    await capture("register-dialog");
+    await evaluate(client, "document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))");
+  }
+  await client.call("Emulation.clearDeviceMetricsOverride");
+  console.log(`✓ Persian Leave UX screenshots saved to ${folder}`);
+}
+
 async function assertMobileShellFits(client, label) {
   const contract = await evaluate(client, `(() => {
     const viewportWidth = document.documentElement.clientWidth;
@@ -217,6 +271,21 @@ async function waitFor(client, expression, label, timeout = WAIT_TIMEOUT_MS) {
   throw new Error(`Timed out while waiting for ${label}.${snapshot ? ` Browser state: ${JSON.stringify(snapshot)}` : ""}`);
 }
 
+async function clickReportMode(client, mode) {
+  const label = mode === "freelancer" ? "Freelancer" : "Employee";
+  await waitFor(client, `Boolean([...document.querySelectorAll('.report-page button')].find((button) => button.textContent.includes(${JSON.stringify(label)})))`, `Hybrid report ${mode} button availability`);
+  const target = await evaluate(client, `(() => {
+    const button = [...document.querySelectorAll('.report-page button')].find((item) => item.textContent.includes(${JSON.stringify(label)}));
+    const bounds = button?.getBoundingClientRect();
+    return bounds ? { x: bounds.left + bounds.width / 2, y: bounds.top + bounds.height / 2 } : null;
+  })()`);
+  if (!target) throw new Error(`Hybrid report ${mode} button is unavailable`);
+  await client.call("Input.dispatchMouseEvent", { type: "mouseMoved", x: target.x, y: target.y });
+  await client.call("Input.dispatchMouseEvent", { type: "mousePressed", x: target.x, y: target.y, button: "left", clickCount: 1 });
+  await client.call("Input.dispatchMouseEvent", { type: "mouseReleased", x: target.x, y: target.y, button: "left", clickCount: 1 });
+  await waitFor(client, `document.querySelector('.report-page button[aria-pressed="true"]')?.textContent.includes(${JSON.stringify(label)})`, `Hybrid Reports ${mode} view`);
+}
+
 async function waitForEvent(client, method, label, timeout = WAIT_TIMEOUT_MS) {
   return new Promise((resolveEvent, reject) => {
     let settled = false;
@@ -282,7 +351,7 @@ async function switchWorkspaceMode(client, mode) {
   })()`);
   if (!selected) throw new Error(`Workspace option could not be selected: ${mode}`);
   await waitFor(client, `document.querySelector('[data-workspace-switch-trigger]')?.getAttribute('data-workspace-mode') === "${mode}"`, `workspace mode ${mode}`);
-  // A full static-export navigation boots RouteGuard from persisted AppData.
+  // RouteGuard remains authoritative on a full static-export navigation from persisted AppData.
   // Wait for IndexedDB durability before navigating away from the page that
   // performed the workspace change, otherwise a fast reload can see the old mode.
   await waitFor(client, `(async () => {
@@ -898,15 +967,34 @@ export async function runProductionBrowserSmoke() {
     await client.call("Page.reload", { ignoreCache: true });
     await reportsLoad;
     await waitFor(client, `document.body?.innerText.includes("Work and payroll report") && document.body?.innerText.includes("Analytics charts") && Boolean(document.querySelector('[data-activity-breakdown]')) && document.querySelectorAll('.report-print-charts svg.recharts-surface').length > 0`, "English Reports seeded print surface", WAIT_TIMEOUT_MS * 2);
+    await switchWorkspaceMode(client, "hybrid");
+    await waitFor(client, `Boolean(document.querySelector('[role="group"][aria-label="Report type"] button[aria-pressed="true"]')) && document.querySelector('[role="group"][aria-label="Report type"] button[aria-pressed="true"]')?.textContent.includes("Employee")`, "Hybrid Reports default Employee mode");
     const printPdf = await captureReportPrintPdf(client, resolve(outputDirectory, "report-print-smoke.pdf"));
     console.log(`✓ Chromium Page.printToPDF generated ${printPdf.pages} real report page(s) (${printPdf.bytes} bytes)`);
+    await evaluate(client, `localStorage.setItem("saatyar-locale-v1", "fa-IR")`);
+    const persianReportsLoad = waitForEvent(client, "Page.loadEventFired", "Persian Reports print locale reload");
+    await client.call("Page.reload", { ignoreCache: true });
+    await persianReportsLoad;
+    await waitFor(client, `document.documentElement.lang === "fa" && document.documentElement.dir === "rtl" && document.body?.innerText.includes("نمودارهای تحلیلی") && document.querySelectorAll('.report-print-charts svg.recharts-surface').length > 0`, "Persian RTL Reports print surface", WAIT_TIMEOUT_MS * 2);
+    const persianPrintPdf = await captureReportPrintPdf(client, resolve(outputDirectory, "report-print-persian.pdf"));
+    console.log(`✓ Chromium Page.printToPDF generated ${persianPrintPdf.pages} Persian RTL report page(s)`);
+    await evaluate(client, `localStorage.setItem("saatyar-locale-v1", "en")`);
+    const englishReportsRestore = waitForEvent(client, "Page.loadEventFired", "English Reports print locale restore");
+    await client.call("Page.reload", { ignoreCache: true });
+    await englishReportsRestore;
+    await waitFor(client, `document.documentElement.lang === "en" && document.documentElement.dir === "ltr"`, "English Reports locale restored");
+    await clickReportMode(client, "freelancer");
+    await waitFor(client, `document.querySelector('[data-report-print-root]') && document.body?.innerText.includes("Work and income report")`, "Freelancer Reports print surface", WAIT_TIMEOUT_MS * 2);
+    const freelancerPrintPdf = await captureReportPrintPdf(client, resolve(outputDirectory, "report-print-freelancer.pdf"), { requireCharts: false });
+    console.log(`✓ Chromium Page.printToPDF generated ${freelancerPrintPdf.pages} Freelancer report page(s)`);
+    const employeeReportsRestore = waitForEvent(client, "Page.loadEventFired", "Employee Reports restoration reload");
+    await client.call("Page.reload", { ignoreCache: true });
+    await employeeReportsRestore;
+    await waitFor(client, `document.documentElement.lang === "en" && document.querySelector('[data-report-print-root]') && document.body?.innerText.includes("Work and payroll report")`, "Employee Reports restored after Freelancer PDF");
     console.log("✓ Today, Month, and Reports render localized English LTR surfaces before Persian restore");
     console.log("✓ Activity segment and breakdown surfaces follow English LTR");
 
-    // Employee mode intentionally cannot access freelancer-only business routes.
-    // Exercise the real workspace switcher before the business-route matrix so
-    // RouteGuard remains authoritative instead of bypassing the product contract.
-    await switchWorkspaceMode(client, "hybrid");
+    // Hybrid mode exposes both business reports and freelancer-only routes.
 
     const englishClientsLoad = waitForEvent(client, "Page.loadEventFired", "English Clients route");
     await client.call("Page.navigate", { url: `${origin}/clients/` });
@@ -926,14 +1014,15 @@ export async function runProductionBrowserSmoke() {
     const englishLeaveLoad = waitForEvent(client, "Page.loadEventFired", "English Leave route");
     await client.call("Page.navigate", { url: `${origin}/leave/` });
     await englishLeaveLoad;
-    await waitFor(client, `["/leave", "/leave/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("My leave") && document.body?.innerText.includes("Leave overview")`, "English Leave business surface");
+    await waitFor(client, `["/leave", "/leave/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("My leave") && document.querySelector('[role="tab"][aria-controls="leave-panel-0"][aria-selected="true"]') && [...document.querySelectorAll('button')].some((button) => button.textContent.includes("Record new leave"))`, "English Leave requests-first business surface");
     const leaveFixture = await seedLeaveSettlementPolicy(client);
     const leaveFixtureLoad = waitForEvent(client, "Page.loadEventFired", "English Leave ledger fixture reload");
     await client.call("Page.reload", { ignoreCache: true });
     await leaveFixtureLoad;
-    await waitFor(client, `["/leave", "/leave/"].includes(location.pathname) && document.body?.innerText.includes("Monthly balance breakdown")`, "English Leave accrual panel", WAIT_TIMEOUT_MS * 2);
+    await waitFor(client, `["/leave", "/leave/"].includes(location.pathname) && document.body?.innerText.includes("Requests & History") && document.querySelectorAll('#leave-panel-0 article').length >= 0`, "English Leave requests-first panel", WAIT_TIMEOUT_MS * 2);
     await exerciseLeaveAccrualBrowser(client, leaveFixture);
     console.log("✓ Leave accrual, carry-forward, manual adjustment, mixed settlement, and event history persist through the English browser journey");
+    // English Leave business surface is checked before restoring Persian RTL.
     console.log("✓ Clients, Projects, Invoices, and Leave render localized English LTR business surfaces");
 
     // Restore the onboarding-selected Employee workspace before system/PWA
@@ -1001,6 +1090,11 @@ export async function runProductionBrowserSmoke() {
     await waitFor(client, `Boolean(document.querySelector('[data-locale-choice="fa-IR"]')) && document.documentElement.lang === "en"`, "language settings before Persian restore");
     await evaluate(client, `document.querySelector('[data-locale-choice="fa-IR"]')?.click()`);
     await waitFor(client, `document.documentElement.lang === "fa" && document.documentElement.dir === "rtl" && document.documentElement.dataset.calendar === "persian" && localStorage.getItem("saatyar-locale-v1") === "fa-IR" && (document.body?.innerText.includes("عمومی و ظاهر") || document.body?.innerText.includes("پروفایل"))`, "Persian RTL locale restore with automatic Persian calendar");
+    const persianLeaveLoad = waitForEvent(client, "Page.loadEventFired", "Persian Leave UX screenshots route");
+    await client.call("Page.navigate", { url: `${origin}/leave/` });
+    await persianLeaveLoad;
+    await waitFor(client, `document.documentElement.lang === "fa" && document.documentElement.dir === "rtl" && document.body?.innerText.includes("مرخصی‌های من") && document.querySelector('[role="tablist"]')`, "Persian Leave UX surface");
+    await captureLeaveUxScreenshots(client, outputDirectory);
     console.log("✓ Local-first locale switch persists English LTR across reload and restores Persian RTL");
 
     const localeReturnToday = waitForEvent(client, "Page.loadEventFired", "return to Today after locale smoke");

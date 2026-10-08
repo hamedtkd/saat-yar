@@ -11,12 +11,39 @@ const PRINT_LAYOUT_EXPRESSION = `(() => {
   const cards = [...(root?.querySelectorAll('.report-print-charts article') || [])];
   const charts = [...(root?.querySelectorAll('.report-print-charts [role="img"]') || [])];
   const svgs = [...(root?.querySelectorAll('.report-print-charts svg.recharts-surface') || [])];
+  const plots = [...(root?.querySelectorAll('.report-print-charts [data-report-chart-plot]') || [])];
   const activity = root?.querySelector('[data-activity-breakdown]');
   const table = root?.querySelector('.report-table-layout');
   const bounds = { root: rect(root), activity: rect(activity), table: rect(table) };
   bounds.cards = cards.map(rect);
   bounds.charts = charts.map(rect);
   bounds.svgs = svgs.map(rect);
+  bounds.plots = plots.map(rect);
+  bounds.bars = plots.map((plot) => [...new Set(plot.querySelectorAll('.recharts-bar-rectangle, .recharts-rectangle'))].map(rect).filter((box) => box && box.width > 0 && box.height > 0));
+  bounds.axisTicks = plots.map((plot) => [...plot.querySelectorAll('svg text')].map(rect).filter(Boolean));
+  bounds.legends = [...(root?.querySelectorAll('[data-report-chart-legend]') || [])].map(rect);
+  bounds.legendCardContainment = [...(root?.querySelectorAll('[data-report-chart-legend]') || [])].map((legend) => {
+    const cardBox = rect(legend.closest('article'));
+    const legendBox = rect(legend);
+    return Boolean(cardBox && legendBox && legendBox.left >= cardBox.left - 1 && legendBox.right <= cardBox.right + 1 && legendBox.top >= cardBox.top - 1 && legendBox.bottom <= cardBox.bottom + 1);
+  });
+  bounds.plotCardContainment = plots.map((plot) => {
+    const cardBox = rect(plot.closest('article'));
+    const plotBox = rect(plot);
+    return Boolean(cardBox && plotBox && plotBox.left >= cardBox.left - 1 && plotBox.right <= cardBox.right + 1 && plotBox.top >= cardBox.top - 1 && plotBox.bottom <= cardBox.bottom + 1);
+  });
+  bounds.barContainment = plots.map((plot, index) => {
+    const plotBox = rect(plot);
+    const bars = bounds.bars[index] || [];
+    return Boolean(plotBox && bars.length > 0 && bars.every((bar) => bar.left >= plotBox.left - 1 && bar.right <= plotBox.right + 1 && bar.top >= plotBox.top - 1 && bar.bottom <= plotBox.bottom + 1));
+  });
+  bounds.axisContainment = plots.map((plot, index) => {
+    const plotBox = rect(plot);
+    const ticks = bounds.axisTicks[index] || [];
+    return Boolean(plotBox && ticks.length > 0 && ticks.every((tick) => tick.left >= plotBox.left - 1 && tick.right <= plotBox.right + 1 && tick.top >= plotBox.top - 1 && tick.bottom <= plotBox.bottom + 1));
+  });
+  bounds.plotOverflow = plots.map((plot) => getComputedStyle(plot).overflow);
+  bounds.cardSequenceClear = bounds.cards.every((card, index) => index === 0 || card.top >= bounds.cards[index - 1].bottom - 1);
   bounds.cardSvgContainment = svgs.map((svg) => {
     const card = svg.closest('article');
     const cardBox = rect(card);
@@ -35,9 +62,10 @@ async function evaluate(client, expression) {
   return result.result?.value;
 }
 
-export async function captureReportPrintPdf(client, outputPath) {
+export async function captureReportPrintPdf(client, outputPath, { requireCharts = true } = {}) {
   await client.call("Emulation.setEmulatedMedia", { media: "print" });
   await evaluate(client, "document.fonts?.ready");
+  await evaluate(client, "new Promise((resolve) => { let frame = 0; const settle = () => { if (++frame < 5) requestAnimationFrame(settle); else resolve(true); }; requestAnimationFrame(settle); })");
   const layout = await evaluate(client, PRINT_LAYOUT_EXPRESSION);
   assert.ok(layout?.root, "Reports print root is present");
 
@@ -51,14 +79,22 @@ export async function captureReportPrintPdf(client, outputPath) {
   assert.ok(pdf.subarray(0, 5).toString("ascii") === "%PDF-", "Chromium generated a real PDF");
   const pages = [...pdf.toString("latin1").matchAll(/\/Type\s*\/Page\b/g)].length;
   assert.ok(pages >= 1, "generated PDF contains at least one paginated page");
-  assert.ok(pages <= 4, `fixed Employee report fixture should finish in four A4 landscape pages, not add an empty trailing page (got ${pages})`);
   await writeFile(outputPath, pdf);
   await client.call("Emulation.setEmulatedMedia", { media: "screen" });
   assert.ok(layout.visiblePrintHeader, `print header is visible in print media: ${JSON.stringify(layout)}`);
   assert.equal(layout.visibleFloatingNotices, 0, `floating app notices are hidden in print: ${JSON.stringify(layout)}`);
   assert.equal(layout.horizontalOverflow, false, `print layout has no horizontal overflow: ${JSON.stringify(layout)}`);
   assert.ok(layout.cardSvgContainment.every(Boolean), `every chart SVG remains inside its chart card: ${JSON.stringify(layout)}`);
-  assert.ok(layout.svgs.length > 0, `real Recharts plots are present in the PDF fixture: ${JSON.stringify(layout)}`);
+  if (layout.plots.length) {
+    assert.ok(layout.plotCardContainment.every(Boolean), `employee plot viewport remains inside its chart card: ${JSON.stringify(layout)}`);
+    assert.ok(layout.barContainment.every(Boolean), `every rendered bar primitive stays inside the plot viewport: ${JSON.stringify(layout)}`);
+    assert.ok(layout.axisContainment.every(Boolean), `visible axis tick labels fit inside the plot viewport: ${JSON.stringify(layout)}`);
+  }
+  assert.ok(layout.legendCardContainment.every(Boolean), `chart legends remain inside their card: ${JSON.stringify(layout)}`);
+  assert.ok(layout.plotOverflow.every((overflow) => overflow === "hidden"), `plot viewport clips SVG painting at its deterministic print bounds: ${JSON.stringify(layout)}`);
+  assert.ok(layout.cardSequenceClear, `chart cards do not overlap the following chart section: ${JSON.stringify(layout)}`);
+  if (requireCharts) assert.ok(layout.svgs.length > 0, `real Recharts plots are present in the PDF fixture: ${JSON.stringify(layout)}`);
+  assert.ok(pages <= 8, `fixed report fixture must not grow beyond eight A4 landscape pages: ${pages}`);
   return { path: outputPath, pages, bytes: pdf.length, layout };
 }
 

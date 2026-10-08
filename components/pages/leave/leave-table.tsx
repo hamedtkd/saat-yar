@@ -14,11 +14,11 @@ type LeaveTableProps = {
   data: AppData;
   setData: React.Dispatch<React.SetStateAction<AppData>>;
   setDraft: React.Dispatch<React.SetStateAction<LeaveEntry>>;
+  onEdit: (entry: LeaveEntry) => void;
 };
 
-export function LeaveTable({ data, setData, setDraft }: LeaveTableProps) {
+export function LeaveTable({ data, setData, onEdit }: LeaveTableProps) {
   const { b, number } = useBusinessUi();
-  const handleEdit = (entry: LeaveEntry) => setDraft({ ...entry });
   const handleDelete = (entry: LeaveEntry) => {
     if (!window.confirm(b("leave.table.confirmDelete"))) return;
     setData((previous) => ({ ...previous, leaves: previous.leaves.filter((item) => item.id !== entry.id) }));
@@ -37,8 +37,8 @@ export function LeaveTable({ data, setData, setDraft }: LeaveTableProps) {
       </div>
       {data.leaves.length > 0 ? (
         <>
-          <LeaveDesktopTable entries={data.leaves} onEdit={handleEdit} onDelete={handleDelete} />
-          <LeaveMobileCards entries={data.leaves} onEdit={handleEdit} onDelete={handleDelete} />
+          <LeaveDesktopTable entries={data.leaves} onEdit={onEdit} onDelete={handleDelete} />
+          <LeaveMobileCards entries={data.leaves} onEdit={onEdit} onDelete={handleDelete} />
         </>
       ) : (
         <div className="p-4 sm:p-5"><EmptyState icon={<Umbrella />} title={b("leave.table.emptyTitle")} description={b("leave.table.emptyDescription")} /></div>

@@ -483,21 +483,28 @@
     break-inside: avoid-page;
     page-break-inside: avoid;
   }
-  .report-page .report-charts [class*="overflow-x-auto"] { overflow: visible !important; }
-  .report-page .report-charts [role="img"] { min-width: 0 !important; width: 100% !important; height: 58mm !important; }
-  .report-page .report-charts [role="img"] > div,
-  .report-page .report-charts [role="img"] .recharts-responsive-container {
+  .report-page .report-charts .report-chart-scroll { overflow: hidden !important; }
+  .report-page .report-charts [data-report-chart-plot] {
+    position: relative !important;
+    box-sizing: border-box !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    height: 58mm !important;
+    overflow: hidden !important;
+  }
+  .report-page .report-charts [data-report-chart-plot] > div,
+  .report-page .report-charts [data-report-chart-plot] .recharts-responsive-container {
     min-width: 0 !important;
     max-width: 100% !important;
     width: 100% !important;
     height: 100% !important;
   }
-  .report-page .report-charts [role="img"] svg {
+  .report-page .report-charts [data-report-chart-plot] svg {
     display: block !important;
     width: 100% !important;
     height: 100% !important;
     max-width: 100% !important;
-    overflow: visible;
+    overflow: hidden !important;
   }
 
   .report-page .report-table-layout { display: block !important; }

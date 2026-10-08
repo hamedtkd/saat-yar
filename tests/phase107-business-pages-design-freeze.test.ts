@@ -13,16 +13,17 @@ test("leave clients projects and invoices share the final section hierarchy", as
   ]);
 
   for (const source of [leave, clients, projects, invoices]) {
-    assert.match(source, /SectionHeading/);
     assert.match(source, /PageHeading/);
   }
-  assert.match(leave, /b\("leave\.overview\.eyebrow"\)/);
+  for (const source of [clients, projects, invoices]) assert.match(source, /SectionHeading/);
+  assert.match(leave, /role="tab"/);
+  assert.match(leave, /b\("leave\.title"\)/);
   assert.match(clients, /b\("clients\.overview\.title"\)/);
   assert.match(projects, /b\("projects\.section\.eyebrow"\)/);
   assert.match(invoices, /b\("invoices\.section\.title"\)/);
 
   const catalog = await read("lib/i18n/business.ts");
-  assert.match(catalog, /"leave\.overview\.eyebrow": "وضعیت سهمیه"/);
+  assert.match(catalog, /"leave\.title": "مرخصی‌های من"/);
   assert.match(catalog, /"clients\.overview\.title": "وضعیت کسب‌وکار"/);
   assert.match(catalog, /"projects\.section\.eyebrow": "پرتفوی پروژه"/);
   assert.match(catalog, /"invoices\.section\.title": "فهرست فاکتورها"/);
@@ -38,9 +39,11 @@ test("business forms and project detail use shared semantic dashboard surfaces",
     read("components/pages/invoices/form/invoice-form.tsx"),
   ]);
 
-  for (const source of [leaveForm, leaveTable, clientForm, projectForm, projectHeader, invoiceForm]) {
+  for (const source of [leaveTable, clientForm, projectForm, projectHeader, invoiceForm]) {
     assert.match(source, /SurfaceCard/);
   }
+  assert.match(leaveForm, /<form/);
+  assert.match(leaveForm, /onSubmit=/);
   assert.doesNotMatch(projectHeader, /bg-(green|blue|cyan|teal)-/);
   assert.match(projectHeader, /var\(--accent-soft\)/);
 });

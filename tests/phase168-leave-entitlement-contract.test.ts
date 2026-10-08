@@ -97,18 +97,32 @@ test("summary accrues by Jalali month, counts current-year usage, and keeps carr
   assert.equal(summary.available, 5 * 16 * 60 + 30);
 });
 
-test("leave overview separates accrued-to-date from the annual policy maximum and offers a ledger", () => {
+test("leave page prioritizes requests and exposes four balance metrics with a secondary ledger", () => {
   const source = readFileSync(join(root, "components/pages/leave/leave-page.tsx"), "utf8");
+  const panel = readFileSync(join(root, "components/pages/leave/leave-accrual-panel.tsx"), "utf8");
   const catalog = readFileSync(join(root, "lib/i18n/business.ts"), "utf8");
   assert.doesNotMatch(source, /leaveBalanceMinutes\s*\+\s*data\.settings\.monthlyLeaveMinutes/);
-  assert.match(source, /b\("leave\.metrics\.monthly"\)/);
-  assert.match(source, /b\("leave\.metrics\.annual"\)/);
+  assert.match(source, /role="tablist"/);
+  assert.match(source, /useState<LeaveTab>\("requests"\)/);
+  assert.match(source, /<Button onClick=\{openCreate\}/);
+  assert.match(source, /<Dialog open=\{formOpen\}/);
+  assert.match(source, /onEdit=\{handleEdit\}/);
   assert.match(source, /b\("leave\.metrics\.accrued"\)/);
+  assert.match(source, /b\("leave\.metrics\.remaining"\)/);
+  assert.match(source, /b\("leave\.metrics\.used"\)/);
+  assert.match(source, /b\("leave\.metrics\.carryover"\)/);
+  assert.equal((source.match(/<MetricCard\b/g) || []).length, 4);
   assert.match(source, /LeaveAccrualPanel/);
-  assert.match(source, /b\("leave\.overview\.description"\)/);
-  assert.match(source, /b\("leave\.overview\.note"\)/);
+  assert.match(panel, /data-leave-manage-actions/);
+  assert.match(panel, /manageAction === "carry"/);
+  assert.match(panel, /manageAction === "adjustment"/);
+  assert.match(panel, /manageAction === "settlement"/);
+  assert.match(panel, /settlementConfirm/);
+  assert.match(panel, /closing - Number\(settlementCarry \|\| 0\) - Number\(settlementCashOut \|\| 0\) !== 0/);
   assert.match(catalog, /"leave\.metrics\.monthly": "سهمیه ماهانه"/);
   assert.match(catalog, /"leave\.metrics\.annual": "سقف سیاست سالانه"/);
+  assert.match(catalog, /"leave\.tabs\.requests": "درخواست‌ها و تاریخچه"/);
+  assert.match(catalog, /"leave\.tabs\.balance": "مانده و سهمیه"/);
   assert.match(catalog, /"leave\.ledger\.accrued": "تعلق ماه"/);
   assert.match(catalog, /تعطیلات رسمی، جمعه و روزهای غیرفعال برنامه کاری/);
 });

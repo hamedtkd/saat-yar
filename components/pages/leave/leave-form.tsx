@@ -1,26 +1,28 @@
 "use client";
 
 import type { Dispatch, SetStateAction } from "react";
-import { Info, Plus, Save } from "lucide-react";
+import { Info, Save } from "lucide-react";
 import { NumberField } from "@/components/common/number-field";
-import { PanelHead } from "@/components/common/panel-head";
-import { SurfaceCard } from "@/components/common/surface-card";
 import { useBusinessUi } from "@/components/i18n/use-business-ui";
 import { JalaliDatePicker } from "@/components/pickers";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/cn";
-import type { LeaveEntry } from "@/lib/types";
+import { getLeaveEntryUsedMinutes } from "@/lib/leave-entitlement";
+import type { AppData, LeaveEntry } from "@/lib/types";
 
 type LeaveFormProps = {
   draft: LeaveEntry;
   setDraft: Dispatch<SetStateAction<LeaveEntry>>;
   onSave: () => void;
+  onCancel: () => void;
+  available: number;
+  data: AppData;
 };
 
-export function LeaveForm({ draft, setDraft, onSave }: LeaveFormProps) {
-  const { b } = useBusinessUi();
+export function LeaveForm({ draft, setDraft, onSave, onCancel, available, data }: LeaveFormProps) {
+  const { b, duration } = useBusinessUi();
   const isEditing = Boolean(draft.id);
   const isHourly = draft.type === "hourly";
 
@@ -32,17 +34,18 @@ export function LeaveForm({ draft, setDraft, onSave }: LeaveFormProps) {
     && Boolean(draft.startDate)
     && Boolean(draft.endDate)
     && (!isHourly || draft.minutes > 0);
+  const previewData = draft.id ? { ...data, leaves: data.leaves.filter((entry) => entry.id !== draft.id) } : data;
+  const requestedMinutes = canSave ? getLeaveEntryUsedMinutes(draft, previewData) : 0;
+  const projectedMinutes = available - requestedMinutes;
 
   return (
-    <SurfaceCard as="article" className="self-start min-w-0 overflow-hidden p-4 sm:p-5">
-      <PanelHead icon={<Plus aria-hidden="true" />} title={isEditing ? b("leave.form.edit") : b("leave.form.new")} />
-
-      <div className="mt-4 grid min-w-0 grid-cols-1 gap-4">
+    <form data-leave-dialog-form className="grid min-w-0 gap-4 [&_button[aria-haspopup=dialog]]:!h-[var(--control-height)] [&_button[aria-haspopup=dialog]]:!rounded-[var(--control-radius)]" onSubmit={(event) => { event.preventDefault(); if (canSave) onSave(); }}>
+      <div className="grid min-w-0 grid-cols-1 gap-4">
         <div className="grid min-w-0 grid-cols-1 gap-4 min-[520px]:grid-cols-2">
           <label className={cn("grid min-w-0 gap-2", { "col-span-2": !isHourly })}>
             <span className="text-xs font-bold text-[var(--text)]">{b("leave.form.type")}</span>
             <Select value={draft.type} onValueChange={(type) => updateDraft("type", type as LeaveEntry["type"])}>
-              <SelectTrigger aria-label={b("leave.form.typeAria")} className={cn("h-12 w-full min-w-0 rounded-[var(--card-radius)] border-[var(--border)] bg-[var(--surface-1)] px-3 text-sm font-bold shadow-none", { "col-span-2": !isHourly })}>
+              <SelectTrigger aria-label={b("leave.form.typeAria")} className={cn("h-11 w-full min-w-0 rounded-[var(--control-radius)] border-[var(--border)] bg-[var(--surface-1)] px-3 text-sm font-bold shadow-none", { "col-span-2": !isHourly })}>
                 <SelectValue placeholder={b("leave.form.typePlaceholder")} />
               </SelectTrigger>
               <SelectContent>
@@ -80,19 +83,24 @@ export function LeaveForm({ draft, setDraft, onSave }: LeaveFormProps) {
 
         <label className="grid min-w-0 gap-2">
           <span className="text-xs font-bold text-[var(--text)]">{b("leave.form.optionalNote")}</span>
-          <Input value={draft.note} onChange={(event) => updateDraft("note", event.target.value)} placeholder={b("leave.form.notePlaceholder")} className="h-12 w-full min-w-0 rounded-[var(--card-radius)] border-[var(--border)] bg-[var(--surface-1)] px-3 text-sm shadow-none placeholder:text-[var(--text-muted)]/70 focus-visible:border-[var(--accent)] focus-visible:ring-[var(--accent-soft)]" />
+          <Input value={draft.note} onChange={(event) => updateDraft("note", event.target.value)} placeholder={b("leave.form.notePlaceholder")} className="h-11 w-full min-w-0 rounded-[var(--control-radius)] border-[var(--border)] bg-[var(--surface-1)] px-3 text-sm shadow-none placeholder:text-[var(--text-muted)]/70 focus-visible:border-[var(--accent)] focus-visible:ring-[var(--accent-soft)]" />
         </label>
       </div>
 
-      <Button type="button" className="mt-5 h-13 w-full rounded-[var(--card-radius)] bg-[var(--accent-fill)] text-sm font-extrabold text-[var(--accent-foreground)] shadow-none hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50" disabled={!canSave} onClick={onSave}>
-        <Save aria-hidden="true" className="size-4.5" />
-        {isEditing ? b("leave.form.saveEdit") : b("leave.form.save")}
-      </Button>
+      <div className="grid grid-cols-3 gap-2 rounded-[var(--control-radius)] bg-[var(--surface-2)] p-3 text-xs">
+        <div><span className="block text-[var(--text-muted)]">{b("leave.form.requested")}</span><strong className="mt-1 block tabular-nums">{duration(requestedMinutes)} {b("common.hour")}</strong></div>
+        <div><span className="block text-[var(--text-muted)]">{b("leave.metrics.remaining")}</span><strong className="mt-1 block tabular-nums">{duration(available)} {b("common.hour")}</strong></div>
+        <div><span className="block text-[var(--text-muted)]">{b("leave.form.afterRequest")}</span><strong className="mt-1 block tabular-nums">{duration(projectedMinutes)} {b("common.hour")}</strong></div>
+      </div>
 
-      <p className="mt-3 flex items-start gap-2 text-[10px] leading-7 text-[var(--text-muted)]">
+      <p className="flex items-start gap-2 text-[10px] leading-6 text-[var(--text-muted)]">
         <Info aria-hidden="true" className="mt-1 size-4 shrink-0" />
         <span>{b("leave.form.personalHint")}</span>
       </p>
-    </SurfaceCard>
+      <div className="flex justify-end gap-2">
+        <Button type="button" variant="outline" onClick={onCancel}>{b("common.cancel")}</Button>
+        <Button type="submit" disabled={!canSave}><Save aria-hidden="true" />{isEditing ? b("leave.form.saveEdit") : b("leave.form.save")}</Button>
+      </div>
+    </form>
   );
 }

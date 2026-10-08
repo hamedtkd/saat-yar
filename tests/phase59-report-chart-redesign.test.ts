@@ -26,6 +26,22 @@ test("report charts use shared legends and explicit empty states", async () => {
   assert.match(donut, /t\("reports\.charts\.notEnough"\)/);
 });
 
+test("employee report print clips rendered SVG bars inside a deterministic plot viewport", async () => {
+  const chart = await read("components/pages/reports/charts/employee-daily-chart.tsx");
+  const css = await read("app/globals.css");
+  const smoke = await read("scripts/report-print-pdf-smoke.mjs");
+  assert.match(chart, /data-report-chart-plot/);
+  assert.match(chart, /isAnimationActive=\{false\}/);
+  assert.match(css, /\[data-report-chart-plot\][\s\S]*height: 58mm !important;[\s\S]*overflow: hidden !important;/);
+  assert.match(css, /\[data-report-chart-plot\] svg[\s\S]*overflow: hidden !important;/);
+  assert.doesNotMatch(css, /\.report-charts \[role="img"\] svg[\s\S]*overflow: visible/);
+  assert.match(smoke, /\.recharts-bar-rectangle, \.recharts-rectangle/);
+  assert.match(smoke, /bounds\.barContainment/);
+  assert.match(smoke, /bounds\.plotCardContainment/);
+  assert.match(smoke, /layout\.axisContainment/);
+  assert.match(smoke, /Page\.printToPDF/);
+});
+
 test("chart grid remains responsive and available to the print layout", async () => {
   const shell = await read("components/pages/reports/charts/chart-shell.tsx");
   assert.match(shell, /report-charts/);
