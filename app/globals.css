@@ -469,8 +469,21 @@
     break-inside: avoid-page;
   }
   .report-page .report-charts [class*="overflow-x-auto"] { overflow: visible !important; }
-  .report-page .report-charts [role="img"] { min-width: 0 !important; width: 100% !important; height: 42mm !important; }
-  .report-page .report-charts svg { max-width: 100% !important; overflow: visible; }
+  .report-page .report-charts [role="img"] { min-width: 0 !important; width: 100% !important; height: 58mm !important; }
+  .report-page .report-charts [role="img"] > div,
+  .report-page .report-charts [role="img"] .recharts-responsive-container {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+  .report-page .report-charts [role="img"] svg {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    overflow: visible;
+  }
 
   .report-page .report-table-layout { display: block !important; }
   .report-page .report-table-surface { overflow: visible !important; }

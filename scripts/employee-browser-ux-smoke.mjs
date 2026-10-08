@@ -676,6 +676,89 @@ async function main() {
 
     await navigateInApp(client, "/reports", "گزارش کارکرد و حقوق");
     await waitFor(client, `document.body?.innerText.includes("حقوق تخمینی بازه گزارش") && document.body?.innerText.includes("کارکرد این بازه")`, "employee payroll report");
+    const screenReportCopy = await evaluate(client, `(() => ({
+      hasNeutralSummary: document.body?.innerText.includes("خلاصه گزارش"),
+      hasReportRange: document.body?.innerText.includes("بازه گزارش"),
+      hasMonthCopy: ["خلاصه ماه", "کارکرد این ماه", "وضعیت کارکرد ماه"].some((text) => document.body?.innerText.includes(text)),
+      skipLinkAvailable: getComputedStyle(document.querySelector('a[href="#main-content"]')).display !== "none",
+    }))()`);
+    if (!screenReportCopy?.hasNeutralSummary || !screenReportCopy.hasReportRange || screenReportCopy.hasMonthCopy || !screenReportCopy.skipLinkAvailable) {
+      throw new Error(`Employee Reports scope copy or screen skip-link contract failed: ${JSON.stringify(screenReportCopy)}`);
+    }
+    await clickButton(client, "از تاریخ");
+    await clickButton(client, "امروز", true);
+    await clickButton(client, "تا تاریخ");
+    await clickButton(client, "امروز", true);
+    const boundedReportCopy = await evaluate(client, `(() => ({
+      hasBothDateBounds: [...document.querySelectorAll("[data-date-picker-selected-label]")].filter((node) => node.textContent?.trim()).length === 2,
+      hasNeutralSummary: document.body?.innerText.includes("خلاصه گزارش"),
+      hasReportRange: document.body?.innerText.includes("بازه گزارش"),
+      hasMonthCopy: ["خلاصه ماه", "کارکرد این ماه", "وضعیت کارکرد ماه"].some((text) => document.body?.innerText.includes(text)),
+    }))()`);
+    if (!boundedReportCopy?.hasBothDateBounds || !boundedReportCopy.hasNeutralSummary || !boundedReportCopy.hasReportRange || boundedReportCopy.hasMonthCopy) {
+      throw new Error(`Bounded-range Reports copy contract failed: ${JSON.stringify(boundedReportCopy)}`);
+    }
+    await clickButton(client, "پاک‌کردن همه", true);
+    await evaluate(client, `document.querySelector('a[href="#main-content"]')?.focus()`);
+    await new Promise((resolveWait) => setTimeout(resolveWait, 200));
+    const skipLinkFocus = await evaluate(client, `(() => {
+      const link = document.querySelector('a[href="#main-content"]');
+      const rect = link?.getBoundingClientRect();
+      return {
+        visible: Boolean(link && rect && rect.top >= 0 && rect.bottom <= innerHeight),
+        focused: document.activeElement === link,
+        rect: rect ? { top: rect.top, bottom: rect.bottom, height: rect.height } : null,
+        transform: link ? getComputedStyle(link).transform : null,
+      };
+    })()`);
+    if (!skipLinkFocus?.visible) throw new Error(`The skip link is not visible when focused on screen: ${JSON.stringify(skipLinkFocus)}`);
+    await client.call("Emulation.setEmulatedMedia", { media: "print" });
+    await settleUi(client);
+    await new Promise((resolveWait) => setTimeout(resolveWait, 200));
+    const printCharts = await evaluate(client, `(() => {
+      const rect = (node) => {
+        const box = node.getBoundingClientRect();
+        return { top: box.top, right: box.right, bottom: box.bottom, left: box.left };
+      };
+      const cards = [...document.querySelectorAll(".report-charts > article")];
+      const charts = cards.flatMap((card) => [...card.querySelectorAll("svg.recharts-surface")].map((svg) => {
+        const chart = rect(svg);
+        const cardBox = rect(card);
+        return {
+          insideCard: chart.top >= cardBox.top - 2 && chart.bottom <= cardBox.bottom + 2
+            && chart.left >= cardBox.left - 2 && chart.right <= cardBox.right + 2,
+          chart,
+          card: cardBox,
+        };
+      }));
+      const grid = document.querySelector(".report-charts");
+      const gridBox = grid ? rect(grid) : null;
+      const chartSection = document.querySelector(".report-print-charts");
+      const tableSection = chartSection?.nextElementSibling;
+      const sectionBottom = chartSection?.getBoundingClientRect().bottom ?? null;
+      const tableTop = tableSection?.getBoundingClientRect().top ?? null;
+      const cardsDoNotOverlap = cards.every((card, index) => cards.slice(index + 1).every((other) => {
+        const first = card.getBoundingClientRect();
+        const second = other.getBoundingClientRect();
+        return first.right <= second.left + 1 || second.right <= first.left + 1
+          || first.bottom <= second.top + 1 || second.bottom <= first.top + 1;
+      }));
+      return {
+        chartCount: charts.length,
+        charts,
+        chartsStayInsideCards: charts.length > 0 && charts.every((chart) => chart.insideCard),
+        cardsDoNotOverlap,
+        chartSectionDoesNotOverlapTable: sectionBottom !== null && tableTop !== null && sectionBottom <= tableTop + 1,
+        horizontalOverflow: document.documentElement.scrollWidth > innerWidth + 1,
+        skipLinkHidden: getComputedStyle(document.querySelector('a[href="#main-content"]')).display === "none",
+        gridBox,
+      };
+    })()`);
+    await client.call("Emulation.setEmulatedMedia", { media: "screen" });
+    if (!printCharts?.chartsStayInsideCards || !printCharts.cardsDoNotOverlap || !printCharts.chartSectionDoesNotOverlapTable || printCharts.horizontalOverflow || !printCharts.skipLinkHidden) {
+      throw new Error(`Employee Reports print geometry contract failed: ${JSON.stringify(printCharts)}`);
+    }
+    console.log(`✓ Employee report charts remain inside their cards in print media (${printCharts.chartCount} rendered SVGs); skip link stays screen-accessible and is hidden in print`);
     console.log("✓ Reports expose employee work totals and the saved payroll policy summary");
 
     console.log(`✓ Employee workflow is durable in IndexedDB (${completedPersistence.storageShape}, schema v${completedPersistence.schemaVersion ?? "legacy"})`);
