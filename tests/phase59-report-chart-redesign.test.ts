@@ -42,5 +42,5 @@ test("Hybrid Reports default to Employee and route content, print, and export by
   assert.match(page, /ReportPrintHeader mode=\{mode\}/);
   assert.match(page, /onExport=\{\(kind, reportMode\) => exportReport\(kind, reportMode\)\}/);
   assert.match(page, /aria-pressed=\{mode === item\}/);
-  assert.match(page, /isEmployee && <section className="report-print-section mb-5"><SectionHeading icon=\{<Activity \/>\}/);
+  assert.match(page, /isEmployee && <section className="report-print-section report-activity-section mb-5"><SectionHeading icon=\{<Activity \/>\}/);
 });

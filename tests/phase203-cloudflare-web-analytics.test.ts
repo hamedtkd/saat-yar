@@ -10,8 +10,8 @@ import { getHelpCopy } from "../lib/help-content.ts";
 import { getPrivacyCopy, getTermsCopy } from "../lib/legal-content.ts";
 import { assertProductionAnalyticsContract } from "../scripts/remote-production-audit.mjs";
 
-test("Phase 203 keeps AppData on v21", () => {
-  assert.equal(APP_DATA_SCHEMA_VERSION, 21);
+test("Phase 203 schema lineage remains compatible with later migrations", () => {
+  assert.ok(APP_DATA_SCHEMA_VERSION >= 21);
 });
 
 test("Cloudflare analytics remains disabled when the site token is absent or malformed", () => {

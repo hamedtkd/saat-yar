@@ -8,7 +8,7 @@ import { inspectReleaseHardening } from "../scripts/release-hardening-audit.mjs"
 import { inspectVercelStaticExportContract } from "../scripts/vercel-static-export-contract.mjs";
 import { makeWorkRecord } from "./fixtures/work-record.ts";
 
-test("Phase 200 final hardening migrates a released v17-shaped snapshot through v21 without losing user data", () => {
+test("Phase 200 final hardening migrates a released v17-shaped snapshot through current AppData without losing user data", () => {
   const current = createInitialData({ onboarded: true });
   current.settings.name = "Release migration user";
   current.clients.push({ id: "client-1", name: "Legacy client", color: "#06b6d4", archived: false });
@@ -33,7 +33,7 @@ test("Phase 200 final hardening migrates a released v17-shaped snapshot through 
 
   assert.equal(result.fromVersion, 17);
   assert.equal(result.toVersion, APP_DATA_SCHEMA_VERSION);
-  assert.equal(APP_DATA_SCHEMA_VERSION, 21);
+  assert.equal(APP_DATA_SCHEMA_VERSION, 22);
   assert.equal(result.migrated, true);
   assert.equal(result.data.settings.name, "Release migration user");
   assert.equal(result.data.settings.workTimingMode, "scheduled");

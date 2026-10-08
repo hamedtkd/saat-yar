@@ -35,8 +35,8 @@ function calendarEvent(title: string): ExternalCalendarEvent {
   };
 }
 
-test("Phase 199 keeps development AppData on v21", () => {
-  assert.equal(APP_DATA_SCHEMA_VERSION, 21);
+test("Phase 199 employee activity context remains supported by current AppData", () => {
+  assert.ok(APP_DATA_SCHEMA_VERSION >= 21);
 });
 
 test("Phase 199 migrates v20 with an empty employee work-project collection", () => {

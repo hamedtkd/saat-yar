@@ -58,6 +58,20 @@ const payrollComponentSchema = z.object({
   enabled: z.boolean().optional(),
 }).passthrough();
 
+const leavePolicySchema = z.object({
+  id: z.string().min(1),
+  effectiveYear: z.number().int(),
+  effectiveMonth: z.number().int().min(1).max(12),
+  monthlyMinutes: z.number().int().nonnegative(),
+  createdAt: z.string(),
+}).passthrough();
+
+const leaveEventSchema = z.discriminatedUnion("type", [
+  z.object({ id: z.string().min(1), type: z.literal("adjustment"), date: z.string().date(), jalaliYear: z.number().int(), minutes: z.number().int().refine((minutes) => minutes !== 0), note: z.string(), createdAt: z.string() }).passthrough(),
+  z.object({ id: z.string().min(1), type: z.literal("carry-forward"), sourceYear: z.number().int(), destinationYear: z.number().int(), minutes: z.number().int().positive(), note: z.string(), createdAt: z.string(), settlementId: z.string().optional() }).passthrough(),
+  z.object({ id: z.string().min(1), type: z.literal("cash-out"), jalaliYear: z.number().int(), minutes: z.number().int().positive(), note: z.string(), createdAt: z.string(), settlementId: z.string().min(1) }).passthrough(),
+]);
+
 const settingsSchema = z.object({
   name: z.string(),
   onboarded: z.boolean(),
@@ -68,7 +82,9 @@ const settingsSchema = z.object({
   defaultEnd: timeSchema,
   lunchMinutes: z.number().nonnegative(),
   leaveBalanceMinutes: z.number().nonnegative(),
-  monthlyLeaveMinutes: z.number().nonnegative(),
+  monthlyLeaveMinutes: z.number().int().nonnegative(),
+  leavePolicies: z.array(leavePolicySchema),
+  leaveEvents: z.array(leaveEventSchema),
   salary: z.number().nonnegative(),
   overtimeMultiplier: z.number().nonnegative(),
   holidayMultiplier: z.number().nonnegative(),

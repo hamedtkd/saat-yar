@@ -75,10 +75,11 @@ async function auditReportPrintContracts() {
   const tablePath = "components/pages/reports/table/employee-desktop-table.tsx";
   const chartPath = "components/pages/reports/charts/chart-shell.tsx";
   const [css, report, table, chart] = await Promise.all([source(cssPath), source(reportPath), source(tablePath), source(chartPath)]);
-  requireMatch(cssPath, css, /@page report \{ size: A4 landscape/, "A4 landscape report page");
+  requireMatch(cssPath, css, /@page \{ size: A4 landscape/, "A4 landscape print page");
   requireMatch(cssPath, css, /\.report-page \.report-mobile-cards \{ display: none !important; \}/, "mobile report-card print hiding");
   requireMatch(cssPath, css, /table-layout: fixed !important/, "fixed print table layout");
-  requireMatch(cssPath, css, /grid-template-columns: repeat\(2, minmax\(0, 1fr\)\) !important/, "two-column print charts");
+  requireMatch(cssPath, css, /\.report-page \.report-charts \{\s*display: block !important;/, "single-column print charts");
+  requireMatch(cssPath, css, /\.report-page \.report-charts > article \{[\s\S]*?width: 100% !important;[\s\S]*?break-inside: avoid-page;/, "chart cards stay whole in print");
   if (/\.report-charts \{ display: none/.test(css)) failures.push(`${cssPath}: report charts must remain visible in print`);
   requireMatch(reportPath, report, /<ReportPrintHeader/, "report print header");
   requireMatch(reportPath, report, /data-report-print-root/, "report print root");

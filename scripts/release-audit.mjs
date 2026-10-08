@@ -289,7 +289,7 @@ export function collectCandidate260AuditFailures() {
   requireCondition(manifest.tag === "v2.6.0", "2.6.0 manifest must reserve the v2.6.0 tag name.", failures);
   requireCondition(manifest.dataSchemaVersion === 21, "2.6.0 schema must stay v21.", failures);
   requireCondition(manifest.releasedSchemaBaseline === 20, "2.6.0 must keep released 2.5.0 schema v20 as its migration baseline.", failures);
-  requireCondition(APP_DATA_SCHEMA_VERSION === 21, "2.6.0 source must stay on AppData v21.", failures);
+  requireCondition(APP_DATA_SCHEMA_VERSION >= 21, "2.6.0 source must retain its v21 schema lineage.", failures);
   requireCondition(released250.version === "2.5.0" && released250.status === "released" && released250.dataSchemaVersion === 20, "2.5.0 must remain the released v20 historical baseline.", failures);
   requireCondition(manifest.nodeEngine === packageJson.engines?.node, "2.6.0 Node engine must match package.json.", failures);
   requireCondition(manifest.verifiedBaselineCommitPrefix === "15f5af8", "2.6.0 must preserve the verified Phase 200 baseline 15f5af8.", failures);
@@ -429,7 +429,7 @@ export function collectCandidate261AuditFailures() {
   requireCondition(manifest.status === "candidate", "2.6.1 manifest must remain candidate until the verified rollout.", failures);
   requireCondition(manifest.candidateDate === "2026-08-20", "2.6.1 candidate date must be 2026-08-20.", failures);
   requireCondition(manifest.tag === "v2.6.1", "2.6.1 manifest must reserve v2.6.1.", failures);
-  requireCondition(manifest.dataSchemaVersion === 21 && APP_DATA_SCHEMA_VERSION === 21, "2.6.1 must keep AppData v21.", failures);
+  requireCondition(manifest.dataSchemaVersion === 21 && APP_DATA_SCHEMA_VERSION >= 21, "2.6.1 must preserve its released AppData v21 schema lineage.", failures);
   requireCondition(manifest.releasedSchemaBaseline === 21, "2.6.1 must use released 2.6.0 schema v21 as its baseline.", failures);
   requireCondition(released260.version === "2.6.0" && released260.status === "released" && released260.dataSchemaVersion === 21, "2.6.0 must remain the released v21 baseline.", failures);
   requireCondition(manifest.verifiedBaselineCommitPrefix === "d95f6a2", "2.6.1 must preserve released baseline d95f6a2.", failures);

@@ -1,10 +1,12 @@
 import { DEFAULT_APPEARANCE_SETTINGS } from "./appearance-settings.ts";
 import type { AppData, LeaveEntry, Settings } from "./types.ts";
-import { localDateKey } from "./format.ts";
+import { jalaliParts, localDateKey } from "./format.ts";
 import { createDefaultWeeklySchedule } from "./work-schedule.ts";
 import { createCompleteAppData } from "./data/app-data-factory.ts";
 import { clonePayrollPolicy, createPayrollPreset } from "./payroll-policy.ts";
-import { LEGAL_MONTHLY_LEAVE_MINUTES } from "./leave-entitlement.ts";
+import { DEFAULT_MONTHLY_LEAVE_MINUTES } from "./leave-entitlement.ts";
+
+const defaultLeaveYear = jalaliParts(new Date()).year;
 
 export const defaultSettings: Settings = {
   name: "",
@@ -16,7 +18,9 @@ export const defaultSettings: Settings = {
   defaultEnd: "16:15",
   lunchMinutes: 45,
   leaveBalanceMinutes: 0,
-  monthlyLeaveMinutes: LEGAL_MONTHLY_LEAVE_MINUTES,
+  monthlyLeaveMinutes: DEFAULT_MONTHLY_LEAVE_MINUTES,
+  leavePolicies: [{ id: `leave-policy-${defaultLeaveYear}-01`, effectiveYear: defaultLeaveYear, effectiveMonth: 1, monthlyMinutes: DEFAULT_MONTHLY_LEAVE_MINUTES, createdAt: new Date().toISOString() }],
+  leaveEvents: [],
   salary: 30_000_000,
   overtimeMultiplier: 1.4,
   holidayMultiplier: 1.4,
@@ -51,6 +55,8 @@ export function createInitialData(options: { onboarded?: boolean } = {}): AppDat
         Object.entries(defaultSettings.weeklySchedule).map(([day, schedule]) => [day, { ...schedule }]),
       ) as Settings["weeklySchedule"],
       payrollComponents: defaultSettings.payrollComponents.map((component) => ({ ...component })),
+      leavePolicies: defaultSettings.leavePolicies.map((policy) => ({ ...policy })),
+      leaveEvents: [],
       payrollPolicy: clonePayrollPolicy(defaultSettings.payrollPolicy),
       notificationSettings: {
         ...defaultSettings.notificationSettings,

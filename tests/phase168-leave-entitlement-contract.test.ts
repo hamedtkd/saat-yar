@@ -6,6 +6,7 @@ import test from "node:test";
 import { createInitialData, defaultSettings } from "../lib/constants.ts";
 import { migrateAppData } from "../lib/data/migrations.ts";
 import {
+  DEFAULT_MONTHLY_LEAVE_MINUTES,
   LEGAL_ANNUAL_LEAVE_MINUTES,
   LEGAL_LEAVE_DAY_MINUTES,
   LEGAL_MONTHLY_LEAVE_MINUTES,
@@ -37,19 +38,23 @@ test("legal leave baseline is 7:20 per day, 190:40 annually, and 15:53 monthly o
   assert.equal(Math.round(LEGAL_MONTHLY_LEAVE_MINUTES), 15 * 60 + 53);
 });
 
-test("new users start with the legal monthly entitlement and no fake 26-hour opening balance", () => {
+test("new users start with an exact 16-hour monthly policy and no invented opening balance", () => {
   assert.equal(defaultSettings.leaveBalanceMinutes, 0);
-  assert.equal(defaultSettings.monthlyLeaveMinutes, LEGAL_MONTHLY_LEAVE_MINUTES);
+  assert.equal(defaultSettings.monthlyLeaveMinutes, DEFAULT_MONTHLY_LEAVE_MINUTES);
+  assert.equal(defaultSettings.leavePolicies[0].monthlyMinutes, 16 * 60);
 });
 
-test("legacy 26h plus 16h defaults are repaired without changing schema version", () => {
+test("v21 migration preserves the stored monthly policy and starts a Jalali-year policy record", () => {
   const legacy = createInitialData({ onboarded: true });
   legacy.settings.leaveBalanceMinutes = 26 * 60;
-  legacy.settings.monthlyLeaveMinutes = 16 * 60;
+  legacy.settings.monthlyLeaveMinutes = LEGAL_MONTHLY_LEAVE_MINUTES;
 
-  const migrated = migrateAppData({ schemaVersion: 17, data: legacy }).data;
-  assert.equal(migrated.settings.leaveBalanceMinutes, 0);
-  assert.equal(migrated.settings.monthlyLeaveMinutes, LEGAL_MONTHLY_LEAVE_MINUTES);
+  const migrated = migrateAppData({ schemaVersion: 21, data: legacy }).data;
+  assert.equal(migrated.settings.leaveBalanceMinutes, 26 * 60);
+  assert.equal(migrated.settings.monthlyLeaveMinutes, Math.round(LEGAL_MONTHLY_LEAVE_MINUTES));
+  assert.equal(migrated.settings.leavePolicies.length, 1);
+  assert.equal(migrated.settings.leavePolicies[0].effectiveMonth, 1);
+  assert.equal(migrated.settings.leaveEvents.length, 0);
 });
 
 test("full and half-day leave use each actual scheduled workday instead of the currently selected day", () => {
@@ -72,35 +77,39 @@ test("scheduled days off and explicit holidays do not consume daily leave entitl
   assert.equal(getLeaveEntryUsedMinutes(leave({ startDate: "2026-08-10", endDate: "2026-08-10" }), data), 0);
 });
 
-test("annual summary counts only entries in the current Jalali year and keeps carryover separate", () => {
+test("summary accrues by Jalali month, counts current-year usage, and keeps carryover separate", () => {
   const data = createInitialData({ onboarded: true });
   data.settings.autoOfficialHolidays = false;
   data.settings.autoWeeklyHoliday = false;
-  data.settings.leaveBalanceMinutes = 120;
+  data.settings.leavePolicies = [{ id: "policy-1405", effectiveYear: 1405, effectiveMonth: 1, monthlyMinutes: 16 * 60, createdAt: "2026-03-21T00:00:00.000Z" }];
+  data.settings.leaveEvents = [{ id: "carry-1404", type: "carry-forward", sourceYear: 1404, destinationYear: 1405, minutes: 120, note: "", createdAt: "2026-03-21T00:00:00.000Z" }];
   data.leaves = [
     leave({ id: "current", type: "hourly", minutes: 90 }),
     leave({ id: "old", startDate: "2025-08-09", endDate: "2025-08-09", type: "hourly", minutes: 180 }),
   ];
 
   const summary = calculateLeaveEntitlementSummary(data, referenceDate);
-  assert.equal(summary.monthlyEntitlement, LEGAL_MONTHLY_LEAVE_MINUTES);
-  assert.equal(summary.annualEntitlement, LEGAL_ANNUAL_LEAVE_MINUTES);
+  assert.equal(summary.monthlyEntitlement, 16 * 60);
+  assert.equal(summary.annualEntitlement, 16 * 60 * 12);
+  assert.equal(summary.accruedThisYear, 5 * 16 * 60);
   assert.equal(summary.carryover, 120);
   assert.equal(summary.used, 90);
-  assert.equal(summary.available, LEGAL_ANNUAL_LEAVE_MINUTES + 30);
+  assert.equal(summary.available, 5 * 16 * 60 + 30);
 });
 
-test("leave overview no longer creates the old 42-hour total and explains the legal baseline", () => {
+test("leave overview separates accrued-to-date from the annual policy maximum and offers a ledger", () => {
   const source = readFileSync(join(root, "components/pages/leave/leave-page.tsx"), "utf8");
   const catalog = readFileSync(join(root, "lib/i18n/business.ts"), "utf8");
   assert.doesNotMatch(source, /leaveBalanceMinutes\s*\+\s*data\.settings\.monthlyLeaveMinutes/);
   assert.match(source, /b\("leave\.metrics\.monthly"\)/);
   assert.match(source, /b\("leave\.metrics\.annual"\)/);
+  assert.match(source, /b\("leave\.metrics\.accrued"\)/);
+  assert.match(source, /LeaveAccrualPanel/);
   assert.match(source, /b\("leave\.overview\.description"\)/);
   assert.match(source, /b\("leave\.overview\.note"\)/);
   assert.match(catalog, /"leave\.metrics\.monthly": "سهمیه ماهانه"/);
-  assert.match(catalog, /"leave\.metrics\.annual": "سهمیه سالانه"/);
-  assert.match(catalog, /۲۶ روز × ۷:۲۰ = ۱۹۰:۴۰/);
+  assert.match(catalog, /"leave\.metrics\.annual": "سقف سیاست سالانه"/);
+  assert.match(catalog, /"leave\.ledger\.accrued": "تعلق ماه"/);
   assert.match(catalog, /تعطیلات رسمی، جمعه و روزهای غیرفعال برنامه کاری/);
 });
 

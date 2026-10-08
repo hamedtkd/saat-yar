@@ -3,6 +3,7 @@ import { getConfiguredWorkMinutes, weekdayOrder } from "../work-schedule.ts";
 import { createCompleteAppData } from "./app-data-factory.ts";
 import { normalizePayrollPolicy } from "../payroll-policy.ts";
 import { normalizeLeaveSettings } from "../leave-entitlement.ts";
+import { normalizeLeaveEvents, normalizeLeavePolicies } from "../leave-ledger.ts";
 import { normalizeActivityTitle } from "../activity-segments.ts";
 import { sanitizeAppearanceSettings } from "../appearance-settings.ts";
 
@@ -59,6 +60,8 @@ export function normaliseData(value: AppData, defaults: Settings): AppData {
       weeklySchedule,
       workTimingMode,
       ...leaveSettings,
+      leavePolicies: normalizeLeavePolicies(incomingSettings.leavePolicies ?? defaults.leavePolicies),
+      leaveEvents: normalizeLeaveEvents(incomingSettings.leaveEvents ?? defaults.leaveEvents),
       notificationSettings: {
         ...defaults.notificationSettings,
         ...withoutLegacyCustomReminder(incomingSettings.notificationSettings),

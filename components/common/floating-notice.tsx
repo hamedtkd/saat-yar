@@ -26,12 +26,12 @@ export function FloatingNotice({
   className?: string;
 }) {
   return (
-    <div className="pointer-events-none fixed inset-x-4 top-4 z-[950] flex justify-end sm:inset-x-6 sm:top-6">
+    <div data-floating-notice className="pointer-events-none fixed inset-x-4 top-4 z-[950] flex justify-end sm:inset-x-6 sm:top-6 print:hidden">
       <div
         role="status"
         aria-live="polite"
         className={cn(
-          "pointer-events-auto w-full max-w-[min(100%,28rem)] rounded-[var(--card-radius)] border p-4 text-[var(--text)] shadow-[var(--surface-shadow)] ring-1 ring-[color-mix(in_srgb,var(--text)_6%,transparent)] backdrop-blur",
+          "pointer-events-auto w-full max-w-[min(100%,28rem)] rounded-[var(--card-radius)] border p-4 text-[var(--text)] shadow-[var(--surface-shadow)] ring-1 ring-[color-mix(in_srgb,var(--text)_6%,transparent)] backdrop-blur print:hidden",
           toneShell[tone],
           className,
         )}

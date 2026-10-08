@@ -166,6 +166,8 @@ export type Settings = {
   lunchMinutes: number;
   leaveBalanceMinutes: number;
   monthlyLeaveMinutes: number;
+  leavePolicies: LeavePolicyVersion[];
+  leaveEvents: LeaveBalanceEvent[];
   salary: number;
   overtimeMultiplier: number;
   holidayMultiplier: number;
@@ -189,6 +191,19 @@ export type LeaveEntry = {
   note: string;
   createdAt: string;
 };
+
+export type LeavePolicyVersion = {
+  id: string;
+  effectiveYear: number;
+  effectiveMonth: number;
+  monthlyMinutes: number;
+  createdAt: string;
+};
+
+export type LeaveBalanceEvent =
+  | { id: string; type: "adjustment"; date: string; jalaliYear: number; minutes: number; note: string; createdAt: string }
+  | { id: string; type: "carry-forward"; sourceYear: number; destinationYear: number; minutes: number; note: string; createdAt: string; settlementId?: string }
+  | { id: string; type: "cash-out"; jalaliYear: number; minutes: number; note: string; createdAt: string; settlementId: string };
 
 export type Client = {
   id: string;

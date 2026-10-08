@@ -37,7 +37,7 @@ test("printed reports include print-ready charts and use A4-safe layout", async 
   const printHeader = await readFile("components/pages/reports/report-print-header.tsx", "utf8");
   const employeeTable = await readFile("components/pages/reports/table/employee-desktop-table.tsx", "utf8");
   assert.match(css, /@page \{ size: A4/);
-  assert.match(css, /\.report-page \.report-charts \{[\s\S]*display: grid !important/);
+  assert.match(css, /\.report-page \.report-charts \{[\s\S]*display: block !important/);
   assert.match(css, /break-inside: avoid/);
   assert.match(css, /\.report-page thead \{ display: table-header-group/);
   assert.match(css, /\.report-page tr \{ break-inside: avoid-page; page-break-inside: avoid; \}/);

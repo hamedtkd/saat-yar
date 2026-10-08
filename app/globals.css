@@ -352,19 +352,18 @@
 
 
 @media print {
-  @page { size: A4; margin: 12mm; }
-  @page report { size: A4 landscape; margin: 9mm 10mm 11mm; }
+  @page { size: A4 landscape; margin: 9mm 10mm 11mm; }
 
   header, footer, nav, aside, button { display: none !important; }
-  html, body, main { background: #fff !important; }
+  html, body, main { background: #fff !important; min-height: 0 !important; height: auto !important; }
   body { color: #111827 !important; font-size: 9pt; }
   main { padding: 0 !important; }
+  main, .dashboard-shell, #main-content { min-height: 0 !important; overflow: visible !important; }
   #main-content { margin: 0 !important; max-width: none !important; padding: 0 !important; width: 100% !important; }
   section, article { box-shadow: none !important; }
   a[href]::after { content: none !important; }
 
   .report-page {
-    page: report;
     width: 100% !important;
     color: #111827 !important;
     --page: #fff;
@@ -451,22 +450,38 @@
     padding: 3mm !important;
   }
   .report-page .report-activity-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-    gap: 3mm !important;
+    display: block !important;
   }
-  .report-page .report-activity-grid > article { padding: 3mm !important; }
-
-  .report-page .report-print-charts { display: block !important; }
-  .report-page .report-charts {
-    display: grid !important;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 3mm !important;
-    margin: 0 0 5mm !important;
+  .report-page .report-activity-section {
+    display: block !important;
+    break-inside: avoid-page;
+    page-break-inside: avoid;
   }
-  .report-page .report-charts > article {
-    min-width: 0 !important;
+  .report-page .report-activity-grid > article {
+    margin: 0 0 3mm !important;
     padding: 3mm !important;
     break-inside: avoid-page;
+    page-break-inside: avoid;
+  }
+
+  .report-page .report-print-charts {
+    display: block !important;
+    break-before: page;
+    page-break-before: always;
+  }
+  .report-page .report-charts {
+    display: block !important;
+    margin: 0 !important;
+  }
+  .report-page .report-charts > article {
+    display: block !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    margin: 0 0 4mm !important;
+    padding: 3mm !important;
+    break-inside: avoid-page;
+    page-break-inside: avoid;
   }
   .report-page .report-charts [class*="overflow-x-auto"] { overflow: visible !important; }
   .report-page .report-charts [role="img"] { min-width: 0 !important; width: 100% !important; height: 58mm !important; }
@@ -486,6 +501,10 @@
   }
 
   .report-page .report-table-layout { display: block !important; }
+  .report-page .report-print-table > :first-child {
+    break-after: avoid-page;
+    page-break-after: avoid;
+  }
   .report-page .report-table-surface { overflow: visible !important; }
   .report-page .report-desktop-table {
     display: block !important;

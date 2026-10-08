@@ -4,6 +4,8 @@ import { normaliseData } from "./normalise.ts";
 import { APP_DATA_SCHEMA_VERSION } from "./version.ts";
 import { createDefaultWeeklySchedule, getConfiguredWorkMinutes, weekdayOrder } from "../work-schedule.ts";
 import { DEFAULT_STANDARD_MONTH_MINUTES, createLegacyPayrollPolicy } from "../payroll-policy.ts";
+import { jalaliParts } from "../format.ts";
+import { DEFAULT_MONTHLY_LEAVE_MINUTES } from "../leave-entitlement.ts";
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -392,6 +394,33 @@ function migrateV20ToV21(value: unknown): unknown {
   return { ...value, records, deletedRecords, workProjects };
 }
 
+function migrateV21ToV22(value: unknown): unknown {
+  if (!isObject(value)) return value;
+  const settings = isObject(value.settings) ? value.settings : {};
+  const monthlyMinutes = Math.max(0, Math.round(
+    typeof settings.monthlyLeaveMinutes === "number" && Number.isFinite(settings.monthlyLeaveMinutes)
+      ? settings.monthlyLeaveMinutes
+      : DEFAULT_MONTHLY_LEAVE_MINUTES,
+  ));
+  const leavePolicies = Array.isArray(settings.leavePolicies) ? settings.leavePolicies : [];
+  const year = jalaliParts(new Date()).year;
+  return {
+    ...value,
+    settings: {
+      ...settings,
+      monthlyLeaveMinutes: monthlyMinutes,
+      leavePolicies: leavePolicies.length ? leavePolicies : [{
+        id: `leave-policy-${year}-01-migrated`,
+        effectiveYear: year,
+        effectiveMonth: 1,
+        monthlyMinutes,
+        createdAt: new Date().toISOString(),
+      }],
+      leaveEvents: Array.isArray(settings.leaveEvents) ? settings.leaveEvents : [],
+    },
+  };
+}
+
 const migrations: Record<number, (value: unknown) => unknown> = {
   1: migrateV1ToV2,
   2: migrateV2ToV3,
@@ -413,6 +442,7 @@ const migrations: Record<number, (value: unknown) => unknown> = {
   18: migrateV18ToV19,
   19: migrateV19ToV20,
   20: migrateV20ToV21,
+  21: migrateV21ToV22,
 };
 
 export function migrateAppData(value: unknown): MigrationResult {

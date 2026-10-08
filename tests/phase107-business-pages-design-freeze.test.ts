@@ -45,13 +45,14 @@ test("business forms and project detail use shared semantic dashboard surfaces",
   assert.match(projectHeader, /var\(--accent-soft\)/);
 });
 
-test("report charts sit in a print-aware section without hiding their chart grid", async () => {
+test("report charts use one responsive grid with a print-aware section", async () => {
   const chartShell = await read("components/pages/reports/charts/chart-shell.tsx");
   const reports = await read("components/pages/reports/reports-page.tsx");
 
   assert.doesNotMatch(chartShell, /print:hidden/);
   assert.match(reports, /className="report-print-section report-print-charts mb-5"/);
-  assert.match(reports, /<div className="report-charts"><ReportCharts/);
+  assert.match(reports, /<ReportCharts mode=\{mode\}/);
+  assert.doesNotMatch(reports, /<div className="report-charts">/);
 });
 
 test("phase 107 closes the remaining page design-freeze backlog item", async () => {

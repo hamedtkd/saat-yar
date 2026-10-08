@@ -6,6 +6,8 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve, win32 } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { cleanupBrowserProfile } from "./browser-profile-cleanup.mjs";
+import { captureReportPrintPdf, seedReportPrintFixture } from "./report-print-pdf-smoke.mjs";
+import { exerciseLeaveAccrualBrowser, seedLeaveSettlementPolicy } from "./leave-accrual-browser-smoke.mjs";
 import { startStaticExportServer } from "./static-export-server.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -890,7 +892,14 @@ export async function runProductionBrowserSmoke() {
 
     await clickRouteLink(client, "/reports");
     await waitFor(client, `["/reports", "/reports/"].includes(location.pathname) && document.documentElement.dir === "ltr"`, "English Reports route");
-    await waitFor(client, `document.body?.innerText.includes("Work and payroll report") && document.body?.innerText.includes("Analytics charts") && Boolean(document.querySelector('[data-activity-breakdown]'))`, "English Reports core surface", WAIT_TIMEOUT_MS * 2);
+    const printFixtureCount = await seedReportPrintFixture(client);
+    if (printFixtureCount < 3) throw new Error(`Reports print fixture has too few records: ${printFixtureCount}`);
+    const reportsLoad = waitForEvent(client, "Page.loadEventFired", "English Reports seeded reload");
+    await client.call("Page.reload", { ignoreCache: true });
+    await reportsLoad;
+    await waitFor(client, `document.body?.innerText.includes("Work and payroll report") && document.body?.innerText.includes("Analytics charts") && Boolean(document.querySelector('[data-activity-breakdown]')) && document.querySelectorAll('.report-print-charts svg.recharts-surface').length > 0`, "English Reports seeded print surface", WAIT_TIMEOUT_MS * 2);
+    const printPdf = await captureReportPrintPdf(client, resolve(outputDirectory, "report-print-smoke.pdf"));
+    console.log(`✓ Chromium Page.printToPDF generated ${printPdf.pages} real report page(s) (${printPdf.bytes} bytes)`);
     console.log("✓ Today, Month, and Reports render localized English LTR surfaces before Persian restore");
     console.log("✓ Activity segment and breakdown surfaces follow English LTR");
 
@@ -918,6 +927,13 @@ export async function runProductionBrowserSmoke() {
     await client.call("Page.navigate", { url: `${origin}/leave/` });
     await englishLeaveLoad;
     await waitFor(client, `["/leave", "/leave/"].includes(location.pathname) && document.documentElement.dir === "ltr" && document.body?.innerText.includes("My leave") && document.body?.innerText.includes("Leave overview")`, "English Leave business surface");
+    const leaveFixture = await seedLeaveSettlementPolicy(client);
+    const leaveFixtureLoad = waitForEvent(client, "Page.loadEventFired", "English Leave ledger fixture reload");
+    await client.call("Page.reload", { ignoreCache: true });
+    await leaveFixtureLoad;
+    await waitFor(client, `["/leave", "/leave/"].includes(location.pathname) && document.body?.innerText.includes("Monthly balance breakdown")`, "English Leave accrual panel", WAIT_TIMEOUT_MS * 2);
+    await exerciseLeaveAccrualBrowser(client, leaveFixture);
+    console.log("✓ Leave accrual, carry-forward, manual adjustment, mixed settlement, and event history persist through the English browser journey");
     console.log("✓ Clients, Projects, Invoices, and Leave render localized English LTR business surfaces");
 
     // Restore the onboarding-selected Employee workspace before system/PWA
