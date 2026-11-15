@@ -543,6 +543,31 @@
   }
 }
 
+
+/* Resource-limited Android: preserve colors, typography and layout but avoid
+   GPU-heavy compositing. High-end touch devices keep the full design. */
+:root[data-render-profile="lite"] {
+  --surface-glass: var(--surface-1);
+}
+
+:root[data-render-profile="lite"] [class*="backdrop-blur"] {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+:root[data-render-profile="lite"] [data-progress-highlight],
+:root[data-render-profile="lite"] [data-brand-halo] {
+  filter: none !important;
+}
+
+:root[data-render-profile="lite"] [data-progress-highlight] {
+  transition: none;
+}
+
+:root[data-render-profile="lite"] [data-brand-motion] {
+  animation: none !important;
+}
+
 :where(button, [role="button"], input, select) {
   touch-action: manipulation;
 }

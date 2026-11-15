@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import { runInNewContext } from "node:vm";
 import { APP_DATA_SCHEMA_VERSION } from "../lib/data/version.ts";
 
 const read = (path: string) => readFileSync(path, "utf8");
@@ -139,4 +140,81 @@ test("theme toggle reveals the next visual theme from the control and skips the 
   assert.match(css, /clip-path: circle\(0 at var\(--theme-reveal-x\) var\(--theme-reveal-y\)\)/);
   assert.match(css, /300ms cubic-bezier/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*data-theme-transition="active"/);
+});
+
+test("adaptive Android rendering defaults to full on healthy devices and honors recovery overrides", () => {
+  const source = read("lib/render-profile-bootstrap.ts");
+  const marker = "String.raw`";
+  const start = source.indexOf(marker);
+  const end = source.indexOf("`;", start + marker.length);
+  assert.ok(start > 0 && end > start, "the bootstrap must be static, reviewed inline JS");
+  const script = source.slice(start + marker.length, end);
+  const preferences = new Map<string, string>();
+
+  function boot({
+    android = true,
+    memory,
+    cores,
+    query = "",
+    storageBlocked = false,
+  }: {
+    android?: boolean;
+    memory?: number;
+    cores?: number;
+    query?: string;
+    storageBlocked?: boolean;
+  } = {}) {
+    const dataset: Record<string, string> = {};
+    const storage = {
+      getItem(key: string) {
+        if (storageBlocked) throw new Error("storage denied");
+        return preferences.get(key) ?? null;
+      },
+      setItem(key: string, value: string) {
+        if (storageBlocked) throw new Error("storage denied");
+        preferences.set(key, value);
+      },
+      removeItem(key: string) {
+        if (storageBlocked) throw new Error("storage denied");
+        preferences.delete(key);
+      },
+    };
+    runInNewContext(script, {
+      window: { location: { search: query } },
+      document: { documentElement: { dataset } },
+      navigator: {
+        userAgent: android ? "Mozilla/5.0 (Linux; Android 9)" : "Mozilla/5.0 (Windows NT 10.0)",
+        deviceMemory: memory,
+        hardwareConcurrency: cores,
+      },
+      localStorage: storage,
+      URLSearchParams,
+    });
+    return dataset;
+  }
+
+  assert.equal(boot({ memory: 2, cores: 8 }).renderProfile, "lite");
+  assert.equal(boot({ memory: 4, cores: 4 }).renderProfile, "lite");
+  assert.equal(boot({ memory: 4, cores: 8 }).renderProfile, "full");
+  assert.equal(boot({ memory: 8, cores: 8 }).renderProfile, "full");
+  assert.equal(boot().renderProfile, "full", "unknown hardware stays visually unchanged");
+  assert.equal(boot({ android: false, memory: 1, cores: 1 }).renderProfile, "full");
+  assert.equal(boot({ memory: 8, cores: 8, query: "?render=lite" }).renderProfile, "lite");
+  assert.equal(boot({ memory: 8, cores: 8 }).renderProfile, "lite", "manual choice persists");
+  assert.equal(boot({ memory: 2, cores: 2, query: "?render=full" }).renderProfile, "full");
+  assert.equal(boot({ memory: 2, cores: 2, query: "?render=auto" }).renderProfile, "lite");
+  assert.equal(boot({ memory: 8, cores: 8, query: "?render=lite", storageBlocked: true }).renderProfile, "lite");
+  assert.equal(boot({ memory: 8, cores: 8, query: "?render=full", storageBlocked: true }).renderProfileSource, "manual");
+
+  const themeBoot = read("components/theme/theme-bootstrap.tsx");
+  const layout = read("app/layout.tsx");
+  const css = read("app/globals.css");
+  const themeToggle = read("components/theme/theme-toggle.tsx");
+  assert.match(themeBoot, /renderProfileBootstrapScript \+ code/);
+  assert.match(layout, /<ThemeBootstrap \/>/);
+  assert.match(css, /:root\[data-render-profile="lite"\] \[class\*="backdrop-blur"\]/);
+  assert.match(css, /:root\[data-render-profile="lite"\] \[data-progress-highlight\]/);
+  assert.match(css, /:root\[data-render-profile="lite"\] \[data-brand-motion\]/);
+  assert.match(themeToggle, /liteRendering \|\| !visualThemeChanges/);
+  assert.doesNotMatch(css, /@media \(hover: none\) and \(pointer: coarse\) \{[^}]*backdrop-filter: none/);
 });

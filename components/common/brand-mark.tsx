@@ -29,8 +29,9 @@ export function BrandMark({ className, size = 44, animated = true, label }: Bran
       aria-label={label}
       aria-hidden={label ? undefined : true}
     >
-      <span className="absolute inset-[8%] rounded-full bg-[var(--accent)]/15 blur-[9px]" />
+      <span data-brand-halo className="absolute inset-[8%] rounded-full bg-[var(--accent)]/15 blur-[9px]" />
       <span
+        data-brand-motion={animated ? "true" : undefined}
         className={cn(
           "relative block size-full transition-transform duration-300 hover:scale-[1.045]",
           animated && "motion-safe:animate-[saatyar-breathe_3.2s_ease-in-out_infinite]",

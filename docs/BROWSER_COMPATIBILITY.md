@@ -83,6 +83,31 @@ Service Worker فعلی یک Cache ساده Network-first برای Requestهای
 - مجوز و اعلان آزمایشی
 - نصب PWA و Reload پس از نصب، در صورت ارتباط تغییر
 
+### کرش Chrome روی Android/Mali و حالت رندر سبک (آبان ۱۴۰۵)
+
+در یک گزارش واقعی، Chrome در درایور گرافیکی Mali و هنگام
+`glCopyTexSubImage2D` متوقف شد. این Stack Trace نشان‌دهندهٔ کرش Native
+در مسیر GPU است، اما به‌تنهایی ثابت نمی‌کند کدام افکت ساعت‌یار عامل آن است.
+
+حالت **Adaptive Rendering** قبل از نمایش صفحه، بر اساس نشانه‌های محدود
+`deviceMemory` و `hardwareConcurrency` روی Androidهای کم‌توان فعال می‌شود
+(حداکثر ۲ گیگابایت RAM، حداکثر دو هسته، یا ۴ گیگابایت RAM همراه با حداکثر
+چهار هسته). دستگاه‌های دارای اطلاعات نامشخص و گوشی‌های جدید ظاهر کامل را حفظ می‌کنند.
+این تشخیص تضمین شناسایی درایور معیوب نیست.
+
+در حالت سبک فقط فیلترهای Backdrop و SVG، درخشش متحرک لوگو و انیمیشن تمام‌صفحهٔ
+تغییر تم غیرفعال‌اند. رنگ، فونت، چیدمان، RTL، کنترل‌ها و رفتار تایمر تغییر نمی‌کنند.
+داده‌های کاری IndexedDB و Schema نیز دست‌نخورده می‌مانند.
+
+برای تست یا رفع مشکل دستگاهی که تشخیص خودکار آن را شناسایی نکرده است:
+- `?render=lite`: فعال‌سازی و ذخیرهٔ حالت سبک
+- `?render=full`: بازگشت به ظاهر کامل
+- `?render=auto`: حذف انتخاب دستی و استفاده از تشخیص خودکار
+
+**برای حل مشکل به کاربر پیشنهاد پاک‌کردن داده‌های سایت را ندهید:** داده‌های کاری
+ساعت‌یار local-first هستند و پاک‌کردن Site Data ممکن است آن‌ها را حذف کند.
+پیش از اعلام رفع قطعی، همان دستگاه دارای Mali باید واقعاً دوباره آزمایش شود.
+
 ## English summary
 
 Saatyar's automated production browser gate currently covers Chrome, Edge, or Chromium. Core APIs used by the application are broadly implemented in modern browsers, but Firefox and Safari are manual-support targets rather than automated release targets. Browser profiles and origins own separate IndexedDB stores. Service workers require a secure context, and notification/PWA behavior remains platform-specific. The application creates local in-page notifications; it does not currently operate a backend push service.

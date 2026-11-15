@@ -74,6 +74,7 @@ export function TodayProgressArc({ value, children, className }: {
           strokeDasharray={circumference}
           strokeDashoffset={dashOffset}
           transform={`rotate(-90 ${center} ${center})`}
+          data-progress-highlight
           className="transition-[stroke-dashoffset] duration-500 ease-out"
           style={{ filter: "drop-shadow(0 0 10px color-mix(in srgb,var(--accent) 35%,transparent))" }}
         />

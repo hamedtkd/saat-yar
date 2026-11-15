@@ -1,4 +1,5 @@
 ## [Unreleased]
+- v2.8.2 Android GPU compatibility: adaptive lightweight paint on constrained devices, manual URL recovery for Mali/Chrome native crashes, preserved full-quality UI on capable phones, 12-scenario bootstrap regression and a fresh PWA cache generation. The root data schema and dependencies are unchanged.
 - Phase 202 R6: fixed the real-media CDP readiness expression that could compile into invalid JavaScript after onboarding capture; the generated expression is now regex-free and parser-checked by the historical media hardening test.
 
 - Phase 202 R5: hardened real-media capture after browser-storage reset by waiting on the structural onboarding route instead of stale copy, moved transient onboarding GIF frames to OS temp storage, and switched final release installation guidance to `npm ci` to keep the lockfile byte-stable under the Node 22 release contract.
