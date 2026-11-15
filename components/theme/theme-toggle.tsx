@@ -54,9 +54,10 @@ export function ThemeToggle({
     const next = nextMode[mode];
     const documentWithTransition = document as ViewTransitionDocument;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const liteRendering = document.documentElement.dataset.renderProfile === "lite";
     const visualThemeChanges = resolvedMode(mode) !== resolvedMode(next);
 
-    if (reducedMotion || !visualThemeChanges || !documentWithTransition.startViewTransition) {
+    if (reducedMotion || liteRendering || !visualThemeChanges || !documentWithTransition.startViewTransition) {
       commitTheme(next);
       return;
     }

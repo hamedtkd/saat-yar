@@ -4,8 +4,8 @@ try {
   self.__SAATYAR_PRECACHE = [];
 }
 
-const CACHE_NAME = "saatyar-shell-v8";
-const STATIC_CACHE = "saatyar-static-v8";
+const CACHE_NAME = "saatyar-shell-v9";
+const STATIC_CACHE = "saatyar-static-v9";
 const APP_ROUTES = ["", "today/", "month/", "leave/", "reports/", "clients/", "projects/", "invoices/", "settings/"];
 const STATIC_ASSETS = [
   "manifest.webmanifest",
